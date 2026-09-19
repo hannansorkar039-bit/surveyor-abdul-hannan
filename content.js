@@ -1,0 +1,38 @@
+/* 
+  Surveyor Abdul Hannan — Content File
+  Future updates can be made here without changing the design.
+  Do not add unverified qualifications, government positions, awards,
+  licenses, addresses, or service claims.
+*/
+const SITE = {
+  nameBn: "সার্ভেয়ার আবদুল হান্নান",
+  nameEn: "Surveyor Abdul Hannan",
+  title: "Digital Amin & Land Surveyor",
+  phone: "01810811989",
+  phoneIntl: "+8801810811989",
+  email: "hannansorkar039@gmail.com",
+  address: "মাহাব উদ্দিন ভূঁইয়া বাড়ি, সাং—চরশাহী, চন্দ্রগঞ্জ, লক্ষ্মীপুর",
+  googleMaps: "https://maps.app.goo.gl/h4aToTaR9BaDNni79?g_st=ac",
+  profiles: [
+    ["Facebook Profile","https://www.facebook.com/AbdulHannanSurveyor123"],
+    ["Facebook Page","https://www.facebook.com/SurveyorAbdulHannan123"],
+    ["Instagram","https://www.instagram.com/surveyorabdulhannan.123"],
+    ["LinkedIn","https://www.linkedin.com/in/surveyor-abdul-hannan"],
+    ["TikTok","https://www.tiktok.com/@hannansorkar83"],
+    ["YouTube","https://youtube.com/@surveyorabdulhannan"],
+    ["Blogger","https://surveyorabdulhannan.blogspot.com"],
+    ["Google Maps","https://maps.app.goo.gl/h4aToTaR9BaDNni79?g_st=ac"]
+  ],
+  videos: [
+    // Example:
+    // {title:"ভিডিওর শিরোনাম", description:"সংক্ষিপ্ত বর্ণনা", youtubeId:"YOUR_VIDEO_ID", date:"2026-09-19"}
+  ],
+  posts: [
+    // Example:
+    // {title:"লেখার শিরোনাম", category:"ভূমি জরিপ", excerpt:"সংক্ষিপ্ত পরিচিতি", url:"https://surveyorabdulhannan.blogspot.com/p/example.html", date:"2026-09-19"}
+  ],
+  photos: [
+    {src:"assets/profile-abdul-hannan.jpg", alt:"সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি", title:"সার্ভেয়ার আবদুল হান্নান", caption:"Professional Profile"},
+    {src:"assets/visiting-card.jpg", alt:"সার্ভেয়ার আবদুল হান্নানের ভিজিটিং কার্ড", title:"ভিজিটিং কার্ড", caption:"যোগাযোগ ও সেবার তথ্য"}
+  ]
+};
