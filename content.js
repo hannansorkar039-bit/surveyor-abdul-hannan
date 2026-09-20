@@ -32,7 +32,7 @@ const SITE = {
     // {title:"লেখার শিরোনাম", category:"ভূমি জরিপ", excerpt:"সংক্ষিপ্ত পরিচিতি", url:"https://surveyorabdulhannan.blogspot.com/p/example.html", date:"2026-09-19"}
   ],
   photos: [
-    {src:"profile-abdul-hannan.Jpg", alt:"সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি", title:"সার্ভেয়ার আবদুল হান্নান", caption:"Professional Profile"},
+    {src:"profile-abdul-hannan.jpg", alt:"সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি", title:"সার্ভেয়ার আবদুল হান্নান", caption:"Professional Profile"},
     {src:"visiting-card.Jpg", alt:"সার্ভেয়ার আবদুল হান্নানের ভিজিটিং কার্ড", title:"ভিজিটিং কার্ড", caption:"যোগাযোগ ও সেবার তথ্য"}
   ]
 };
