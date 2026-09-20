@@ -295,8 +295,13 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
         ${p.url ? `<a class="post-link" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">সম্পূর্ণ লেখা →</a>` : ""}
       </article>`).join("");
   } else {
-    pg.innerHTML = `<article class="post-card"><div class="post-meta">BLOGGER</div><h3>লেখা গ্যালারি প্রস্তুত</h3><p>নতুন লেখা Blogger-এ প্রকাশ করে content.js-এ title, category, excerpt ও URL যোগ করুন।</p><a class="post-link" href="${esc(SITE.profiles.find(x=>x[0]==="Blogger")[1])}" target="_blank" rel="noopener noreferrer">Blogger খুলুন →</a></article>`;
-  }
+    pg.innerHTML = `
+  <article class="post-card">
+    <a class="post-link" href="https://surveyorabdulhannan.blogspot.com/" target="_blank" rel="noopener noreferrer">
+      ব্লগার খুলুন →
+    </a>
+  </article>
+`;
 
   // Social links
   $("socialGrid").innerHTML = SITE.profiles.map(p => `<a class="social" href="${esc(p[1])}" target="_blank" rel="noopener noreferrer">${esc(p[0])}</a>`).join("");
