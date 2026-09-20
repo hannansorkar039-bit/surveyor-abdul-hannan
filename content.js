@@ -33,6 +33,7 @@ const SITE = {
   ],
   photos: [
     {src:"profile-abdul-hannan.jpg", alt:"সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি", title:"সার্ভেয়ার আবদুল হান্নান", caption:"Professional Profile"},
+    {src:"profile-abdul-hannan.jpg", alt:"সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি", title:"সার্ভেয়ার আবদুল হান্নান", caption:"Professional Profile"},
     {src:"visiting-card.jpg", alt:"সার্ভেয়ার আবদুল হান্নানের ভিজিটিং কার্ড", title:"ভিজিটিং কার্ড", caption:"যোগাযোগ ও সেবার তথ্য"}
   ]
 };
