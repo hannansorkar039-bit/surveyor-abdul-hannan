@@ -112,6 +112,32 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
 .hidden{display:none!important}
 @media(max-width:850px){.nav-inner{align-items:flex-start;padding:12px 0}.navlinks{gap:9px}.hero-grid{grid-template-columns:1fr;text-align:center}.avatar{margin:auto}.actions{justify-content:center}.tagline{margin-left:auto;margin-right:auto}.services,.contact-grid,.video-grid{grid-template-columns:1fr}.cards,.gallery,.post-grid{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.social-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.navlinks{display:none}.hero{padding:55px 0}.section{padding:50px 0}.section-title{font-size:27px}.cards,.gallery,.post-grid,.stats,.social-grid{grid-template-columns:1fr}.hero-sub{font-size:17px}.container{width:min(94%,1160px)}}
+
+/* Customer Work Order */
+.order-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;margin-top:26px}
+.order-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
+.order-card h3{margin:0 0 7px;color:var(--navy);font-size:22px}
+.order-card .hint{margin:0 0 18px;color:var(--muted);font-size:14px}
+.order-form{display:grid;gap:14px}
+.order-form .field{display:grid;gap:7px}
+.order-form label{font-weight:900;color:var(--navy)}
+.order-form input,.order-form select,.order-form textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font:inherit;outline:none}
+.order-form input:focus,.order-form select:focus,.order-form textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(8,116,123,.1)}
+.order-form textarea{min-height:120px;resize:vertical}
+.order-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.order-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:3px}
+.order-summary{background:linear-gradient(145deg,#082336,#0d3d52);color:#fff}
+.order-summary h3{color:#fff}
+.order-summary .summary-row{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.14)}
+.order-summary .summary-row:last-child{border-bottom:0}
+.order-summary .label{color:#cfe1e7}.order-summary .value{font-weight:900;text-align:right}
+.order-note{margin-top:16px;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.08);color:#dcebef;font-size:13px}
+.order-success{display:none;margin-top:15px;padding:13px 15px;border-radius:10px;background:#eaf7f1;border:1px solid #b9e4ce;color:#155d3d;font-weight:800}
+.order-success.show{display:block}
+.order-error{display:none;margin-top:15px;padding:13px 15px;border-radius:10px;background:#fff1f1;border:1px solid #efc0c0;color:#8a2525;font-weight:800}
+.order-error.show{display:block}
+@media(max-width:850px){.order-wrap{grid-template-columns:1fr}.order-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 
@@ -127,6 +153,7 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
       <a href="#videos">ভিডিও</a>
       <a href="#photos">ছবি</a>
       <a href="#posts">লেখা</a>
+      <a href="#order">কাজের অর্ডার</a>
       <a href="#contact">যোগাযোগ</a>
     </div>
   </div>
@@ -219,6 +246,100 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
   </div>
 </section>
 
+
+<section id="order" class="section">
+  <div class="container">
+    <h2 class="section-title">কাজের অর্ডার দিন</h2>
+    <p class="lead">আপনার জমি-সংক্রান্ত কাজের প্রাথমিক তথ্য নিচের ফর্মে পাঠান। তথ্য দেখে প্রয়োজনে আপনার সঙ্গে যোগাযোগ করা হবে।</p>
+
+    <div class="order-wrap">
+      <div class="order-card">
+        <h3>📋 কাজের তথ্য</h3>
+        <p class="hint">তারকা (*) চিহ্নিত তথ্যগুলো অবশ্যই পূরণ করুন।</p>
+
+        <form id="workOrderForm" class="order-form">
+          <div class="order-grid">
+            <div class="field">
+              <label for="orderName">আপনার নাম *</label>
+              <input id="orderName" name="name" type="text" required placeholder="আপনার পূর্ণ নাম">
+            </div>
+            <div class="field">
+              <label for="orderPhone">মোবাইল নম্বর *</label>
+              <input id="orderPhone" name="phone" type="tel" inputmode="tel" required placeholder="যেমন: ০১৮১০৮১১৯৮৯">
+            </div>
+          </div>
+
+          <div class="order-grid">
+            <div class="field">
+              <label for="orderDivision">বিভাগ *</label>
+              <select id="orderDivision" name="division" required>
+                <option value="">বিভাগ নির্বাচন করুন</option>
+                <option>ঢাকা</option><option>চট্টগ্রাম</option><option>রাজশাহী</option>
+                <option>খুলনা</option><option>বরিশাল</option><option>সিলেট</option>
+                <option>রংপুর</option><option>ময়মনসিংহ</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="orderDistrict">জেলা *</label>
+              <select id="orderDistrict" name="district" required disabled>
+                <option value="">আগে বিভাগ নির্বাচন করুন</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="order-grid">
+            <div class="field">
+              <label for="orderUpazila">উপজেলা *</label>
+              <input id="orderUpazila" name="upazila" type="text" required placeholder="উপজেলার নাম লিখুন">
+            </div>
+            <div class="field">
+              <label for="orderMouza">মৌজা *</label>
+              <input id="orderMouza" name="mouza" type="text" required placeholder="মৌজার নাম লিখুন">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="orderWork">কী কাজ করতে চান? *</label>
+            <select id="orderWork" name="work" required>
+              <option value="">কাজ নির্বাচন করুন</option>
+              <option>জমি পরিমাপ</option>
+              <option>জমির সীমানা নির্ধারণ</option>
+              <option>নকশা পরিমাপ / প্যান্টোগ্রাফ</option>
+              <option>প্রিজমেটিক কম্পাসের মাধ্যমে ডিগ্রি নির্ণয়</option>
+              <option>বারকোড-সংযুক্ত ডিজিটাল ট্রেসিং</option>
+              <option>ভূমি-সংক্রান্ত সাধারণ পরামর্শ</option>
+              <option>অন্যান্য</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="orderDetails">কাজের বিস্তারিত বিবরণ</label>
+            <textarea id="orderDetails" name="details" placeholder="দাগ নম্বর, জমির পরিমাণ, প্রয়োজনীয় কাজ বা অন্য কোনো গুরুত্বপূর্ণ তথ্য লিখতে পারেন।"></textarea>
+          </div>
+
+          <div class="order-actions">
+            <button class="btn btn-primary" type="submit">📲 WhatsApp-এ অর্ডার পাঠান</button>
+            <button class="btn btn-dark" type="reset">ফর্ম পরিষ্কার করুন</button>
+          </div>
+
+          <div id="orderSuccess" class="order-success" role="status"></div>
+          <div id="orderError" class="order-error" role="alert"></div>
+        </form>
+      </div>
+
+      <div class="order-card order-summary">
+        <h3>🔎 অর্ডারের সারসংক্ষেপ</h3>
+        <div class="summary-row"><span class="label">বিভাগ</span><span id="sumDivision" class="value">—</span></div>
+        <div class="summary-row"><span class="label">জেলা</span><span id="sumDistrict" class="value">—</span></div>
+        <div class="summary-row"><span class="label">উপজেলা</span><span id="sumUpazila" class="value">—</span></div>
+        <div class="summary-row"><span class="label">মৌজা</span><span id="sumMouza" class="value">—</span></div>
+        <div class="summary-row"><span class="label">কাজ</span><span id="sumWork" class="value">—</span></div>
+        <div class="order-note">অর্ডার পাঠানোর পর আপনার WhatsApp অ্যাপ খুলবে এবং পূরণ করা তথ্যসহ একটি প্রস্তুত বার্তা তৈরি হবে। আপনি পাঠানোর আগে তথ্যগুলো আবার যাচাই করতে পারবেন।</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="contact" class="section alt">
   <div class="container">
     <h2 class="section-title">যোগাযোগ</h2>
@@ -305,6 +426,112 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
   // Social links
   $("socialGrid").innerHTML = SITE.profiles.map(p => `<a class="social" href="${esc(p[1])}" target="_blank" rel="noopener noreferrer">${esc(p[0])}</a>`).join("");
 })();
+
+/* Customer Work Order */
+(function(){
+  const form = document.getElementById("workOrderForm");
+  if(!form) return;
+
+  // জেলা তালিকা — বিভাগ অনুযায়ী বাংলাদেশের সব জেলা।
+  const districts = {
+    "ঢাকা":["ঢাকা","গাজীপুর","নারায়ণগঞ্জ","নরসিংদী","মুন্সিগঞ্জ","মানিকগঞ্জ","মাদারীপুর","রাজবাড়ী","ফরিদপুর","গোপালগঞ্জ","কিশোরগঞ্জ","টাঙ্গাইল","শরীয়তপুর"],
+    "চট্টগ্রাম":["চট্টগ্রাম","কক্সবাজার","কুমিল্লা","ফেনী","নোয়াখালী","লক্ষ্মীপুর","চাঁদপুর","ব্রাহ্মণবাড়িয়া","রাঙ্গামাটি","খাগড়াছড়ি","বান্দরবান"],
+    "রাজশাহী":["রাজশাহী","নওগাঁ","নাটোর","চাঁপাইনবাবগঞ্জ","পাবনা","সিরাজগঞ্জ","বগুড়া","জয়পুরহাট"],
+    "খুলনা":["খুলনা","বাগেরহাট","সাতক্ষীরা","যশোর","ঝিনাইদহ","মাগুরা","নড়াইল","কুষ্টিয়া","চুয়াডাঙ্গা","মেহেরপুর"],
+    "বরিশাল":["বরিশাল","ভোলা","পটুয়াখালী","পিরোজপুর","বরগুনা","ঝালকাঠি"],
+    "সিলেট":["সিলেট","মৌলভীবাজার","হবিগঞ্জ","সুনামগঞ্জ"],
+    "রংপুর":["রংপুর","দিনাজপুর","ঠাকুরগাঁও","পঞ্চগড়","নীলফামারী","লালমনিরহাট","কুড়িগ্রাম","গাইবান্ধা"],
+    "ময়মনসিংহ":["ময়মনসিংহ","জামালপুর","শেরপুর","নেত্রকোনা"]
+  };
+
+  const division = document.getElementById("orderDivision");
+  const district = document.getElementById("orderDistrict");
+  const upazila = document.getElementById("orderUpazila");
+  const mouza = document.getElementById("orderMouza");
+  const work = document.getElementById("orderWork");
+
+  const sum = {
+    division:document.getElementById("sumDivision"),
+    district:document.getElementById("sumDistrict"),
+    upazila:document.getElementById("sumUpazila"),
+    mouza:document.getElementById("sumMouza"),
+    work:document.getElementById("sumWork")
+  };
+
+  function updateSummary(){
+    sum.division.textContent = division.value || "—";
+    sum.district.textContent = district.value || "—";
+    sum.upazila.textContent = upazila.value.trim() || "—";
+    sum.mouza.textContent = mouza.value.trim() || "—";
+    sum.work.textContent = work.value || "—";
+  }
+
+  division.addEventListener("change", function(){
+    district.innerHTML = '<option value="">জেলা নির্বাচন করুন</option>';
+    (districts[this.value] || []).forEach(d => {
+      const o = document.createElement("option");
+      o.value = d; o.textContent = d;
+      district.appendChild(o);
+    });
+    district.disabled = !(districts[this.value] || []).length;
+    updateSummary();
+  });
+
+  [district, upazila, mouza, work].forEach(el => {
+    el.addEventListener("input", updateSummary);
+    el.addEventListener("change", updateSummary);
+  });
+
+  form.addEventListener("reset", function(){
+    setTimeout(function(){
+      district.innerHTML = '<option value="">আগে বিভাগ নির্বাচন করুন</option>';
+      district.disabled = true;
+      updateSummary();
+      document.getElementById("orderSuccess").classList.remove("show");
+      document.getElementById("orderError").classList.remove("show");
+    }, 0);
+  });
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    const success = document.getElementById("orderSuccess");
+    const error = document.getElementById("orderError");
+    success.classList.remove("show");
+    error.classList.remove("show");
+
+    const name = document.getElementById("orderName").value.trim();
+    const phone = document.getElementById("orderPhone").value.trim();
+    const details = document.getElementById("orderDetails").value.trim();
+
+    if(!name || !phone || !division.value || !district.value || !upazila.value.trim() || !mouza.value.trim() || !work.value){
+      error.textContent = "অনুগ্রহ করে সব বাধ্যতামূলক (*) তথ্য পূরণ করুন।";
+      error.classList.add("show");
+      return;
+    }
+
+    const text =
+`কাজের অর্ডার — সার্ভেয়ার আবদুল হান্নান
+
+নাম: ${name}
+মোবাইল: ${phone}
+বিভাগ: ${division.value}
+জেলা: ${district.value}
+উপজেলা: ${upazila.value.trim()}
+মৌজা: ${mouza.value.trim()}
+কাজ: ${work.value}
+${details ? "বিস্তারিত: " + details : ""}`;
+
+    const whatsappNumber = "8801810811989";
+    const url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(text);
+
+    success.textContent = "অর্ডারের তথ্য প্রস্তুত হয়েছে। WhatsApp খুলে বার্তাটি পাঠিয়ে দিন।";
+    success.classList.add("show");
+    window.open(url, "_blank", "noopener,noreferrer");
+  });
+
+  updateSummary();
+})();
+
 </script>
 </body>
 </html>
