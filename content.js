@@ -34,7 +34,7 @@ const SITE = {
   photos: [
     {src:"cs dima 1.jpg", alt:"সীমানা নির্ধারণ", title:"নকশার ডিমার্কেশন", caption:"সীমানা নির্ধারণের জন্য ডিমার্কেশন রিপোর্ট"},
     {src:"03.jpg", alt:"প্যান্টোগ্রাফ", title:"সিএস ও আর এস তুলনা মূলক নকশা", caption:"প্যান্টোগ্রাফ বা তুলনামূলক নকশা"},
-    {src:"profile-abdul-hannan.jpg", alt:"সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি", title:"সার্ভেয়ার আবদুল হান্নান", caption:"Professional Profile"},
+    {src:"Mosjid Bari.jpg", alt:"সীমানা নির্ধারণ", title:"ত্রিভুজায়ন", caption:"ত্রিভুজায়ন পদ্ধতিতে সীমানা নির্ধারণ"},
     {src:"profile-abdul-hannan.jpg", alt:"সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি", title:"সার্ভেয়ার আবদুল হান্নান", caption:"Professional Profile"},
     {src:"visiting-card.jpg", alt:"সার্ভেয়ার আবদুল হান্নানের ভিজিটিং কার্ড", title:"ভিজিটিং কার্ড", caption:"যোগাযোগ ও সেবার তথ্য"}
   ]
