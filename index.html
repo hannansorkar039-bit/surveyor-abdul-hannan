@@ -274,8 +274,8 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
         <p>${esc(v.description || "")}${v.date ? " · " + esc(v.date) : ""}</p>
       </article>`).join("");
   } else {
-    vg.innerHTML = `<article class="video-card"><div class="video-empty"><div><div class="play">▶</div><strong style="display:block;margin-top:12px">নতুন ভিডিও এখানে আসবে</strong><span>content.js-এ YouTube Video ID যোগ করুন</span></div></div><h3>ভিডিও গ্যালারি প্রস্তুত</h3><p>কোনো বানানো ভিডিও বা ভুল লিংক দেখানো হচ্ছে না।</p></article>`;
-  }
+  vg.innerHTML = "";
+}
 
   // Photos
   $("photoGallery").innerHTML = SITE.photos.map(p => `
