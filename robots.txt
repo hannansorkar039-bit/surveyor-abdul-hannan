@@ -1,4 +1,4 @@
-# After publishing, replace YOUR-DOMAIN.com with the real website domain.
 User-agent: *
 Allow: /
-Sitemap: https://YOUR-DOMAIN.com/sitemap.xml
+
+Sitemap: https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/sitemap.xml
