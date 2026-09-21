@@ -125,6 +125,26 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
 .v3-note-icon{width:34px;height:34px;flex:0 0 34px;border-radius:50%;display:grid;place-items:center;background:var(--teal);color:#fff;font-weight:900}
 .v3-note strong{color:var(--navy)}
 .v3-note p{margin:3px 0 0;color:var(--muted);font-size:14px}
+
+/* ===== Professional V4: verified information center ===== */
+.source-note{margin:14px 0 0;color:#c9dbe1;font-size:12px}
+.info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:26px}
+.info-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 8px 26px rgba(8,35,54,.06)}
+.info-card h3{margin:0 0 8px;color:var(--navy);font-size:19px}
+.info-card p{margin:0;color:var(--muted)}
+.info-card ul{margin:12px 0 0;padding-left:20px;color:var(--muted)}
+.info-card li{margin:7px 0}
+.gov-links{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.gov-link{display:flex;align-items:center;gap:10px;padding:14px 15px;background:#f7fbfb;border:1px solid #dce9e9;border-radius:12px;color:var(--navy);font-weight:900}
+.gov-link span{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#e8f5f4;color:var(--teal)}
+.source-box{margin-top:22px;padding:17px 18px;border:1px dashed #c7d7dc;border-radius:14px;background:#fbfdfe;color:var(--muted);font-size:14px}
+.source-box strong{color:var(--navy)}
+.checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.check-item{padding:15px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.check-item b{display:block;color:var(--teal);margin-bottom:3px}
+.check-item span{color:var(--muted);font-size:14px}
+@media(max-width:850px){.info-grid,.gov-links,.checklist{grid-template-columns:1fr}}
+
 @media(max-width:850px){.v3-highlight-grid{grid-template-columns:1fr}.v3-highlight-grid>div{border-right:0;border-bottom:1px solid var(--line);padding:14px 0}.v3-highlight-grid>div:last-child{border-bottom:0}.hero-pills{justify-content:center}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
@@ -304,6 +324,9 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
     <div class="navlinks">
       <a href="#about">পরিচিতি</a>
       <a href="#services">সেবা</a>
+      <a href="#knowledge">ভূমি তথ্য</a>
+      <a href="#documents">নথি প্রস্তুতি</a>
+      <a href="#mistakes">সাধারণ ভুল</a>
       <a href="#videos">ভিডিও</a>
       <a href="#photos">ছবি</a>
       <a href="#posts">লেখা</a>
@@ -315,7 +338,7 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
 
 <header class="hero">
   <div class="container hero-grid">
-    <img class="avatar" src="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/profile-abdul-hannan.jpg" alt="সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি" width="165" height="165">
+    <img class="avatar" src="assets/profile-abdul-hannan.jpg" alt="সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি" width="165" height="165">
     <div>
       <div class="eyebrow">OFFICIAL PROFESSIONAL WEBSITE</div>
       <h1>সার্ভেয়ার আবদুল হান্নান</h1>
@@ -330,6 +353,8 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
         <a class="btn btn-light" href="#order">📋 কাজের অনুরোধ</a>
         <a class="btn btn-light" href="https://maps.app.goo.gl/h4aToTaR9BaDNni79?g_st=ac" target="_blank" rel="noopener noreferrer">📍 লোকেশন</a>
       </div>
+      <p class="source-note">তথ্যভিত্তিক সাইট • গুরুত্বপূর্ণ ভূমি-তথ্যের জন্য সরকারি উৎসের লিংক রাখা হয়েছে • সর্বশেষ সাইট পর্যালোচনা: ২১ সেপ্টেম্বর ২০২৬</p>
+
     </div>
   </div>
 </header>
@@ -390,6 +415,115 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
     <details><summary>সীমানা নির্ধারণের কাজে কী কী নথি গুরুত্বপূর্ণ?</summary><p>প্রাসঙ্গিক নকশা, খতিয়ান, দলিল এবং অন্যান্য সরকারি/রেকর্ডভিত্তিক তথ্য গুরুত্বপূর্ণ হতে পারে। কোন নথি প্রয়োজন তা কাজের প্রকৃতি ও পরিস্থিতির ওপর নির্ভর করে।</p></details>
     <details><summary>ওয়েবসাইট থেকে কীভাবে কাজের অনুরোধ পাঠাব?</summary><p>“কাজের অর্ডার” ফর্মে আপনার নাম, মোবাইল নম্বর, এলাকার তথ্য এবং কাজের ধরন পূরণ করে পাঠাতে পারবেন। ফর্মটি WhatsApp-এ একটি গোছানো অনুরোধ প্রস্তুত করে।</p></details>
     <details><summary>ওয়েবসাইটের তথ্য কি আইনি পরামর্শ?</summary><p>না। ওয়েবসাইটের তথ্য সাধারণ ও শিক্ষামূলক। নির্দিষ্ট আইনি বিষয়ে সংশ্লিষ্ট সরকারি কর্তৃপক্ষ বা যোগ্য আইনজীবীর পরামর্শ নেওয়া উচিত।</p></details>
+  </div>
+</section>
+
+
+<section id="knowledge" class="section alt">
+  <div class="container">
+    <h2 class="section-title">
+      <span class="title-icon" aria-hidden="true">✓</span>
+      <span>ভূমি তথ্য ও যাচাই কেন্দ্র</span>
+    </h2>
+    <p class="section-kicker">গুরুত্বপূর্ণ তথ্যের সঙ্গে সরকারি উৎসের সংযোগ</p>
+    <p class="lead">
+      জমি-সংক্রান্ত তথ্য যাচাইয়ের ক্ষেত্রে শুধু একটি কাগজ বা মৌখিক তথ্যের ওপর নির্ভর না করে
+      সংশ্লিষ্ট নথি, খতিয়ান, মৌজা ম্যাপ, দাগ ও সরকারি রেকর্ড মিলিয়ে দেখা গুরুত্বপূর্ণ।
+      নিচের রিসোর্সগুলো সরকারি উৎসভিত্তিক।
+    </p>
+
+    <div class="info-grid">
+      <article class="info-card">
+        <h3>খতিয়ান সম্পর্কে গুরুত্বপূর্ণ কথা</h3>
+        <p>
+          ভূমি মন্ত্রণালয়ের তথ্য অনুযায়ী খতিয়ান হলো Record of Rights (RoR)—জমি-সংক্রান্ত
+          অধিকার/রেকর্ডের একটি নথি। একই সরকারি তথ্যে স্পষ্ট করা হয়েছে, খতিয়ান নিজে
+          মালিকানার দলিল নয়।
+        </p>
+        <div class="source-box">
+          <strong>উৎস:</strong> বাংলাদেশ সরকারের ভূমি মন্ত্রণালয় — “খতিয়ান কি?”
+        </div>
+      </article>
+
+      <article class="info-card">
+        <h3>মৌজা ম্যাপ ও জরিপের তথ্য</h3>
+        <p>
+          সরকারি অনলাইন ব্যবস্থায় বিভাগ, জেলা, জরিপ, উপজেলা/থানা, মৌজা, শিট ও দাগের
+          মাধ্যমে ম্যাপ/রেকর্ড অনুসন্ধানের ব্যবস্থা রয়েছে। সরকারি ম্যাপ ক্রয় ব্যবস্থাতেও
+          CS, SA, RS, BRS ও BDS ধরনের জরিপের তথ্য দেখানো হয়।
+        </p>
+        <div class="source-box">
+          <strong>উৎস:</strong> ভূমি রেকর্ড ও জরিপ অধিদপ্তর (DLRS) ও সরকারি সেটেলমেন্ট পোর্টাল
+        </div>
+      </article>
+    </div>
+
+    <div class="gov-links" aria-label="সরকারি ভূমি তথ্যের লিংক">
+      <a class="gov-link" href="https://minland.gov.bd/pages/static-pages/694032dc35ce18e1c056393d" target="_blank" rel="noopener noreferrer">
+        <span>▣</span> খতিয়ান কী — ভূমি মন্ত্রণালয়
+      </a>
+      <a class="gov-link" href="https://settlement.gov.bd/map/mapsearch" target="_blank" rel="noopener noreferrer">
+        <span>⌕</span> সরকারি ম্যাপ অনুসন্ধান
+      </a>
+      <a class="gov-link" href="https://map.settlement.gov.bd/" target="_blank" rel="noopener noreferrer">
+        <span>▤</span> সরকারি মৌজা ম্যাপ ক্রয় ব্যবস্থা
+      </a>
+      <a class="gov-link" href="https://dlrs.gov.bd/" target="_blank" rel="noopener noreferrer">
+        <span>◉</span> ভূমি রেকর্ড ও জরিপ অধিদপ্তর
+      </a>
+      <a class="gov-link" href="https://minland.gov.bd/pages/static-pages/694032b235ce18e1c0560c12" target="_blank" rel="noopener noreferrer">
+        <span>ℹ</span> ভূমি-সংক্রান্ত সরকারি তথ্য
+      </a>
+      <a class="gov-link" href="https://map.land.gov.bd/" target="_blank" rel="noopener noreferrer">
+        <span>⌖</span> সরকারি ভূমি নকশা
+      </a>
+    </div>
+
+    <div class="source-box">
+      <strong>যাচাই নীতি:</strong> সরকারি ওয়েবসাইটের তথ্য সময়ের সঙ্গে পরিবর্তিত হতে পারে।
+      কোনো নির্দিষ্ট জমি বা মামলার সিদ্ধান্তের ক্ষেত্রে সংশ্লিষ্ট সরকারি রেকর্ড ও
+      কর্তৃপক্ষের সর্বশেষ তথ্যকে অগ্রাধিকার দিন।
+    </div>
+  </div>
+</section>
+
+<section id="documents" class="section">
+  <div class="container">
+    <h2 class="section-title">
+      <span class="title-icon" aria-hidden="true">▤</span>
+      <span>কাজের আগে কী কী তথ্য প্রস্তুত রাখবেন?</span>
+    </h2>
+    <p class="section-kicker">কাজের ধরন অনুযায়ী প্রয়োজনীয় নথি ভিন্ন হতে পারে</p>
+    <p class="lead">
+      নিচের তালিকাটি সাধারণ প্রস্তুতির জন্য। এটি কোনো নির্দিষ্ট কাজের ক্ষেত্রে সম্পূর্ণ বা বাধ্যতামূলক
+      তালিকা নয়। কাজ শুরুর আগে সংশ্লিষ্ট নথি ও সরকারি রেকর্ড যাচাই করুন।
+    </p>
+    <div class="checklist">
+      <div class="check-item"><b>খতিয়ান / পর্চা</b><span>প্রযোজ্য জরিপের খতিয়ান বা রেকর্ডের কপি থাকলে সঙ্গে রাখুন।</span></div>
+      <div class="check-item"><b>মৌজা ম্যাপ / নকশা</b><span>প্রযোজ্য হলে সংশ্লিষ্ট মৌজা, শিট ও দাগের তথ্য মিলিয়ে নিন।</span></div>
+      <div class="check-item"><b>দলিলের তথ্য</b><span>প্রয়োজন অনুযায়ী দলিল/হস্তান্তর-সংক্রান্ত নথি প্রস্তুত রাখুন।</span></div>
+      <div class="check-item"><b>নামজারি / সংশ্লিষ্ট রেকর্ড</b><span>প্রযোজ্য ক্ষেত্রে হালনাগাদ রেকর্ডের তথ্য দেখুন।</span></div>
+      <div class="check-item"><b>দাগ ও মৌজা নম্বর</b><span>দাগ নম্বর, মৌজার নাম ও শিটের তথ্য সঠিকভাবে লিখে রাখুন।</span></div>
+      <div class="check-item"><b>মাঠের অবস্থান</b><span>জমির অবস্থান, সীমানার পরিচিত চিহ্ন ও যোগাযোগের তথ্য প্রস্তুত রাখুন।</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="mistakes" class="section alt">
+  <div class="container">
+    <h2 class="section-title">
+      <span class="title-icon" aria-hidden="true">!</span>
+      <span>ভূমি-সংক্রান্ত সাধারণ ভুল এড়িয়ে চলুন</span>
+    </h2>
+    <p class="section-kicker">সঠিক তথ্য ছাড়া সিদ্ধান্তে না গিয়ে আগে যাচাই করুন</p>
+    <div class="cards">
+      <article class="card"><div class="icon">01</div><h3>শুধু দখল দেখেই মালিকানা ধরে নেওয়া</h3><p>দখল, রেকর্ড ও মালিকানার নথি এক বিষয় নয়। প্রাসঙ্গিক কাগজপত্র ও সরকারি রেকর্ড মিলিয়ে দেখুন।</p></article>
+      <article class="card"><div class="icon">02</div><h3>জরিপের ধরন না মিলিয়ে নকশা ব্যবহার</h3><p>CS, SA, RS, BRS বা অন্য রেকর্ড/নকশা হলে কোনটি প্রযোজ্য তা আগে শনাক্ত করুন।</p></article>
+      <article class="card"><div class="icon">03</div><h3>দাগ, মৌজা বা শিট নম্বরে ভুল</h3><p>একটি নম্বর ভুল হলে অনুসন্ধান বা নকশা মিলিয়ে দেখার ফল ভুল হতে পারে।</p></article>
+      <article class="card"><div class="icon">04</div><h3>পুরোনো তথ্যকে বর্তমান ধরে নেওয়া</h3><p>রেকর্ড, নামজারি ও জরিপের অবস্থা পরিবর্তিত হতে পারে; প্রয়োজন অনুযায়ী সর্বশেষ সরকারি তথ্য যাচাই করুন।</p></article>
+      <article class="card"><div class="icon">05</div><h3>খতিয়ানকে সরাসরি দলিল মনে করা</h3><p>ভূমি মন্ত্রণালয়ের সরকারি তথ্য অনুযায়ী খতিয়ান Record of Rights; এটি মালিকানার দলিল নয়।</p></article>
+      <article class="card"><div class="icon">06</div><h3>আইনগত সিদ্ধান্তকে শুধু অনলাইন তথ্যের ওপর রাখা</h3><p>নির্দিষ্ট বিরোধ বা অধিকার নির্ধারণে সংশ্লিষ্ট নথি, সরকারি রেকর্ড ও প্রয়োজন হলে আইনজীবী/কর্তৃপক্ষের পরামর্শ নিন।</p></article>
+    </div>
   </div>
 </section>
 
@@ -569,7 +703,7 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
   <div class="container">
     <h2 class="section-title"><span class="title-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 17H3L12 3z"/><path d="M12 9v5M12 17h.01"/></svg></span><span>তথ্য ব্যবহারের গুরুত্বপূর্ণ নির্দেশনা</span></h2>
     <p class="section-kicker">সঠিক সিদ্ধান্তের আগে প্রাসঙ্গিক নথি ও তথ্য যাচাই করুন</p>
-    <div class="notice">এই ওয়েবসাইটের তথ্য সাধারণ ও শিক্ষামূলক উদ্দেশ্যে প্রকাশ করা হয়। কোনো নির্দিষ্ট জমির মালিকানা, দখল, সীমানা বা আইনগত অধিকার সম্পর্কে চূড়ান্ত সিদ্ধান্ত নেওয়ার আগে সংশ্লিষ্ট দলিল, খতিয়ান, নকশা, সরকারি রেকর্ড ও প্রযোজ্য আইন যাচাই করা উচিত। প্রয়োজন হলে সংশ্লিষ্ট কর্তৃপক্ষ বা যোগ্য আইনজীবীর পরামর্শ নিন।</div>
+    <div class="notice">এই ওয়েবসাইটের তথ্য সাধারণ ও শিক্ষামূলক উদ্দেশ্যে প্রকাশ করা হয়। কোনো নির্দিষ্ট জমির মালিকানা, দখল, সীমানা বা আইনগত অধিকার সম্পর্কে চূড়ান্ত সিদ্ধান্ত নেওয়ার আগে সংশ্লিষ্ট দলিল, খতিয়ান, নকশা, সরকারি রেকর্ড এবং প্রযোজ্য আইন/বিধি যাচাই করুন। সরকারি তথ্য পরিবর্তিত হতে পারে—তাই গুরুত্বপূর্ণ সিদ্ধান্তের আগে সংশ্লিষ্ট সরকারি দপ্তরের সর্বশেষ তথ্য দেখুন। প্রয়োজন হলে যোগ্য আইনজীবী বা সংশ্লিষ্ট কর্তৃপক্ষের পরামর্শ নিন।</div>
   </div>
 </section>
 
