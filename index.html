@@ -209,7 +209,72 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
   .section-kicker{margin-left:52px}
 }
 
+
+/* ===== Professional V2 enhancement layer ===== */
+:root{
+  --v2-navy:#0b1f33;
+  --v2-teal:#0b7f78;
+  --v2-orange:#e58b2b;
+  --v2-soft:#f5f8fa;
+}
+.v2-trust{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0;
+}
+.v2-trust .item,.v2-step{
+  background:#fff;border:1px solid #e4ebef;border-radius:16px;padding:18px;
+  box-shadow:0 8px 25px rgba(11,31,51,.06);
+}
+.v2-trust strong{display:block;color:var(--v2-navy);margin-bottom:5px}
+.v2-trust span{color:#5d6b76;font-size:.92rem}
+.v2-process{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:18px}
+.v2-step{position:relative;text-align:center}
+.v2-step .num{
+  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  margin:0 auto 10px;background:var(--v2-teal);color:#fff;font-weight:800;
+}
+.v2-step h3{font-size:1rem;margin:6px 0}
+.v2-step p{font-size:.86rem;color:#66737d;margin:0;line-height:1.55}
+.v2-faq{display:grid;gap:10px;margin-top:18px}
+.v2-faq details{
+  background:#fff;border:1px solid #e4ebef;border-radius:14px;padding:15px 18px;
+}
+.v2-faq summary{cursor:pointer;font-weight:700;color:var(--v2-navy)}
+.v2-faq p{color:#5d6b76;line-height:1.7;margin:12px 0 0}
+.v2-mobile-bar{
+  display:none;position:fixed;left:10px;right:10px;bottom:10px;z-index:9999;
+  background:rgba(11,31,51,.96);border-radius:18px;padding:8px;
+  box-shadow:0 12px 35px rgba(0,0,0,.22);grid-template-columns:repeat(3,1fr);gap:7px;
+}
+.v2-mobile-bar a{
+  color:#fff;text-decoration:none;text-align:center;padding:11px 5px;border-radius:12px;
+  font-size:.82rem;font-weight:700;background:rgba(255,255,255,.09);
+}
+.v2-mobile-bar a:hover{background:rgba(255,255,255,.16)}
+@media(max-width:900px){
+  .v2-process{grid-template-columns:repeat(3,1fr)}
+  .v2-trust{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .v2-process{grid-template-columns:1fr 1fr}
+  .v2-mobile-bar{display:grid}
+  body{padding-bottom:82px}
+}
+
 </style>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"জমি পরিমাপের জন্য কী কী তথ্য লাগতে পারে?","acceptedAnswer":{"@type":"Answer","text":"কাজের ধরন অনুযায়ী জমির নকশা, দাগ/খতিয়ান সংক্রান্ত তথ্য এবং প্রাসঙ্গিক দলিল বা রেকর্ডের তথ্য প্রয়োজন হতে পারে।"}},
+    {"@type":"Question","name":"সীমানা নির্ধারণের কাজে কী কী নথি গুরুত্বপূর্ণ?","acceptedAnswer":{"@type":"Answer","text":"প্রাসঙ্গিক নকশা, খতিয়ান, দলিল এবং অন্যান্য সরকারি/রেকর্ডভিত্তিক তথ্য গুরুত্বপূর্ণ হতে পারে।"}},
+    {"@type":"Question","name":"ওয়েবসাইট থেকে কীভাবে কাজের অনুরোধ পাঠাব?","acceptedAnswer":{"@type":"Answer","text":"কাজের অর্ডার ফর্মে তথ্য পূরণ করে পাঠালে ফর্মটি WhatsApp-এ একটি গোছানো অনুরোধ প্রস্তুত করে।"}},
+    {"@type":"Question","name":"ওয়েবসাইটের তথ্য কি আইনি পরামর্শ?","acceptedAnswer":{"@type":"Answer","text":"না। ওয়েবসাইটের তথ্য সাধারণ ও শিক্ষামূলক। নির্দিষ্ট আইনি বিষয়ে সংশ্লিষ্ট সরকারি কর্তৃপক্ষ বা যোগ্য আইনজীবীর পরামর্শ নেওয়া উচিত।"}}
+  ]
+}
+</script>
+
 </head>
 
 <body id="top">
@@ -262,6 +327,35 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
       <div class="stat"><b>🧭</b><span>ডিগ্রি নির্ণয়</span></div>
       <div class="stat"><b>📚</b><span>ভূমি-সংক্রান্ত তথ্য</span></div>
     </div>
+  </div>
+</section>
+
+
+<section id="process-v2" class="section">
+  <div class="section-title"><span>WORK PROCESS</span><h2>কাজের প্রক্রিয়া</h2></div>
+  <p class="lead">প্রতিটি কাজের ক্ষেত্রে প্রয়োজনীয় তথ্য ও নথি পর্যালোচনা করে ধাপে ধাপে কাজ এগিয়ে নেওয়া হয়।</p>
+  <div class="v2-process">
+    <div class="v2-step"><div class="num">১</div><h3>যোগাযোগ</h3><p>কাজের ধরন ও প্রাথমিক তথ্য জানান।</p></div>
+    <div class="v2-step"><div class="num">২</div><h3>তথ্য সংগ্রহ</h3><p>প্রয়োজনীয় নথি ও নকশার তথ্য সংগ্রহ করা হয়।</p></div>
+    <div class="v2-step"><div class="num">৩</div><h3>পর্যালোচনা</h3><p>প্রাপ্ত তথ্য ও কাজের প্রয়োজনীয়তা দেখা হয়।</p></div>
+    <div class="v2-step"><div class="num">৪</div><h3>মাঠপর্যায়</h3><p>প্রয়োজন অনুযায়ী মাঠে পরিমাপ ও যাচাই করা হয়।</p></div>
+    <div class="v2-step"><div class="num">৫</div><h3>নকশা/বিশ্লেষণ</h3><p>প্রাপ্ত তথ্য অনুযায়ী প্রয়োজনীয় কাজ সম্পন্ন করা হয়।</p></div>
+    <div class="v2-step"><div class="num">৬</div><h3>ফলাফল</h3><p>কাজের ধরন অনুযায়ী প্রয়োজনীয় ফলাফল বা উপকরণ প্রদান করা হয়।</p></div>
+  </div>
+  <div class="v2-trust">
+    <div class="item"><strong>তথ্যভিত্তিক কাজ</strong><span>দলিল, নকশা ও প্রাপ্ত তথ্যের ভিত্তিতে কাজের গুরুত্ব দেওয়া হয়।</span></div>
+    <div class="item"><strong>পরিষ্কার যোগাযোগ</strong><span>কাজের ধরন ও প্রয়োজনীয় তথ্য আগে থেকেই স্পষ্ট করা সহজ হয়।</span></div>
+    <div class="item"><strong>অনলাইন Work Request</strong><span>ওয়েবসাইট থেকেই কাজের অনুরোধ পাঠানোর সুবিধা রয়েছে।</span></div>
+  </div>
+</section>
+
+<section id="faq-v2" class="section">
+  <div class="section-title"><span>FAQ</span><h2>সাধারণ জিজ্ঞাসা</h2></div>
+  <div class="v2-faq">
+    <details><summary>জমি পরিমাপের জন্য কী কী তথ্য লাগতে পারে?</summary><p>কাজের ধরন অনুযায়ী জমির নকশা, দাগ/খতিয়ান সংক্রান্ত তথ্য এবং প্রাসঙ্গিক দলিল বা রেকর্ডের তথ্য প্রয়োজন হতে পারে। নির্দিষ্ট কাজের আগে প্রয়োজনীয় তথ্য নিশ্চিত করা উচিত।</p></details>
+    <details><summary>সীমানা নির্ধারণের কাজে কী কী নথি গুরুত্বপূর্ণ?</summary><p>প্রাসঙ্গিক নকশা, খতিয়ান, দলিল এবং অন্যান্য সরকারি/রেকর্ডভিত্তিক তথ্য গুরুত্বপূর্ণ হতে পারে। কোন নথি প্রয়োজন তা কাজের প্রকৃতি ও পরিস্থিতির ওপর নির্ভর করে।</p></details>
+    <details><summary>ওয়েবসাইট থেকে কীভাবে কাজের অনুরোধ পাঠাব?</summary><p>“কাজের অর্ডার” ফর্মে আপনার নাম, মোবাইল নম্বর, এলাকার তথ্য এবং কাজের ধরন পূরণ করে পাঠাতে পারবেন। ফর্মটি WhatsApp-এ একটি গোছানো অনুরোধ প্রস্তুত করে।</p></details>
+    <details><summary>ওয়েবসাইটের তথ্য কি আইনি পরামর্শ?</summary><p>না। ওয়েবসাইটের তথ্য সাধারণ ও শিক্ষামূলক। নির্দিষ্ট আইনি বিষয়ে সংশ্লিষ্ট সরকারি কর্তৃপক্ষ বা যোগ্য আইনজীবীর পরামর্শ নেওয়া উচিত।</p></details>
   </div>
 </section>
 
