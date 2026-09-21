@@ -1,20 +1,40 @@
-Surveyor Abdul Hannan — Professional Website V3
+Surveyor Abdul Hannan — Professional Website V4
 
-লক্ষ্য: বাংলাদেশের স্থানীয় ব্যবহারকারীদের জন্য আকর্ষণীয়, পরিষ্কার, দ্রুত ও তথ্যভিত্তিক পেশাগত ওয়েবসাইট।
+লক্ষ্য:
+বাংলাদেশের স্থানীয় ব্যবহারকারীদের জন্য আকর্ষণীয়, পরিষ্কার, দ্রুত, তথ্যভিত্তিক ও দায়িত্বশীল পেশাগত ওয়েবসাইট।
 
-Included:
-- index.html: Professional V3 responsive design
-- content.js: verified site content source
-- robots.txt: crawl instructions
-- sitemap.xml: sitemap
-- FAQ, workflow, trust cards, V3 highlight strip and mobile actions
-- Direct Call, WhatsApp, Email, Maps and Work Request actions
-- Reduced-motion accessibility support
+এই সংস্করণে:
+- Professional responsive design
+- পরিষ্কার Hero + Call / WhatsApp / Work Request
+- ভূমি তথ্য ও যাচাই কেন্দ্র
+- সরকারি ভূমি-তথ্য ও DLRS রিসোর্সের সরাসরি লিংক
+- কাজের আগে নথি/তথ্য প্রস্তুতির সাধারণ গাইড
+- ভূমি-সংক্রান্ত সাধারণ ভুল এড়ানোর তথ্য
+- FAQ, workflow, services, photos, videos, posts, contact
+- Work Request form
+- SEO metadata, ProfilePage/Person structured data
+- robots.txt ও sitemap.xml
+- reduced-motion accessibility support
 
-Accuracy rule:
-- কোনো অযাচাইকৃত যোগ্যতা, সরকারি পদ, পুরস্কার, লাইসেন্স, ঠিকানা বা সেবা-দাবি যোগ করা হয়নি।
-- বাস্তব ভিডিও/লেখা content.js-এ যোগ না করা পর্যন্ত সেগুলোকে কৃত্রিমভাবে দেখানো হবে না।
-- ভূমি/আইন সংক্রান্ত নির্দিষ্ট সিদ্ধান্তের জন্য সংশ্লিষ্ট নথি, রেকর্ড ও কর্তৃপক্ষের তথ্য যাচাই করতে হবে।
+তথ্যের নির্ভুলতা নীতি:
+- কোনো অযাচাইকৃত যোগ্যতা, সরকারি পদ, পুরস্কার, লাইসেন্স বা অতিরিক্ত সেবা-দাবি যোগ করা হয়নি।
+- ব্যক্তিগত যোগাযোগ, ঠিকানা ও সামাজিক মাধ্যমের তথ্য content.js-এর প্রদত্ত তথ্য অনুযায়ী রাখা হয়েছে।
+- ভিডিও/লেখা content.js-এ বাস্তব তথ্য যোগ না করা পর্যন্ত কৃত্রিম ভিডিও/পোস্ট দেখানো হবে না।
+- সরকারি ভূমি-তথ্যের ক্ষেত্রে সংশ্লিষ্ট সরকারি উৎসের লিংক রাখা হয়েছে।
+- খতিয়ান, নকশা, দলিল, দখল বা মালিকানা নিয়ে কোনো নির্দিষ্ট সিদ্ধান্ত এই ওয়েবসাইট নিজে চূড়ান্তভাবে নির্ধারণ করে না।
+- গুরুত্বপূর্ণ ভূমি/আইনগত সিদ্ধান্তের আগে সংশ্লিষ্ট সরকারি রেকর্ড, সর্বশেষ তথ্য ও প্রয়োজনীয় পেশাগত পরামর্শ যাচাই করতে হবে।
+
+গুরুত্বপূর্ণ সরকারি উৎস:
+- ভূমি মন্ত্রণালয়
+- ভূমি রেকর্ড ও জরিপ অধিদপ্তর (DLRS)
+- অনলাইন ভূমি রেকর্ড ও জরিপ ব্যবস্থাপনা
+- সরকারি মৌজা ম্যাপ/নকশা সংক্রান্ত পোর্টাল
 
 GitHub Pages:
-সব ফাইল repository-র একই public directory-তে রাখুন এবং index.html ও content.js একই directory-তে রাখুন।
+সব ফাইল repository-র public directory-তে রাখুন। index.html ও content.js একই directory-তে থাকতে হবে। ছবিগুলো যে directory-তে রাখা আছে, content.js-এর src path তার সঙ্গে হুবহু মিলতে হবে।
+
+সাইট URL:
+https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/
+
+সর্বশেষ সাইট পর্যালোচনা:
+২১ সেপ্টেম্বর ২০২৬
