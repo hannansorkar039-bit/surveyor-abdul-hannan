@@ -110,6 +110,24 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
 .footer{background:var(--navy);color:#fff;text-align:center;padding:40px 0}.footer p{margin:5px 0;color:#c8d5dc}.small{font-size:13px}
 .backtop{position:fixed;right:16px;bottom:16px;width:44px;height:44px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 8px 20px rgba(0,0,0,.2)}
 .hidden{display:none!important}
+/* ===== Professional V3 refinement ===== */
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0 2px}
+.hero-pills span{display:inline-flex;align-items:center;padding:6px 11px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.07);color:#eaf6f8;font-size:13px;font-weight:800}
+.btn-whatsapp{background:#1fa463;color:#fff;box-shadow:0 10px 24px rgba(31,164,99,.2)}
+.btn-whatsapp:hover{background:#17874f}
+.v3-highlight{background:#fff;border-bottom:1px solid var(--line);box-shadow:0 7px 25px rgba(8,35,54,.05)}
+.v3-highlight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.v3-highlight-grid>div{padding:18px 22px;border-right:1px solid var(--line)}
+.v3-highlight-grid>div:last-child{border-right:0}
+.v3-highlight-grid strong{display:block;color:var(--navy);font-size:15px;margin-bottom:3px}
+.v3-highlight-grid span{display:block;color:var(--muted);font-size:13px;line-height:1.55}
+.v3-note{display:flex;gap:14px;align-items:flex-start;margin-top:22px;padding:17px 18px;background:linear-gradient(135deg,#f2faf9,#fff8f1);border:1px solid #dfe9e9;border-radius:16px}
+.v3-note-icon{width:34px;height:34px;flex:0 0 34px;border-radius:50%;display:grid;place-items:center;background:var(--teal);color:#fff;font-weight:900}
+.v3-note strong{color:var(--navy)}
+.v3-note p{margin:3px 0 0;color:var(--muted);font-size:14px}
+@media(max-width:850px){.v3-highlight-grid{grid-template-columns:1fr}.v3-highlight-grid>div{border-right:0;border-bottom:1px solid var(--line);padding:14px 0}.v3-highlight-grid>div:last-child{border-bottom:0}.hero-pills{justify-content:center}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
 @media(max-width:850px){.nav-inner{align-items:flex-start;padding:12px 0}.navlinks{gap:9px}.hero-grid{grid-template-columns:1fr;text-align:center}.avatar{margin:auto}.actions{justify-content:center}.tagline{margin-left:auto;margin-right:auto}.services,.contact-grid,.video-grid{grid-template-columns:1fr}.cards,.gallery,.post-grid{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.social-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.navlinks{display:none}.hero{padding:55px 0}.section{padding:50px 0}.section-title{font-size:27px}.cards,.gallery,.post-grid,.stats,.social-grid{grid-template-columns:1fr}.hero-sub{font-size:17px}.container{width:min(94%,1160px)}}
 
@@ -303,14 +321,26 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
       <h1>সার্ভেয়ার আবদুল হান্নান</h1>
       <p class="hero-sub">Surveyor Abdul Hannan · Digital Amin &amp; Land Surveyor</p>
       <div class="tagline">অনুমান নয়, যাচাই; বিভ্রান্তি নয়, সঠিক তথ্য।</div>
+      <div class="hero-pills" aria-label="ওয়েবসাইটের মূল বৈশিষ্ট্য">
+        <span>📐 ভূমি পরিমাপ</span><span>🗺️ নকশা ও ট্রেসিং</span><span>📍 লক্ষ্মীপুর</span>
+      </div>
       <div class="actions">
         <a class="btn btn-primary" href="tel:+8801810811989">📞 কল করুন</a>
-        <a class="btn btn-light" href="mailto:hannansorkar039@gmail.com">✉️ ই-মেইল</a>
-        <a class="btn btn-light" href="https://maps.app.goo.gl/h4aToTaR9BaDNni79?g_st=ac" target="_blank" rel="noopener noreferrer">📍 Google Maps</a>
+        <a class="btn btn-whatsapp" href="https://wa.me/8801810811989" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+        <a class="btn btn-light" href="#order">📋 কাজের অনুরোধ</a>
+        <a class="btn btn-light" href="https://maps.app.goo.gl/h4aToTaR9BaDNni79?g_st=ac" target="_blank" rel="noopener noreferrer">📍 লোকেশন</a>
       </div>
     </div>
   </div>
 </header>
+
+<section class="v3-highlight" aria-label="ওয়েবসাইটের সংক্ষিপ্ত তথ্য">
+  <div class="container v3-highlight-grid">
+    <div><strong>তথ্যভিত্তিক কাজ</strong><span>প্রাসঙ্গিক নথি, নকশা ও পরিমাপকে গুরুত্ব দেওয়া হয়</span></div>
+    <div><strong>সহজ যোগাযোগ</strong><span>ফোন, WhatsApp, ই-মেইল ও অনলাইন Work Request</span></div>
+    <div><strong>স্থানীয় সেবা</strong><span>চন্দ্রগঞ্জ, লক্ষ্মীপুর-কেন্দ্রিক যোগাযোগের তথ্য</span></div>
+  </div>
+</section>
 
 <main id="main">
 
@@ -326,6 +356,10 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
       <div class="stat"><b>🗺️</b><span>নকশা ও ট্রেসিং</span></div>
       <div class="stat"><b>🧭</b><span>ডিগ্রি নির্ণয়</span></div>
       <div class="stat"><b>📚</b><span>ভূমি-সংক্রান্ত তথ্য</span></div>
+    </div>
+    <div class="v3-note">
+      <div class="v3-note-icon">✓</div>
+      <div><strong>নির্ভুলতার অঙ্গীকার</strong><p>কোনো নির্দিষ্ট জমির মালিকানা বা আইনগত অধিকার সম্পর্কে চূড়ান্ত সিদ্ধান্তের পরিবর্তে প্রাসঙ্গিক নথি, রেকর্ড ও মাঠপর্যায়ের তথ্য যাচাইকে অগ্রাধিকার দেওয়া হয়।</p></div>
     </div>
   </div>
 </section>
@@ -545,7 +579,7 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
   <div class="container">
     <strong>সার্ভেয়ার আবদুল হান্নান | Surveyor Abdul Hannan</strong>
     <p>Digital Amin &amp; Land Surveyor</p>
-    <p class="small">ভূমি জরিপ • জমির তথ্য • নকশা • পরিমাপ • সীমানা নির্ধারণ</p>
+    <p class="small">ভূমি জরিপ • নকশা • পরিমাপ • সীমানা-সংক্রান্ত কাজ • তথ্যভিত্তিক আলোচনা</p>
     <p class="small">© 2026 Surveyor Abdul Hannan. All Rights Reserved.</p>
   </div>
 </footer>
