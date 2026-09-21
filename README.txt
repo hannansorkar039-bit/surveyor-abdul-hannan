@@ -1,32 +1,40 @@
-# Surveyor Abdul Hannan — Professional Website V5
+Surveyor Abdul Hannan — Professional Website V4
 
-এই V5 সংস্করণটি বর্তমান V4 সাইটের ওপর ভিত্তি করে উন্নত করা হয়েছে।
+লক্ষ্য:
+বাংলাদেশের স্থানীয় ব্যবহারকারীদের জন্য আকর্ষণীয়, পরিষ্কার, দ্রুত, তথ্যভিত্তিক ও দায়িত্বশীল পেশাগত ওয়েবসাইট।
 
-## V5-এ যুক্ত/উন্নত
-- Premium responsive hero ও trust badges
-- মোবাইল hamburger navigation
-- Scroll progress indicator
-- Animated section/icon styling
-- Professional photo lightbox (keyboard support সহ)
-- Video gallery empty-state ও YouTube CTA
-- Post/knowledge gallery empty-state ও Blogger CTA
-- Mobile sticky Call / WhatsApp / Order bar
-- Work Request form-এ survey type, dag/khatian ও land amount fields
-- Bangladesh mobile-number validation
-- WhatsApp order message আরও গোছানো
-- Reduced-motion support বজায় রাখা হয়েছে
-- বিদ্যমান SEO, sitemap, robots.txt ও structured data অক্ষুণ্ণ রাখা হয়েছে
+এই সংস্করণে:
+- Professional responsive design
+- পরিষ্কার Hero + Call / WhatsApp / Work Request
+- ভূমি তথ্য ও যাচাই কেন্দ্র
+- সরকারি ভূমি-তথ্য ও DLRS রিসোর্সের সরাসরি লিংক
+- কাজের আগে নথি/তথ্য প্রস্তুতির সাধারণ গাইড
+- ভূমি-সংক্রান্ত সাধারণ ভুল এড়ানোর তথ্য
+- FAQ, workflow, services, photos, videos, posts, contact
+- Work Request form
+- SEO metadata, ProfilePage/Person structured data
+- robots.txt ও sitemap.xml
+- reduced-motion accessibility support
 
-## গুরুত্বপূর্ণ
-`assets/` ফোল্ডারের বর্তমান ছবিগুলো repository-তে আগের মতোই রাখতে হবে। `index.html` ও `content.js` একই directory-তে থাকতে হবে।
+তথ্যের নির্ভুলতা নীতি:
+- কোনো অযাচাইকৃত যোগ্যতা, সরকারি পদ, পুরস্কার, লাইসেন্স বা অতিরিক্ত সেবা-দাবি যোগ করা হয়নি।
+- ব্যক্তিগত যোগাযোগ, ঠিকানা ও সামাজিক মাধ্যমের তথ্য content.js-এর প্রদত্ত তথ্য অনুযায়ী রাখা হয়েছে।
+- ভিডিও/লেখা content.js-এ বাস্তব তথ্য যোগ না করা পর্যন্ত কৃত্রিম ভিডিও/পোস্ট দেখানো হবে না।
+- সরকারি ভূমি-তথ্যের ক্ষেত্রে সংশ্লিষ্ট সরকারি উৎসের লিংক রাখা হয়েছে।
+- খতিয়ান, নকশা, দলিল, দখল বা মালিকানা নিয়ে কোনো নির্দিষ্ট সিদ্ধান্ত এই ওয়েবসাইট নিজে চূড়ান্তভাবে নির্ধারণ করে না।
+- গুরুত্বপূর্ণ ভূমি/আইনগত সিদ্ধান্তের আগে সংশ্লিষ্ট সরকারি রেকর্ড, সর্বশেষ তথ্য ও প্রয়োজনীয় পেশাগত পরামর্শ যাচাই করতে হবে।
 
-## GitHub Pages-এ আপডেট
-1. Repository-এর বর্তমান `index.html`-এর backup রাখুন।
-2. এই প্যাকেটের `index.html` দিয়ে পুরোনো `index.html` replace করুন।
-3. `content.js` replace করুন।
-4. `robots.txt` ও `sitemap.xml` একই জায়গায় রাখুন।
-5. আপনার পুরোনো `assets/` ফোল্ডার ও ছবিগুলো delete করবেন না।
-6. GitHub Pages-এ কয়েক মিনিট অপেক্ষা করে site reload করুন।
+গুরুত্বপূর্ণ সরকারি উৎস:
+- ভূমি মন্ত্রণালয়
+- ভূমি রেকর্ড ও জরিপ অধিদপ্তর (DLRS)
+- অনলাইন ভূমি রেকর্ড ও জরিপ ব্যবস্থাপনা
+- সরকারি মৌজা ম্যাপ/নকশা সংক্রান্ত পোর্টাল
 
-## Content update
-নতুন ছবি, YouTube video ID বা Blogger post যোগ করতে `content.js` আপডেট করুন। অযাচাইকৃত যোগ্যতা, লাইসেন্স, সরকারি পদ, পুরস্কার বা সেবা-দাবি যোগ করবেন না।
+GitHub Pages:
+সব ফাইল repository-র public directory-তে রাখুন। index.html ও content.js একই directory-তে থাকতে হবে। ছবিগুলো যে directory-তে রাখা আছে, content.js-এর src path তার সঙ্গে হুবহু মিলতে হবে।
+
+সাইট URL:
+https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/
+
+সর্বশেষ সাইট পর্যালোচনা:
+২১ সেপ্টেম্বর ২০২৬
