@@ -31,6 +31,15 @@ const SITE = {
     // Example:
     // {title:"লেখার শিরোনাম", category:"ভূমি জরিপ", excerpt:"সংক্ষিপ্ত পরিচিতি", url:"https://surveyorabdulhannan.blogspot.com/p/example.html", date:"2026-09-19"}
   ],
+
+  officialSources: [
+    ["খতিয়ান কী — ভূমি মন্ত্রণালয়","https://minland.gov.bd/pages/static-pages/694032dc35ce18e1c056393d"],
+    ["সরকারি ম্যাপ অনুসন্ধান — DLRS","https://settlement.gov.bd/map/mapsearch"],
+    ["সরকারি মৌজা ম্যাপ ক্রয় — DLRS","https://map.settlement.gov.bd/"],
+    ["ভূমি রেকর্ড ও জরিপ অধিদপ্তর","https://dlrs.gov.bd/"],
+    ["ভূমি-সংক্রান্ত সরকারি তথ্য","https://minland.gov.bd/pages/static-pages/694032b235ce18e1c0560c12"],
+    ["সরকারি ভূমি নকশা","https://map.land.gov.bd/"]
+  ],
   photos: [
     {src:"cs dima 1.jpg", alt:"সীমানা নির্ধারণ", title:"নকশার ডিমার্কেশন", caption:"সীমানা নির্ধারণের জন্য ডিমার্কেশন রিপোর্ট"},
     {src:"03.jpg", alt:"প্যান্টোগ্রাফ", title:"সিএস ও আর এস তুলনা মূলক নকশা", caption:"প্যান্টোগ্রাফ বা তুলনামূলক নকশা"},
