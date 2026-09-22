@@ -127,10 +127,10 @@ const SITE = {
   posts: [
     // Example:
     // {
-    //   title: "লেখার শিরোনাম",
+    //   title: "১ শতাংশ জমি কেন ৪৩৫.৬ বর্গফুট?",
     //   category: "ভূমি জরিপ",
-    //   excerpt: "সংক্ষিপ্ত পরিচিতি",
-    //   url: "https://surveyorabdulhannan.blogspot.com/p/example.html",
+    //   excerpt: "একর শতাংশের করুন ইতিহাস ",
+    //   url: "https://surveyorabdulhannan.blogspot.com/2026/08/blog-post.html",
     //   date: "2026-09-19"
     // }
   ],
