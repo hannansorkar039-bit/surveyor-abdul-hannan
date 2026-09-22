@@ -200,10 +200,10 @@ const SITE = {
       caption: "ভাগ বন্টনের স্কেচ"
     },
     {
-      src: "CamScanner 12-07-2026 14.52.jpg",
-      alt: "ভাগ বাটোয়ারা",
-      title: "বন্টন",
-      caption: "ভাগ বন্টনের স্কেচ"
+      src: "Abul Kalam.jpg",
+      alt: "সীমানা নির্ধারণ",
+      title: "সীমানা নির্ধারণ",
+      caption: "ডিজিটাল ভাবে সীমানা নির্ধারণের রিপোর্ট"
     },
     {
       src: "profile-abdul-hannan.jpg",
