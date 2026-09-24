@@ -20,6 +20,14 @@
 .ls-note{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}.ls-note a{color:var(--teal);font-weight:800}
 @media(max-width:900px){.ls-services{grid-template-columns:repeat(2,1fr)}.ls-cta{flex-direction:column;align-items:flex-start}}@media(max-width:560px){.ls-services{grid-template-columns:1fr}.ls-hero{padding:48px 0 40px}.ls-cta{padding:25px}.ls-link{white-space:normal}}
 </style>
+
+<link rel="manifest" href="manifest.webmanifest"/>
+<meta name="theme-color" content="#0a2638"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+
 </head>
 <body id="top">
 <a class="skip" href="#main">মূল কনটেন্টে যান</a>
@@ -57,5 +65,10 @@
 <footer class="footer"><div class="container"><strong>সার্ভেয়ার আবদুল হান্নান | Surveyor Abdul Hannan</strong><p>Digital Amin &amp; Land Surveyor</p><p class="small">© 2026 Surveyor Abdul Hannan. All Rights Reserved.</p></div></footer>
 <a aria-label="উপরে যান" class="backtop" href="#top">↑</a>
 <script src="content.js"></script><script src="app.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js").catch(() => {}));
+}
+</script>
 </body>
 </html>
