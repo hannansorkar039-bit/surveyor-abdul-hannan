@@ -198,3 +198,69 @@ ${details ? "বিস্তারিত: " + details : ""}`;
 
   updateSummary();
 })();
+
+
+/* ===== Premium UX layer ===== */
+(function(){
+  const nav = document.querySelector('.nav');
+  const navLinks = document.querySelector('.navlinks');
+  if(nav && navLinks){
+    const btn = document.createElement('button');
+    btn.className='nav-toggle'; btn.type='button'; btn.setAttribute('aria-label','মেনু খুলুন'); btn.setAttribute('aria-expanded','false'); btn.innerHTML='☰';
+    nav.querySelector('.nav-inner')?.appendChild(btn);
+    const close=()=>{navLinks.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.innerHTML='☰';};
+    btn.addEventListener('click',()=>{const open=navLinks.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));btn.innerHTML=open?'✕':'☰';});
+    navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+  }
+
+  const progress=document.createElement('div'); progress.className='scroll-progress'; document.body.appendChild(progress);
+  const updateProgress=()=>{const h=document.documentElement.scrollHeight-window.innerHeight;progress.style.width=(h>0?(window.scrollY/h)*100:0)+'%';};
+  window.addEventListener('scroll',updateProgress,{passive:true}); updateProgress();
+
+  const selectors='.section,.card,.service,.info-card,.post-card,.video-card,.contact-card,.order-card,.gallery-item,.social,.v3-highlight';
+  document.querySelectorAll(selectors).forEach(el=>el.classList.add('reveal'));
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.08});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  }else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));
+
+  const bar=document.createElement('div'); bar.className='v6-mobile-bar';
+  bar.innerHTML='<a href="tel:+8801810811989">📞<span>কল</span></a><a href="https://wa.me/8801810811989" target="_blank" rel="noopener">💬<span>WhatsApp</span></a><a class="primary" href="order.html">📋<span>অর্ডার</span></a><a href="contact.html">📍<span>যোগাযোগ</span></a>';
+  document.body.appendChild(bar);
+
+  // Graceful fallback for images that are intentionally kept outside this package.
+  document.querySelectorAll('img').forEach(img=>img.addEventListener('error',()=>{
+    if(img.dataset.fallback) return;
+    img.dataset.fallback='1';
+    const label=(img.alt||'Surveyor Abdul Hannan').slice(0,45);
+    const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#061a2a"/><stop offset="1" stop-color="#08747b"/></linearGradient></defs><rect width="1200" height="800" fill="url(#g)"/><g fill="none" stroke="#f2bd62" stroke-opacity=".25"><path d="M0 170h1200M0 330h1200M0 490h1200M0 650h1200M180 0v800M390 0v800M600 0v800M810 0v800M1020 0v800"/></g><circle cx="600" cy="315" r="105" fill="#ffffff" fill-opacity=".08" stroke="#f2bd62" stroke-width="4"/><text x="600" y="335" text-anchor="middle" font-family="Arial,sans-serif" font-size="92" font-weight="700" fill="#f2bd62">AH</text><text x="600" y="500" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#ffffff">SURVEYOR ABDUL HANNAN</text><text x="600" y="545" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#d4e7eb">${label.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</text></svg>`;
+    img.src='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+  }));
+
+  const gallery=document.querySelector('.gallery');
+  if(gallery){
+    const box=document.createElement('div'); box.className='lightbox'; box.innerHTML='<button class="lightbox-close" aria-label="ছবি বন্ধ করুন">×</button><img alt="">'; document.body.appendChild(box);
+    const img=box.querySelector('img'); const close=()=>box.classList.remove('open');
+    gallery.querySelectorAll('img').forEach(source=>source.addEventListener('click',()=>{img.src=source.currentSrc||source.src;img.alt=source.alt||'';box.classList.add('open');}));
+    box.addEventListener('click',e=>{if(e.target===box||e.target.classList.contains('lightbox-close'))close();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  }
+
+  let deferredInstallPrompt=null;
+  window.addEventListener('beforeinstallprompt',e=>{
+    e.preventDefault(); deferredInstallPrompt=e;
+    if(!document.querySelector('.pwa-install-btn')){
+      const a=document.createElement('a'); a.className='btn btn-light pwa-install-btn'; a.href='#'; a.textContent='📲 App হিসেবে ইনস্টল করুন';
+      const actions=document.querySelector('.actions');
+      if(actions) actions.appendChild(a);
+      a.addEventListener('click',async ev=>{ev.preventDefault(); if(!deferredInstallPrompt) return; deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt=null; a.remove();});
+    }
+  });
+  window.addEventListener('appinstalled',()=>{document.querySelector('.pwa-install-btn')?.remove();});
+
+  document.querySelectorAll('.footer').forEach(f=>{
+    if(f.dataset.premiumDone) return; f.dataset.premiumDone='1';
+    const c=f.querySelector('.container'); if(!c) return;
+    c.innerHTML='<div><strong>সার্ভেয়ার আবদুল হান্নান</strong><p>Digital Amin &amp; Land Surveyor</p><p class="small">ভূমি জরিপ • নকশা • পরিমাপ • সীমানা-সংক্রান্ত কাজ • তথ্যভিত্তিক আলোচনা</p></div><div class="footer-col"><h3>দ্রুত লিংক</h3><a href="services.html">সেবা</a><a href="knowledge.html">ভূমি তথ্য</a><a href="photos.html">ফটো গ্যালারি</a><a href="videos.html">ভিডিও</a></div><div class="footer-col"><h3>সরাসরি যোগাযোগ</h3><a href="tel:+8801810811989">📞 01810811989</a><a href="mailto:hannansorkar039@gmail.com">✉️ ই-মেইল</a><a href="land-solution-bd.html">🌐 Land Solution BD</a></div><div class="footer-bottom"><p class="small">© 2026 Surveyor Abdul Hannan. All Rights Reserved. · <a href="disclaimer.html">তথ্য ব্যবহারের নির্দেশনা</a></p></div>';
+  });
+})();
