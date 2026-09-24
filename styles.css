@@ -230,3 +230,282 @@ h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
   body{padding-bottom:82px}
 }
 
+
+/* ===== Professional V5 — visual consistency layer ===== */
+:root{
+  --pro-navy:#0a2235;
+  --pro-navy-2:#123e57;
+  --pro-teal:#087b78;
+  --pro-gold:#d69a2d;
+  --pro-gold-soft:#f5ead3;
+  --pro-ink:#172832;
+  --pro-muted:#60727d;
+  --pro-bg:#f5f8fa;
+  --pro-white:#ffffff;
+  --pro-line:#dbe5e9;
+  --pro-shadow:0 12px 34px rgba(10,34,53,.075);
+}
+
+body{background:var(--pro-bg);color:var(--pro-ink)}
+
+/* Header / navigation */
+.nav{
+  background:linear-gradient(100deg,var(--pro-navy) 0%,#0d3047 55%,var(--pro-navy-2) 100%);
+  border-bottom:3px solid var(--pro-gold);
+  box-shadow:0 5px 20px rgba(10,34,53,.18);
+}
+.nav-inner{min-height:70px}
+.brand{font-size:16px;font-weight:950;letter-spacing:.1px}
+.navlinks{gap:7px;align-items:center}
+.navlinks a{
+  padding:8px 10px;border-radius:9px;color:#f4fafc;opacity:1;font-weight:700;
+  transition:background .2s ease,color .2s ease,transform .2s ease;
+}
+.navlinks a:hover,.navlinks a:focus-visible{
+  color:#fff;background:rgba(255,255,255,.11);transform:translateY(-1px);outline:none;
+}
+
+/* Main hero / site identity */
+.hero{
+  background:
+    radial-gradient(circle at 84% 12%,rgba(214,154,45,.18),transparent 26%),
+    radial-gradient(circle at 12% 90%,rgba(8,123,120,.20),transparent 28%),
+    linear-gradient(135deg,#071a29 0%,#0a2d43 52%,#0e5260 100%);
+  padding:72px 0 66px;
+}
+.hero:after{border-color:rgba(214,154,45,.14)}
+.eyebrow{color:#f4d99c;font-weight:950;letter-spacing:1px}
+.hero h1{
+  font-weight:950;
+  text-shadow:0 3px 18px rgba(0,0,0,.18);
+}
+.hero-sub{color:#dcecef}
+.tagline{border-left-color:var(--pro-gold);background:rgba(255,255,255,.075)}
+
+/* All page/section titles */
+h1,h2,h3,h4{font-weight:900}
+.section-title{
+  color:var(--pro-navy);
+  font-weight:950;
+  letter-spacing:-.2px;
+  text-wrap:balance;
+}
+.section-title:after{
+  width:82px;height:4px;
+  background:linear-gradient(90deg,var(--pro-teal),var(--pro-gold));
+  box-shadow:0 2px 8px rgba(8,123,120,.16);
+}
+.section-kicker{font-weight:700;color:var(--pro-muted)}
+
+/* Cards, panels and information blocks */
+.card,.service,.stat,.gallery-item,.video-card,.post-card,.contact-card,.info-card,.order-card,
+.v2-trust .item,.v2-step,.v2-faq details,.check-item{
+  border-color:var(--pro-line);
+  box-shadow:var(--pro-shadow);
+}
+.card,.service,.stat,.gallery-item,.video-card,.post-card,.contact-card,.info-card,.order-card{
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.card:hover,.service:hover,.stat:hover,.gallery-item:hover,.video-card:hover,.post-card:hover,.contact-card:hover,.info-card:hover,.order-card:hover{
+  transform:translateY(-3px);
+  border-color:#cbdde2;
+  box-shadow:0 17px 38px rgba(10,34,53,.11);
+}
+.card h3,.post-card h3,.video-card h3,.info-card h3,.order-card h3{font-weight:900;color:var(--pro-navy)}
+.card h3 a,.post-link,.contact-item a{color:var(--pro-teal)}
+.card h3 a:hover,.post-link:hover,.contact-item a:hover{color:var(--pro-navy-2)}
+
+/* Professional buttons / accents */
+.btn-primary{background:linear-gradient(135deg,#d88924,var(--pro-gold));box-shadow:0 8px 20px rgba(214,154,45,.18)}
+.btn-dark{background:var(--pro-navy)}
+.btn-whatsapp{background:#15945b}
+.btn-light{border-color:rgba(255,255,255,.28)}
+.notice{background:#eef8f7;border-left-color:var(--pro-teal)}
+
+/* Content accents */
+.service-icon,.card .icon{
+  background:linear-gradient(145deg,#edf8f7,#fff7e8);
+  border-color:#dce8e7;
+}
+.service-icon svg,.card .icon svg{stroke:var(--pro-teal)}
+.stat b{color:var(--pro-teal)}
+.post-meta,.video-platform{color:var(--pro-teal)}
+
+/* Footer — consistent across every page */
+.footer{
+  margin-top:10px;
+  background:linear-gradient(135deg,#071a29 0%,#0a2b40 58%,#0d4a57 100%);
+  border-top:4px solid var(--pro-gold);
+  padding:46px 0 42px;
+  box-shadow:0 -8px 28px rgba(10,34,53,.08);
+}
+.footer strong{font-size:17px;font-weight:950;color:#fff}
+.footer p{color:#d0dee4}
+.footer .small{color:#b9cbd3}
+
+/* Back-to-top control */
+.backtop{background:linear-gradient(135deg,var(--pro-teal),var(--pro-navy-2));border:2px solid rgba(255,255,255,.7)}
+
+/* Better keyboard focus */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid rgba(214,154,45,.55);outline-offset:2px;
+}
+
+/* Mobile: keep navigation accessible instead of hiding it */
+@media(max-width:560px){
+  .nav-inner{display:block;padding:10px 0}
+  .brand{display:block;margin-bottom:8px}
+  .navlinks{
+    display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+    gap:6px;padding:2px 0 4px;scrollbar-width:thin;
+  }
+  .navlinks a{flex:0 0 auto;font-size:12px;padding:7px 9px}
+  .hero{padding:52px 0 55px}
+  .section-title{font-size:28px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .card,.service,.stat,.gallery-item,.video-card,.post-card,.contact-card,.info-card,.order-card{transition:none}
+}
+
+/* ===== Professional V6 — full in-page headline & background system ===== */
+:root{
+  --v6-deep:#08263a;
+  --v6-blue:#123f5b;
+  --v6-teal:#087b78;
+  --v6-gold:#d69a2d;
+  --v6-gold-light:#fff7e6;
+  --v6-teal-light:#edf8f7;
+  --v6-surface:#ffffff;
+  --v6-surface-soft:#f3f7f9;
+}
+
+/* Every content section receives a deliberate professional background */
+main{background:var(--v6-surface-soft)}
+.section{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fafb 100%);
+  border-top:1px solid rgba(8,38,58,.035);
+}
+.section:nth-of-type(even){
+  background:linear-gradient(180deg,#f4faf9 0%,#fffaf2 100%);
+}
+.section:before{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,transparent 0%,var(--v6-teal) 18%,var(--v6-gold) 50%,var(--v6-teal) 82%,transparent 100%);
+  opacity:.72;
+}
+.section>.container{position:relative;z-index:1}
+
+/* Main section headlines: bold, colored and visibly backed */
+.section-title,
+main section h2:not(.section-title){
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:fit-content;
+  max-width:100%;
+  margin:0 0 20px;
+  padding:13px 18px 13px 17px;
+  border:1px solid #d8e5e7;
+  border-left:6px solid var(--v6-teal);
+  border-radius:13px;
+  background:linear-gradient(100deg,#eaf7f6 0%,#fff8e9 100%);
+  color:var(--v6-deep);
+  font-size:clamp(25px,3.2vw,34px);
+  font-weight:950;
+  letter-spacing:-.35px;
+  line-height:1.25;
+  box-shadow:0 8px 24px rgba(8,38,58,.07);
+}
+.section-title:after,
+main section h2:not(.section-title):after{
+  content:"";
+  display:block;
+  width:58px;
+  height:4px;
+  flex:0 0 58px;
+  margin:0 0 0 2px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--v6-teal),var(--v6-gold));
+  box-shadow:none;
+}
+
+/* Secondary headlines inside cards/content */
+.card h3,.service h3,.post-card h3,.video-card h3,.info-card h3,.order-card h3,
+main section h3{
+  color:var(--v6-blue);
+  font-weight:950;
+  line-height:1.45;
+}
+.card h3,.service h3,.post-card h3,.video-card h3,.info-card h3,.order-card h3{
+  position:relative;
+  padding:10px 12px 10px 14px;
+  margin-top:10px;
+  margin-bottom:9px;
+  border-left:4px solid var(--v6-gold);
+  border-radius:0 10px 10px 0;
+  background:linear-gradient(90deg,var(--v6-gold-light),rgba(255,255,255,.35));
+}
+
+/* Standalone h3 headings get a compact professional title treatment */
+main section>.container>h3,
+main section .content>h3,
+main section .article>h3{
+  display:block;
+  padding:10px 14px;
+  border-left:5px solid var(--v6-teal);
+  border-radius:9px;
+  background:linear-gradient(90deg,var(--v6-teal-light),rgba(255,255,255,.8));
+  color:var(--v6-blue);
+}
+
+/* Text blocks become easier to scan without changing their information */
+.lead{color:#334d59;font-weight:500}
+.notice,.v3-note,.source-box{
+  background:linear-gradient(100deg,#eef9f8 0%,#fff8ea 100%);
+  border:1px solid #d8e6e5;
+  box-shadow:0 7px 22px rgba(8,38,58,.055);
+}
+
+/* Stronger visual separation for common content panels */
+.service,.card,.info-card,.post-card,.video-card,.contact-card,.order-card,.stat,.gallery-item{
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdfe 100%);
+  border-top:3px solid #dfeceb;
+}
+.service:hover,.card:hover,.info-card:hover,.post-card:hover,.video-card:hover,.contact-card:hover,.order-card:hover,.stat:hover,.gallery-item:hover{
+  border-top-color:var(--v6-gold);
+}
+
+/* FAQ / process / checklist headings */
+.v2-faq summary{
+  padding:11px 13px;
+  border-radius:10px;
+  background:linear-gradient(90deg,#eef8f7,#fff8e9);
+  color:var(--v6-blue);
+  font-weight:950;
+}
+.v2-step h3{
+  color:var(--v6-blue);
+  background:linear-gradient(90deg,#eef8f7,#fff8e9);
+  border-radius:9px;
+  padding:8px 9px;
+}
+
+/* Mobile headline treatment */
+@media(max-width:600px){
+  .section{padding:52px 0}
+  .section-title,
+  main section h2:not(.section-title){
+    width:100%;
+    font-size:25px;
+    padding:11px 13px;
+    gap:9px;
+  }
+  .section-title:after,
+  main section h2:not(.section-title):after{width:42px;flex-basis:42px}
+  .card h3,.service h3,.post-card h3,.video-card h3,.info-card h3,.order-card h3{padding:9px 10px 9px 12px}
+}
