@@ -1,0 +1,30 @@
+{
+  "name": "সার্ভেয়ার আবদুল হান্নান",
+  "short_name": "Surveyor Hannan",
+  "description": "Surveyor Abdul Hannan — Digital Amin & Land Surveyor",
+  "lang": "bn-BD",
+  "dir": "ltr",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone"
+  ],
+  "theme_color": "#0a2638",
+  "background_color": "#0a2638",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
