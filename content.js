@@ -112,14 +112,8 @@ const SITE = {
     },
     {
       platform: "youtube",
-      url: "https://youtube.com/shorts/8potef_a-lc?si=Q43vEoRZ0aDpWGbn",
-      title: "ভূমি জরিপের গুরুত্বপূর্ণ তথ্য — YouTube Short 08",
-      description: "YouTube Shorts ভিডিও।"
-    },
-    {
-      platform: "youtube",
       url: "https://youtube.com/shorts/i2ITUOITiRY",
-      title: "ভূমি জরিপের গুরুত্বপূর্ণ তথ্য — YouTube Short 09",
+      title: "ভূমি জরিপের গুরুত্বপূর্ণ তথ্য — YouTube Short 08",
       description: "YouTube Shorts ভিডিও।"
     }
   ],
@@ -127,10 +121,10 @@ const SITE = {
   posts: [
     // Example:
     // {
-    //   title: "১ শতাংশ জমি কেন ৪৩৫.৬ বর্গফুট?",
+    //   title: "লেখার শিরোনাম",
     //   category: "ভূমি জরিপ",
-    //   excerpt: "একর শতাংশের করুন ইতিহাস ",
-    //   url: "https://surveyorabdulhannan.blogspot.com/2026/08/blog-post.html",
+    //   excerpt: "সংক্ষিপ্ত পরিচিতি",
+    //   url: "https://surveyorabdulhannan.blogspot.com/p/example.html",
     //   date: "2026-09-19"
     // }
   ],
