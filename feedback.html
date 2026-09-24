@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="bn-BD">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>পরামর্শ ও মন্তব্য | সার্ভেয়ার আবদুল হান্নান</title>
+<meta name="description" content="ওয়েবসাইটের জন্য পরামর্শ ও মন্তব্য পাঠানোর পেজ।"/>
+<meta name="theme-color" content="#0a2638"/>
+<link rel="icon" href="profile-abdul-hannan.jpg" type="image/jpeg"/>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body id="top">
+<a class="skip" href="#main">মূল কনটেন্টে যান</a>
+<nav class="nav" aria-label="প্রধান নেভিগেশন">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">সার্ভেয়ার আবদুল হান্নান</a>
+    <div class="navlinks">
+      <a href="index.html">⌂ হোম</a><a href="about.html">পরিচিতি</a><a href="services.html">সেবা</a>
+      <a href="knowledge.html">ভূমি তথ্য</a><a href="documents.html">নথি প্রস্তুতি</a><a href="mistakes.html">সাধারণ ভুল</a>
+      <a href="videos.html">ভিডিও</a><a href="photos.html">ছবি</a><a href="posts.html">লেখা</a>
+      <a href="question.html">❓ প্রশ্ন করুন</a><a href="feedback.html">💬 পরামর্শ ও মন্তব্য</a>
+      <a href="order.html">কাজের অর্ডার</a><a href="contact.html">যোগাযোগ</a>
+    </div>
+  </div>
+</nav>
+<main id="main">
+
+<section class="hero page-hero">
+<div class="container">
+<div class="eyebrow">VISITOR FEEDBACK</div>
+<h1>পরামর্শ ও মন্তব্য</h1>
+<p class="hero-sub">ওয়েবসাইট, তথ্য, সেবা বা ভবিষ্যতে কী যোগ করা উচিত—আপনার মতামত জানান।</p>
+</div></section>
+<section class="section">
+<div class="container">
+<div class="form-shell">
+<p class="form-note">আপনার পরামর্শ বা মন্তব্য WhatsApp-এ পাঠানোর জন্য প্রস্তুত হবে। Send করার আগে আপনি বার্তাটি দেখে নিতে পারবেন।</p>
+<form id="feedbackForm">
+<div class="form-grid">
+<div class="field"><label for="fName">আপনার নাম *</label><input id="fName" required placeholder="পূর্ণ নাম" type="text"></div>
+<div class="field"><label for="fPhone">মোবাইল নম্বর</label><input id="fPhone" inputmode="tel" placeholder="ঐচ্ছিক" type="tel"></div>
+<div class="field"><label for="fType">মন্তব্যের ধরন *</label>
+<select id="fType" required><option value="">নির্বাচন করুন</option><option>ওয়েবসাইট সম্পর্কে পরামর্শ</option><option>তথ্য/কনটেন্ট সম্পর্কে মন্তব্য</option><option>সেবার বিষয়ে মতামত</option><option>নতুন বিষয় যোগ করার অনুরোধ</option><option>ত্রুটি বা সমস্যা জানাতে চাই</option><option>অন্যান্য</option></select></div>
+<div class="field"><label for="fPage">কোন পেজ/বিষয় (ঐচ্ছিক)</label><input id="fPage" placeholder="যেমন: ফটো গ্যালারি / ভূমি তথ্য" type="text"></div>
+<div class="field field-full"><label for="fText">আপনার পরামর্শ বা মন্তব্য *</label><textarea id="fText" required placeholder="আপনার মতামত বিস্তারিত লিখুন..."></textarea></div>
+</div>
+<div class="form-actions"><button class="btn btn-primary" type="submit">📲 WhatsApp-এ পাঠান</button><button class="btn btn-dark" type="reset">ফর্ম পরিষ্কার করুন</button></div>
+<div class="form-success" id="feedbackSuccess" role="status"></div>
+</form></div>
+<div class="helper-cards">
+<div class="helper-card"><div>💡</div><h3>নতুন ধারণা</h3><p>ওয়েবসাইটে নতুন কোনো তথ্য, টুল বা ফিচার দরকার হলে জানান।</p></div>
+<div class="helper-card"><div>🛠️</div><h3>সমস্যা জানান</h3><p>কোনো পেজ ঠিকমতো কাজ না করলে পেজের নামসহ জানাতে পারেন।</p></div>
+<div class="helper-card"><div>⭐</div><h3>আপনার মতামত</h3><p>ওয়েবসাইট আরও ব্যবহারবান্ধব করতে আপনার মতামত গুরুত্বপূর্ণ।</p></div>
+</div>
+</div></section>
+<script>
+(function(){
+ const f=document.getElementById('feedbackForm'); if(!f)return;
+ f.addEventListener('submit',function(e){
+  e.preventDefault();
+  const name=document.getElementById('fName').value.trim(), phone=document.getElementById('fPhone').value.trim(), type=document.getElementById('fType').value, page=document.getElementById('fPage').value.trim(), text=document.getElementById('fText').value.trim();
+  if(!name||!type||!text)return;
+  const msg=`ওয়েবসাইট পরামর্শ ও মন্তব্য — সার্ভেয়ার আবদুল হান্নান\n\nনাম: ${name}\n${phone?'মোবাইল: '+phone+'\n':''}ধরন: ${type}\n${page?'পেজ/বিষয়: '+page+'\n':''}\nমন্তব্য:\n${text}`;
+  const url='https://wa.me/8801810811989?text='+encodeURIComponent(msg);
+  document.getElementById('feedbackSuccess').textContent='আপনার মন্তব্য প্রস্তুত হয়েছে। WhatsApp খুলে তথ্য যাচাই করে Send চাপুন.';
+  document.getElementById('feedbackSuccess').classList.add('show'); window.open(url,'_blank','noopener,noreferrer');
+ });
+})();
+</script>
+
+</main>
+<footer class="footer">
+<div class="container">
+<strong>সার্ভেয়ার আবদুল হান্নান | Surveyor Abdul Hannan</strong>
+<p>Digital Amin &amp; Land Surveyor</p>
+<p class="small">ভূমি জরিপ • নকশা • পরিমাপ • সীমানা-সংক্রান্ত কাজ • তথ্যভিত্তিক আলোচনা</p>
+<p class="small">© 2026 সার্ভেয়ার আবদুল হান্নান</p>
+</div>
+</footer>
+<script src="app.js"></script>
+</body></html>
