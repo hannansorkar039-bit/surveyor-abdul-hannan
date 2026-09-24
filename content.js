@@ -112,14 +112,8 @@ const SITE = {
     },
     {
       platform: "youtube",
-      url: "https://youtube.com/shorts/NFnZlfvBPoQ?si=WuIqln0EwiTHfhJF",
-      title: "ভূমি জরিপের গুরুত্বপূর্ণ তথ্য — YouTube Short 08",
-      description: "YouTube Shorts ভিডিও।"
-    },
-    {
-      platform: "youtube",
       url: "https://youtube.com/shorts/i2ITUOITiRY",
-      title: "ভূমি জরিপের গুরুত্বপূর্ণ তথ্য — YouTube Short 09",
+      title: "ভূমি জরিপের গুরুত্বপূর্ণ তথ্য — YouTube Short 08",
       description: "YouTube Shorts ভিডিও।"
     }
   ],
