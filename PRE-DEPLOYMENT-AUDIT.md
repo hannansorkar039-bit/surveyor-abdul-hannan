@@ -10,3 +10,12 @@
 - Existing sitemap path and robots.txt sitemap directive preserved.
 
 Before final deployment, replace `icons/icon-512.png` in the profile-image positions with the real profile photo if you want the real portrait to appear in favicon/social preview/profile sections.
+
+
+## Profile image update — 2026-09-25
+- Added optimized `profile-abdul-hannan.webp` from the newly supplied profile photo.
+- Hero avatar references now use the dedicated profile image instead of the PWA app icon.
+- Open Graph/Twitter profile image and ProfilePage schema image now use the dedicated profile image.
+- PWA icons remain unchanged.
+- Service-worker cache bumped to v7 and the profile image added to the precache list.
+- Avatar CSS outer border removed because the supplied profile image already contains its own professional circular teal border.
