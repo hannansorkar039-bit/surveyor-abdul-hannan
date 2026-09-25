@@ -194,7 +194,7 @@ const SITE = {
       caption: "ভাগ বন্টনের স্কেচ"
     },
     {
-      src: "profile-abdul-hannan.jpg",
+      src: "profile-abdul-hannan.webp",
       alt: "সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি",
       title: "সার্ভেয়ার আবদুল হান্নান",
       caption: "Professional Profile"
