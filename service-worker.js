@@ -1,7 +1,7 @@
-const CACHE_NAME = "sah-pwa-v6-landpro";
+const CACHE_NAME = "sah-pwa-v8-profile-all-pages";
 const CORE_ASSETS = [
   "./", "./index.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
-  "./icons/icon-192.png", "./icons/icon-512.png",
+  "./icons/icon-192.png", "./icons/icon-512.png", "./profile-abdul-hannan.webp",
   "./about.html", "./services.html", "./knowledge.html", "./documents.html", "./mistakes.html",
   "./videos.html", "./photos.html", "./posts.html", "./important-topics.html", "./social.html",
   "./process.html", "./faq.html", "./question.html", "./feedback.html", "./order.html", "./contact.html",
