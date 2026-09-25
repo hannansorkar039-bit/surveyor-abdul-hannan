@@ -264,3 +264,50 @@ ${details ? "বিস্তারিত: " + details : ""}`;
     c.innerHTML='<div><strong>সার্ভেয়ার আবদুল হান্নান</strong><p>Digital Amin &amp; Land Surveyor</p><p class="small">ভূমি জরিপ • নকশা • পরিমাপ • সীমানা-সংক্রান্ত কাজ • তথ্যভিত্তিক আলোচনা</p></div><div class="footer-col"><h3>দ্রুত লিংক</h3><a href="services.html">সেবা</a><a href="knowledge.html">ভূমি তথ্য</a><a href="photos.html">ফটো গ্যালারি</a><a href="videos.html">ভিডিও</a></div><div class="footer-col"><h3>সরাসরি যোগাযোগ</h3><a href="tel:+8801810811989">📞 01810811989</a><a href="mailto:hannansorkar039@gmail.com">✉️ ই-মেইল</a><a href="land-solution-bd.html">🌐 Land Solution BD</a></div><div class="footer-bottom"><p class="small">© 2026 Surveyor Abdul Hannan. All Rights Reserved. · <a href="disclaimer.html">তথ্য ব্যবহারের নির্দেশনা</a></p></div>';
   });
 })();
+
+
+/* ===== Modern gallery filters + performance polish ===== */
+(function(){
+  document.querySelectorAll('img').forEach(img=>{
+    if(!img.hasAttribute('decoding')) img.setAttribute('decoding','async');
+  });
+
+  const classify = (text)=>{
+    const t=String(text||'').toLowerCase();
+    if(/সীমানা|boundary|ডিমার্কেশন|ত্রিভুজায়ন/.test(t)) return 'boundary';
+    if(/নকশা|ম্যাপ|map|প্যান্টোগ্রাফ|tracing|trace/.test(t)) return 'map';
+    return 'survey';
+  };
+
+  document.querySelectorAll('.filter-bar').forEach(bar=>{
+    const galleryId=bar.nextElementSibling?.id;
+    const gallery=document.getElementById(galleryId);
+    if(!gallery) return;
+    const items=[...gallery.children];
+    const buttons=[...bar.querySelectorAll('.filter-btn')];
+    const apply=(filter)=>{
+      let visible=0;
+      items.forEach(item=>{
+        if(item.classList.contains('filter-empty')) return;
+        const text=item.textContent||'';
+        const match=filter==='all'||classify(text)===filter;
+        item.hidden=!match;
+        if(match) visible++;
+      });
+      let empty=gallery.querySelector('.filter-empty');
+      if(!visible){
+        if(!empty){
+          empty=document.createElement('div');
+          empty.className='filter-empty';
+          empty.textContent='এই বিভাগে বর্তমানে কোনো কনটেন্ট নেই।';
+          gallery.appendChild(empty);
+        }
+      }else if(empty) empty.remove();
+    };
+    buttons.forEach(btn=>btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      apply(btn.dataset.filter||'all');
+    }));
+  });
+})();
