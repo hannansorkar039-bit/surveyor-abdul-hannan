@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="bn-BD">
+<head>
+<meta content="qk96Dm_-k5Wkaq_0yrH_cQJRhDteoc6XCn9a7UDsLlM" name="google-site-verification"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<meta name="theme-color" content="#0a2638"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<title>ভূমি পরিমাপ ও মুসলিম উত্তরাধিকার ক্যালকুলেটর | Surveyor Abdul Hannan</title>
+<meta name="description" content="আয়তক্ষেত্র, হেরন ও ব্রহ্মগুপ্তের সূত্রে ভূমির ক্ষেত্রফল এবং বাংলাদেশের প্রযোজ্য মুসলিম উত্তরাধিকার বিধানের ভিত্তিতে সাধারণ উত্তরাধিকার হিসাবের অনলাইন ক্যালকুলেটর।"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/calculator.html"/>
+<link href="icons/icon-192.png" rel="icon" type="image/jpeg"/>
+<link rel="stylesheet" href="styles.css">
+<style>
+.site-brand{display:inline-flex;align-items:center;gap:8px}.site-brand img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.75);box-shadow:0 2px 8px rgba(0,0,0,.18)}.site-brand span{line-height:1.2}
+@media(max-width:560px){.site-brand img{width:30px;height:30px}}
+.calc-wrap{max-width:1050px;margin:0 auto}
+.calc-intro{margin-bottom:28px}
+.calc-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 22px}
+.calc-tab{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:14px;padding:13px 10px;font:inherit;font-weight:800;cursor:pointer;transition:.2s}
+.calc-tab:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(8,35,54,.08)}
+.calc-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.calc-panel{display:none;background:#fff;border:1px solid var(--line);border-radius:18px;padding:25px;box-shadow:var(--shadow)}
+.calc-panel.active{display:block}
+.calc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.calc-field{display:flex;flex-direction:column;gap:7px}
+.calc-field label{font-weight:800;color:var(--navy)}
+.calc-field input,.calc-field select{width:100%;min-height:46px;border:1px solid #cbd8de;border-radius:10px;padding:9px 12px;font:inherit;color:var(--ink);background:#fff;outline:none}
+.calc-field input:focus,.calc-field select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(8,116,123,.11)}
+.calc-help{font-size:13px;color:var(--muted);margin:0}
+.calc-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.calc-btn{border:0;border-radius:999px;padding:11px 18px;font:inherit;font-weight:900;cursor:pointer}
+.calc-primary{background:var(--orange);color:#fff}.calc-secondary{background:#edf4f6;color:var(--navy)}
+.calc-result{margin-top:22px;padding:18px;border-radius:14px;background:#f3f8f9;border:1px solid #d6e7e9}
+.calc-result:empty{display:none}
+.result-main{font-size:26px;font-weight:900;color:var(--navy);margin-bottom:8px}
+.result-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.result-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.result-item strong{display:block;color:var(--navy)}
+.formula{margin:0 0 18px;padding:14px 16px;background:#fff8f1;border-left:4px solid var(--orange);border-radius:10px}
+.formula code{font-size:16px;font-weight:800;color:#6b3b1e;white-space:normal}
+.warning{margin-top:18px;padding:14px 16px;background:#fff8e8;border-left:4px solid #d79a20;border-radius:10px}
+.legal-note{margin-top:24px;padding:18px 20px;background:#eef7f8;border-left:5px solid var(--teal);border-radius:12px}
+.legal-note strong{color:var(--navy)}
+.heirs-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.heir-field{background:#f7fafb;border:1px solid var(--line);padding:12px;border-radius:12px}
+.heir-field label{display:block;font-weight:800;margin-bottom:7px}
+.heir-field input{min-height:44px}
+.inheritance-summary{overflow:auto;margin-top:15px}
+.inheritance-table{width:100%;border-collapse:collapse;min-width:610px;background:#fff}
+.inheritance-table th,.inheritance-table td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left}
+.inheritance-table th{background:#f2f6f7;color:var(--navy);font-weight:900}
+.inheritance-table td:nth-child(2),.inheritance-table td:nth-child(3),.inheritance-table td:nth-child(4){text-align:right}
+.small-note{font-size:13px;color:var(--muted)}
+.sources{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.sources a{color:var(--teal);font-weight:800;text-decoration:underline}
+@media(max-width:850px){.calc-tabs{grid-template-columns:repeat(2,1fr)}.heirs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.calc-grid,.result-list,.heirs-grid{grid-template-columns:1fr}.calc-panel{padding:18px}.calc-tabs{grid-template-columns:1fr 1fr}.calc-tab{font-size:14px;padding:11px 7px}}
+</style>
+</head>
+<body id="top">
+<a class="skip" href="#main">মূল কনটেন্টে যান</a>
+<nav class="nav" aria-label="প্রধান নেভিগেশন">
+  <div class="container nav-inner">
+    <a class="brand site-brand" href="index.html"><img src="profile-abdul-hannan.webp" alt="সার্ভেয়ার আবদুল হান্নান" width="34" height="34" loading="eager" decoding="async"/><span>সার্ভেয়ার আবদুল হান্নান</span></a>
+    <div class="navlinks">
+      <a href="index.html" aria-label="হোম পেজ">⌂ হোম</a>
+      <a href="about.html">পরিচিতি</a>
+      <a href="services.html">সেবা</a>
+      <a href="knowledge.html">ভূমি তথ্য</a>
+      <a href="documents.html">নথি প্রস্তুতি</a>
+      <a href="mistakes.html">সাধারণ ভুল</a>
+      <a href="videos.html">ভিডিও</a>
+      <a href="photos.html">ছবি</a>
+      <a href="posts.html">লেখা</a>
+      <a href="question.html">❓ প্রশ্ন করুন</a><a href="feedback.html">💬 পরামর্শ ও মন্তব্য</a><a href="order.html">কাজের অর্ডার</a><a href="land-solution-bd.html">🌐 Land Solution BD</a>
+      <a href="contact.html">যোগাযোগ</a>
+    </div>
+  </div>
+</nav>
+<header class="hero">
+<div class="container hero-grid">
+<img alt="সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি" class="avatar" height="165" src="profile-abdul-hannan.webp" width="165"/>
+<div>
+<div class="eyebrow">ONLINE CALCULATOR</div>
+<h1>ভূমি পরিমাপ ও উত্তরাধিকার ক্যালকুলেটর</h1>
+<p class="hero-sub">Land Measurement &amp; Muslim Inheritance Calculator</p>
+<div class="tagline">সূত্রভিত্তিক হিসাব • পরিষ্কার ফলাফল • তথ্যভিত্তিক ব্যবহার</div>
+<div class="hero-pills"><span>📐 ভূমি পরিমাপ</span><span>🧮 ক্ষেত্রফল</span><span>⚖️ উত্তরাধিকার</span></div>
+<div class="actions"><a class="btn btn-light" href="index.html">← মূল ওয়েবসাইট</a><a class="btn btn-primary" href="contact.html">যোগাযোগ</a></div>
+</div>
+</div>
+</header>
+
+<main id="main">
+<section class="section">
+<div class="container calc-wrap">
+<div class="calc-intro">
+<h2 class="section-title">অনলাইন ক্যালকুলেটর</h2>
+<p class="lead">নিচের টুলগুলো সাধারণ ভূমি-পরিমাপের সূত্র এবং বাংলাদেশের প্রযোজ্য মুসলিম উত্তরাধিকার বিধানের আলোকে ব্যবহার করার জন্য তৈরি করা হয়েছে। পরিমাপের ফলাফল মাঠ জরিপের বিকল্প নয় এবং উত্তরাধিকার ফলাফল চূড়ান্ত আইনগত সিদ্ধান্ত নয়।</p>
+</div>
+
+<div class="calc-tabs" role="tablist" aria-label="ক্যালকুলেটর নির্বাচন">
+<button class="calc-tab active" data-tab="rectangle" role="tab">আয়তক্ষেত্র</button>
+<button class="calc-tab" data-tab="heron" role="tab">হেরনের সূত্র</button>
+<button class="calc-tab" data-tab="brahmagupta" role="tab">ব্রহ্মগুপ্তের সূত্র</button>
+<button class="calc-tab" data-tab="inheritance" role="tab">মুসলিম উত্তরাধিকার</button>
+</div>
+
+<section class="calc-panel active" id="panel-rectangle" role="tabpanel">
+<h3>আয়তক্ষেত্রের ক্ষেত্রফল</h3>
+<div class="formula"><code>ক্ষেত্রফল = দৈর্ঘ্য × প্রস্থ</code></div>
+<div class="calc-grid">
+<div class="calc-field"><label for="rectLength">দৈর্ঘ্য</label><input id="rectLength" type="number" min="0" step="any" placeholder="যেমন 120"></div>
+<div class="calc-field"><label for="rectWidth">প্রস্থ</label><input id="rectWidth" type="number" min="0" step="any" placeholder="যেমন 60"></div>
+<div class="calc-field"><label for="rectUnit">একক</label><select id="rectUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+</div>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="rectCalc">হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="rectangle">পরিষ্কার</button></div>
+<div class="calc-result" id="rectResult" aria-live="polite"></div>
+</section>
+
+<section class="calc-panel" id="panel-heron" role="tabpanel">
+<h3>হেরনের সূত্রে ত্রিভুজের ক্ষেত্রফল</h3>
+<div class="formula"><code>s = (a+b+c) ÷ 2 &nbsp;&nbsp; এবং &nbsp;&nbsp; ক্ষেত্রফল = √[s(s−a)(s−b)(s−c)]</code></div>
+<div class="calc-grid">
+<div class="calc-field"><label for="heronA">বাহু a</label><input id="heronA" type="number" min="0" step="any" placeholder="যেমন 50"></div>
+<div class="calc-field"><label for="heronB">বাহু b</label><input id="heronB" type="number" min="0" step="any" placeholder="যেমন 60"></div>
+<div class="calc-field"><label for="heronC">বাহু c</label><input id="heronC" type="number" min="0" step="any" placeholder="যেমন 70"></div>
+<div class="calc-field"><label for="heronUnit">একক</label><select id="heronUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+</div>
+<p class="calc-help">তিন বাহুকে অবশ্যই একটি বৈধ ত্রিভুজ গঠন করতে হবে।</p>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="heronCalc">হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="heron">পরিষ্কার</button></div>
+<div class="calc-result" id="heronResult" aria-live="polite"></div>
+</section>
+
+<section class="calc-panel" id="panel-brahmagupta" role="tabpanel">
+<h3>ব্রহ্মগুপ্তের সূত্রে চতুর্ভুজের ক্ষেত্রফল</h3>
+<div class="formula"><code>s = (a+b+c+d) ÷ 2 &nbsp;&nbsp; এবং &nbsp;&nbsp; ক্ষেত্রফল = √[(s−a)(s−b)(s−c)(s−d)]</code></div>
+<div class="calc-grid">
+<div class="calc-field"><label for="braA">বাহু a</label><input id="braA" type="number" min="0" step="any" placeholder="যেমন 40"></div>
+<div class="calc-field"><label for="braB">বাহু b</label><input id="braB" type="number" min="0" step="any" placeholder="যেমন 50"></div>
+<div class="calc-field"><label for="braC">বাহু c</label><input id="braC" type="number" min="0" step="any" placeholder="যেমন 60"></div>
+<div class="calc-field"><label for="braD">বাহু d</label><input id="braD" type="number" min="0" step="any" placeholder="যেমন 70"></div>
+<div class="calc-field"><label for="braUnit">একক</label><select id="braUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+</div>
+<p class="calc-help">ব্রহ্মগুপ্তের সূত্র নির্ভুলভাবে প্রযোজ্য হতে চতুর্ভুজটি cyclic (বৃত্তীয়) হতে হবে। সাধারণ যেকোনো চতুর্ভুজে শুধু চার বাহু জানলে প্রকৃত ক্ষেত্রফল নির্দিষ্ট হয় না।</p>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="braCalc">হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="brahmagupta">পরিষ্কার</button></div>
+<div class="calc-result" id="braResult" aria-live="polite"></div>
+</section>
+
+<section class="calc-panel" id="panel-inheritance" role="tabpanel">
+<h3>মুসলিম উত্তরাধিকার — সাধারণ পারিবারিক কেস</h3>
+<p class="lead" style="font-size:15px">এই অংশে জীবিত স্বামী/স্ত্রী, পিতা, মাতা, পুত্র ও কন্যার ভিত্তিতে সাধারণ সুন্নি-হানাফি ফারায়েজের হিসাব করা হয়। বাংলাদেশের Muslim Personal Law (Shariat) Application Act, 1937 এবং Muslim Family Laws Ordinance, 1961-এর প্রাসঙ্গিক বিধান বিবেচনায় রাখা হয়েছে।</p>
+<div class="warning"><strong>প্রথমে নিট উত্তরাধিকারযোগ্য সম্পত্তি নির্ধারণ করুন:</strong> দাফন/শেষকৃত্যের প্রয়োজনীয় খরচ, দেনা এবং আইনসম্মত দাবিগুলো নিষ্পত্তির পর যে সম্পত্তি উত্তরাধিকার হিসেবে বণ্টনযোগ্য, সেটিই এখানে লিখুন।</div>
+<div class="calc-grid" style="margin-top:18px">
+<div class="calc-field"><label for="estate">নিট উত্তরাধিকারযোগ্য সম্পত্তি (৳)</label><input id="estate" type="number" min="0" step="0.01" placeholder="যেমন 2400000"></div>
+<div class="calc-field"><label for="deceasedGender">মৃত ব্যক্তি</label><select id="deceasedGender"><option value="male">পুরুষ</option><option value="female">নারী</option></select></div>
+</div>
+<div class="heirs-grid" style="margin-top:18px">
+<div class="heir-field" id="wifeField"><label for="wives">জীবিত স্ত্রী (জন)</label><input id="wives" type="number" min="0" max="4" step="1" value="1"></div>
+<div class="heir-field" id="husbandField"><label for="husband">জীবিত স্বামী</label><select id="husband"><option value="1">আছেন</option><option value="0">নেই</option></select></div>
+<div class="heir-field"><label for="father">জীবিত পিতা</label><select id="father"><option value="1">আছেন</option><option value="0">নেই</option></select></div>
+<div class="heir-field"><label for="mother">জীবিত মাতা</label><select id="mother"><option value="1">আছেন</option><option value="0">নেই</option></select></div>
+<div class="heir-field"><label for="sons">জীবিত পুত্র (জন)</label><input id="sons" type="number" min="0" step="1" value="1"></div>
+<div class="heir-field"><label for="daughters">জীবিত কন্যা (জন)</label><input id="daughters" type="number" min="0" step="1" value="1"></div>
+</div>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="inheritCalc">উত্তরাধিকার হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="inheritance">ফর্ম পরিষ্কার</button></div>
+<div class="calc-result" id="inheritResult" aria-live="polite"></div>
+<div class="legal-note">
+<strong>বাংলাদেশের আইনি প্রেক্ষাপট:</strong> মুসলিমদের intestate succession-এর ক্ষেত্রে Muslim Personal Law (Shariat) Application Act, 1937 প্রযোজ্য; আর Muslim Family Laws Ordinance, 1961-এর ধারা ৪ অনুযায়ী কোনো পুত্র বা কন্যা উত্তরাধিকার খোলার আগে মারা গেলে তার জীবিত সন্তানরা নির্দিষ্ট পরিস্থিতিতে per stirpes সেই পুত্র/কন্যা জীবিত থাকলে যে অংশ পেতেন তার সমপরিমাণ অংশ পেতে পারেন। এই পেজের সাধারণ ক্যালকুলেটর ওই জটিল প্রতিনিধিত্বমূলক কেস স্বয়ংক্রিয়ভাবে নিষ্পত্তি করে না।
+<div class="sources">
+<a href="https://bdlaws.minlaw.gov.bd/act-print-173.html" target="_blank" rel="noopener noreferrer">Muslim Personal Law (Shariat) Application Act, 1937</a>
+<a href="https://bdlaws.minlaw.gov.bd/act-print-305/section-print-13528.html" target="_blank" rel="noopener noreferrer">Muslim Family Laws Ordinance, 1961 — ধারা ৪</a>
+<a href="https://inheritance.gov.bd/" target="_blank" rel="noopener noreferrer">সরকারি উত্তরাধিকার তথ্য</a>
+</div>
+</div>
+</section>
+
+<div class="legal-note">
+<strong>গুরুত্বপূর্ণ:</strong> ক্যালকুলেটরটি তথ্যভিত্তিক সহায়ক টুল। জমির প্রকৃত সীমানা, খতিয়ান/দলিল, মাঠ জরিপ, বিরোধ, বা জটিল উত্তরাধিকার মামলায় কেবল অনলাইন ফলাফলের ওপর নির্ভর করবেন না। বিশেষ করে উত্তরাধিকার ক্ষেত্রে দাদা-দাদী/নানা-নানী, ভাই-বোন, পুত্রের সন্তান, উত্তরাধিকার থেকে বঞ্চিত হওয়া, রদ/আউল, বিভিন্ন মাজহাব বা বিশেষ পারিবারিক পরিস্থিতি থাকলে বিশেষজ্ঞ/আইনজীবীর পরামর্শ ও প্রাসঙ্গিক সরকারি নথি যাচাই করা প্রয়োজন।</div>
+</div>
+</section>
+</main>
+
+<footer class="footer">
+<div class="container">
+<strong>সার্ভেয়ার আবদুল হান্নান | Surveyor Abdul Hannan</strong>
+<p>Digital Amin &amp; Land Surveyor</p>
+<p class="small">ভূমি জরিপ • নকশা • পরিমাপ • সীমানা-সংক্রান্ত কাজ • তথ্যভিত্তিক আলোচনা</p>
+<p class="small">© 2026 Surveyor Abdul Hannan. All Rights Reserved.</p>
+</div>
+</footer>
+<a aria-label="উপরে যান" class="backtop" href="#top">↑</a>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const fmt = (n, d=4) => Number(n).toLocaleString('en-US',{maximumFractionDigits:d});
+  const esc = s => String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const sq = (value, unit) => {
+    if (unit === 'ft') return {primary:value, primaryUnit:'sq ft', sqft:value, sqm:value*0.09290304};
+    return {primary:value, primaryUnit:'sq m', sqFt:value*10.763910416709722, sqm:value};
+  };
+  const landLines = (x, unit) => {
+    const r=sq(x,unit);
+    return `<div class="result-list">
+      <div class="result-item"><strong>${fmt(r.primary)} ${r.primaryUnit}</strong><span>মূল ক্ষেত্রফল</span></div>
+      <div class="result-item"><strong>${fmt(r.sqft)} sq ft</strong><span>বর্গফুট</span></div>
+      <div class="result-item"><strong>${fmt(r.sqm)} sq m</strong><span>বর্গমিটার</span></div>
+      <div class="result-item"><strong>${fmt(r.sqft/435.6)} শতক / ডেসিমেল</strong><span>১ শতক = ৪৩৫.৬ sq ft</span></div>
+      <div class="result-item"><strong>${fmt(r.sqft/43560)} একর</strong><span>১ একর = ৪৩,৫৬০ sq ft</span></div>
+    </div>`;
+  };
+  function err(el,msg){el.innerHTML=`<div class="warning">${esc(msg)}</div>`}
+  document.querySelectorAll('.calc-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.calc-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.calc-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active'); $('panel-'+btn.dataset.tab).classList.add('active');
+    });
+  });
+  $('rectCalc').onclick=()=>{
+    const l=+$('rectLength').value,w=+$('rectWidth').value,u=$('rectUnit').value,r=$('rectResult');
+    if(!(l>0&&w>0)) return err(r,'দৈর্ঘ্য ও প্রস্থ—দুটিই শূন্যের চেয়ে বেশি দিন।');
+    const area=l*w; r.innerHTML=`<div class="result-main">ক্ষেত্রফল = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div>${landLines(area,u)}`;
+  };
+  $('heronCalc').onclick=()=>{
+    const a=+$('heronA').value,b=+$('heronB').value,c=+$('heronC').value,u=$('heronUnit').value,r=$('heronResult');
+    if(!(a>0&&b>0&&c>0)) return err(r,'তিনটি বাহুর মানই শূন্যের চেয়ে বেশি দিন।');
+    if(a+b<=c||a+c<=b||b+c<=a) return err(r,'এই তিন বাহু দিয়ে বৈধ ত্রিভুজ তৈরি হয় না। যেকোনো দুই বাহুর যোগফল তৃতীয় বাহুর চেয়ে বেশি হতে হবে।');
+    const s=(a+b+c)/2, area=Math.sqrt(s*(s-a)*(s-b)*(s-c));
+    r.innerHTML=`<div class="result-main">ক্ষেত্রফল = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div><p>অর্ধপরিসীমা (s) = ${fmt(s)} ${u}</p>${landLines(area,u)}`;
+  };
+  $('braCalc').onclick=()=>{
+    const a=+$('braA').value,b=+$('braB').value,c=+$('braC').value,d=+$('braD').value,u=$('braUnit').value,r=$('braResult');
+    if(!(a>0&&b>0&&c>0&&d>0)) return err(r,'চারটি বাহুর মানই শূন্যের চেয়ে বেশি দিন।');
+    const s=(a+b+c+d)/2, inside=(s-a)*(s-b)*(s-c)*(s-d);
+    if(inside<0) return err(r,'দেওয়া চার বাহু দিয়ে এমন চতুর্ভুজ গঠন সম্ভব নয়।');
+    const area=Math.sqrt(inside);
+    r.innerHTML=`<div class="result-main">ব্রহ্মগুপ্ত ক্ষেত্রফল = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div><p>অর্ধপরিসীমা (s) = ${fmt(s)} ${u}</p><div class="warning">এই ফলটি ব্রহ্মগুপ্তের সূত্রের শর্ত অনুযায়ী <strong>cyclic quadrilateral</strong>-এর জন্য প্রযোজ্য। সাধারণ চতুর্ভুজে শুধু চার বাহু থেকে প্রকৃত ক্ষেত্রফল নিশ্চিত করা যায় না।</div>${landLines(area,u)}`;
+  };
+
+  function toggleGender(){
+    const male=$('deceasedGender').value==='male';
+    $('wifeField').style.display=male?'block':'none';
+    $('husbandField').style.display=male?'none':'block';
+    if(male) $('husband').value='0'; else $('wives').value='0';
+  }
+  $('deceasedGender').addEventListener('change',toggleGender); toggleGender();
+
+  const money=n=>'৳ '+Number(n).toLocaleString('bn-BD',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const frac=(n)=> {
+    const eps=1e-9, known=[[1,2,'১/২'],[1,3,'১/৩'],[1,4,'১/৪'],[1,6,'১/৬'],[1,8,'১/৮'],[2,3,'২/৩'],[5,6,'৫/৬']];
+    for(const [a,b,s] of known) if(Math.abs(n-a/b)<eps) return s;
+    return (n*100).toFixed(2)+'%';
+  };
+
+  $('inheritCalc').onclick=()=>{
+    const estate=+$('estate').value;
+    const gender=$('deceasedGender').value;
+    const wives=gender==='male'?Math.max(0,Math.floor(+$('wives').value||0)):0;
+    const husband=gender==='female'&&$('husband').value==='1'?1:0;
+    const father=$('father').value==='1'?1:0, mother=$('mother').value==='1'?1:0;
+    const sons=Math.max(0,Math.floor(+$('sons').value||0)), daughters=Math.max(0,Math.floor(+$('daughters').value||0));
+    const r=$('inheritResult');
+    if(!(estate>0)) return err(r,'নিট উত্তরাধিকারযোগ্য সম্পত্তির সঠিক পরিমাণ দিন।');
+    if(gender==='male'&&wives===0&&father===0&&mother===0&&sons===0&&daughters===0) return err(r,'কমপক্ষে একজন জীবিত উত্তরাধিকারী নির্বাচন করুন।');
+    if(gender==='female'&&husband===0&&father===0&&mother===0&&sons===0&&daughters===0) return err(r,'কমপক্ষে একজন জীবিত উত্তরাধিকারী নির্বাচন করুন।');
+
+    const hasDesc=sons>0||daughters>0;
+    const rows=[];
+    let fixed=0;
+    if(gender==='male'&&wives>0){
+      const sh=hasDesc?1/8:1/4; rows.push({name:wives===1?'স্ত্রী':'স্ত্রীগণ (সমষ্টিগত)',count:wives,share:sh,each:sh/wives,reason:hasDesc?'সন্তান/বংশধর থাকায় ১/৮':'সন্তান/বংশধর না থাকায় ১/৪'}); fixed+=sh;
+    }
+    if(gender==='female'&&husband){
+      const sh=hasDesc?1/4:1/2; rows.push({name:'স্বামী',count:1,share:sh,each:sh,reason:hasDesc?'সন্তান/বংশধর থাকায় ১/৪':'সন্তান/বংশধর না থাকায় ১/২'}); fixed+=sh;
+    }
+
+    // Mother: special Umarayn cases; otherwise 1/6 with descendant, or 2+ siblings (not entered here), else 1/3.
+    let motherShare=0, motherSpecial=false;
+    if(mother){
+      if(father && !hasDesc && (gender==='male'?wives>0:husband)){
+        const spouseShare = gender==='male'?(wives>0?1/4:0):(husband?1/2:0);
+        motherShare=(1-spouseShare)/3; motherSpecial=true;
+      } else motherShare=hasDesc?1/6:1/3;
+      rows.push({name:'মাতা',count:1,share:motherShare,each:motherShare,reason:motherSpecial?'স্বামী/স্ত্রী ও পিতার সঙ্গে বিশেষ ক্ষেত্রে অবশিষ্টের ১/৩':hasDesc?'সন্তান/বংশধর থাকায় ১/৬':'সন্তান/বংশধর না থাকায় ১/৩'}); fixed+=motherShare;
+    }
+
+    if(father && hasDesc){
+      const sh=1/6; rows.push({name:'পিতা',count:1,share:sh,each:sh,reason:sons>0?'পুত্র/পুরুষ বংশধর থাকায় ১/৬':'শুধু কন্যা থাকায় ১/৬ + অবশিষ্ট'}); fixed+=sh;
+    } else if(father && !hasDesc){
+      // Father takes residue below.
+      rows.push({name:'পিতা',count:1,share:0,each:0,reason:'অবশিষ্টভোগী (residuary)'}); 
+    }
+
+    if(daughters>0 && sons===0){
+      const sh=daughters===1?1/2:2/3;
+      rows.push({name:daughters===1?'কন্যা':'কন্যাগণ (সমষ্টিগত)',count:daughters,share:sh,each:sh/daughters,reason:daughters===1?'একজন কন্যা, পুত্র নেই: ১/২':'দুই বা ততোধিক কন্যা, পুত্র নেই: ২/৩'}); fixed+=sh;
+    }
+
+    let residue=1-fixed;
+    if(residue < -1e-9) return err(r,'এই পারিবারিক বিন্যাসে নির্দিষ্ট অংশগুলোর যোগফল ১-এর বেশি হয়েছে। এই টুলের আওতার বাইরে থাকা জটিল উত্তরাধিকার বিধান প্রযোজ্য হতে পারে।');
+    if(residue<0) residue=0;
+
+    if(sons>0){
+      const units=sons*2+daughters;
+      const sonEach=residue*(2/units), daughterEach=daughters?residue*(1/units):0;
+      rows.push({name:sons===1?'পুত্র':'পুত্রগণ (সমষ্টিগত)',count:sons,share:sonEach*sons,each:sonEach,reason:'অবশিষ্ট অংশ; পুত্র-কন্যা একত্রে ২:১'});
+      if(daughters>0) rows.push({name:daughters===1?'কন্যা':'কন্যাগণ (অবশিষ্ট অংশ)',count:daughters,share:daughterEach*daughters,each:daughterEach,reason:'পুত্রের সঙ্গে অবশিষ্ট অংশে ২:১ অনুপাত'});
+      residue=0;
+    } else if(father){
+      // father gets remaining residue when no sons; if only daughters, father gets 1/6 plus residue.
+      const row=rows.find(x=>x.name==='পিতা');
+      if(row){row.share+=residue; row.each=row.share; row.reason += residue>0?' এবং অবশিষ্ট অংশ':' '; }
+      residue=0;
+    } else if(residue>1e-9){
+      // For this simplified calculator, do not silently assign radd.
+      return err(r,'এই কেসে নির্দিষ্ট অংশ দেওয়ার পর অবশিষ্ট অংশ রয়েছে। রদ/অন্যান্য আসাবা/নিকটাত্মীয়ের নিয়ম প্রযোজ্য হতে পারে; তাই এই ক্যালকুলেটর চূড়ান্ত ফল দেয়নি।');
+    }
+
+    const total=rows.reduce((s,x)=>s+x.share,0);
+    const table=`<div class="result-main">উত্তরাধিকার হিসাব</div>
+      <p><strong>নিট সম্পত্তি:</strong> ${money(estate)} &nbsp; | &nbsp; <strong>মোট বণ্টন:</strong> ${fmt(total*100,2)}%</p>
+      <div class="inheritance-summary"><table class="inheritance-table"><thead><tr><th>উত্তরাধিকারী</th><th>প্রযোজ্য অংশ</th><th>শতাংশ</th><th>আনুমানিক টাকা</th></tr></thead><tbody>
+      ${rows.filter(x=>x.share>1e-10).map(x=>`<tr><td><strong>${esc(x.name)}</strong><br><span class="small-note">${esc(x.reason)}</span>${x.count>1?`<br><span class="small-note">প্রতি জন ≈ ${money(estate*x.each)}</span>`:''}</td><td>${frac(x.share)}${x.count>1?' (সমষ্টিগত)':''}</td><td>${fmt(x.share*100,2)}%</td><td>${money(estate*x.share)}</td></tr>`).join('')}
+      </tbody></table></div>
+      <p class="small-note">এটি প্রদত্ত পারিবারিক তথ্যের ভিত্তিতে সাধারণ হিসাব। পুত্র/কন্যার পূর্বমৃত্যু, নাতি-নাতনি, দাদা-দাদী, ভাই-বোন, রদ/আউল, বা অন্য উত্তরাধিকারী থাকলে ফল পরিবর্তিত হতে পারে।</p>`;
+    r.innerHTML=table;
+  };
+
+  document.querySelectorAll('[data-clear]').forEach(btn=>btn.addEventListener('click',()=>{
+    const type=btn.dataset.clear;
+    const panel=$('panel-'+type);
+    panel.querySelectorAll('input').forEach(i=>i.value='');
+    if(type==='inheritance'){
+      $('deceasedGender').value='male'; $('wives').value='1'; $('husband').value='0'; $('father').value='1'; $('mother').value='1'; $('sons').value='1'; $('daughters').value='1'; toggleGender();
+    }
+    panel.querySelectorAll('.calc-result').forEach(r=>r.innerHTML='');
+  }));
+})();
+</script>
+<script>
+if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
+</script>
+</body>
+</html>
