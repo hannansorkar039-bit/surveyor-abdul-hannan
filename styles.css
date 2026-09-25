@@ -14,7 +14,7 @@ img{max-width:100%;display:block}
 .hero{overflow:hidden;position:relative;color:#fff;background:radial-gradient(circle at 82% 15%,#176a72 0,#0d3d52 37%,#061722 100%);padding:78px 0 70px}
 .hero:after{content:"";position:absolute;right:-210px;top:-250px;width:560px;height:560px;border-radius:50%;border:88px solid rgba(237,106,36,.16)}
 .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:175px 1fr;gap:32px;align-items:center}
-.avatar{width:165px;height:165px;border-radius:50%;object-fit:cover;border:5px solid #fff;box-shadow:0 18px 42px rgba(0,0,0,.3)}
+.avatar{width:165px;height:165px;border-radius:50%;object-fit:cover;border:0;box-shadow:0 18px 42px rgba(0,0,0,.3)}
 .eyebrow{color:#ffd5bc;font-weight:900;font-size:13px;letter-spacing:.7px}
 h1{font-size:clamp(32px,5vw,58px);line-height:1.12;margin:8px 0 5px}
 .hero-sub{font-size:20px;color:#d8e9ee;margin:0}
@@ -586,7 +586,7 @@ body{overflow-x:hidden}
 .hero{padding:92px 0 82px;min-height:560px;background:radial-gradient(circle at 76% 18%,rgba(14,150,145,.65),transparent 26%),radial-gradient(circle at 12% 90%,rgba(239,125,50,.20),transparent 30%),linear-gradient(135deg,#061622 0%,#0a3047 52%,#086f72 100%)}
 .hero:before{content:'';position:absolute;inset:0;opacity:.13;background-image:linear-gradient(rgba(255,255,255,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.35) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(90deg,#000,transparent 72%)}
 .hero-grid{grid-template-columns:190px 1fr;gap:38px}
-.avatar{width:180px;height:180px;border:6px solid rgba(255,255,255,.92);box-shadow:0 25px 60px rgba(0,0,0,.32)}
+.avatar{width:180px;height:180px;border:0;box-shadow:0 25px 60px rgba(0,0,0,.32)}
 .eyebrow{letter-spacing:1.7px;font-size:12px}
 h1{letter-spacing:-1.4px;text-shadow:0 8px 25px rgba(0,0,0,.14)}
 .hero-sub{font-size:21px}
@@ -685,7 +685,7 @@ body{font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;backgr
 .hero:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:46px 46px;mask-image:linear-gradient(to bottom,black,transparent)}
 .hero:after{right:-170px;top:-270px;border-color:rgba(217,164,65,.15)}
 .hero-grid{grid-template-columns:190px 1fr;gap:38px}
-.avatar{width:178px;height:178px;border:5px solid rgba(255,255,255,.92);box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.avatar{width:178px;height:178px;border:0;box-shadow:0 24px 60px rgba(0,0,0,.35)}
 .eyebrow{color:#e9c56c;letter-spacing:1.2px}
 h1{font-weight:700;letter-spacing:-1px}
 .hero-sub{color:#d7e5f0}
