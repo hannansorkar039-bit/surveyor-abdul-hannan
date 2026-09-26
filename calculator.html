@@ -12,8 +12,8 @@
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <link rel="apple-touch-icon" href="icons/icon-192.png"/>
-<title>ভূমি পরিমাপ ও উত্তরাধিকার ক্যালকুলেটর | Surveyor Abdul Hannan</title>
-<meta name="description" content="আয়তক্ষেত্র, হেরন ও ব্রহ্মগুপ্তের সূত্রে ভূমির ক্ষেত্রফল এবং সাধারণ মুসলিম উত্তরাধিকার হিসাবের জন্য অনলাইন ক্যালকুলেটর।"/>
+<title>Professional ভূমি ক্যালকুলেটর | Surveyor Abdul Hannan</title>
+<meta name="description" content="কর্ণসহ ও কর্ণ ছাড়া অনিয়মিত চতুর্ভুজ, ত্রিভুজ, ভূমি একক রূপান্তর, ভাগ-বণ্টন এবং সাধারণ মুসলিম উত্তরাধিকার হিসাবের জন্য অনলাইন ক্যালকুলেটর।"/>
 <meta name="robots" content="index, follow"/>
 <link rel="canonical" href="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/calculator.html"/>
 <link href="icons/icon-192.png" rel="icon" type="image/png"/>
@@ -226,16 +226,16 @@
   </div>
   <div class="land-suite-grid">
     <div class="suite-card">
-      <h3>⚡ দ্রুত জমির ক্ষেত্রফল</h3>
-      <p class="suite-help">দৈর্ঘ্য × প্রস্থ দিয়ে দ্রুত হিসাব করুন। নিচে একই ফলাফল বাংলাদেশে প্রচলিত কয়েকটি এককে দেখা যাবে।</p>
+      <h3>⚡ দ্রুত জমির পরিমাণ ও ভাগ</h3>
+      <p class="suite-help">মোট জমি ও নির্দিষ্ট ভাগের পরিমাণ লিখে দ্রুত শতাংশ/বর্গফুটের সমতুল্য দেখুন। সুনির্দিষ্ট সীমানার ফুট-ইঞ্চি পেতে নিচের “চতুর্ভুজ ভাগ-বণ্টন” মডিউল ব্যবহার করুন।</p>
       <div class="suite-form">
-        <div class="suite-field"><label for="suiteLength">দৈর্ঘ্য</label><input id="suiteLength" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 100"></div>
-        <div class="suite-field"><label for="suiteWidth">প্রস্থ</label><input id="suiteWidth" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 50"></div>
-        <div class="suite-field"><label for="suiteUnit">মাপের একক</label><select id="suiteUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+        <div class="suite-field"><label for="suiteLength">মোট জমি</label><input id="suiteLength" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 5"></div>
+        <div class="suite-field"><label for="suiteWidth">ভাগের পরিমাণ</label><input id="suiteWidth" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 2"></div>
+        <div class="suite-field"><label for="suiteUnit">বর্তমান একক</label><select id="suiteUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div>
         <div class="suite-field"><label for="suiteDecimals">দশমিক</label><select id="suiteDecimals"><option value="2">২ ঘর</option><option value="4" selected>৪ ঘর</option><option value="6">৬ ঘর</option></select></div>
       </div>
-      <div class="quick-tools"><button type="button" id="suiteCalc">হিসাব করুন</button><button type="button" id="suiteClear">পরিষ্কার</button></div>
-      <div class="suite-result" id="suiteResult" aria-live="polite">দৈর্ঘ্য ও প্রস্থ দিলে ফলাফল এখানে দেখাবে।</div>
+      <div class="quick-tools"><button type="button" id="suiteCalc">ভাগ হিসাব করুন</button><button type="button" id="suiteClear">পরিষ্কার</button></div>
+      <div class="suite-result" id="suiteResult" aria-live="polite">মোট জমি ও ভাগের পরিমাণ দিলে ফলাফল এখানে দেখাবে।</div>
     </div>
     <div class="suite-card">
       <h3>🔄 ভূমি একক রূপান্তর</h3>
@@ -272,22 +272,62 @@
 <div class="suite-toast" id="suiteToast" role="status" aria-live="polite"></div>
 
 <div class="calc-tabs" role="tablist" aria-label="ক্যালকুলেটর নির্বাচন">
-<button class="calc-tab active" data-tab="rectangle" role="tab" aria-selected="true">আয়তক্ষেত্র</button>
+<button class="calc-tab active" data-tab="quad-diagonal" role="tab" aria-selected="true">কর্ণসহ অনিয়মিত চতুর্ভুজ</button>
+<button class="calc-tab" data-tab="quad-angle" role="tab" aria-selected="false">কর্ণ ছাড়া অনিয়মিত চতুর্ভুজ</button>
+<button class="calc-tab" data-tab="quad-partition" role="tab" aria-selected="false">চতুর্ভুজ ভাগ-বণ্টন</button>
 <button class="calc-tab" data-tab="heron" role="tab" aria-selected="false">হেরনের সূত্র</button>
 <button class="calc-tab" data-tab="brahmagupta" role="tab" aria-selected="false">ব্রহ্মগুপ্তের সূত্র</button>
 <button class="calc-tab" data-tab="inheritance" role="tab" aria-selected="false">মুসলিম উত্তরাধিকার</button>
 </div>
 
-<section class="calc-panel active" id="panel-rectangle" role="tabpanel">
-<h3>আয়তক্ষেত্রের ক্ষেত্রফল</h3>
-<div class="formula"><code>ক্ষেত্রফল = দৈর্ঘ্য × প্রস্থ</code></div>
+<section class="calc-panel active" id="panel-quad-diagonal" role="tabpanel">
+<h3>📐 কর্ণসহ অনিয়মিত চতুর্ভুজের ক্ষেত্রফল</h3>
+<div class="formula"><code>চতুর্ভুজ ABCD = △ABC + △ACD</code></div>
+<p class="calc-help">চারটি বাহু ও একটি কর্ণ AC দিলে চতুর্ভুজটিকে দুটি ত্রিভুজে ভাগ করে প্রতিটির ক্ষেত্রফল হেরনের সূত্রে নির্ণয় করা হবে। তাই কর্ণটি বাস্তবে A–C দুই কোণের বিন্দুর মধ্যকার মাপ হতে হবে।</p>
 <div class="calc-grid">
-<div class="calc-field"><label for="rectLength">দৈর্ঘ্য</label><input id="rectLength" type="number" min="0" step="any" placeholder="যেমন 120"></div>
-<div class="calc-field"><label for="rectWidth">প্রস্থ</label><input id="rectWidth" type="number" min="0" step="any" placeholder="যেমন 60"></div>
-<div class="calc-field"><label for="rectUnit">একক</label><select id="rectUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+<div class="calc-field"><label for="qdAB">বাহু AB</label><input id="qdAB" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qdBC">বাহু BC</label><input id="qdBC" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qdCD">বাহু CD</label><input id="qdCD" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qdDA">বাহু DA</label><input id="qdDA" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qdAC">কর্ণ AC</label><input id="qdAC" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qdUnit">একক</label><select id="qdUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
 </div>
-<div class="calc-actions"><button class="calc-btn calc-primary" id="rectCalc">হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="rectangle">পরিষ্কার</button></div>
-<div class="calc-result" id="rectResult" aria-live="polite"></div>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="qdCalc">সঠিকভাবে হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="quad-diagonal">পরিষ্কার</button></div>
+<div class="calc-result" id="qdResult" aria-live="polite"></div>
+</section>
+
+<section class="calc-panel" id="panel-quad-angle" role="tabpanel">
+<h3>📏 কর্ণ ছাড়া অনিয়মিত চতুর্ভুজের ক্ষেত্রফল</h3>
+<div class="formula"><code>AC = √(AB² + AD² − 2·AB·AD·cos A), এরপর △ABC + △ACD</code></div>
+<p class="calc-help">কর্ণ না মেপে শুধু চার বাহু দিয়ে সাধারণ চতুর্ভুজের ক্ষেত্রফল নির্ভুলভাবে নির্ণয় করা যায় না। এখানে <strong>A কোণ (AB ও AD-এর মধ্যকার কোণ)</strong> দিলে কর্ণটি গাণিতিকভাবে নির্ণয় করে ক্ষেত্রফল বের করা হবে।</p>
+<div class="calc-grid">
+<div class="calc-field"><label for="qaAB">বাহু AB</label><input id="qaAB" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qaBC">বাহু BC</label><input id="qaBC" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qaCD">বাহু CD</label><input id="qaCD" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qaDA">বাহু DA</label><input id="qaDA" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qaAngle">A কোণ</label><input id="qaAngle" type="number" min="0.000001" max="179.999999" step="any" placeholder="যেমন 90"></div>
+<div class="calc-field"><label for="qaUnit">একক</label><select id="qaUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+</div>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="qaCalc">সঠিকভাবে হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="quad-angle">পরিষ্কার</button></div>
+<div class="calc-result" id="qaResult" aria-live="polite"></div>
+</section>
+
+<section class="calc-panel" id="panel-quad-partition" role="tabpanel">
+<h3>🧭 অনিয়মিত চতুর্ভুজের ভাগ-বণ্টন</h3>
+<div class="formula"><code>প্রথমে ABCD-এর মোট ক্ষেত্রফল → এরপর নির্বাচিত শেয়ার অনুযায়ী নির্দিষ্ট ভাগের সীমারেখা</code></div>
+<p class="calc-help">শুধু “৫ শতাংশ জমি থেকে ২ শতাংশ” বললে সীমারেখার <strong>ফুট-ইঞ্চি</strong> নির্দিষ্ট হয় না—চতুর্ভুজের আকৃতি ও ভাগের রেখা জানা দরকার। এই মডিউলে A শীর্ষ থেকে বিপরীত বাহু CD-এর একটি বিন্দুতে সরল ভাগরেখা AD? নয়, <strong>A → CD</strong> সংযোগ ধরে ভাগ করা হবে। অর্থাৎ A থেকে CD-এর উপর একটি বিন্দু P নেওয়া হবে; A–P রেখার এক পাশে নির্ধারিত ক্ষেত্রফল থাকবে।</p>
+<div class="calc-grid">
+<div class="calc-field"><label for="qpAB">বাহু AB</label><input id="qpAB" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qpBC">বাহু BC</label><input id="qpBC" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qpCD">বাহু CD</label><input id="qpCD" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qpDA">বাহু DA</label><input id="qpDA" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qpAC">কর্ণ AC</label><input id="qpAC" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="qpTotalUnit">মাপের একক</label><select id="qpTotalUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+<div class="calc-field"><label for="qpTarget">যে পরিমাণ জমি দিতে চান</label><input id="qpTarget" type="number" min="0" step="any" placeholder="যেমন 2"></div>
+<div class="calc-field"><label for="qpTargetUnit">ভাগের একক</label><select id="qpTargetUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div>
+</div>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="qpCalc">ভাগের সীমারেখা হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="quad-partition">পরিষ্কার</button></div>
+<div class="calc-result" id="qpResult" aria-live="polite"></div>
 </section>
 
 <section class="calc-panel" id="panel-heron" role="tabpanel">
@@ -320,6 +360,7 @@
 </section>
 
 <section class="calc-panel" id="panel-inheritance" role="tabpanel">
+
 <h3>মুসলিম উত্তরাধিকার — সাধারণ পারিবারিক কেস</h3>
 <p class="lead" style="font-size:15px">এই অংশে জীবিত স্বামী/স্ত্রী, পিতা, মাতা, পুত্র ও কন্যার ভিত্তিতে সাধারণ সুন্নি-হানাফি ফারায়েজের হিসাব করা হয়। বাংলাদেশের Muslim Personal Law (Shariat) Application Act, 1937 এবং Muslim Family Laws Ordinance, 1961-এর প্রাসঙ্গিক বিধান বিবেচনায় রাখা হয়েছে।</p>
 <div class="warning"><strong>প্রথমে নিট উত্তরাধিকারযোগ্য সম্পত্তি নির্ধারণ করুন:</strong> দাফন/শেষকৃত্যের প্রয়োজনীয় খরচ, দেনা এবং আইনসম্মত দাবিগুলো নিষ্পত্তির পর যে সম্পত্তি উত্তরাধিকার হিসেবে বণ্টনযোগ্য, সেটিই এখানে লিখুন।</div>
@@ -469,10 +510,82 @@
       document.querySelectorAll('.calc-tab').forEach(b=>b.setAttribute('aria-selected', b===btn ? 'true' : 'false'));
     });
   });
-  $('rectCalc').onclick=()=>{
-    const l=+$('rectLength').value,w=+$('rectWidth').value,u=$('rectUnit').value,r=$('rectResult');
-    if(!(l>0&&w>0)) return err(r,'দৈর্ঘ্য ও প্রস্থ—দুটিই শূন্যের চেয়ে বেশি দিন।');
-    const area=l*w; r.innerHTML=`<div class="result-main">ক্ষেত্রফল = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div>${landLines(area,u)}`;
+  const triangleArea=(a,b,c)=>{
+    const s=(a+b+c)/2, z=s*(s-a)*(s-b)*(s-c);
+    if(!(z>0)) return null;
+    return Math.sqrt(z);
+  };
+  const ftIn=(v)=>{
+    const sign=v<0?'-':''; v=Math.abs(v); const feet=Math.floor(v+1e-10); let inches=(v-feet)*12;
+    let f=feet, i=Math.round(inches*100)/100;
+    if(i>=12){f+=1;i=0;}
+    const inText=(Math.abs(i-Math.round(i))<1e-9?String(Math.round(i)):i.toFixed(2));
+    return `${sign}${f} ফুট ${inText} ইঞ্চি`;
+  };
+  const fmtAreaResult=(area,u,title,extra='')=>`<div class="result-main">${title} = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div>${extra}${landLines(area,u)}`;
+  function readQuad(prefix){
+    return ['AB','BC','CD','DA'].map(k=>+$(prefix+k).value);
+  }
+  function quadDiagonalArea(ab,bc,cd,da,diag){
+    const t1=triangleArea(ab,bc,diag), t2=triangleArea(cd,da,diag);
+    return t1&&t2?{t1,t2,area:t1+t2}:null;
+  }
+  $('qdCalc').onclick=()=>{
+    const [ab,bc,cd,da]=readQuad('qd'), diag=+$('qdAC').value, u=$('qdUnit').value, r=$('qdResult');
+    if(![ab,bc,cd,da,diag].every(v=>v>0)) return err(r,'চারটি বাহু ও কর্ণ AC—সবগুলোই শূন্যের চেয়ে বেশি দিন।');
+    const q=quadDiagonalArea(ab,bc,cd,da,diag);
+    if(!q) return err(r,'এই মাপগুলো দিয়ে দুটি বৈধ ত্রিভুজ গঠন হচ্ছে না। AC কর্ণটি AB–BC এবং AD–CD—উভয় ত্রিভুজের triangle inequality পূরণ করতে হবে।');
+    const sq= sqrAreaForDisplay(q.area,u);
+    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',`<p>△ABC = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △ACD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ AC = ${fmt(diag)} ${u==='ft'?'ফুট':'মিটার'}</p>`);
+  };
+  function sqrAreaForDisplay(area,u){return u==='ft'?area:area;}
+  $('qaCalc').onclick=()=>{
+    const [ab,bc,cd,da]=readQuad('qa'), angle=+$('qaAngle').value, u=$('qaUnit').value, r=$('qaResult');
+    if(![ab,bc,cd,da,angle].every(v=>v>0)) return err(r,'চারটি বাহু ও A কোণের সঠিক মান দিন।');
+    if(!(angle>0&&angle<180)) return err(r,'A কোণ ০°-এর বেশি এবং ১৮০°-এর কম হতে হবে।');
+    const rad=angle*Math.PI/180;
+    const diag=Math.sqrt(ab*ab+da*da-2*ab*da*Math.cos(rad));
+    const q=quadDiagonalArea(ab,bc,cd,da,diag);
+    if(!q) return err(r,'দেওয়া বাহু ও কোণের সমন্বয়ে বৈধ চতুর্ভুজ গঠন হচ্ছে না। অনুগ্রহ করে মাঠের মাপগুলো পুনরায় যাচাই করুন।');
+    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',`<p>গাণিতিকভাবে নির্ণীত কর্ণ AC = ${fmt(diag)} ${u==='ft'?'ফুট':'মিটার'}</p><p>A কোণ = ${fmt(angle,6)}°</p>`);
+  };
+  $('qpCalc').onclick=()=>{
+    const [ab,bc,cd,da]=readQuad('qp'), diag=+$('qpAC').value, totalUnit=$('qpTotalUnit').value, target=+$('qpTarget').value, targetUnit=$('qpTargetUnit').value, r=$('qpResult');
+    if(![ab,bc,cd,da,diag,target].every(v=>v>0)) return err(r,'চারটি বাহু, কর্ণ AC এবং যে পরিমাণ জমি ভাগ করবেন—সবগুলোর সঠিক মান দিন।');
+    const q=quadDiagonalArea(ab,bc,cd,da,diag);
+    if(!q) return err(r,'দেওয়া বাহু ও কর্ণ দিয়ে বৈধ চতুর্ভুজ গঠন হচ্ছে না।');
+    const totalSqft=totalUnit==='ft'?q.area:q.area*10.763910416709722;
+    const targetSqft=targetUnit==='sqft'?target:targetUnit==='sqm'?target*10.763910416709722:target*435.6;
+    if(targetSqft>=totalSqft-1e-8) return err(r,'ভাগের পরিমাণ মোট জমির চেয়ে কম হতে হবে।');
+    const triACDsqft=totalUnit==='ft'?q.t2:q.t2*10.763910416709722;
+    const wantTriangle=targetSqft<=triACDsqft+1e-8;
+    const triangleTarget=wantTriangle?targetSqft:totalSqft-targetSqft;
+    if(triangleTarget>triACDsqft+1e-8) return err(r,'এই নির্দিষ্ট A→CD ভাগরেখা দিয়ে চাওয়া পরিমাণ আলাদা করা সম্ভব নয়। অন্য একটি ভাগের দিক/বিন্দু নির্বাচন করতে হবে।');
+    const fraction=triangleTarget/triACDsqft;
+    const dp=cd*fraction;
+    const cp=cd-dp;
+    // Reconstruct D coordinates with A=(0,0), C=(diag,0).
+    const dx=(da*da+diag*diag-cd*cd)/(2*diag);
+    const dy2=da*da-dx*dx;
+    if(!(dy2>=-1e-7)) return err(r,'জ্যামিতিকভাবে D-এর অবস্থান নির্ণয় করা যাচ্ছে না; মাপ যাচাই করুন।');
+    const dy=Math.sqrt(Math.max(0,dy2));
+    const px=dx+(diag-dx)*fraction, py=dy*(1-fraction);
+    const ap=Math.hypot(px,py);
+    const lengthToFt=v=>totalUnit==='ft'?v:v*3.280839895013123;
+    const dpFt=lengthToFt(dp), cpFt=lengthToFt(cp), apFt=lengthToFt(ap);
+    const targetDecimal=targetUnit==='decimal'?target:targetSqft/435.6;
+    const otherDecimal=totalSqft/435.6-targetDecimal;
+    const sideName=wantTriangle?'△ADP অংশ':'বাকি AB–BC–P অংশ';
+    r.innerHTML=`<div class="result-main">মোট জমি = ${fmt(totalSqft)} sq ft</div>
+      <div class="result-list">
+        <div class="result-item result-item-primary"><strong>${fmt(targetSqft)} sq ft</strong><span>নির্ধারিত ভাগ = ${fmt(targetDecimal)} শতাংশ</span></div>
+        <div class="result-item"><strong>${fmt(otherDecimal)} শতাংশ</strong><span>অবশিষ্ট ভাগ</span></div>
+        <div class="result-item"><strong>${ftIn(dpFt)}</strong><span>D থেকে CD বাহুর উপর P পর্যন্ত</span></div>
+        <div class="result-item"><strong>${ftIn(cpFt)}</strong><span>P থেকে C পর্যন্ত</span></div>
+        <div class="result-item"><strong>${ftIn(apFt)}</strong><span>A থেকে ভাগ-বিন্দু P পর্যন্ত ভাগরেখা</span></div>
+        <div class="result-item"><strong>${fmt(fraction*100,6)}%</strong><span>CD বাহুর D→C অংশের অনুপাত</span></div>
+      </div>
+      <p class="conversion-note"><strong>${sideName}</strong>-কে নির্ধারিত ভাগ হিসেবে নেওয়া হয়েছে। P বিন্দু CD বাহুর উপর বসবে এবং A–P হবে ভাগরেখা। ফলাফল জ্যামিতিকভাবে মাপ-ভিত্তিক; মাঠে দাগ টানার আগে বাস্তব সীমানা/দিক যাচাই করুন।</p>`;
   };
   $('heronCalc').onclick=()=>{
     const a=+$('heronA').value,b=+$('heronB').value,c=+$('heronC').value,u=$('heronUnit').value,r=$('heronResult');
@@ -852,7 +965,7 @@
  let lastText='';
  function saveHistory(title,result){let a=[];try{a=JSON.parse(localStorage.getItem('landCalcHistory')||'[]')}catch(e){} a.unshift({title,result,time:new Date().toLocaleString('bn-BD')});a=a.slice(0,8);localStorage.setItem('landCalcHistory',JSON.stringify(a));renderHistory();}
  function renderHistory(){const box=$('suiteHistory');let a=[];try{a=JSON.parse(localStorage.getItem('landCalcHistory')||'[]')}catch(e){} if(!a.length){box.innerHTML='<div class="suite-note">এখনও কোনো হিসাব সংরক্ষিত নেই।</div>';return} box.innerHTML=a.map((x,i)=>`<div class="history-item"><div><b>${x.title}</b><br><span>${x.result}</span><br><small>${x.time}</small></div><button type="button" data-hi="${i}">মুছুন</button></div>`).join('');box.querySelectorAll('[data-hi]').forEach(b=>b.onclick=()=>{a.splice(+b.dataset.hi,1);localStorage.setItem('landCalcHistory',JSON.stringify(a));renderHistory()})}
- $('suiteCalc').onclick=()=>{const l=+$('suiteLength').value,w=+$('suiteWidth').value,u=$('suiteUnit').value,d=+$('suiteDecimals').value;if(!(l>0&&w>0)){toast('দৈর্ঘ্য ও প্রস্থ—দুটিই সঠিকভাবে দিন।');return}const area=l*w;const sqft=u==='ft'?area:area*10.763910416709722;const sqm=u==='ft'?area*.09290304:area;const dec=sqft/435.6,k=sqft/720,b=sqft/14400,a=sqft/43560,h=sqft/107639.104167;const r=`<b>মোট ক্ষেত্রফল: ${n(area,d)} ${u==='ft'?'বর্গফুট':'বর্গমিটার'}</b><div class="unit-grid"><div class="unit-pill"><b>${n(sqft,d)} sq ft</b><span>বর্গফুট</span></div><div class="unit-pill"><b>${n(sqm,d)} sq m</b><span>বর্গমিটার</span></div><div class="unit-pill"><b>${n(dec,d)}</b><span>শতাংশ</span></div><div class="unit-pill"><b>${n(k,d)}</b><span>কাঠা</span></div><div class="unit-pill"><b>${n(b,d)}</b><span>বিঘা</span></div><div class="unit-pill"><b>${n(a,d)}</b><span>একর</span></div><div class="unit-pill"><b>${n(h,d)}</b><span>হেক্টর</span></div></div>`;$('suiteResult').innerHTML=r;lastText=`দৈর্ঘ্য ${l} × প্রস্থ ${w} ${u==='ft'?'ফুট':'মিটার'} = ${n(area,d)} ${u==='ft'?'বর্গফুট':'বর্গমিটার'}; ${n(dec,d)} শতাংশ`;saveHistory('দ্রুত ক্ষেত্রফল',lastText);toast('হিসাব সম্পন্ন হয়েছে।')};
+ $('suiteCalc').onclick=()=>{const total=+$('suiteLength').value,part=+$('suiteWidth').value,u=$('suiteUnit').value,d=+$('suiteDecimals').value;if(!(total>0&&part>0&&part<total)){toast('মোট জমি ও ভাগের পরিমাণ সঠিকভাবে দিন; ভাগ মোটের চেয়ে কম হতে হবে।');return}const factors={decimal:435.6,sqft:1,sqm:10.763910416709722};const totalSqft=total*factors[u],partSqft=part*factors[u];const totalDec=totalSqft/435.6,partDec=partSqft/435.6;const ratio=partSqft/totalSqft*100;const r=`<b>মোট জমি: ${n(total,d)} ${labels[u]||u}</b><div class="unit-grid"><div class="unit-pill"><b>${n(part,d)} ${labels[u]||u}</b><span>নির্ধারিত ভাগ</span></div><div class="unit-pill"><b>${n(partSqft,d)} sq ft</b><span>ভাগের বর্গফুট</span></div><div class="unit-pill"><b>${n(partDec,d)} শতাংশ</b><span>ভাগের শতাংশ</span></div><div class="unit-pill"><b>${n(ratio,d)}%</b><span>মোটের অংশ</span></div></div>`;$('suiteResult').innerHTML=r;lastText=`মোট ${n(total,d)} ${labels[u]||u}; ভাগ ${n(part,d)} ${labels[u]||u} = ${n(partSqft,d)} বর্গফুট = ${n(partDec,d)} শতাংশ; মোটের ${n(ratio,d)}%`;saveHistory('দ্রুত ভাগের হিসাব',lastText);toast('ভাগের হিসাব সম্পন্ন হয়েছে।')};
  $('suiteClear').onclick=()=>{$('suiteLength').value='';$('suiteWidth').value='';$('suiteResult').textContent='দৈর্ঘ্য ও প্রস্থ দিলে ফলাফল এখানে দেখাবে।'};
  $('suiteConvert').onclick=()=>{const v=+$('suiteArea').value,unit=$('suiteAreaUnit').value;if(!(v>=0)&&v!==0){toast('সঠিক জমির পরিমাণ দিন।');return}const sqft=v*factors[unit];const vals={sqft,sqm:sqft/10.763910416709722,decimal:sqft/435.6,katha:sqft/720,bigha:sqft/14400,acre:sqft/43560,hectare:sqft/107639.104167};const order=['sqft','sqm','decimal','katha','bigha','acre','hectare'];$('suiteConversionResult').innerHTML=order.map(k=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed #dbe8eb"><span>${labels[k]}</span><strong>${n(vals[k],6)}</strong></div>`).join('');lastText=`${n(v,6)} ${labels[unit]} = ${n(vals.decimal,6)} শতাংশ; ${n(vals.sqft,6)} বর্গফুট; ${n(vals.katha,6)} কাঠা; ${n(vals.bigha,6)} বিঘা; ${n(vals.acre,6)} একর`;$('suiteCopy').disabled=false;saveHistory('একক রূপান্তর',lastText);toast('রূপান্তর সম্পন্ন হয়েছে।')};
  $('suiteCopy').onclick=async()=>{if(!lastText)return;try{await navigator.clipboard.writeText(lastText);toast('ফলাফল কপি হয়েছে।')}catch(e){toast('কপি করা যায়নি; ফলাফলটি নির্বাচন করে কপি করুন।')}};
