@@ -225,7 +225,7 @@ ${details ? "বিস্তারিত: " + details : ""}`;
   }else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));
 
   const bar=document.createElement('div'); bar.className='v6-mobile-bar';
-  bar.innerHTML='<a href="tel:+8801810811989">📞<span>কল</span></a><a href="https://wa.me/8801810811989" target="_blank" rel="noopener">💬<span>WhatsApp</span></a><a class="primary" href="order.html">📋<span>অর্ডার</span></a><a href="contact.html">📍<span>যোগাযোগ</span></a>';
+  bar.innerHTML='<a href="tel:+8801810811989">📞<span>কল</span></a><a href="https://wa.me/8801810811989" target="_blank" rel="noopener">💬<span>WhatsApp</span></a><a class="primary" href="calculator.html">🧮<span>ক্যালকুলেটর</span></a><a href="contact.html">📍<span>যোগাযোগ</span></a>';
   document.body.appendChild(bar);
 
   // Graceful fallback for images that are intentionally kept outside this package.
