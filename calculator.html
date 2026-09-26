@@ -1,108 +1,870 @@
 <!doctype html>
 <html lang="bn-BD">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ভূমি ক্যালকুলেটর | Surveyor Abdul Hannan</title>
-<meta name="description" content="বাংলাদেশের প্রচলিত ভূমি একক রূপান্তর, হেরনের সূত্র, ব্রহ্মগুপ্তের সূত্র, চার বাহুর জ্যামিতিক হিসাব, ভাগ-বাটোয়ারা, উত্তরাধিকার এবং জমির মূল্য ও রেজিস্ট্রি খরচের সহায়ক ক্যালকুলেটর।">
-<meta name="robots" content="index,follow">
-<link rel="canonical" href="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/calculator.html">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png" type="image/png">
-<meta name="theme-color" content="#082336">
+<meta content="qk96Dm_-k5Wkaq_0yrH_cQJRhDteoc6XCn9a7UDsLlM" name="google-site-verification"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<meta name="theme-color" content="#0a2638"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<title>ভূমি পরিমাপ ও উত্তরাধিকার ক্যালকুলেটর | Surveyor Abdul Hannan</title>
+<meta name="description" content="আয়তক্ষেত্র, হেরন ও ব্রহ্মগুপ্তের সূত্রে ভূমির ক্ষেত্রফল এবং সাধারণ মুসলিম উত্তরাধিকার হিসাবের জন্য অনলাইন ক্যালকুলেটর।"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/calculator.html"/>
+<link href="icons/icon-192.png" rel="icon" type="image/png"/>
+<meta property="og:type" content="website"/>
+<meta property="og:locale" content="bn_BD"/>
+<meta property="og:title" content="ভূমি পরিমাপ ও উত্তরাধিকার ক্যালকুলেটর | Surveyor Abdul Hannan"/>
+<meta property="og:description" content="ভূমি পরিমাপের বিভিন্ন সূত্র ও সাধারণ মুসলিম উত্তরাধিকার হিসাবের অনলাইন ক্যালকুলেটর।"/>
+<meta property="og:url" content="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/calculator.html"/>
+<meta property="og:image" content="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/profile-abdul-hannan.webp"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="ভূমি পরিমাপ ও উত্তরাধিকার ক্যালকুলেটর | Surveyor Abdul Hannan"/>
+<meta name="twitter:description" content="ভূমি পরিমাপ ও সাধারণ মুসলিম উত্তরাধিকার হিসাবের অনলাইন ক্যালকুলেটর।"/>
+<meta name="twitter:image" content="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/profile-abdul-hannan.webp"/>
+<link rel="stylesheet" href="styles.css">
 <style>
-:root{--navy:#082336;--teal:#08747b;--orange:#e97820;--ink:#182b35;--muted:#60727b;--line:#dce7eb;--soft:#f4f8f9;--card:#fff;--shadow:0 12px 32px rgba(8,35,54,.09)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#f7fafb,#eef5f6);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Bengali","Hind Siliguri",sans-serif;line-height:1.6}.container{width:min(1120px,calc(100% - 28px));margin:auto}.skip{position:absolute;left:-9999px}.skip:focus{left:10px;top:10px;z-index:99;background:#fff;padding:8px}
-.nav{background:var(--navy);color:#fff;position:sticky;top:0;z-index:30;box-shadow:0 3px 18px #0002}.nav-inner{display:flex;align-items:center;gap:18px;min-height:62px}.brand{display:flex;align-items:center;gap:9px;color:#fff;text-decoration:none;font-weight:900;white-space:nowrap}.brand img{width:35px;height:35px;border-radius:50%;object-fit:cover;border:2px solid #fff}.navlinks{display:flex;gap:8px;overflow:auto;white-space:nowrap;margin-left:auto}.navlinks a,.mobile-link{color:#fff;text-decoration:none;padding:7px 9px;border-radius:8px;font-size:14px;font-weight:700}.navlinks a:hover,.mobile-link:hover{background:#ffffff18}.mobile-link{display:none}
-.hero{padding:48px 0;background:radial-gradient(circle at 80% 20%,#08747b22,transparent 35%),linear-gradient(135deg,#082336,#0b3d50);color:#fff}.hero-grid{display:grid;grid-template-columns:150px 1fr;gap:28px;align-items:center}.avatar{width:150px;height:150px;border-radius:24px;object-fit:cover;border:4px solid #fff;box-shadow:0 15px 35px #0004}.eyebrow{font-size:13px;letter-spacing:2px;font-weight:900;opacity:.8}.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.12;margin:7px 0 10px}.hero-sub{font-size:18px;margin:0 0 8px;opacity:.9}.tagline{font-weight:700;color:#d8f4f3}.hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.hero-pills span{background:#ffffff14;border:1px solid #ffffff2b;padding:7px 12px;border-radius:999px}.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{display:inline-flex;padding:10px 16px;border-radius:999px;text-decoration:none;font-weight:900}.btn-light{background:#fff;color:var(--navy)}.btn-primary{background:var(--orange);color:#fff}
-main{padding:35px 0 55px}.intro{text-align:center;margin-bottom:24px}.intro h2{font-size:30px;color:var(--navy);margin:0 0 5px}.lead{color:var(--muted);margin:0 auto;max-width:850px}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:24px 0 16px}.tab{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:14px;padding:12px 8px;font:inherit;font-weight:900;cursor:pointer;box-shadow:0 4px 14px #0823360a}.tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}.panel{display:none}.panel.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:23px;box-shadow:var(--shadow);margin-bottom:18px}.card h3{color:var(--navy);margin:0 0 8px;font-size:23px}.formula{background:#fff7ee;border-left:4px solid var(--orange);padding:13px 15px;border-radius:10px;margin:13px 0 18px;font-weight:800}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-weight:850;color:var(--navy)}input,select{width:100%;min-height:46px;border:1px solid #cbd9de;border-radius:10px;background:#fff;padding:9px 11px;font:inherit;color:var(--ink);outline:none}input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 3px #08747b18}.help,.note{font-size:13px;color:var(--muted)}.actions-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:17px}.btn-calc{border:0;border-radius:999px;padding:11px 17px;font:inherit;font-weight:900;cursor:pointer}.primary{background:var(--orange);color:#fff}.secondary{background:#edf4f6;color:var(--navy)}.danger{background:#fff0f0;color:#a22626}.result{margin-top:18px;padding:17px;border:1px solid #d6e6e9;background:#f3f8f9;border-radius:14px}.result:empty{display:none}.big{font-size:27px;font-weight:950;color:var(--navy)}.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.result-item{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px}.result-item strong{display:block;color:var(--navy)}.warning{background:#fff8e8;border-left:4px solid #d39a22;border-radius:9px;padding:11px 13px;color:#634b16}.ok{background:#eef8f4;border-left:4px solid #21936b;border-radius:9px;padding:11px 13px}.table-wrap{overflow:auto;margin-top:14px}.table{width:100%;border-collapse:collapse;min-width:620px}.table th,.table td{border-bottom:1px solid var(--line);padding:9px;text-align:left}.table th{background:#f1f6f7;color:var(--navy)}.right{text-align:right!important}.inline{display:flex;gap:8px;align-items:end}.inline>*{flex:1}.section-note{margin-top:16px;padding:14px;border-radius:12px;background:#eef7f8;border-left:5px solid var(--teal)}
-.shape{width:100%;height:280px;background:#f8fbfb;border:1px solid var(--line);border-radius:14px;margin-top:15px;display:block}.mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.sticky{position:sticky;top:80px}.share-list{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.share-list .field{background:#f7fafb;padding:10px;border:1px solid var(--line);border-radius:10px}.total-box{padding:17px;border-radius:15px;background:linear-gradient(135deg,#082336,#08747b);color:#fff}.total-box .big{color:#fff}.footer{background:var(--navy);color:#dce9ed;text-align:center;padding:28px 0}.footer strong{color:#fff}.small{font-size:13px}.offline{position:fixed;right:12px;bottom:12px;background:#172d38;color:#fff;padding:9px 13px;border-radius:999px;font-size:12px;z-index:50;box-shadow:0 8px 20px #0003}.offline.online{display:none}
-@media(max-width:900px){.navlinks{display:none}.mobile-link{display:block;margin-left:auto}.tabs{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.sticky{position:static}.share-list{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:650px){.hero{padding:30px 0}.hero-grid{grid-template-columns:1fr;text-align:center}.avatar{margin:auto}.actions,.hero-pills{justify-content:center}.grid{grid-template-columns:1fr}.result-grid{grid-template-columns:1fr 1fr}.mini-grid{grid-template-columns:1fr 1fr}.card{padding:17px}.tabs{grid-template-columns:1fr 1fr}.tab{font-size:13px}.share-list{grid-template-columns:1fr}.result-grid .result-item:last-child{grid-column:1/-1}}
+.site-brand{display:inline-flex;align-items:center;gap:8px}.site-brand img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.75);box-shadow:0 2px 8px rgba(0,0,0,.18)}.site-brand span{line-height:1.2}
+@media(max-width:560px){.site-brand img{width:30px;height:30px}}
+.calc-wrap{max-width:1050px;margin:0 auto}
+.calc-intro{margin-bottom:28px}
+.calc-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 22px}
+.calc-tab{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:14px;padding:13px 10px;font:inherit;font-weight:800;cursor:pointer;transition:.2s}
+.calc-tab:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(8,35,54,.08)}
+.calc-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.calc-panel{display:none;background:#fff;border:1px solid var(--line);border-radius:18px;padding:25px;box-shadow:var(--shadow)}
+.calc-panel.active{display:block}
+.calc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.calc-field{display:flex;flex-direction:column;gap:7px}
+.calc-field label{font-weight:800;color:var(--navy)}
+.calc-field input,.calc-field select{width:100%;min-height:46px;border:1px solid #cbd8de;border-radius:10px;padding:9px 12px;font:inherit;color:var(--ink);background:#fff;outline:none}
+.calc-field input:focus,.calc-field select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(8,116,123,.11)}
+.calc-help{font-size:13px;color:var(--muted);margin:0}
+.calc-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.calc-btn{border:0;border-radius:999px;padding:11px 18px;font:inherit;font-weight:900;cursor:pointer}
+.calc-primary{background:var(--orange);color:#fff}.calc-secondary{background:#edf4f6;color:var(--navy)}
+.calc-result{margin-top:22px;padding:18px;border-radius:14px;background:#f3f8f9;border:1px solid #d6e7e9}
+.calc-result:empty{display:none}
+.result-main{font-size:26px;font-weight:900;color:var(--navy);margin-bottom:8px}
+.result-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.result-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.result-item strong{display:block;color:var(--navy)}
+.formula{margin:0 0 18px;padding:14px 16px;background:#fff8f1;border-left:4px solid var(--orange);border-radius:10px}
+.formula code{font-size:16px;font-weight:800;color:#6b3b1e;white-space:normal}
+.warning{margin-top:18px;padding:14px 16px;background:#fff8e8;border-left:4px solid #d79a20;border-radius:10px}
+.legal-note{margin-top:24px;padding:18px 20px;background:#eef7f8;border-left:5px solid var(--teal);border-radius:12px}
+.legal-note strong{color:var(--navy)}
+.heirs-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.heir-field{background:#f7fafb;border:1px solid var(--line);padding:12px;border-radius:12px}
+.heir-field label{display:block;font-weight:800;margin-bottom:7px}
+.heir-field input{min-height:44px}
+.inheritance-summary{overflow:auto;margin-top:15px}
+.inheritance-table{width:100%;border-collapse:collapse;min-width:610px;background:#fff}
+.inheritance-table th,.inheritance-table td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left}
+.inheritance-table th{background:#f2f6f7;color:var(--navy);font-weight:900}
+.inheritance-table td:nth-child(2),.inheritance-table td:nth-child(3),.inheritance-table td:nth-child(4){text-align:right}
+.small-note{font-size:13px;color:var(--muted)}
+.sources{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.sources a{color:var(--teal);font-weight:800;text-decoration:underline}
+@media(max-width:850px){.calc-tabs{grid-template-columns:repeat(2,1fr)}.heirs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.calc-grid,.result-list,.heirs-grid{grid-template-columns:1fr}.calc-panel{padding:18px}.calc-tabs{grid-template-columns:1fr 1fr}.calc-tab{font-size:14px;padding:11px 7px}}
+
+/* ===== Registry Calculator Upgrade — additive only ===== */
+.registry-upgrade{margin-top:30px}
+.registry-upgrade .registry-head{margin-bottom:18px}
+.registry-upgrade .registry-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:18px}
+.registry-upgrade .registry-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+.registry-upgrade .registry-rate{display:inline-flex;align-items:center;gap:7px;margin:0 0 12px;padding:7px 11px;border-radius:999px;background:#eef7f8;color:var(--teal);font-size:13px;font-weight:900}
+.registry-upgrade .registry-summary{position:sticky;top:84px}
+.registry-upgrade .cost-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.registry-upgrade .cost-row:last-child{border-bottom:0}
+.registry-upgrade .cost-name{font-weight:800;color:var(--navy)}
+.registry-upgrade .cost-meta{display:block;font-size:12px;color:var(--muted);font-weight:600}
+.registry-upgrade .cost-amount{font-weight:900;color:var(--navy);white-space:nowrap}
+.registry-upgrade .registry-total{margin-top:14px;padding:16px;border-radius:14px;background:linear-gradient(135deg,#082336,#08747b);color:#fff}
+.registry-upgrade .registry-total strong{display:block;font-size:28px;line-height:1.2}
+.registry-upgrade .registry-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.registry-upgrade .registry-actions button{border:0;border-radius:999px;padding:11px 16px;font:inherit;font-weight:900;cursor:pointer}
+.registry-upgrade .registry-primary{background:var(--orange);color:#fff}
+.registry-upgrade .registry-secondary{background:#edf4f6;color:var(--navy)}
+.registry-upgrade .registry-note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7}
+.registry-upgrade .shape-box,.registry-upgrade .map-box{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#f7fafb}
+.registry-upgrade #landShapeCanvas{display:block;width:100%;height:320px}
+.registry-upgrade #registryMap{height:360px;width:100%}
+.registry-upgrade .map-offline-note{display:none;margin:0;padding:10px 12px;border:1px solid rgba(8,116,123,.18);border-radius:10px;background:#f6fbfc;color:#284b55;font-size:13px;line-height:1.55}
+.registry-upgrade .map-offline-note.show{display:block}
+.registry-upgrade .map-tools{display:flex;gap:8px;flex-wrap:wrap;padding:10px;background:#fff;border-top:1px solid var(--line)}
+.registry-upgrade .map-tools button{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:8px 12px;font:inherit;font-weight:800;cursor:pointer}
+.registry-upgrade .badge-rate{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;background:#fff3e9;color:#9b4b16;font-size:11px}
+@media(max-width:850px){.registry-upgrade .registry-grid{grid-template-columns:1fr}.registry-upgrade .registry-summary{position:static}}
+@media(max-width:620px){.registry-upgrade .registry-card{padding:16px}.registry-upgrade #landShapeCanvas{height:260px}.registry-upgrade #registryMap{height:300px}}
+
+/* ===== Professional Land Calculator UI v2 — calculator page only ===== */
+:root{--calc-deep:#082336;--calc-teal:#08747b;--calc-teal-2:#0b8b91;--calc-orange:#ef7d22;--calc-soft:#f4fafb;--calc-line:#d8e6ea;--calc-shadow:0 18px 45px rgba(8,35,54,.10)}
+.calc-wrap{max-width:1120px}
+.calc-intro{position:relative;padding:26px 28px;margin-bottom:24px;border:1px solid var(--calc-line);border-radius:24px;background:linear-gradient(135deg,#ffffff 0%,#f2fafb 100%);box-shadow:var(--calc-shadow);overflow:hidden}
+.calc-intro:after{content:"";position:absolute;right:-70px;top:-85px;width:210px;height:210px;border-radius:50%;background:rgba(8,116,123,.08);pointer-events:none}
+.calc-intro .section-title{position:relative;z-index:1;margin-bottom:8px;font-size:clamp(25px,3vw,34px);letter-spacing:-.3px}
+.calc-intro .lead{position:relative;z-index:1;max-width:850px}
+.calc-tabs{gap:12px;margin-bottom:18px;position:sticky;top:10px;z-index:10;padding:7px;border:1px solid rgba(216,230,234,.95);border-radius:19px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);box-shadow:0 10px 28px rgba(8,35,54,.08)}
+.calc-tab{min-height:52px;border:1px solid #d7e4e8;background:#fff;color:var(--calc-deep);border-radius:14px;padding:12px 11px;font-weight:900;box-shadow:0 3px 10px rgba(8,35,54,.035)}
+.calc-tab:hover{border-color:#a8cdd1;transform:translateY(-2px);box-shadow:0 10px 22px rgba(8,35,54,.10)}
+.calc-tab.active{background:linear-gradient(135deg,var(--calc-deep),var(--calc-teal));border-color:transparent;box-shadow:0 10px 24px rgba(8,116,123,.22)}
+.calc-panel{border:1px solid var(--calc-line);border-radius:22px;padding:28px;background:linear-gradient(180deg,#fff,#fbfefe);box-shadow:var(--calc-shadow)}
+.calc-panel h3{font-size:24px;margin-top:0;margin-bottom:14px;color:var(--calc-deep)}
+.calc-field label{font-size:14px;color:#173847}
+.calc-field input,.calc-field select{min-height:50px;border:1px solid #c9dce1;border-radius:12px;padding:10px 13px;transition:border-color .18s,box-shadow .18s,transform .18s}
+.calc-field input:hover,.calc-field select:hover{border-color:#9fc5ca}
+.calc-field input:focus,.calc-field select:focus{border-color:var(--calc-teal);box-shadow:0 0 0 4px rgba(8,116,123,.10);transform:translateY(-1px)}
+.formula{border:1px solid #f2dfcc;border-left:5px solid var(--calc-orange);background:linear-gradient(135deg,#fffaf5,#fff6ed);box-shadow:0 7px 18px rgba(239,125,34,.06)}
+.calc-actions{margin-top:22px}
+.calc-btn{min-height:46px;border-radius:12px;padding:11px 20px;transition:transform .18s,box-shadow .18s,filter .18s}
+.calc-btn:hover{transform:translateY(-2px);box-shadow:0 9px 18px rgba(8,35,54,.12);filter:saturate(1.05)}
+.calc-primary{background:linear-gradient(135deg,#ef7d22,#e86b10)}
+.calc-secondary{border:1px solid #d4e3e7;background:#f3f8f9}
+.calc-result{margin-top:24px;padding:20px;border:1px solid #cfe4e7;border-radius:17px;background:linear-gradient(145deg,#f7fcfc,#edf7f8);box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+.result-main{font-size:clamp(23px,3vw,31px);line-height:1.25;color:var(--calc-deep)}
+.result-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.result-item{min-height:68px;padding:12px 13px;border:1px solid #d9e7ea;border-radius:13px;box-shadow:0 4px 12px rgba(8,35,54,.035)}
+.result-item strong{font-size:16px;color:var(--calc-deep);line-height:1.35}
+.result-item span{display:block;margin-top:4px;font-size:12px;color:#61757e;line-height:1.45}
+.result-item-primary{border-color:#9ed0d4;background:#fff}
+.conversion-note{margin:12px 2px 0;color:#63777f;font-size:12px;line-height:1.65}
+.warning{border-radius:12px;box-shadow:0 5px 15px rgba(215,154,32,.05)}
+.legal-note{border-radius:15px}
+.registry-upgrade{margin-top:28px}
+.registry-upgrade .registry-card{border-radius:22px;box-shadow:var(--calc-shadow)}
+.registry-upgrade .registry-total{background:linear-gradient(135deg,#071f31 0%,#08747b 100%);box-shadow:0 12px 25px rgba(8,35,54,.18)}
+.registry-upgrade .registry-total strong{font-size:30px}
+.registry-upgrade .registry-actions button{min-height:44px;border-radius:12px}
+.registry-upgrade .map-box,.registry-upgrade .shape-box{box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+.calc-tabs .calc-tab:focus-visible,.calc-btn:focus-visible,.registry-actions button:focus-visible,.map-tools button:focus-visible{outline:3px solid rgba(8,116,123,.24);outline-offset:2px}
+@media(max-width:850px){.result-list{grid-template-columns:repeat(2,minmax(0,1fr))}.calc-tabs{position:static}}
+@media(max-width:620px){.calc-intro{padding:21px 18px;border-radius:19px}.calc-panel{padding:19px;border-radius:18px}.result-list{grid-template-columns:1fr}.calc-tab{min-height:48px}.calc-actions .calc-btn{width:100%}.result-main{font-size:24px}}
 </style>
+
+<style id="professional-land-suite">
+:root{--pl-navy:#082336;--pl-teal:#08747b;--pl-cyan:#12a4ad;--pl-gold:#d9a441;--pl-ink:#17313d;--pl-muted:#61747d;--pl-line:#dbe8eb;--pl-bg:#f4f8f9;--pl-white:#fff;--pl-shadow:0 18px 50px rgba(8,35,54,.10)}
+.land-suite{margin:0 0 26px;border:1px solid var(--pl-line);border-radius:26px;background:linear-gradient(145deg,#fff 0%,#f7fbfc 55%,#eef8f8 100%);box-shadow:var(--pl-shadow);overflow:hidden;position:relative}
+.land-suite:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--pl-navy),var(--pl-teal),var(--pl-gold));}
+.land-suite-hero{padding:28px 28px 22px;display:flex;gap:22px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.land-suite-title{margin:0;color:var(--pl-navy);font-size:clamp(25px,3vw,38px);font-weight:950;letter-spacing:-.5px}.land-suite-title span{color:var(--pl-teal)}
+.land-suite-sub{margin:8px 0 0;color:var(--pl-muted);line-height:1.7;max-width:760px}.land-suite-badge{display:inline-flex;align-items:center;gap:8px;background:#e8f6f6;color:#075d63;border:1px solid #c5e5e7;padding:9px 13px;border-radius:999px;font-weight:850;font-size:13px}
+.land-suite-actions{display:flex;gap:9px;flex-wrap:wrap}.land-suite-btn{border:0;border-radius:12px;padding:11px 14px;font-weight:850;cursor:pointer;background:var(--pl-navy);color:#fff;box-shadow:0 8px 18px rgba(8,35,54,.13)}.land-suite-btn.alt{background:#fff;color:var(--pl-navy);border:1px solid var(--pl-line);box-shadow:none}.land-suite-btn:hover{transform:translateY(-1px)}
+.land-suite-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;padding:0 22px 22px}.suite-card{background:rgba(255,255,255,.9);border:1px solid var(--pl-line);border-radius:19px;padding:18px;box-shadow:0 8px 25px rgba(8,35,54,.055)}.suite-card h3{margin:0 0 5px;color:var(--pl-navy);font-size:18px}.suite-help{font-size:12px;color:var(--pl-muted);margin:0 0 13px;line-height:1.6}
+.suite-form{display:grid;grid-template-columns:1fr 1fr;gap:11px}.suite-field label{display:block;font-weight:800;color:var(--pl-ink);font-size:13px;margin-bottom:6px}.suite-field input,.suite-field select{width:100%;box-sizing:border-box;border:1px solid #cbdde1;border-radius:11px;padding:11px 12px;background:#fff;color:var(--pl-ink);font:inherit}.suite-field input:focus,.suite-field select:focus{outline:3px solid rgba(18,164,173,.14);border-color:var(--pl-teal)}.suite-full{grid-column:1/-1}.suite-result{margin-top:12px;border-radius:15px;background:linear-gradient(135deg,#f0fbfb,#f8fcfc);border:1px solid #cbe7e8;padding:13px}.suite-result strong{color:var(--pl-navy)}
+.unit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.unit-pill{padding:10px;border-radius:12px;background:#f7fafb;border:1px solid var(--pl-line)}.unit-pill b{display:block;color:var(--pl-navy);font-size:14px}.unit-pill span{display:block;color:var(--pl-muted);font-size:11px;margin-top:2px}
+.quick-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.quick-tools button{border:1px solid var(--pl-line);background:#fff;border-radius:10px;padding:9px 11px;font-weight:800;color:var(--pl-navy);cursor:pointer}.quick-tools button:hover{border-color:#a8cdd1;background:#f4fbfb}
+.history-list{max-height:205px;overflow:auto;display:grid;gap:7px}.history-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 11px;border-radius:11px;background:#f8fbfc;border:1px solid var(--pl-line);font-size:12px}.history-item b{color:var(--pl-navy)}.history-item button{border:0;background:transparent;color:var(--pl-teal);font-weight:850;cursor:pointer}.suite-note{font-size:11px;color:var(--pl-muted);line-height:1.55;margin:11px 0 0}.suite-toast{position:fixed;right:18px;bottom:18px;z-index:9999;background:var(--pl-navy);color:#fff;padding:11px 15px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.2);opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s}.suite-toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:850px){.land-suite-grid{grid-template-columns:1fr}.land-suite-hero{padding:23px 19px 18px}.land-suite-grid{padding:0 15px 15px}.unit-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.suite-form{grid-template-columns:1fr}.suite-full{grid-column:auto}.unit-grid{grid-template-columns:1fr 1fr}.land-suite-title{font-size:25px}.land-suite-actions,.land-suite-actions button{width:100%}.land-suite-actions button{flex:1}}
+@media print{.land-suite-actions,.quick-tools,.history-list,.land-suite-badge{display:none!important}.land-suite{box-shadow:none}}
+</style>
+
 </head>
-<body>
+<body id="top">
 <a class="skip" href="#main">মূল কনটেন্টে যান</a>
-<nav class="nav"><div class="container nav-inner"><a class="brand" href="index.html"><img src="profile-abdul-hannan.webp" alt="সার্ভেয়ার আবদুল হান্নান">সার্ভেয়ার আবদুল হান্নান</a><a class="mobile-link" href="index.html">← মূল সাইট</a><div class="navlinks"><a href="index.html">⌂ হোম</a><a href="about.html">পরিচিতি</a><a href="services.html">সেবা</a><a href="calculator.html">🧮 ভূমি ক্যালকুলেটর</a><a href="knowledge.html">ভূমি তথ্য</a><a href="order.html">কাজের অর্ডার</a><a href="contact.html">যোগাযোগ</a></div></div></nav>
-<header class="hero"><div class="container hero-grid"><img class="avatar" src="profile-abdul-hannan.webp" alt="সার্ভেয়ার আবদুল হান্নান"><div><div class="eyebrow">PROFESSIONAL LAND CALCULATOR</div><h1>ভূমি ক্যালকুলেটর</h1><p class="hero-sub">Land Measurement • Conversion • Partition • Value & Cost</p><p class="tagline">সূত্রভিত্তিক হিসাব • স্বয়ংক্রিয় রূপান্তর • অফলাইন ব্যবহার</p><div class="hero-pills"><span>📐 ক্ষেত্রফল</span><span>🔄 Unit Conversion</span><span>➗ ভাগ-বাটোয়ারা</span><span>💰 মূল্য ও খরচ</span></div><div class="actions"><a class="btn btn-light" href="index.html">← মূল ওয়েবসাইট</a><a class="btn btn-primary" href="contact.html">যোগাযোগ</a></div></div></div></header>
-<main id="main"><div class="container">
-<div class="intro"><h2>এক জায়গায় ভূমি হিসাবের প্রয়োজনীয় টুল</h2><p class="lead">ফুট/মিটার থেকে জমির প্রচলিত একক, হেরন ও ব্রহ্মগুপ্তের সূত্র, চার বাহুর জ্যামিতিক হিসাব, ভাগ-বাটোয়ারা, সাধারণ উত্তরাধিকার, জমির মূল্য এবং ব্যবহারকারীর দেওয়া হার অনুযায়ী রেজিস্ট্রি-খরচের সহায়ক হিসাব।</p></div>
-<div class="tabs" role="tablist">
-<button class="tab active" data-tab="units">📐 একক ও পরিমাপ</button><button class="tab" data-tab="formulas">📏 সূত্র ও জ্যামিতি</button><button class="tab" data-tab="partition">➗ ভাগ-বাটোয়ারা</button><button class="tab" data-tab="value">💰 মূল্য ও খরচ</button>
+<nav class="nav" aria-label="প্রধান নেভিগেশন">
+  <div class="container nav-inner">
+    <a class="brand site-brand" href="index.html"><img src="profile-abdul-hannan.webp" alt="সার্ভেয়ার আবদুল হান্নান" width="34" height="34" loading="eager" decoding="async"/><span>সার্ভেয়ার আবদুল হান্নান</span></a>
+    <a class="mobile-calculator-link" href="calculator.html">🧮 ভূমি ক্যালকুলেটর</a>
+    <div class="navlinks">
+      <a href="index.html" aria-label="হোম পেজ">⌂ হোম</a>
+      <a href="about.html">পরিচিতি</a>
+      <a href="services.html">সেবা</a>
+      <a href="calculator.html">🧮 ভূমি ক্যালকুলেটর</a>
+      <a href="knowledge.html">ভূমি তথ্য</a>
+      <a href="documents.html">নথি প্রস্তুতি</a>
+      <a href="mistakes.html">সাধারণ ভুল</a>
+      <a href="videos.html">ভিডিও</a>
+      <a href="photos.html">ছবি</a>
+      <a href="posts.html">লেখা</a>
+      <a href="question.html">❓ প্রশ্ন করুন</a><a href="feedback.html">💬 পরামর্শ ও মন্তব্য</a><a href="order.html">কাজের অর্ডার</a><a href="land-solution-bd.html">🌐 Land Solution BD</a>
+      <a href="contact.html">যোগাযোগ</a>
+    </div>
+  </div>
+</nav>
+<header class="hero">
+<div class="container hero-grid">
+<img alt="সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি" class="avatar" height="165" src="profile-abdul-hannan.webp" width="165"/>
+<div>
+<div class="eyebrow">ONLINE CALCULATOR</div>
+<h1>ভূমি পরিমাপ ও উত্তরাধিকার ক্যালকুলেটর</h1>
+<p class="hero-sub">Land Measurement &amp; Muslim Inheritance Calculator</p>
+<div class="tagline">সূত্রভিত্তিক হিসাব • পরিষ্কার ফলাফল • তথ্যভিত্তিক ব্যবহার</div>
+<div class="hero-pills"><span>📐 ভূমি পরিমাপ</span><span>🧮 ক্ষেত্রফল</span><span>⚖️ উত্তরাধিকার</span></div>
+<div class="actions"><a class="btn btn-light" href="index.html">← মূল ওয়েবসাইট</a><a class="btn btn-primary" href="contact.html">যোগাযোগ</a></div>
+</div>
+</div>
+</header>
+
+<main id="main">
+<section class="section">
+<div class="container calc-wrap">
+<div class="calc-intro">
+<h2 class="section-title">অনলাইন ক্যালকুলেটর</h2>
+<p class="lead">নিচের টুলগুলো সাধারণ ভূমি-পরিমাপের সূত্র এবং বাংলাদেশের প্রযোজ্য মুসলিম উত্তরাধিকার বিধানের আলোকে ব্যবহার করার জন্য তৈরি করা হয়েছে। পরিমাপের ফলাফল মাঠ জরিপের বিকল্প নয় এবং উত্তরাধিকার ফলাফল চূড়ান্ত আইনগত সিদ্ধান্ত নয়।</p>
 </div>
 
-<section class="panel active" id="panel-units">
-<div class="card"><h3>🔄 স্বয়ংক্রিয় ভূমি Unit Conversion</h3><p class="help">বাংলাদেশে বহুল ব্যবহৃত হিসাবের জন্য ১ শতাংশ/শতক = ৪৩৫.৬ বর্গফুট এবং ১ একর = ৪৩,৫৬০ বর্গফুট ধরা হয়েছে। ১ কাঠা ও ১ বিঘার মান এলাকা/প্রচলনভেদে বদলাতে পারে—তাই নিচে কনফিগারযোগ্য মান রাখা হয়েছে।</p><div class="grid" style="margin-top:14px"><div class="field"><label>পরিমাণ</label><input id="convValue" type="number" min="0" step="any" placeholder="যেমন ১০০০"></div><div class="field"><label>থেকে</label><select id="convUnit"><option value="sqft">বর্গফুট</option><option value="shotok">শতাংশ / শতক</option><option value="katha">কাঠা</option><option value="bigha">বিঘা</option><option value="acre">একর</option><option value="hectare">হেক্টর</option><option value="sqm">বর্গমিটার</option></select></div><div class="field"><label>১ কাঠা = কত বর্গফুট?</label><input id="kathaSqft" type="number" min="0.0001" step="any" value="720"></div><div class="field"><label>১ বিঘা = কত কাঠা?</label><input id="bighaKatha" type="number" min="0.0001" step="any" value="20"></div></div><div class="actions-row"><button class="btn-calc primary" id="convertBtn">রূপান্তর করুন</button><button class="btn-calc secondary" id="convertClear">পরিষ্কার</button></div><div class="result" id="convertResult"></div></div>
-<div class="card"><h3>📏 দৈর্ঘ্য × প্রস্থ</h3><div class="formula">ক্ষেত্রফল = দৈর্ঘ্য × প্রস্থ</div><div class="grid"><div class="field"><label>দৈর্ঘ্য</label><input id="rectL" type="number" min="0" step="any"></div><div class="field"><label>প্রস্থ</label><input id="rectW" type="number" min="0" step="any"></div><div class="field"><label>দৈর্ঘ্য/প্রস্থের একক</label><select id="rectUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div></div><div class="actions-row"><button class="btn-calc primary" id="rectBtn">হিসাব করুন</button></div><div class="result" id="rectResult"></div></div>
+
+<section class="land-suite" id="professional-land-suite" aria-labelledby="land-suite-title">
+  <div class="land-suite-hero">
+    <div>
+      <span class="land-suite-badge">🧭 Professional Land Calculator Suite</span>
+      <h2 class="land-suite-title" id="land-suite-title">ভূমি হিসাব <span>এক জায়গায়</span></h2>
+      <p class="land-suite-sub">জমির ক্ষেত্রফল, একক রূপান্তর, দ্রুত হিসাব ও পূর্বের হিসাব—সবকিছু একটি পরিষ্কার ও মোবাইল-ফ্রেন্ডলি ইন্টারফেসে।</p>
+    </div>
+    <div class="land-suite-actions">
+      <button class="land-suite-btn" type="button" id="suitePrint">🖨️ ফলাফল প্রিন্ট</button>
+      <button class="land-suite-btn alt" type="button" id="suiteShare">↗️ শেয়ার</button>
+    </div>
+  </div>
+  <div class="land-suite-grid">
+    <div class="suite-card">
+      <h3>⚡ দ্রুত জমির ক্ষেত্রফল</h3>
+      <p class="suite-help">দৈর্ঘ্য × প্রস্থ দিয়ে দ্রুত হিসাব করুন। নিচে একই ফলাফল বাংলাদেশে প্রচলিত কয়েকটি এককে দেখা যাবে।</p>
+      <div class="suite-form">
+        <div class="suite-field"><label for="suiteLength">দৈর্ঘ্য</label><input id="suiteLength" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 100"></div>
+        <div class="suite-field"><label for="suiteWidth">প্রস্থ</label><input id="suiteWidth" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 50"></div>
+        <div class="suite-field"><label for="suiteUnit">মাপের একক</label><select id="suiteUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+        <div class="suite-field"><label for="suiteDecimals">দশমিক</label><select id="suiteDecimals"><option value="2">২ ঘর</option><option value="4" selected>৪ ঘর</option><option value="6">৬ ঘর</option></select></div>
+      </div>
+      <div class="quick-tools"><button type="button" id="suiteCalc">হিসাব করুন</button><button type="button" id="suiteClear">পরিষ্কার</button></div>
+      <div class="suite-result" id="suiteResult" aria-live="polite">দৈর্ঘ্য ও প্রস্থ দিলে ফলাফল এখানে দেখাবে।</div>
+    </div>
+    <div class="suite-card">
+      <h3>🔄 ভূমি একক রূপান্তর</h3>
+      <p class="suite-help">একটি এককে জমির পরিমাণ লিখলে অন্যান্য প্রচলিত এককে সমতুল্য পরিমাণ দেখাবে।</p>
+      <div class="suite-form">
+        <div class="suite-field"><label for="suiteArea">জমির পরিমাণ</label><input id="suiteArea" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 5"></div>
+        <div class="suite-field"><label for="suiteAreaUnit">বর্তমান একক</label><select id="suiteAreaUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="katha">কাঠা</option><option value="bigha">বিঘা</option><option value="acre">একর</option><option value="hectare">হেক্টর</option></select></div>
+      </div>
+      <div class="quick-tools"><button type="button" id="suiteConvert">রূপান্তর করুন</button><button type="button" id="suiteCopy" disabled>ফলাফল কপি</button></div>
+      <div class="suite-result" id="suiteConversionResult" aria-live="polite">জমির পরিমাণ দিলে রূপান্তরের ফলাফল এখানে দেখাবে।</div>
+      <p class="suite-note">রূপান্তরের মান: ১ শতাংশ/ডেসিমেল = ৪৩৫.৬ বর্গফুট; ১ কাঠা = ৭২০ বর্গফুট; ১ বিঘা = ১৪,৪০০ বর্গফুট; ১ একর = ৪৩,৫৬০ বর্গফুট।</p>
+    </div>
+    <div class="suite-card">
+      <h3>📌 দ্রুত রেফারেন্স</h3>
+      <p class="suite-help">জমির হিসাব করার সময় ব্যবহৃত গুরুত্বপূর্ণ রূপান্তরগুলো এক নজরে।</p>
+      <div class="unit-grid">
+        <div class="unit-pill"><b>১ শতাংশ</b><span>৪৩৫.৬ sq ft</span></div>
+        <div class="unit-pill"><b>১ কাঠা</b><span>৭২০ sq ft</span></div>
+        <div class="unit-pill"><b>১ বিঘা</b><span>১৪,৪০০ sq ft</span></div>
+        <div class="unit-pill"><b>১ একর</b><span>৪৩,৫৬০ sq ft</span></div>
+        <div class="unit-pill"><b>১ হেক্টর</b><span>১০৭,৬৩৯.১০৪ sq ft</span></div>
+        <div class="unit-pill"><b>১ sq m</b><span>১০.৭৬৩৯ sq ft</span></div>
+      </div>
+      <p class="suite-note">স্থানীয় রেকর্ড বা সরকারি জরিপে কোনো ভিন্ন মান নির্ধারিত থাকলে সেই নির্দিষ্ট মান অনুসরণ করুন।</p>
+    </div>
+    <div class="suite-card">
+      <h3>🕘 সাম্প্রতিক হিসাব</h3>
+      <p class="suite-help">এই ডিভাইসে করা সর্বশেষ কয়েকটি দ্রুত হিসাব এখানে থাকবে।</p>
+      <div class="history-list" id="suiteHistory"><div class="suite-note">এখনও কোনো হিসাব সংরক্ষিত নেই।</div></div>
+      <div class="quick-tools"><button type="button" id="suiteClearHistory">ইতিহাস মুছুন</button></div>
+    </div>
+  </div>
+</section>
+<div class="suite-toast" id="suiteToast" role="status" aria-live="polite"></div>
+
+<div class="calc-tabs" role="tablist" aria-label="ক্যালকুলেটর নির্বাচন">
+<button class="calc-tab active" data-tab="rectangle" role="tab" aria-selected="true">আয়তক্ষেত্র</button>
+<button class="calc-tab" data-tab="heron" role="tab" aria-selected="false">হেরনের সূত্র</button>
+<button class="calc-tab" data-tab="brahmagupta" role="tab" aria-selected="false">ব্রহ্মগুপ্তের সূত্র</button>
+<button class="calc-tab" data-tab="inheritance" role="tab" aria-selected="false">মুসলিম উত্তরাধিকার</button>
+</div>
+
+<section class="calc-panel active" id="panel-rectangle" role="tabpanel">
+<h3>আয়তক্ষেত্রের ক্ষেত্রফল</h3>
+<div class="formula"><code>ক্ষেত্রফল = দৈর্ঘ্য × প্রস্থ</code></div>
+<div class="calc-grid">
+<div class="calc-field"><label for="rectLength">দৈর্ঘ্য</label><input id="rectLength" type="number" min="0" step="any" placeholder="যেমন 120"></div>
+<div class="calc-field"><label for="rectWidth">প্রস্থ</label><input id="rectWidth" type="number" min="0" step="any" placeholder="যেমন 60"></div>
+<div class="calc-field"><label for="rectUnit">একক</label><select id="rectUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+</div>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="rectCalc">হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="rectangle">পরিষ্কার</button></div>
+<div class="calc-result" id="rectResult" aria-live="polite"></div>
 </section>
 
-<section class="panel" id="panel-formulas">
-<div class="card"><h3>🔺 হেরনের সূত্র</h3><div class="formula">s = (a+b+c)/2; ক্ষেত্রফল = √[s(s−a)(s−b)(s−c)]</div><div class="grid"><div class="field"><label>বাহু a</label><input id="ha" type="number" min="0" step="any"></div><div class="field"><label>বাহু b</label><input id="hb" type="number" min="0" step="any"></div><div class="field"><label>বাহু c</label><input id="hc" type="number" min="0" step="any"></div><div class="field"><label>একক</label><select id="hu"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div></div><div class="actions-row"><button class="btn-calc primary" id="heronBtn">হিসাব করুন</button></div><div class="result" id="heronResult"></div></div>
-<div class="card"><h3>⬟ ব্রহ্মগুপ্তের সূত্র</h3><div class="formula">s = (a+b+c+d)/2; ক্ষেত্রফল = √[(s−a)(s−b)(s−c)(s−d)]</div><div class="grid"><div class="field"><label>বাহু a</label><input id="ba" type="number" min="0" step="any"></div><div class="field"><label>বাহু b</label><input id="bb" type="number" min="0" step="any"></div><div class="field"><label>বাহু c</label><input id="bc" type="number" min="0" step="any"></div><div class="field"><label>বাহু d</label><input id="bd" type="number" min="0" step="any"></div><div class="field"><label>একক</label><select id="bu"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div></div><p class="help">শুধু চার বাহু দিয়ে সাধারণ চতুর্ভুজের প্রকৃত ক্ষেত্রফল নির্দিষ্ট করা যায় না। এই সূত্রটি cyclic quadrilateral-এর জন্য exact; অন্য ক্ষেত্রে এটি একটি geometric estimate হিসেবে দেখানো হবে।</p><div class="actions-row"><button class="btn-calc primary" id="braBtn">হিসাব করুন</button></div><div class="result" id="braResult"></div></div>
-<div class="card"><h3>🧭 চার বাহুর জ্যামিতিক হিসাব</h3><p class="help">AB, BC, CD, DA-এর সঙ্গে একটি কর্ণ AC দিলে চতুর্ভুজকে দুইটি ত্রিভুজে ভাগ করে Heron দিয়ে ক্ষেত্রফল নির্ণয় করা যায়। কর্ণ না দিলে Brahmagupta estimate দেখানো হবে।</p><div class="mini-grid"><div class="field"><label>AB</label><input id="qa" type="number" min="0" step="any"></div><div class="field"><label>BC</label><input id="qb" type="number" min="0" step="any"></div><div class="field"><label>CD</label><input id="qc" type="number" min="0" step="any"></div><div class="field"><label>DA</label><input id="qd" type="number" min="0" step="any"></div></div><div class="grid" style="margin-top:12px"><div class="field"><label>কর্ণ AC (ঐচ্ছিক)</label><input id="qdiag" type="number" min="0" step="any" placeholder="দিলে বেশি নির্ভুল জ্যামিতিক হিসাব"></div><div class="field"><label>একক</label><select id="qu"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div></div><canvas id="shapeCanvas" class="shape" width="1000" height="280" aria-label="জমির জ্যামিতিক স্কেচ"></canvas><div class="actions-row"><button class="btn-calc primary" id="quadBtn">ক্ষেত্রফল হিসাব করুন</button></div><div class="result" id="quadResult"></div></div>
+<section class="calc-panel" id="panel-heron" role="tabpanel">
+<h3>হেরনের সূত্রে ত্রিভুজের ক্ষেত্রফল</h3>
+<div class="formula"><code>s = (a+b+c) ÷ 2 &nbsp;&nbsp; এবং &nbsp;&nbsp; ক্ষেত্রফল = √[s(s−a)(s−b)(s−c)]</code></div>
+<div class="calc-grid">
+<div class="calc-field"><label for="heronA">বাহু a</label><input id="heronA" type="number" min="0" step="any" placeholder="যেমন 50"></div>
+<div class="calc-field"><label for="heronB">বাহু b</label><input id="heronB" type="number" min="0" step="any" placeholder="যেমন 60"></div>
+<div class="calc-field"><label for="heronC">বাহু c</label><input id="heronC" type="number" min="0" step="any" placeholder="যেমন 70"></div>
+<div class="calc-field"><label for="heronUnit">একক</label><select id="heronUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+</div>
+<p class="calc-help">তিন বাহুকে অবশ্যই একটি বৈধ ত্রিভুজ গঠন করতে হবে।</p>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="heronCalc">হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="heron">পরিষ্কার</button></div>
+<div class="calc-result" id="heronResult" aria-live="polite"></div>
 </section>
 
-<section class="panel" id="panel-partition">
-<div class="card"><h3>➗ ভাগ-বাটোয়ারা ক্যালকুলেটর</h3><p class="help">মোট জমি/ক্ষেত্রফলকে অনুপাত অনুযায়ী ভাগ করুন। অনুপাত ১:১:২, ২:৩:৫ ইত্যাদি হতে পারে।</p><div class="grid"><div class="field"><label>মোট জমি</label><input id="partTotal" type="number" min="0" step="any"></div><div class="field"><label>একক</label><select id="partUnit"><option value="sqft">বর্গফুট</option><option value="shotok">শতাংশ</option><option value="katha">কাঠা</option><option value="bigha">বিঘা</option><option value="acre">একর</option></select></div><div class="field"><label>ভাগের অনুপাত</label><input id="partRatio" placeholder="যেমন ১:১:২ বা 2:3:5"></div></div><div class="actions-row"><button class="btn-calc primary" id="partBtn">ভাগ করুন</button><button class="btn-calc secondary" id="partClear">পরিষ্কার</button></div><div class="result" id="partResult"></div></div>
-<div class="card"><h3>👨‍👩‍👧‍👦 সাধারণ উত্তরাধিকার সহায়ক হিসাব</h3><p class="help">এটি একটি সাধারণ Sunni-Hanafi family case helper; জটিল উত্তরাধিকার, প্রতিনিধি উত্তরাধিকার, রদ/আউল, অন্যান্য ওয়ারিশ বা বিশেষ পারিবারিক অবস্থায় এটি চূড়ান্ত ফারায়েজ নয়।</p><div class="grid"><div class="field"><label>নিট সম্পত্তি (৳)</label><input id="estate" type="number" min="0" step="any"></div><div class="field"><label>মৃত ব্যক্তি</label><select id="gender"><option value="male">পুরুষ</option><option value="female">নারী</option></select></div><div class="field"><label>জীবিত স্ত্রী (জন)</label><input id="wives" type="number" min="0" max="4" step="1" value="0"></div><div class="field"><label>জীবিত স্বামী</label><select id="husband"><option value="0">নেই</option><option value="1">আছেন</option></select></div><div class="field"><label>পিতা</label><select id="father"><option value="0">নেই</option><option value="1">আছেন</option></select></div><div class="field"><label>মাতা</label><select id="mother"><option value="0">নেই</option><option value="1">আছেন</option></select></div><div class="field"><label>পুত্র (জন)</label><input id="sons" type="number" min="0" step="1" value="0"></div><div class="field"><label>কন্যা (জন)</label><input id="daughters" type="number" min="0" step="1" value="0"></div></div><div class="actions-row"><button class="btn-calc primary" id="inheritBtn">হিসাব করুন</button></div><div class="result" id="inheritResult"></div><div class="section-note">⚠️ উত্তরাধিকার সংক্রান্ত ফলাফল তথ্যগত সহায়তা মাত্র। সরকারি নথি, পারিবারিক অবস্থা ও প্রযোজ্য আইন যাচাই ছাড়া এটিকে চূড়ান্ত অংশ নির্ধারণ হিসেবে ব্যবহার করবেন না।</div></div>
+<section class="calc-panel" id="panel-brahmagupta" role="tabpanel">
+<h3>ব্রহ্মগুপ্তের সূত্রে চতুর্ভুজের ক্ষেত্রফল</h3>
+<div class="formula"><code>s = (a+b+c+d) ÷ 2 &nbsp;&nbsp; এবং &nbsp;&nbsp; ক্ষেত্রফল = √[(s−a)(s−b)(s−c)(s−d)]</code></div>
+<div class="calc-grid">
+<div class="calc-field"><label for="braA">বাহু a</label><input id="braA" type="number" min="0" step="any" placeholder="যেমন 40"></div>
+<div class="calc-field"><label for="braB">বাহু b</label><input id="braB" type="number" min="0" step="any" placeholder="যেমন 50"></div>
+<div class="calc-field"><label for="braC">বাহু c</label><input id="braC" type="number" min="0" step="any" placeholder="যেমন 60"></div>
+<div class="calc-field"><label for="braD">বাহু d</label><input id="braD" type="number" min="0" step="any" placeholder="যেমন 70"></div>
+<div class="calc-field"><label for="braUnit">একক</label><select id="braUnit"><option value="ft">ফুট (ft)</option><option value="m">মিটার (m)</option></select></div>
+</div>
+<p class="calc-help">ব্রহ্মগুপ্তের সূত্র নির্ভুলভাবে প্রযোজ্য হতে চতুর্ভুজটি cyclic (বৃত্তীয়) হতে হবে। সাধারণ যেকোনো চতুর্ভুজে শুধু চার বাহু জানলে প্রকৃত ক্ষেত্রফল নির্দিষ্ট হয় না।</p>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="braCalc">হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="brahmagupta">পরিষ্কার</button></div>
+<div class="calc-result" id="braResult" aria-live="polite"></div>
 </section>
 
-<section class="panel" id="panel-value">
-<div class="two-col"><div>
-<div class="card"><h3>🏷️ জমির মূল্য ক্যালকুলেটর</h3><div class="grid"><div class="field"><label>জমির পরিমাণ</label><input id="valueArea" type="number" min="0" step="any"></div><div class="field"><label>জমির একক</label><select id="valueUnit"><option value="shotok">শতাংশ</option><option value="sqft">বর্গফুট</option><option value="katha">কাঠা</option><option value="bigha">বিঘা</option><option value="acre">একর</option><option value="hectare">হেক্টর</option></select></div><div class="field"><label>প্রতি একক মূল্য (৳)</label><input id="pricePer" type="number" min="0" step="any" placeholder="যেমন: প্রতি শতাংশ ৫০০০০"></div><div class="field"><label>মূল্য কোন এককের?</label><select id="priceUnit"><option value="shotok">প্রতি শতাংশ</option><option value="sqft">প্রতি বর্গফুট</option><option value="katha">প্রতি কাঠা</option><option value="bigha">প্রতি বিঘা</option><option value="acre">প্রতি একর</option></select></div></div><div class="actions-row"><button class="btn-calc primary" id="valueBtn">মোট মূল্য হিসাব</button></div><div class="result" id="valueResult"></div></div>
-<div class="card"><h3>🧾 রেজিস্ট্রি/দলিল খরচ — কনফিগারযোগ্য</h3><p class="help">সরকারি হার দলিলের ধরন, এলাকা, মূল্যায়ন ও সময় অনুযায়ী পরিবর্তিত হতে পারে। তাই এখানে হারগুলো ব্যবহারকারী নিজে দেবেন; কোনো হারকে “বর্তমান সরকারি হার” হিসেবে hard-code করা হয়নি।</p><div class="grid"><div class="field"><label>দলিল/সম্পত্তির মূল্য (৳)</label><input id="regBase" type="number" min="0" step="any"></div><div class="field"><label>রেজিস্ট্রেশন ফি (%)</label><input id="regRate" type="number" min="0" step="any" value="1"></div><div class="field"><label>স্ট্যাম্প ডিউটি (%)</label><input id="stampRate" type="number" min="0" step="any" value="0"></div><div class="field"><label>স্থানীয় সরকার কর (%)</label><input id="localRate" type="number" min="0" step="any" value="0"></div><div class="field"><label>উৎসে কর (%)</label><input id="sourceRate" type="number" min="0" step="any" value="0"></div><div class="field"><label>অন্যান্য নির্দিষ্ট খরচ (৳)</label><input id="otherFee" type="number" min="0" step="any" value="0"></div></div><div class="actions-row"><button class="btn-calc primary" id="regBtn">খরচ হিসাব</button><button class="btn-calc secondary" id="regPrint">🖨️ রিপোর্ট প্রিন্ট / PDF</button></div><div class="result" id="regResult"></div></div>
-</div><aside class="card sticky"><h3>📌 দ্রুত ফলাফল</h3><div class="total-box"><div>এই ক্যালকুলেটরের উদ্দেশ্য</div><div class="big">সহায়ক হিসাব</div><p>জরিপ, দলিল, সরকারি নথি বা আইনগত সিদ্ধান্তের বিকল্প নয়।</p></div><div class="section-note">💾 <strong>অফলাইন:</strong> মূল হিসাবগুলো কোনো API বা অনলাইন ম্যাপের ওপর নির্ভর করে না। একবার পেজটি ব্রাউজারে cache হয়ে গেলে নেট ছাড়া ব্যবহার করা যাবে।</div></aside></div>
+<section class="calc-panel" id="panel-inheritance" role="tabpanel">
+<h3>মুসলিম উত্তরাধিকার — সাধারণ পারিবারিক কেস</h3>
+<p class="lead" style="font-size:15px">এই অংশে জীবিত স্বামী/স্ত্রী, পিতা, মাতা, পুত্র ও কন্যার ভিত্তিতে সাধারণ সুন্নি-হানাফি ফারায়েজের হিসাব করা হয়। বাংলাদেশের Muslim Personal Law (Shariat) Application Act, 1937 এবং Muslim Family Laws Ordinance, 1961-এর প্রাসঙ্গিক বিধান বিবেচনায় রাখা হয়েছে।</p>
+<div class="warning"><strong>প্রথমে নিট উত্তরাধিকারযোগ্য সম্পত্তি নির্ধারণ করুন:</strong> দাফন/শেষকৃত্যের প্রয়োজনীয় খরচ, দেনা এবং আইনসম্মত দাবিগুলো নিষ্পত্তির পর যে সম্পত্তি উত্তরাধিকার হিসেবে বণ্টনযোগ্য, সেটিই এখানে লিখুন।</div>
+<div class="calc-grid" style="margin-top:18px">
+<div class="calc-field"><label for="estate">নিট উত্তরাধিকারযোগ্য সম্পত্তি (৳)</label><input id="estate" type="number" min="0" step="0.01" placeholder="যেমন 2400000"></div>
+<div class="calc-field"><label for="deceasedGender">মৃত ব্যক্তি</label><select id="deceasedGender"><option value="male">পুরুষ</option><option value="female">নারী</option></select></div>
+</div>
+<div class="heirs-grid" style="margin-top:18px">
+<div class="heir-field" id="wifeField"><label for="wives">জীবিত স্ত্রী (জন)</label><input id="wives" type="number" min="0" max="4" step="1" value="1"></div>
+<div class="heir-field" id="husbandField"><label for="husband">জীবিত স্বামী</label><select id="husband"><option value="1">আছেন</option><option value="0">নেই</option></select></div>
+<div class="heir-field"><label for="father">জীবিত পিতা</label><select id="father"><option value="1">আছেন</option><option value="0">নেই</option></select></div>
+<div class="heir-field"><label for="mother">জীবিত মাতা</label><select id="mother"><option value="1">আছেন</option><option value="0">নেই</option></select></div>
+<div class="heir-field"><label for="sons">জীবিত পুত্র (জন)</label><input id="sons" type="number" min="0" step="1" value="1"></div>
+<div class="heir-field"><label for="daughters">জীবিত কন্যা (জন)</label><input id="daughters" type="number" min="0" step="1" value="1"></div>
+</div>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="inheritCalc">উত্তরাধিকার হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="inheritance">ফর্ম পরিষ্কার</button></div>
+<div class="calc-result" id="inheritResult" aria-live="polite"></div>
+<div class="legal-note">
+<strong>বাংলাদেশের আইনি প্রেক্ষাপট:</strong> মুসলিমদের intestate succession-এর ক্ষেত্রে Muslim Personal Law (Shariat) Application Act, 1937 প্রযোজ্য; আর Muslim Family Laws Ordinance, 1961-এর ধারা ৪ অনুযায়ী কোনো পুত্র বা কন্যা উত্তরাধিকার খোলার আগে মারা গেলে তার জীবিত সন্তানরা নির্দিষ্ট পরিস্থিতিতে per stirpes সেই পুত্র/কন্যা জীবিত থাকলে যে অংশ পেতেন তার সমপরিমাণ অংশ পেতে পারেন। এই পেজের সাধারণ ক্যালকুলেটর ওই জটিল প্রতিনিধিত্বমূলক কেস স্বয়ংক্রিয়ভাবে নিষ্পত্তি করে না।
+<div class="sources">
+<a href="https://bdlaws.minlaw.gov.bd/act-print-173.html" target="_blank" rel="noopener noreferrer">Muslim Personal Law (Shariat) Application Act, 1937</a>
+<a href="https://bdlaws.minlaw.gov.bd/act-print-305/section-print-13528.html" target="_blank" rel="noopener noreferrer">Muslim Family Laws Ordinance, 1961 — ধারা ৪</a>
+<a href="https://inheritance.gov.bd/" target="_blank" rel="noopener noreferrer">সরকারি উত্তরাধিকার তথ্য</a>
+</div>
+</div>
 </section>
 
-<div class="card" style="margin-top:20px"><h3>⚠️ ব্যবহারবিধি ও সীমাবদ্ধতা</h3><ul><li>কাঠা/বিঘার স্থানীয় মান ভিন্ন হলে Conversion অংশে আপনার এলাকার মান বসান।</li><li>শুধু চার বাহু জানা থাকলে সাধারণ চতুর্ভুজের exact area নির্ণয় করা যায় না; diagonal দিলে দুই triangle-এ ভাগ করে geometric calculation করা যায়।</li><li>ব্রহ্মগুপ্তের সূত্রের exact ফল cyclic quadrilateral-এর শর্তের সঙ্গে যুক্ত; অন্য ক্ষেত্রে result-কে estimate হিসেবে দেখুন।</li><li>জমির প্রকৃত সীমানা, দাগ, খতিয়ান, নকশা বা মাঠ জরিপ নির্ধারণে licensed/qualified survey practice ও সরকারি নথি অনুসরণ করুন।</li></ul></div>
-</div></main>
-<div id="offlineBadge" class="offline online">অফলাইন মোড</div>
-<footer class="footer"><div class="container"><strong>সার্ভেয়ার আবদুল হান্নান | Surveyor Abdul Hannan</strong><p>Digital Amin &amp; Land Surveyor</p><p class="small">ভূমি জরিপ • নকশা • পরিমাপ • সীমানা-সংক্রান্ত কাজ • তথ্যভিত্তিক আলোচনা</p><p class="small">© 2026 Surveyor Abdul Hannan. All Rights Reserved.</p></div></footer>
+<section class="registry-upgrade" id="registry-calculator" aria-labelledby="registry-title">
+<div class="registry-head">
+<h2 class="section-title" id="registry-title">🧾 জমি রেজিস্ট্রি খরচ ক্যালকুলেটর</h2>
+<p class="lead">দলিলের মূল্য, স্থানীয় সরকার কর ও উৎসে করের হার নির্বাচন করে আনুমানিক সরকারি খরচের হিসাব দেখুন। ইনপুট পরিবর্তন করলেই ফলাফল লাইভ আপডেট হবে।</p>
+<div class="warning"><strong>হার সম্পর্কে গুরুত্বপূর্ণ:</strong> বর্তমান আইন/বাজেট ও দলিলের ধরন অনুযায়ী হার পরিবর্তিত হতে পারে। এই টুলটি আনুমানিক হিসাবের জন্য; চূড়ান্ত অর্থ প্রদানের আগে সংশ্লিষ্ট সাব-রেজিস্ট্রি অফিস/সরকারি গেজেট যাচাই করুন।</div>
+</div>
+
+<div class="registry-grid">
+<div>
+<div class="registry-card">
+<div class="registry-rate">⚙️ কনফিগারযোগ্য সরকারি হার</div>
+<div class="calc-grid">
+<div class="calc-field"><label for="regClient">ক্লায়েন্টের নাম</label><input id="regClient" type="text" placeholder="নাম লিখুন"></div>
+<div class="calc-field"><label for="regKhatian">খতিয়ান/দাগ নম্বর</label><input id="regKhatian" type="text" placeholder="যেমন: CS ১২৩ / দাগ ৪৫৬"></div>
+<div class="calc-field"><label for="regValue">দলিল/সম্পত্তির মূল্য (৳)</label><input id="regValue" type="number" min="0" step="0.01" placeholder="যেমন 1000000" required></div>
+<div class="calc-field"><label for="regLocalRate">স্থানীয় সরকার কর</label><select id="regLocalRate"><option value="2">২%</option><option value="3" selected>৩%</option></select></div>
+<div class="calc-field"><label for="regStampRate">স্ট্যাম্প ডিউটি</label><select id="regStampRate"><option value="1.5" selected>১.৫% — বর্তমান ডিফল্ট</option></select></div>
+<div class="calc-field"><label for="regSourceRate">উৎসে করের হার</label><select id="regSourceRate"><option value="2" selected>২%</option><option value="4">৪%</option><option value="6">৬%</option><option value="8">৮%</option><option value="fixed">ফিক্সড টাকা</option></select></div>
+<div class="calc-field" id="regFixedSourceWrap" hidden><label for="regFixedSource">ফিক্সড উৎসে কর (৳)</label><input id="regFixedSource" type="number" min="0" step="0.01" value="0"></div>
+<div class="calc-field"><label for="regSourceMinimum">উৎসে করের ন্যূনতম টাকা (প্রযোজ্য হলে)</label><input id="regSourceMinimum" type="number" min="0" step="1" value="0" placeholder="যেমন 500000"></div>
+<div class="calc-field"><label for="regAffidavit">হলফনামা স্ট্যাম্প (৳)</label><input id="regAffidavit" type="number" min="0" step="1" value="200"></div>
+<div class="calc-field"><label for="regPages">N-Fee পৃষ্ঠা</label><input id="regPages" type="number" min="0" step="1" value="1"></div>
+<div class="calc-field"><label for="regNFee">পৃষ্ঠা প্রতি N-Fee (৳)</label><input id="regNFee" type="number" min="0" step="0.01" value="24"></div>
+<div class="calc-field"><label for="regNNFee">NN-Fee (৳)</label><input id="regNNFee" type="number" min="0" step="0.01" value="36"></div>
+<div class="calc-field"><label for="regEFee">E-Fee (৳)</label><input id="regEFee" type="number" min="0" step="0.01" value="100"></div>
+</div>
+
+<div class="calc-actions">
+<button class="calc-btn calc-primary" type="button" id="regCalculate">লাইভ হিসাব আপডেট</button>
+<button class="calc-btn calc-secondary" type="button" id="regReset">ফর্ম পরিষ্কার</button>
+</div>
+
+<div class="shape-box">
+<canvas id="landShapeCanvas" width="900" height="420" aria-label="জমির আনুমানিক ডিজিটাল স্কেচ"></canvas>
+</div>
+
+<div class="calc-grid" style="margin-top:18px">
+<div class="calc-field"><label for="regCourtFee">কোর্ট ফি (এল.টি. নোটিশ)</label><input id="regCourtFee" type="number" min="0" step="1" value="10"></div><div class="calc-field"><label for="shapeA">বাহু A–B</label><input id="shapeA" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="shapeB">বাহু B–C</label><input id="shapeB" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="shapeC">বাহু C–D / C</label><input id="shapeC" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="shapeD">বাহু D–A (চতুর্ভুজ হলে)</label><input id="shapeD" type="number" min="0" step="any" placeholder="ফুট"></div>
+</div>
+<p class="calc-help">৩টি বাহু দিলে ত্রিভুজ; ৪টি বাহু দিলে একটি আনুমানিক চতুর্ভুজ স্কেচ দেখানো হবে। চার বাহু দিয়ে প্রকৃত চতুর্ভুজের একক/সুনির্দিষ্ট ক্ষেত্রফল সবসময় নির্ধারিত হয় না—এটি কেবল ভিজ্যুয়াল ধারণার জন্য।</p>
+</div>
+</div>
+
+<div class="registry-card registry-summary" id="registryResult" aria-live="polite">
+<div class="registry-rate">📊 Live Calculation Summary</div>
+<div id="registryRows">
+<div class="small-note">দলিলের মূল্য লিখলে ফলাফল এখানে দেখাবে।</div>
+</div>
+<div class="registry-total">
+<span>মোট আনুমানিক খরচ</span>
+<strong id="registryTotal">৳ ০</strong>
+</div>
+<div class="registry-actions">
+<button class="registry-primary" type="button" id="registryPrint">🖨️ প্রিন্ট রিপোর্ট</button>
+<button class="registry-secondary" type="button" id="registryPdf">📄 PDF রিপোর্ট</button>
+</div>
+<p class="registry-note">বি.দ্র: এটি একটি আনুমানিক হিসাব। সরকারি বিধিমালা, দলিলের ধরন, সম্পত্তির শ্রেণি, মৌজা রেইট, এলাকা এবং প্রযোজ্য উৎসে কর/ন্যূনতম কর অনুযায়ী প্রকৃত ফি পরিবর্তিত হতে পারে। চূড়ান্ত হিসাব সংশ্লিষ্ট সাব-রেজিস্ট্রি অফিসের নির্ধারিত হিসাব অনুযায়ী যাচাই করুন।</p>
+<p class="registry-note">ডিফল্ট কনফিগারেশন: রেজিস্ট্রেশন ফি ১% (ন্যূনতম প্রযোজ্য সীমাসহ) • স্ট্যাম্প ডিউটি ১.৫% • স্থানীয় সরকার কর ২%/৩% • উৎসে কর: নির্বাচিত হার বা ফিক্সড পরিমাণ।</p>
+</div>
+</div>
+
+<div class="registry-card" style="margin-top:18px">
+<h3 style="margin-top:0">🗺️ ম্যাপে পয়েন্ট বসিয়ে জমির আনুমানিক ক্ষেত্রফল</h3>
+<p class="calc-help">মানচিত্রে ধারাবাহিকভাবে পয়েন্টে ক্লিক করুন। ৩ বা তার বেশি পয়েন্ট হলে বহুভুজের আনুমানিক ক্ষেত্রফল হিসাব হবে। Leaflet লোড না হলে ক্যালকুলেটর/স্কেচ অংশ স্বাভাবিকভাবে কাজ করবে।</p>
+<div class="map-box"><div id="registryMap"></div><div id="mapOfflineNote" class="map-offline-note" role="status">ইন্টারনেট সংযোগ ছাড়া মানচিত্রের টাইল/ভৌগোলিক পয়েন্ট-ভিত্তিক ক্ষেত্রফল সাময়িকভাবে পাওয়া যাবে না। তবে এই পাতার অন্যান্য ক্যালকুলেটর ও ৩/৪ বাহুর স্কেচ অফলাইনে কাজ করবে।</div><div class="map-tools"><button type="button" id="mapClear">সব পয়েন্ট মুছুন</button><button type="button" id="mapClose">পলিগন বন্ধ করুন</button><strong id="mapArea" style="margin-left:auto">ক্ষেত্রফল: —</strong></div></div>
+<p class="registry-note">ম্যাপ-ভিত্তিক ফলাফল আনুমানিক; সুনির্দিষ্ট জরিপ/সীমানা নির্ধারণের বিকল্প নয়।</p>
+</div>
+</section>
+
+<div class="legal-note">
+<strong>গুরুত্বপূর্ণ:</strong> ক্যালকুলেটরটি তথ্যভিত্তিক সহায়ক টুল। জমির প্রকৃত সীমানা, খতিয়ান/দলিল, মাঠ জরিপ, বিরোধ, বা জটিল উত্তরাধিকার মামলায় কেবল অনলাইন ফলাফলের ওপর নির্ভর করবেন না। বিশেষ করে উত্তরাধিকার ক্ষেত্রে দাদা-দাদী/নানা-নানী, ভাই-বোন, পুত্রের সন্তান, উত্তরাধিকার থেকে বঞ্চিত হওয়া, রদ/আউল, বিভিন্ন মাজহাব বা বিশেষ পারিবারিক পরিস্থিতি থাকলে বিশেষজ্ঞ/আইনজীবীর পরামর্শ ও প্রাসঙ্গিক সরকারি নথি যাচাই করা প্রয়োজন।</div>
+</div>
+</section>
+</main>
+
+<footer class="footer">
+<div class="container">
+<strong>সার্ভেয়ার আবদুল হান্নান | Surveyor Abdul Hannan</strong>
+<p>Digital Amin &amp; Land Surveyor</p>
+<p class="small">ভূমি জরিপ • নকশা • পরিমাপ • সীমানা-সংক্রান্ত কাজ • তথ্যভিত্তিক আলোচনা</p>
+<p class="small">© 2026 Surveyor Abdul Hannan. All Rights Reserved.</p>
+</div>
+</footer>
+<a aria-label="উপরে যান" class="backtop" href="#top">↑</a>
+
 <script>
 (() => {
-'use strict';
-const $=id=>document.getElementById(id);
-const n=id=>Number($(id)?.value||0);
-const fmt=x=>Number(x).toLocaleString('bn-BD',{maximumFractionDigits:4});
-const money=x=>'৳ '+Number(x).toLocaleString('bn-BD',{maximumFractionDigits:2});
-const FT_PER={sqft:1,shotok:435.6,katha:720,bigha:14400,acre:43560,hectare:107639.104167,sqm:10.7639104167};
-function areaSqft(v,u,k=720,bk=20){const per={...FT_PER,katha:k,bigha:k*bk};return v*per[u]}
-function landResult(sqft){const sqm=sqft/10.7639104167;return `<div class="result-grid"><div class="result-item"><strong>${fmt(sqft)} বর্গফুট</strong><span>Square feet</span></div><div class="result-item"><strong>${fmt(sqft/435.6)} শতাংশ</strong><span>১ শতাংশ = ৪৩৫.৬ sqft</span></div><div class="result-item"><strong>${fmt(sqft/720)} কাঠা*</strong><span>*কাঠা মান কনফিগারেশন অনুযায়ী</span></div><div class="result-item"><strong>${fmt(sqft/14400)} বিঘা*</strong><span>*২০ কাঠা/বিঘা default</span></div><div class="result-item"><strong>${fmt(sqft/43560)} একর</strong><span>১ একর = ৪৩,৫৬০ sqft</span></div><div class="result-item"><strong>${fmt(sqm)} বর্গমিটার</strong><span>Square metre</span></div><div class="result-item"><strong>${fmt(sqft/107639.104167)} হেক্টর</strong><span>Hectare</span></div></div>`}
-function err(id,msg){$(id).innerHTML=`<div class="warning">${msg}</div>`}
-function heron(a,b,c){const s=(a+b+c)/2, q=s*(s-a)*(s-b)*(s-c);return q>=0&&a+b>c&&a+c>b&&b+c>a?Math.sqrt(q):null}
-function showArea(id,sqft,extra=''){ $(id).innerHTML=`<div class="big">ক্ষেত্রফল = ${fmt(sqft)} বর্গফুট</div>${landResult(sqft)}${extra}` }
+  const $ = id => document.getElementById(id);
+  const fmt = (n, d=4) => Number(n).toLocaleString('en-US',{maximumFractionDigits:d});
+  const esc = s => String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const sq = (value, unit) => {
+    if (unit === 'ft') return {primary:value, primaryUnit:'sq ft', sqft:value, sqm:value*0.09290304};
+    return {primary:value, primaryUnit:'sq m', sqft:value*10.763910416709722, sqm:value};
+  };
+  const landLines = (x, unit) => {
+    const r=sq(x,unit);
+    const decimal=r.sqft/435.6;
+    const katha=r.sqft/720;
+    const bigha=r.sqft/14400;
+    const acre=r.sqft/43560;
+    return `<div class="result-list">
+      <div class="result-item result-item-primary"><strong>${fmt(r.primary)} ${r.primaryUnit}</strong><span>মূল ক্ষেত্রফল</span></div>
+      <div class="result-item"><strong>${fmt(r.sqft)} sq ft</strong><span>বর্গফুট</span></div>
+      <div class="result-item"><strong>${fmt(r.sqm)} sq m</strong><span>বর্গমিটার</span></div>
+      <div class="result-item"><strong>${fmt(decimal)} শতক / ডেসিমেল</strong><span>১ শতক = ৪৩৫.৬ sq ft</span></div>
+      <div class="result-item"><strong>${fmt(katha)} কাঠা</strong><span>বাংলাদেশে প্রচলিত: ১ কাঠা = ৭২০ sq ft</span></div>
+      <div class="result-item"><strong>${fmt(bigha)} বিঘা</strong><span>১ বিঘা = ২০ কাঠা = ১৪,৪০০ sq ft</span></div>
+      <div class="result-item"><strong>${fmt(acre)} একর</strong><span>১ একর = ৪৩,৫৬০ sq ft</span></div>
+    </div><p class="conversion-note">একক রূপান্তরগুলো বাংলাদেশে প্রচলিত মান ধরে দেখানো হয়েছে। দলিল/রেকর্ডে ভিন্ন স্থানীয় মান থাকলে সংশ্লিষ্ট সরকারি/জরিপ মান অনুসরণ করুন।</p>`;
+  };
+  function err(el,msg){el.innerHTML=`<div class="warning">${esc(msg)}</div>`}
+  document.querySelectorAll('.calc-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.calc-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.calc-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active'); $('panel-'+btn.dataset.tab).classList.add('active');
+      document.querySelectorAll('.calc-tab').forEach(b=>b.setAttribute('aria-selected', b===btn ? 'true' : 'false'));
+    });
+  });
+  $('rectCalc').onclick=()=>{
+    const l=+$('rectLength').value,w=+$('rectWidth').value,u=$('rectUnit').value,r=$('rectResult');
+    if(!(l>0&&w>0)) return err(r,'দৈর্ঘ্য ও প্রস্থ—দুটিই শূন্যের চেয়ে বেশি দিন।');
+    const area=l*w; r.innerHTML=`<div class="result-main">ক্ষেত্রফল = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div>${landLines(area,u)}`;
+  };
+  $('heronCalc').onclick=()=>{
+    const a=+$('heronA').value,b=+$('heronB').value,c=+$('heronC').value,u=$('heronUnit').value,r=$('heronResult');
+    if(!(a>0&&b>0&&c>0)) return err(r,'তিনটি বাহুর মানই শূন্যের চেয়ে বেশি দিন।');
+    if(a+b<=c||a+c<=b||b+c<=a) return err(r,'এই তিন বাহু দিয়ে বৈধ ত্রিভুজ তৈরি হয় না। যেকোনো দুই বাহুর যোগফল তৃতীয় বাহুর চেয়ে বেশি হতে হবে।');
+    const s=(a+b+c)/2, area=Math.sqrt(s*(s-a)*(s-b)*(s-c));
+    r.innerHTML=`<div class="result-main">ক্ষেত্রফল = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div><p>অর্ধপরিসীমা (s) = ${fmt(s)} ${u}</p>${landLines(area,u)}`;
+  };
+  $('braCalc').onclick=()=>{
+    const a=+$('braA').value,b=+$('braB').value,c=+$('braC').value,d=+$('braD').value,u=$('braUnit').value,r=$('braResult');
+    if(!(a>0&&b>0&&c>0&&d>0)) return err(r,'চারটি বাহুর মানই শূন্যের চেয়ে বেশি দিন।');
+    const s=(a+b+c+d)/2, inside=(s-a)*(s-b)*(s-c)*(s-d);
+    if(inside<0) return err(r,'দেওয়া চার বাহু দিয়ে এমন চতুর্ভুজ গঠন সম্ভব নয়।');
+    const area=Math.sqrt(inside);
+    r.innerHTML=`<div class="result-main">ব্রহ্মগুপ্ত ক্ষেত্রফল = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div><p>অর্ধপরিসীমা (s) = ${fmt(s)} ${u}</p><div class="warning">এই ফলটি ব্রহ্মগুপ্তের সূত্রের শর্ত অনুযায়ী <strong>cyclic quadrilateral</strong>-এর জন্য প্রযোজ্য। সাধারণ চতুর্ভুজে শুধু চার বাহু থেকে প্রকৃত ক্ষেত্রফল নিশ্চিত করা যায় না।</div>${landLines(area,u)}`;
+  };
 
-// tabs
-for(const tab of document.querySelectorAll('.tab'))tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));tab.classList.add('active');$('panel-'+tab.dataset.tab).classList.add('active');window.scrollTo({top:document.querySelector('.tabs').offsetTop-75,behavior:'smooth'});});
+  function toggleGender(){
+    const male=$('deceasedGender').value==='male';
+    $('wifeField').style.display=male?'block':'none';
+    $('husbandField').style.display=male?'none':'block';
+    if(male) $('husband').value='0'; else $('wives').value='0';
+  }
+  $('deceasedGender').addEventListener('change',toggleGender); toggleGender();
 
-$('convertBtn').onclick=()=>{const v=n('convValue'),k=n('kathaSqft')||720,bk=n('bighaKatha')||20;if(v<0){return err('convertResult','পরিমাণ সঠিক দিন।')}const sqft=areaSqft(v,$('convUnit').value,k,bk);$('convertResult').innerHTML=`<div class="big">${fmt(v)} ${$('convUnit').selectedOptions[0].text} =</div>${landResult(sqft)}`} ;
-$('convertClear').onclick=()=>{['convValue'].forEach(id=>$(id).value='');$('convertResult').innerHTML=''};
-$('rectBtn').onclick=()=>{const l=n('rectL'),w=n('rectW');if(l<=0||w<=0)return err('rectResult','দৈর্ঘ্য ও প্রস্থ শূন্যের বেশি দিন।');const sqft=$('rectUnit').value==='ft'?l*w:l*w*10.7639104167;showArea('rectResult',sqft)};
-$('heronBtn').onclick=()=>{const a=n('ha'),b=n('hb'),c=n('hc'),x=heron(a,b,c);if(x===null)return err('heronResult','বাহুগুলো দিয়ে বৈধ ত্রিভুজ তৈরি হচ্ছে না।');const sqft=$('hu').value==='ft'?x:x*10.7639104167;showArea('heronResult',sqft,`<p>অর্ধপরিসীমা s = ${fmt((a+b+c)/2)} ${$('hu').value==='ft'?'ফুট':'মিটার'}</p>`) };
-$('braBtn').onclick=()=>{const a=n('ba'),b=n('bb'),c=n('bc'),d=n('bd'),s=(a+b+c+d)/2,q=(s-a)*(s-b)*(s-c)*(s-d);if([a,b,c,d].some(x=>x<=0)||q<0)return err('braResult','চার বাহুর মান সঠিক দিন এবং valid quadrilateral শর্ত নিশ্চিত করুন।');const x=Math.sqrt(q),sqft=$('bu').value==='ft'?x:x*10.7639104167;showArea('braResult',sqft,'<div class="warning" style="margin-top:12px">চার বাহু থেকে এটি সাধারণ চতুর্ভুজে exact নয়; cyclic quadrilateral হলে সূত্রটি exact।</div>')};
+  const money=n=>'৳ '+Number(n).toLocaleString('bn-BD',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const frac=(n)=> {
+    const eps=1e-9, known=[[1,2,'১/২'],[1,3,'১/৩'],[1,4,'১/৪'],[1,6,'১/৬'],[1,8,'১/৮'],[2,3,'২/৩'],[5,6,'৫/৬']];
+    for(const [a,b,s] of known) if(Math.abs(n-a/b)<eps) return s;
+    return (n*100).toFixed(2)+'%';
+  };
 
-// quadrilateral with diagonal
-function drawQuad(){const c=$('shapeCanvas'),ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='#f8fbfb';ctx.fillRect(0,0,c.width,c.height);const vals=[n('qa'),n('qb'),n('qc'),n('qd')];if(vals.filter(Boolean).length<4){ctx.fillStyle='#60727b';ctx.font='22px system-ui';ctx.textAlign='center';ctx.fillText('AB, BC, CD, DA-এর চারটি মাপ দিন',500,140);return}const [a,b,cc,d]=vals;let x=(a*a+b*b-cc*cc)/(2*a), y2=b*b-x*x;if(y2<=0){ctx.fillStyle='#a22626';ctx.font='18px system-ui';ctx.textAlign='center';ctx.fillText('এই বাহুগুলো দিয়ে valid geometry পাওয়া যায়নি',500,140);return}let y=Math.sqrt(y2);const dist=Math.hypot(x,y), along=(d*d-cc*cc+dist*dist)/(2*dist), h=Math.sqrt(Math.max(0,d*d-along*along)),ux=x/dist,uy=y/dist,px=-uy,py=ux;let dx=along*ux+h*px,dy=along*uy+h*py;if(dy>0){dx=along*ux-h*px;dy=along*uy-h*py}const pts=[[0,0],[a,0],[x,y],[dx,dy]],xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),minx=Math.min(...xs),maxx=Math.max(...xs),miny=Math.min(...ys),maxy=Math.max(...ys),pad=55,scale=Math.min((c.width-2*pad)/(maxx-minx||1),(c.height-2*pad)/(maxy-miny||1));const mp=pts.map(([px0,py0])=>[pad+(px0-minx)*scale,c.height-pad-(py0-miny)*scale]);ctx.beginPath();ctx.moveTo(...mp[0]);mp.slice(1).forEach(p=>ctx.lineTo(...p));ctx.closePath();ctx.fillStyle='#08747b18';ctx.fill();ctx.strokeStyle='#08747b';ctx.lineWidth=3;ctx.stroke();ctx.strokeStyle='#e97820';ctx.setLineDash([8,6]);ctx.beginPath();ctx.moveTo(...mp[0]);ctx.lineTo(...mp[2]);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#082336';ctx.font='bold 17px system-ui';mp.forEach((p,i)=>ctx.fillText('ABCD'[i],p[0],p[1]-10));ctx.fillStyle='#60727b';ctx.font='13px system-ui';ctx.fillText('AC = '+($('qdiag').value||'—'),(mp[0][0]+mp[2][0])/2,(mp[0][1]+mp[2][1])/2-8)}
-['qa','qb','qc','qd','qdiag'].forEach(id=>$(id).addEventListener('input',drawQuad));drawQuad();
-$('quadBtn').onclick=()=>{const a=n('qa'),b=n('qb'),c=n('qc'),d=n('qd'),diag=n('qdiag');if([a,b,c,d].some(x=>x<=0))return err('quadResult','চার বাহুর মাপ দিন।');if(diag>0){const x=heron(a,b,diag),y=heron(c,d,diag);if(x===null||y===null)return err('quadResult','দেওয়া কর্ণ ও বাহুগুলো দিয়ে দুইটি বৈধ ত্রিভুজ তৈরি হচ্ছে না।');const area=x+y,sqft=$('qu').value==='ft'?area:area*10.7639104167;showArea('quadResult',sqft,'<div class="ok" style="margin-top:12px">কর্ণ AC ব্যবহার করে AB–BC–AC এবং AC–CD–DA দুই ত্রিভুজের ক্ষেত্রফল যোগ করা হয়েছে।</div>')}else{const s=(a+b+c+d)/2,q=(s-a)*(s-b)*(s-c)*(s-d);if(q<=0)return err('quadResult','চার বাহুগুলো valid quadrilateral শর্ত পূরণ করছে না।');const area=Math.sqrt(q),sqft=$('qu').value==='ft'?area:area*10.7639104167;showArea('quadResult',sqft,'<div class="warning" style="margin-top:12px">কর্ণ দেওয়া হয়নি। এটি Brahmagupta-based estimate; exact survey area হিসেবে ব্যবহার করবেন না।</div>')}};
+  $('inheritCalc').onclick=()=>{
+    const estate=+$('estate').value;
+    const gender=$('deceasedGender').value;
+    const wives=gender==='male'?Math.max(0,Math.floor(+$('wives').value||0)):0;
+    const husband=gender==='female'&&$('husband').value==='1'?1:0;
+    const father=$('father').value==='1'?1:0, mother=$('mother').value==='1'?1:0;
+    const sons=Math.max(0,Math.floor(+$('sons').value||0)), daughters=Math.max(0,Math.floor(+$('daughters').value||0));
+    const r=$('inheritResult');
+    if(!(estate>0)) return err(r,'নিট উত্তরাধিকারযোগ্য সম্পত্তির সঠিক পরিমাণ দিন।');
+    if(gender==='male'&&wives===0&&father===0&&mother===0&&sons===0&&daughters===0) return err(r,'কমপক্ষে একজন জীবিত উত্তরাধিকারী নির্বাচন করুন।');
+    if(gender==='female'&&husband===0&&father===0&&mother===0&&sons===0&&daughters===0) return err(r,'কমপক্ষে একজন জীবিত উত্তরাধিকারী নির্বাচন করুন।');
 
-// partition
-function normalizeDigits(s){return String(s).replace(/[০-৯]/g,d=>'0123456789'['০১২৩৪৫৬৭৮৯'.indexOf(d)]).replace(/٫/g,'.')}
-$('partBtn').onclick=()=>{const total=n('partTotal'),raw=normalizeDigits($('partRatio').value).replace(/,/g,':').trim();const ratios=raw.split(':').map(Number);if(total<=0||ratios.length<2||ratios.some(x=>!(x>0)))return err('partResult','মোট জমি এবং সঠিক অনুপাত দিন।');const sum=ratios.reduce((a,b)=>a+b,0);const u=$('partUnit').value,k=n('kathaSqft')||720,bk=n('bighaKatha')||20,sqftTotal=areaSqft(total,u,k,bk);let rows=ratios.map((r,i)=>{const sqft=sqftTotal*r/sum;return `<tr><td>অংশ ${i+1}</td><td class="right">${fmt(r)} / ${fmt(sum)}</td><td class="right">${fmt(sqft)} sqft</td><td class="right">${fmt(sqft/435.6)} শতাংশ</td></tr>`}).join('');$('partResult').innerHTML=`<div class="big">মোট = ${fmt(sqftTotal)} বর্গফুট</div><div class="table-wrap"><table class="table"><thead><tr><th>অংশ</th><th>অনুপাত</th><th class="right">বর্গফুট</th><th class="right">শতাংশ</th></tr></thead><tbody>${rows}</tbody></table></div>`};
-$('partClear').onclick=()=>{$('partTotal').value='';$('partRatio').value='';$('partResult').innerHTML=''};
+    const hasDesc=sons>0||daughters>0;
+    const rows=[];
+    let fixed=0;
+    if(gender==='male'&&wives>0){
+      const sh=hasDesc?1/8:1/4; rows.push({name:wives===1?'স্ত্রী':'স্ত্রীগণ (সমষ্টিগত)',count:wives,share:sh,each:sh/wives,reason:hasDesc?'সন্তান/বংশধর থাকায় ১/৮':'সন্তান/বংশধর না থাকায় ১/৪'}); fixed+=sh;
+    }
+    if(gender==='female'&&husband){
+      const sh=hasDesc?1/4:1/2; rows.push({name:'স্বামী',count:1,share:sh,each:sh,reason:hasDesc?'সন্তান/বংশধর থাকায় ১/৪':'সন্তান/বংশধর না থাকায় ১/২'}); fixed+=sh;
+    }
 
-// inheritance helper: fixed shares for spouse/parents, residue to children; father gets 1/6 when children exist, mother 1/6 when children, spouse 1/8 or 1/4 for wife, 1/4 or 1/2 husband. Remaining to sons/daughters 2:1. This is intentionally labeled general helper.
-$('inheritBtn').onclick=()=>{const estate=n('estate'),male=$('gender').value==='male',wives=Math.floor(n('wives')),husband=Number($('husband').value),father=Number($('father').value),mother=Number($('mother').value),sons=Math.floor(n('sons')),daughters=Math.floor(n('daughters'));if(estate<=0)return err('inheritResult','নিট সম্পত্তির পরিমাণ দিন।');if(male&&husband) return err('inheritResult','মৃত ব্যক্তি পুরুষ হলে স্বামী নির্বাচন করা যাবে না।');if(!male&&wives) return err('inheritResult','মৃত ব্যক্তি নারী হলে স্ত্রী সংখ্যা ০ দিন।');if(male&&wives>4)return err('inheritResult','স্ত্রীর সংখ্যা সর্বোচ্চ ৪ জন দিন।');if(!male&&husband>1)return err('inheritResult','স্বামী ১ জনই হতে পারেন।');const children=sons+daughters;let shares=[];if(male&&wives)shares.push(['স্ত্রীগণ (মোট)',children?1/8:1/4]);if(!male&&husband)shares.push(['স্বামী',children?1/4:1/2]);if(father)shares.push(['পিতা',children?1/6:0]);if(mother)shares.push(['মাতা',children?1/6:1/3]);let fixed=shares.reduce((s,x)=>s+x[1],0);if(fixed>1)return err('inheritResult','এই সাধারণ ইনপুটে নির্দিষ্ট অংশ ১-এর বেশি হয়ে গেছে; বিশেষ ফারায়েজ গণনা প্রয়োজন।');let residue=1-fixed;let childUnits=sons*2+daughters;if(childUnits===0&&residue>0)shares.push(['অবশিষ্ট অংশ',residue]);else if(childUnits>0){if(sons)shares.push(['পুত্রগণ (মোট)',residue*sons*2/childUnits]);if(daughters)shares.push(['কন্যাগণ (মোট)',residue*daughters/childUnits])}let html=shares.map(([name,f])=>`<tr><td>${name}</td><td class="right">${fmt(f*100)}%</td><td class="right">${money(estate*f)}</td></tr>`).join('');if(male&&wives)html=html.replace('স্ত্রীগণ (মোট)',`স্ত্রীগণ (মোট ${wives} জন)`);$('inheritResult').innerHTML=`<div class="table-wrap"><table class="table"><thead><tr><th>ওয়ারিশ</th><th class="right">অংশ</th><th class="right">টাকা</th></tr></thead><tbody>${html}</tbody></table></div><p class="help">এই সহায়ক মডেল অন্যান্য ওয়ারিশ/বিশেষ পরিস্থিতি বিবেচনা করে না।</p>`};
+    // Mother: special Umarayn cases; otherwise 1/6 with descendant, or 2+ siblings (not entered here), else 1/3.
+    let motherShare=0, motherSpecial=false;
+    if(mother){
+      if(father && !hasDesc && (gender==='male'?wives>0:husband)){
+        const spouseShare = gender==='male'?(wives>0?1/4:0):(husband?1/2:0);
+        motherShare=(1-spouseShare)/3; motherSpecial=true;
+      } else motherShare=hasDesc?1/6:1/3;
+      rows.push({name:'মাতা',count:1,share:motherShare,each:motherShare,reason:motherSpecial?'স্বামী/স্ত্রী ও পিতার সঙ্গে বিশেষ ক্ষেত্রে অবশিষ্টের ১/৩':hasDesc?'সন্তান/বংশধর থাকায় ১/৬':'সন্তান/বংশধর না থাকায় ১/৩'}); fixed+=motherShare;
+    }
 
-// value
-function valueToSqft(v,u){return areaSqft(v,u,n('kathaSqft')||720,n('bighaKatha')||20)}
-$('valueBtn').onclick=()=>{const a=n('valueArea'),p=n('pricePer'),u=$('valueUnit').value,pu=$('priceUnit').value;if(a<=0||p<0)return err('valueResult','জমির পরিমাণ ও প্রতি-একক মূল্য সঠিক দিন।');const sqft=valueToSqft(a,u),priceUnitSqft=valueToSqft(1,pu),total=sqft/priceUnitSqft*p;$('valueResult').innerHTML=`<div class="big">আনুমানিক মোট মূল্য = ${money(total)}</div>${landResult(sqft)}<div class="section-note">হিসাব: মোট জমি ${fmt(sqft/priceUnitSqft)} ${$('priceUnit').selectedOptions[0].text} × ${money(p)} প্রতি একক।</div>`};
-$('regBtn').onclick=()=>{const base=n('regBase'),rates=['regRate','stampRate','localRate','sourceRate'].map(n),other=n('otherFee');if(base<0)return err('regResult','দলিল মূল্য সঠিক দিন।');const vals=rates.map(r=>base*r/100),total=vals.reduce((a,b)=>a+b,0)+other;$('regResult').innerHTML=`<div class="big">মোট আনুমানিক খরচ = ${money(total)}</div><div class="table-wrap"><table class="table"><tr><th>খরচ</th><th class="right">পরিমাণ</th></tr><tr><td>রেজিস্ট্রেশন ফি</td><td class="right">${money(vals[0])}</td></tr><tr><td>স্ট্যাম্প ডিউটি</td><td class="right">${money(vals[1])}</td></tr><tr><td>স্থানীয় সরকার কর</td><td class="right">${money(vals[2])}</td></tr><tr><td>উৎসে কর</td><td class="right">${money(vals[3])}</td></tr><tr><td>অন্যান্য</td><td class="right">${money(other)}</td></tr><tr><th>মোট</th><th class="right">${money(total)}</th></tr></table></div>`;window.__reg={base,rates,other,total}};
-$('regPrint').onclick=()=>{if(!window.__reg)$('regBtn').click();const r=window.__reg;if(!r)return;const html=`<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>ভূমি ক্যালকুলেটর রিপোর্ট</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#182b35}h1{color:#082336}table{width:100%;border-collapse:collapse;margin-top:18px}th,td{border:1px solid #ccdadd;padding:10px;text-align:left}th{background:#eef4f5}.r{text-align:right}</style></head><body><h1>ভূমি ক্যালকুলেটর — খরচ রিপোর্ট</h1><p>দলিল/সম্পত্তির মূল্য: ${money(r.base)}</p><table><tr><th>খরচের খাত</th><th>হার</th><th>পরিমাণ</th></tr><tr><td>রেজিস্ট্রেশন ফি</td><td>${r.rates[0]}%</td><td class="r">${money(r.base*r.rates[0]/100)}</td></tr><tr><td>স্ট্যাম্প ডিউটি</td><td>${r.rates[1]}%</td><td class="r">${money(r.base*r.rates[1]/100)}</td></tr><tr><td>স্থানীয় সরকার কর</td><td>${r.rates[2]}%</td><td class="r">${money(r.base*r.rates[2]/100)}</td></tr><tr><td>উৎসে কর</td><td>${r.rates[3]}%</td><td class="r">${money(r.base*r.rates[3]/100)}</td></tr><tr><td>অন্যান্য</td><td>ফিক্সড</td><td class="r">${money(r.other)}</td></tr><tr><th colspan="2">মোট আনুমানিক</th><th class="r">${money(r.total)}</th></tr></table><p>বি.দ্র.: ব্যবহারকারীর দেওয়া হার অনুযায়ী হিসাব। চূড়ান্ত সরকারি খরচ সংশ্লিষ্ট কর্তৃপক্ষের নির্ধারিত হার অনুযায়ী যাচাই করুন।</p><script>window.onload=()=>window.print()<\/script></body></html>`;const w=window.open('','_blank');if(w){w.document.write(html);w.document.close()}else alert('পপ-আপ ব্লক হয়েছে।')};
+    if(father && hasDesc){
+      const sh=1/6; rows.push({name:'পিতা',count:1,share:sh,each:sh,reason:sons>0?'পুত্র/পুরুষ বংশধর থাকায় ১/৬':'শুধু কন্যা থাকায় ১/৬ + অবশিষ্ট'}); fixed+=sh;
+    } else if(father && !hasDesc){
+      // Father takes residue below.
+      rows.push({name:'পিতা',count:1,share:0,each:0,reason:'অবশিষ্টভোগী (residuary)'}); 
+    }
 
-// offline indicator and service worker
-function offlineState(){const b=$('offlineBadge');b.classList.toggle('online',navigator.onLine)}window.addEventListener('online',offlineState);window.addEventListener('offline',offlineState);offlineState();
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+    if(daughters>0 && sons===0){
+      const sh=daughters===1?1/2:2/3;
+      rows.push({name:daughters===1?'কন্যা':'কন্যাগণ (সমষ্টিগত)',count:daughters,share:sh,each:sh/daughters,reason:daughters===1?'একজন কন্যা, পুত্র নেই: ১/২':'দুই বা ততোধিক কন্যা, পুত্র নেই: ২/৩'}); fixed+=sh;
+    }
+
+    let residue=1-fixed;
+    if(residue < -1e-9) return err(r,'এই পারিবারিক বিন্যাসে নির্দিষ্ট অংশগুলোর যোগফল ১-এর বেশি হয়েছে। এই টুলের আওতার বাইরে থাকা জটিল উত্তরাধিকার বিধান প্রযোজ্য হতে পারে।');
+    if(residue<0) residue=0;
+
+    if(sons>0){
+      const units=sons*2+daughters;
+      const sonEach=residue*(2/units), daughterEach=daughters?residue*(1/units):0;
+      rows.push({name:sons===1?'পুত্র':'পুত্রগণ (সমষ্টিগত)',count:sons,share:sonEach*sons,each:sonEach,reason:'অবশিষ্ট অংশ; পুত্র-কন্যা একত্রে ২:১'});
+      if(daughters>0) rows.push({name:daughters===1?'কন্যা':'কন্যাগণ (অবশিষ্ট অংশ)',count:daughters,share:daughterEach*daughters,each:daughterEach,reason:'পুত্রের সঙ্গে অবশিষ্ট অংশে ২:১ অনুপাত'});
+      residue=0;
+    } else if(father){
+      // father gets remaining residue when no sons; if only daughters, father gets 1/6 plus residue.
+      const row=rows.find(x=>x.name==='পিতা');
+      if(row){row.share+=residue; row.each=row.share; row.reason += residue>0?' এবং অবশিষ্ট অংশ':' '; }
+      residue=0;
+    } else if(residue>1e-9){
+      // For this simplified calculator, do not silently assign radd.
+      return err(r,'এই কেসে নির্দিষ্ট অংশ দেওয়ার পর অবশিষ্ট অংশ রয়েছে। রদ/অন্যান্য আসাবা/নিকটাত্মীয়ের নিয়ম প্রযোজ্য হতে পারে; তাই এই ক্যালকুলেটর চূড়ান্ত ফল দেয়নি।');
+    }
+
+    const total=rows.reduce((s,x)=>s+x.share,0);
+    const table=`<div class="result-main">উত্তরাধিকার হিসাব</div>
+      <p><strong>নিট সম্পত্তি:</strong> ${money(estate)} &nbsp; | &nbsp; <strong>মোট বণ্টন:</strong> ${fmt(total*100,2)}%</p>
+      <div class="inheritance-summary"><table class="inheritance-table"><thead><tr><th>উত্তরাধিকারী</th><th>প্রযোজ্য অংশ</th><th>শতাংশ</th><th>আনুমানিক টাকা</th></tr></thead><tbody>
+      ${rows.filter(x=>x.share>1e-10).map(x=>`<tr><td><strong>${esc(x.name)}</strong><br><span class="small-note">${esc(x.reason)}</span>${x.count>1?`<br><span class="small-note">প্রতি জন ≈ ${money(estate*x.each)}</span>`:''}</td><td>${frac(x.share)}${x.count>1?' (সমষ্টিগত)':''}</td><td>${fmt(x.share*100,2)}%</td><td>${money(estate*x.share)}</td></tr>`).join('')}
+      </tbody></table></div>
+      <p class="small-note">এটি প্রদত্ত পারিবারিক তথ্যের ভিত্তিতে সাধারণ হিসাব। পুত্র/কন্যার পূর্বমৃত্যু, নাতি-নাতনি, দাদা-দাদী, ভাই-বোন, রদ/আউল, বা অন্য উত্তরাধিকারী থাকলে ফল পরিবর্তিত হতে পারে।</p>`;
+    r.innerHTML=table;
+  };
+
+  document.querySelectorAll('[data-clear]').forEach(btn=>btn.addEventListener('click',()=>{
+    const type=btn.dataset.clear;
+    const panel=$('panel-'+type);
+    panel.querySelectorAll('input').forEach(i=>i.value='');
+    if(type==='inheritance'){
+      $('deceasedGender').value='male'; $('wives').value='1'; $('husband').value='0'; $('father').value='1'; $('mother').value='1'; $('sons').value='1'; $('daughters').value='1'; toggleGender();
+    }
+    panel.querySelectorAll('.calc-result').forEach(r=>r.innerHTML='');
+  }));
 })();
 </script>
-</body></html>
+
+<link id="leaflet-css-upgrade" rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+<script>
+/* ===== Registry calculator logic — ES6+, additive only ===== */
+(() => {
+  const $ = id => document.getElementById(id);
+  const bn = n => Number(n || 0).toLocaleString('bn-BD', {maximumFractionDigits:2});
+  const money = n => '৳ ' + bn(n);
+  const val = id => Number($(id)?.value || 0);
+
+  const rows = $('registryRows');
+  const totalEl = $('registryTotal');
+  const fixedWrap = $('regFixedSourceWrap');
+
+  function calcRegistry() {
+    const base = val('regValue');
+    const registration = Math.max(base * 0.01, base > 0 ? 100 : 0);
+    const stampRate = val('regStampRate') / 100;
+    const stamp = base * stampRate;
+    const localRate = val('regLocalRate') / 100;
+    const localTax = base * localRate;
+    const sourceSel = $('regSourceRate').value;
+    const sourceMinimum = val('regSourceMinimum');
+    const source = sourceSel === 'fixed'
+      ? val('regFixedSource')
+      : Math.max(base * (Number(sourceSel) / 100), sourceMinimum);
+    const affidavit = val('regAffidavit');
+    const nFee = val('regPages') * val('regNFee');
+    const nnFee = val('regPages') * val('regNNFee');
+    const eFee = val('regEFee');
+    const courtFee = val('regCourtFee');
+    const total = registration + stamp + localTax + source + affidavit + nFee + nnFee + eFee + courtFee;
+
+    const data = [
+      ['💳','রেজিস্ট্রেশন ফি','১%',registration],
+      ['📜','স্ট্যাম্প ডিউটি',$('regStampRate').value+'%',stamp],
+      ['🏛️','স্থানীয় সরকার কর', $('regLocalRate').value+'%',localTax],
+      ['💰','উৎসে কর', sourceSel === 'fixed' ? 'ফিক্সড' : sourceSel+'%',source],
+      ['📄','হলফনামা স্ট্যাম্প','ফিক্সড',affidavit],
+      ['🧾','N-Fee',bn(val('regPages'))+' পৃষ্ঠা',nFee],
+      ['🧾','NN-Fee',bn(val('regPages'))+' পৃষ্ঠা',nnFee],
+      ['💼','E-Fee','ফিক্সড',eFee],
+      ['⚖️','কোর্ট ফি','ফিক্সড',courtFee]
+    ];
+    rows.innerHTML = data.map(r => `<div class="cost-row"><div><span class="cost-name">${r[0]} ${r[1]} <span class="badge-rate">${r[2]}</span></span><span class="cost-meta">${r[1] === 'N-Fee' ? 'পৃষ্ঠা × নির্ধারিত হার' : 'আনুমানিক'}</span></div><span class="cost-amount">${money(r[3])}</span></div>`).join('');
+    totalEl.textContent = money(total);
+    window.__registryLast = {base, registration, stamp, stampRate, localTax, localRate, source, sourceSel, sourceMinimum, affidavit, nFee, nnFee, eFee, courtFee, total};
+  }
+
+  function clearRegistry() {
+    ['regClient','regKhatian','regValue'].forEach(id => $(id).value = '');
+    $('regLocalRate').value='3';
+    $('regStampRate').value='1.5';
+    $('regSourceRate').value='2';
+    $('regFixedSource').value='0';
+    $('regSourceMinimum').value='0';
+    $('regAffidavit').value='200';
+    $('regPages').value='1';
+    $('regNFee').value='24';
+    $('regNNFee').value='36';
+    $('regEFee').value='100';
+    $('regCourtFee').value='10';
+    fixedWrap.hidden=true;
+    rows.innerHTML='<div class="small-note">দলিলের মূল্য লিখলে ফলাফল এখানে দেখাবে।</div>';
+    totalEl.textContent='৳ ০';
+    drawShape();
+  }
+
+  function printReport() {
+    calcRegistry();
+    const r = window.__registryLast;
+    const client = $('regClient').value.trim() || '—';
+    const khatian = $('regKhatian').value.trim() || '—';
+    const report = `<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>Land Registration Calculation Sheet</title>
+<style>body{font-family:Arial,"Noto Sans Bengali",sans-serif;padding:28px;color:#15242e}h1{color:#082336}table{width:100%;border-collapse:collapse;margin-top:18px}td,th{border:1px solid #dce5e9;padding:10px;text-align:left}th{background:#f2f6f7}.total{font-size:20px;font-weight:800}.note{margin-top:18px;font-size:12px;color:#5e6f79}</style></head>
+<body><h1>Land Registration Calculation Sheet</h1>
+<p><strong>ক্লায়েন্ট:</strong> ${escapeHtml(client)}<br><strong>খতিয়ান/দাগ:</strong> ${escapeHtml(khatian)}<br><strong>দলিল মূল্য:</strong> ${money(r.base)}</p>
+<table><tr><th>খরচের খাত</th><th>হার/ধরন</th><th>পরিমাণ</th></tr>
+<tr><td>রেজিস্ট্রেশন ফি</td><td>১%</td><td>${money(r.registration)}</td></tr>
+<tr><td>স্ট্যাম্প ডিউটি</td><td>${$('regStampRate').value}%</td><td>${money(r.stamp)}</td></tr>
+<tr><td>স্থানীয় সরকার কর</td><td>${$('regLocalRate').value}%</td><td>${money(r.localTax)}</td></tr>
+<tr><td>উৎসে কর</td><td>${r.sourceSel==='fixed'?'ফিক্সড':r.sourceSel+'%'+(r.sourceMinimum>0?' / ন্যূনতম '+bn(r.sourceMinimum):'')}</td><td>${money(r.source)}</td></tr>
+<tr><td>হলফনামা স্ট্যাম্প</td><td>ফিক্সড</td><td>${money(r.affidavit)}</td></tr>
+<tr><td>N-Fee</td><td>${bn(val('regPages'))} পৃষ্ঠা</td><td>${money(r.nFee)}</td></tr>
+<tr><td>NN-Fee</td><td>${bn(val('regPages'))} পৃষ্ঠা</td><td>${money(r.nnFee)}</td></tr>
+<tr><td>E-Fee</td><td>ফিক্সড</td><td>${money(r.eFee)}</td></tr><tr><td>কোর্ট ফি</td><td>ফিক্সড</td><td>${money(r.courtFee)}</td></tr>
+<tr><td colspan="2" class="total">মোট আনুমানিক খরচ</td><td class="total">${money(r.total)}</td></tr></table>
+<p class="note">বি.দ্র: এটি একটি আনুমানিক হিসাব। সরকারি বিধিমালা, দলিলের ধরন, সম্পত্তির শ্রেণি, মৌজা রেইট, এলাকা এবং প্রযোজ্য উৎসে কর/ন্যূনতম কর অনুযায়ী প্রকৃত ফি পরিবর্তিত হতে পারে। চূড়ান্ত হিসাব সংশ্লিষ্ট সাব-রেজিস্ট্রি অফিসের নির্ধারিত হিসাব অনুযায়ী যাচাই করুন। এই শিটটি আনুমানিক হিসাব; চূড়ান্ত অর্থ প্রদানের আগে সংশ্লিষ্ট কর্তৃপক্ষের হার যাচাই করুন।</p>
+</body></html>`;
+    const w = window.open('', '_blank');
+    if (!w) { alert('পপ-আপ ব্লক হয়েছে। ব্রাউজারের পপ-আপ অনুমতি দিয়ে আবার চেষ্টা করুন।'); return; }
+    w.document.write(report); w.document.close(); w.focus();
+    setTimeout(() => w.print(), 250);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  function pdfReport() {
+    calcRegistry();
+    const r = window.__registryLast;
+    const client = $('regClient').value.trim() || 'N/A';
+    const khatian = $('regKhatian').value.trim() || 'N/A';
+    if (window.jspdf && window.jspdf.jsPDF) {
+      const doc = new window.jspdf.jsPDF({unit:'mm',format:'a4'});
+      doc.setFont('helvetica','bold'); doc.setFontSize(16);
+      doc.text('Land Registration Calculation Sheet', 18, 18);
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      doc.text(`Client: ${client}`, 18, 28);
+      doc.text(`Khatian/Dag: ${khatian}`, 18, 35);
+      doc.text(`Deed Value: BDT ${r.base.toLocaleString('en-US',{maximumFractionDigits:2})}`, 18, 42);
+      const lines = [
+        ['Registration Fee (1%, min BDT 100)', r.registration],
+        [`Stamp Duty (${$('regStampRate').value}%)`, r.stamp],
+        [`Local Government Tax (${$('regLocalRate').value}%)`, r.localTax],
+        [`Source Tax (${r.sourceSel==='fixed'?'Fixed':r.sourceSel+'%'})`, r.source],
+        ['Affidavit Stamp', r.affidavit],
+        ['N-Fee', r.nFee],
+        ['NN-Fee', r.nnFee],
+        ['E-Fee', r.eFee],
+        ['Court Fee', r.courtFee],
+      ];
+      let y=54;
+      doc.setFontSize(10);
+      lines.forEach(([label,amount]) => { doc.text(label,18,y); doc.text('BDT '+Number(amount).toLocaleString('en-US',{maximumFractionDigits:2}),190,y,{align:'right'}); y+=8; });
+      doc.setFont('helvetica','bold'); doc.text('Estimated Total',18,y+4); doc.text('BDT '+r.total.toLocaleString('en-US',{maximumFractionDigits:2}),190,y+4,{align:'right'});
+      doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      doc.text('Note: Rates can vary by mouza, deed type and applicable government rules.',18,y+16);
+      doc.save('land-registration-calculation-sheet.pdf');
+    } else {
+      printReport();
+    }
+  }
+
+  ['regValue','regLocalRate','regStampRate','regSourceRate','regFixedSource','regSourceMinimum','regAffidavit','regPages','regNFee','regNNFee','regEFee','regCourtFee'].forEach(id => {
+    $(id)?.addEventListener('input', calcRegistry);
+    $(id)?.addEventListener('change', calcRegistry);
+  });
+  $('regSourceRate')?.addEventListener('change', () => { fixedWrap.hidden = $('regSourceRate').value !== 'fixed'; calcRegistry(); });
+  $('regCalculate')?.addEventListener('click', calcRegistry);
+  $('regReset')?.addEventListener('click', clearRegistry);
+  $('registryPrint')?.addEventListener('click', printReport);
+  $('registryPdf')?.addEventListener('click', pdfReport);
+
+  // -------- Canvas shape sketch --------
+  const canvas=$('landShapeCanvas'), ctx=canvas?.getContext('2d');
+  function drawShape() {
+    if (!ctx) return;
+    const vals=[val('shapeA'),val('shapeB'),val('shapeC'),val('shapeD')];
+    const sides=vals.filter(v=>v>0);
+    const w=canvas.width,h=canvas.height;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#f7fafb'; ctx.fillRect(0,0,w,h);
+    if (sides.length<3) {
+      ctx.fillStyle='#5e6f79'; ctx.font='22px Arial'; ctx.textAlign='center';
+      ctx.fillText('৩ বা ৪টি বাহুর দৈর্ঘ্য দিন',w/2,h/2); return;
+    }
+    let pts;
+    const a=vals[0],b=vals[1],c=vals[2];
+    if (vals[3]>0) {
+      const xC=(a*a+b*b-c*c)/(2*a);
+      const yC=Math.sqrt(Math.max(0,b*b-xC*xC));
+      const d=vals[3];
+      // Circle intersection A(0,0), C(xC,yC), radii d,c.
+      const dist=Math.hypot(xC,yC);
+      if (dist>0 && Math.abs(d-c)<=dist && dist<=d+c) {
+        const along=(d*d-c*c+dist*dist)/(2*dist);
+        const height=Math.sqrt(Math.max(0,d*d-along*along));
+        const ux=xC/dist, uy=yC/dist;
+        const px=-uy, py=ux;
+        let dx=along*ux+height*px, dy=along*uy+height*py;
+        if (dy>0) { dx=along*ux-height*px; dy=along*uy-height*py; }
+        pts=[[0,0],[a,0],[xC,yC],[dx,dy]];
+      } else {
+        pts=[[0,0],[a,0],[xC,yC]];
+      }
+    } else {
+      const xC=(a*a+b*b-c*c)/(2*a);
+      const yC=Math.sqrt(Math.max(0,b*b-xC*xC));
+      pts=[[0,0],[a,0],[xC,yC]];
+    }
+    const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+    const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+    const pad=55, scale=Math.min((w-2*pad)/Math.max(1,maxX-minX),(h-2*pad)/Math.max(1,maxY-minY));
+    const mapped=pts.map(([x,y])=>[pad+(x-minX)*scale,h-pad-(y-minY)*scale]);
+    ctx.beginPath(); ctx.moveTo(mapped[0][0],mapped[0][1]); mapped.slice(1).forEach(p=>ctx.lineTo(p[0],p[1])); ctx.closePath();
+    ctx.fillStyle='rgba(8,116,123,.12)'; ctx.fill(); ctx.strokeStyle='#08747b'; ctx.lineWidth=3; ctx.stroke();
+    ctx.fillStyle='#082336'; ctx.font='bold 18px Arial'; ctx.textAlign='center';
+    mapped.forEach((p,i)=>ctx.fillText(String.fromCharCode(65+i),p[0],p[1]-10));
+    ctx.fillStyle='#5e6f79'; ctx.font='13px Arial';
+    mapped.forEach((p,i)=>{ const j=(i+1)%mapped.length; if(i<vals.length && vals[i]>0) ctx.fillText(String(vals[i])+' ft',(p[0]+mapped[j][0])/2,(p[1]+mapped[j][1])/2-6); });
+  }
+  ['shapeA','shapeB','shapeC','shapeD'].forEach(id => $(id)?.addEventListener('input',drawShape));
+  drawShape();
+
+  // -------- Leaflet map + polygon area --------
+  let map, poly, markers=[];
+  const mapAreaEl=$('mapArea');
+  const mapOfflineNote=$('mapOfflineNote');
+  function polygonAreaM2(latlngs) {
+    if (latlngs.length<3) return 0;
+    const R=6378137, lat0=latlngs.reduce((s,p)=>s+p.lat,0)/latlngs.length*Math.PI/180;
+    const pts=latlngs.map(p=>({x:R*p.lng*Math.PI/180*Math.cos(lat0),y:R*p.lat*Math.PI/180}));
+    let area=0;
+    for(let i=0;i<pts.length;i++){const j=(i+1)%pts.length; area+=pts[i].x*pts[j].y-pts[j].x*pts[i].y;}
+    return Math.abs(area)/2;
+  }
+  function updateMapArea() {
+    const latlngs=markers.map(m=>m.getLatLng());
+    const m2=polygonAreaM2(latlngs);
+    mapAreaEl.textContent=latlngs.length>=3 ? `ক্ষেত্রফল: ${bn(m2)} বর্গমিটার • ${(m2/10000).toLocaleString('bn-BD',{maximumFractionDigits:4})} হেক্টর` : `পয়েন্ট: ${bn(latlngs.length)}টি`;
+    if(poly && map) { map.removeLayer(poly); poly=null; }
+    if(latlngs.length>=3 && map) poly=L.polygon(latlngs,{color:'#08747b',weight:3,fillOpacity:.12}).addTo(map);
+  }
+  function showMapOfflineState() {
+    if (mapOfflineNote) mapOfflineNote.classList.add('show');
+    if (mapAreaEl) mapAreaEl.textContent='মানচিত্র: অনলাইন সংযোগ প্রয়োজন';
+  }
+  function initMap() {
+    if(!$('registryMap')) return;
+    if(!window.L){
+      showMapOfflineState();
+      return;
+    }
+    try {
+      map=L.map('registryMap').setView([22.95,90.84],12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
+      if (navigator.onLine && mapOfflineNote) mapOfflineNote.classList.remove('show');
+      map.on('click',e=>{
+        const m=L.marker(e.latlng,{draggable:true}).addTo(map);
+        m.on('dragend',updateMapArea); markers.push(m); updateMapArea();
+      });
+      map.on('tileerror',()=>showMapOfflineState());
+    } catch(err) {
+      showMapOfflineState();
+    }
+  }
+  $('mapClear')?.addEventListener('click',()=>{
+    markers.forEach(m=>map?.removeLayer(m)); markers=[];
+    if(poly && map){map.removeLayer(poly);poly=null;}
+    mapAreaEl.textContent=map ? 'ক্ষেত্রফল: —' : 'মানচিত্র: অনলাইন সংযোগ প্রয়োজন';
+  });
+  $('mapClose')?.addEventListener('click',updateMapArea);
+  window.addEventListener('offline',showMapOfflineState);
+  window.addEventListener('online',()=>{ if(mapOfflineNote) mapOfflineNote.classList.remove('show'); });
+  initMap();
+
+})();
+</script>
+
+<script id="professional-land-suite-js">
+(()=>{
+ const $=id=>document.getElementById(id); const toast=(msg)=>{const t=$('suiteToast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__suiteToastTimer);window.__suiteToastTimer=setTimeout(()=>t.classList.remove('show'),2200)};
+ const n=(v,d=4)=>Number(v).toLocaleString('bn-BD',{minimumFractionDigits:0,maximumFractionDigits:d});
+ const factors={sqft:1,sqm:10.763910416709722,decimal:435.6,katha:720,bigha:14400,acre:43560,hectare:107639.104167};
+ const labels={sqft:'বর্গফুট',sqm:'বর্গমিটার',decimal:'শতাংশ / ডেসিমেল',katha:'কাঠা',bigha:'বিঘা',acre:'একর',hectare:'হেক্টর'};
+ let lastText='';
+ function saveHistory(title,result){let a=[];try{a=JSON.parse(localStorage.getItem('landCalcHistory')||'[]')}catch(e){} a.unshift({title,result,time:new Date().toLocaleString('bn-BD')});a=a.slice(0,8);localStorage.setItem('landCalcHistory',JSON.stringify(a));renderHistory();}
+ function renderHistory(){const box=$('suiteHistory');let a=[];try{a=JSON.parse(localStorage.getItem('landCalcHistory')||'[]')}catch(e){} if(!a.length){box.innerHTML='<div class="suite-note">এখনও কোনো হিসাব সংরক্ষিত নেই।</div>';return} box.innerHTML=a.map((x,i)=>`<div class="history-item"><div><b>${x.title}</b><br><span>${x.result}</span><br><small>${x.time}</small></div><button type="button" data-hi="${i}">মুছুন</button></div>`).join('');box.querySelectorAll('[data-hi]').forEach(b=>b.onclick=()=>{a.splice(+b.dataset.hi,1);localStorage.setItem('landCalcHistory',JSON.stringify(a));renderHistory()})}
+ $('suiteCalc').onclick=()=>{const l=+$('suiteLength').value,w=+$('suiteWidth').value,u=$('suiteUnit').value,d=+$('suiteDecimals').value;if(!(l>0&&w>0)){toast('দৈর্ঘ্য ও প্রস্থ—দুটিই সঠিকভাবে দিন।');return}const area=l*w;const sqft=u==='ft'?area:area*10.763910416709722;const sqm=u==='ft'?area*.09290304:area;const dec=sqft/435.6,k=sqft/720,b=sqft/14400,a=sqft/43560,h=sqft/107639.104167;const r=`<b>মোট ক্ষেত্রফল: ${n(area,d)} ${u==='ft'?'বর্গফুট':'বর্গমিটার'}</b><div class="unit-grid"><div class="unit-pill"><b>${n(sqft,d)} sq ft</b><span>বর্গফুট</span></div><div class="unit-pill"><b>${n(sqm,d)} sq m</b><span>বর্গমিটার</span></div><div class="unit-pill"><b>${n(dec,d)}</b><span>শতাংশ</span></div><div class="unit-pill"><b>${n(k,d)}</b><span>কাঠা</span></div><div class="unit-pill"><b>${n(b,d)}</b><span>বিঘা</span></div><div class="unit-pill"><b>${n(a,d)}</b><span>একর</span></div><div class="unit-pill"><b>${n(h,d)}</b><span>হেক্টর</span></div></div>`;$('suiteResult').innerHTML=r;lastText=`দৈর্ঘ্য ${l} × প্রস্থ ${w} ${u==='ft'?'ফুট':'মিটার'} = ${n(area,d)} ${u==='ft'?'বর্গফুট':'বর্গমিটার'}; ${n(dec,d)} শতাংশ`;saveHistory('দ্রুত ক্ষেত্রফল',lastText);toast('হিসাব সম্পন্ন হয়েছে।')};
+ $('suiteClear').onclick=()=>{$('suiteLength').value='';$('suiteWidth').value='';$('suiteResult').textContent='দৈর্ঘ্য ও প্রস্থ দিলে ফলাফল এখানে দেখাবে।'};
+ $('suiteConvert').onclick=()=>{const v=+$('suiteArea').value,unit=$('suiteAreaUnit').value;if(!(v>=0)&&v!==0){toast('সঠিক জমির পরিমাণ দিন।');return}const sqft=v*factors[unit];const vals={sqft,sqm:sqft/10.763910416709722,decimal:sqft/435.6,katha:sqft/720,bigha:sqft/14400,acre:sqft/43560,hectare:sqft/107639.104167};const order=['sqft','sqm','decimal','katha','bigha','acre','hectare'];$('suiteConversionResult').innerHTML=order.map(k=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed #dbe8eb"><span>${labels[k]}</span><strong>${n(vals[k],6)}</strong></div>`).join('');lastText=`${n(v,6)} ${labels[unit]} = ${n(vals.decimal,6)} শতাংশ; ${n(vals.sqft,6)} বর্গফুট; ${n(vals.katha,6)} কাঠা; ${n(vals.bigha,6)} বিঘা; ${n(vals.acre,6)} একর`;$('suiteCopy').disabled=false;saveHistory('একক রূপান্তর',lastText);toast('রূপান্তর সম্পন্ন হয়েছে।')};
+ $('suiteCopy').onclick=async()=>{if(!lastText)return;try{await navigator.clipboard.writeText(lastText);toast('ফলাফল কপি হয়েছে।')}catch(e){toast('কপি করা যায়নি; ফলাফলটি নির্বাচন করে কপি করুন।')}};
+ $('suiteClearHistory').onclick=()=>{localStorage.removeItem('landCalcHistory');renderHistory();toast('সাম্প্রতিক হিসাব মুছে ফেলা হয়েছে।')};
+ $('suiteShare').onclick=async()=>{const text=lastText||'Surveyor Abdul Hannan — ভূমি ক্যালকুলেটর';if(navigator.share){try{await navigator.share({title:'ভূমি ক্যালকুলেটর',text})}catch(e){}}else{try{await navigator.clipboard.writeText(text);toast('শেয়ার সুবিধা নেই; ফলাফল কপি হয়েছে।')}catch(e){toast('শেয়ার/কপি সুবিধা এই ব্রাউজারে নেই।')}}};
+ $('suitePrint').onclick=()=>{const w=window.open('','_blank');if(!w){toast('পপ-আপ ব্লক করা আছে।');return}w.document.write(`<html lang="bn"><head><meta charset="utf-8"><title>ভূমি হিসাব রিপোর্ট</title><style>body{font-family:Arial,"Noto Sans Bengali",sans-serif;padding:30px;color:#17313d}h1{color:#082336} .box{border:1px solid #dbe8eb;border-radius:12px;padding:16px;margin-top:18px}</style></head><body><h1>ভূমি হিসাব রিপোর্ট</h1><p>Surveyor Abdul Hannan</p><div class="box">${lastText?lastText:'এই মুহূর্তে দ্রুত ক্যালকুলেটরের কোনো ফলাফল নেই।'}</div><p style="font-size:12px;color:#61747d">নোট: একক রূপান্তরগুলো নির্ধারিত conversion standard অনুযায়ী প্রদর্শিত।</p></body></html>`);w.document.close();w.focus();setTimeout(()=>w.print(),250)};
+ ['suiteLength','suiteWidth','suiteArea'].forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();id==='suiteArea'?$('suiteConvert').click():$('suiteCalc').click()}}));renderHistory();
+})();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
+</script>
+</body>
+</html>
