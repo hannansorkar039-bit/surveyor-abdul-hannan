@@ -166,6 +166,18 @@
 @media print{.land-suite-actions,.quick-tools,.history-list,.land-suite-badge{display:none!important}.land-suite{box-shadow:none}}
 </style>
 
+
+<style id="professional-featured-calculators">
+.featured-calcs{margin:0 0 30px;display:grid;gap:18px}
+.featured-head{padding:22px 22px 16px;border-radius:22px;background:linear-gradient(135deg,#082336,#08747b);color:#fff;box-shadow:0 16px 38px rgba(8,35,54,.16)}
+.featured-head h2{margin:0 0 6px;font-size:clamp(25px,4vw,34px);font-weight:950}.featured-head p{margin:0;color:#dff5f6;line-height:1.7;font-size:14px}
+.featured-card{display:grid;grid-template-columns:104px minmax(0,1fr) auto;gap:18px;align-items:center;padding:18px;border:1px solid #d7e5e8;border-radius:22px;background:linear-gradient(145deg,#fff,#f7fbfc);box-shadow:0 12px 30px rgba(8,35,54,.08);cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;text-align:left}
+.featured-card:hover{transform:translateY(-2px);box-shadow:0 17px 35px rgba(8,35,54,.13);border-color:#a7cfd3}.featured-icon{width:104px;height:104px;border-radius:20px;display:grid;place-items:center;background:#edf8f8;border:1px solid #cde6e8}.featured-icon svg{width:84px;height:84px}.featured-card h3{margin:0 0 5px;color:#082336;font-size:21px;font-weight:950}.featured-card p{margin:0;color:#60757e;font-size:13px;line-height:1.65}.featured-go{width:44px;height:44px;border:0;border-radius:50%;background:#08747b;color:#fff;font-size:23px;font-weight:900}.featured-card:focus-visible{outline:3px solid rgba(8,116,123,.25);outline-offset:3px}
+.featured-panel{margin:0 0 22px;border:1px solid #d7e5e8;border-radius:22px;background:#fff;box-shadow:0 16px 38px rgba(8,35,54,.09);overflow:hidden}.featured-panel-head{padding:20px 22px;background:linear-gradient(135deg,#eef9f9,#fff);border-bottom:1px solid #dcebed}.featured-panel-head h3{margin:0;color:#082336;font-size:23px;font-weight:950}.featured-panel-head p{margin:6px 0 0;color:#63777f;font-size:13px;line-height:1.65}.featured-panel-body{padding:22px}.featured-panel .calc-grid{margin-top:14px}.featured-panel .calc-result{margin-top:20px}.share-symbol{font-family:"Noto Sans Bengali","Hind Siliguri",sans-serif;font-size:24px;font-weight:900}.angle-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}.angle-box{padding:12px;border-radius:13px;background:#fff;border:1px solid #dbe7ea;text-align:center}.angle-box strong{display:block;font-size:21px;color:#08747b}.angle-box span{font-size:12px;color:#667a82}
+.featured-separator{margin:30px 0 14px;padding:12px 15px;border-radius:14px;background:#eef6f7;border:1px solid #d6e7e9;color:#082336;font-weight:900}
+@media(max-width:760px){.featured-card{grid-template-columns:78px minmax(0,1fr) 40px;gap:12px;padding:14px}.featured-icon{width:78px;height:78px;border-radius:16px}.featured-icon svg{width:64px;height:64px}.featured-card h3{font-size:18px}.featured-card p{font-size:12px}.featured-go{width:40px;height:40px}.angle-grid{grid-template-columns:repeat(2,1fr)}.featured-panel-body{padding:16px}}
+@media(max-width:480px){.featured-card{grid-template-columns:66px minmax(0,1fr);}.featured-icon{width:66px;height:66px}.featured-icon svg{width:55px;height:55px}.featured-go{display:none}.featured-card h3{font-size:17px}.featured-card p{font-size:11.5px}}
+</style>
 </head>
 <body id="top">
 <a class="skip" href="#main">মূল কনটেন্টে যান</a>
@@ -271,6 +283,112 @@
 </section>
 <div class="suite-toast" id="suiteToast" role="status" aria-live="polite"></div>
 
+
+<section class="featured-calcs" aria-labelledby="featured-calc-title">
+  <div class="featured-head">
+    <h2 id="featured-calc-title">⭐ নতুন প্রফেশনাল ভূমি ক্যালকুলেটর</h2>
+    <p>আপনার দেওয়া নমুনাগুলোর ধারণা অনুসারে বড় আইকন, পরিষ্কার বাংলা লেখা এবং এক-কলাম মোবাইল-ফ্রেন্ডলি বিন্যাসে সাজানো হয়েছে। প্রতিটি টুল সূত্রভিত্তিক ফলাফল দেখায় এবং ভুল ইনপুট হলে সতর্ক করে।</p>
+  </div>
+  <button class="featured-card" type="button" data-feature-target="featured-hissa">
+    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="13" y="17" width="74" height="66" rx="6" fill="#0b8b91" stroke="#082336" stroke-width="3"/><path d="M23 67h54M23 52h54M23 37h54" stroke="#fff" stroke-width="4"/><circle cx="30" cy="26" r="4" fill="#d9a441"/><circle cx="50" cy="26" r="4" fill="#d9a441"/><circle cx="70" cy="26" r="4" fill="#d9a441"/></svg></span>
+    <span><h3>খতিয়ানের হিস্যা → জমির পরিমাণ</h3><p>আনা, গণ্ডা, কড়া, ক্রান্তি ও তিল লিখে মোট জমির মধ্যে আপনার প্রকৃত অংশ, শতাংশ, অযুতাংশ, বর্গফুট, কাঠা ও বিঘা দেখুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
+  </button>
+  <button class="featured-card" type="button" data-feature-target="featured-symbolic">
+    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="14" y="16" width="72" height="68" rx="8" fill="#f7fbfc" stroke="#082336" stroke-width="3"/><text x="50" y="50" text-anchor="middle" font-size="32" font-weight="900" fill="#08747b">৷৵</text><path d="M26 68h48" stroke="#d9a441" stroke-width="6" stroke-linecap="round"/></svg></span>
+    <span><h3>খতিয়ানের সাংকেতিক চিহ্ন → হিস্যা</h3><p>পুরোনো খতিয়ানের আনার সাংকেতিক চিহ্ন নির্বাচন করে গণ্ডা, কড়া, ক্রান্তি ও তিলসহ হিস্যা নির্ণয় করুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
+  </button>
+  <button class="featured-card" type="button" data-feature-target="featured-quad-angle">
+    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M16 25L73 18L86 75L25 84Z" fill="#e8f7f7" stroke="#082336" stroke-width="3"/><path d="M16 25L86 75" stroke="#ef7d22" stroke-width="3"/><path d="M32 29A16 16 0 0 1 25 42" fill="none" stroke="#08747b" stroke-width="4"/></svg></span>
+    <span><h3>অনিয়মিত জমি → ক্ষেত্রফল ও ৪ কোণ</h3><p>চার বাহু ও একটি কর্ণ দিলে দুটি ত্রিভুজে ভাগ করে ক্ষেত্রফল এবং A, B, C, D—চারটি কোণের মান দেখাবে।</p></span><span class="featured-go" aria-hidden="true">↓</span>
+  </button>
+  <button class="featured-card" type="button" data-feature-target="featured-separate">
+    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="14" y="19" width="72" height="62" rx="4" fill="#e8f7f7" stroke="#082336" stroke-width="3"/><path d="M56 19v62" stroke="#ef7d22" stroke-width="4"/><path d="M50 50h-19M69 50h16" stroke="#08747b" stroke-width="3"/><path d="M31 44l-7 6 7 6M76 44l7 6-7 6" fill="none" stroke="#08747b" stroke-width="3"/></svg></span>
+    <span><h3>নির্দিষ্ট শতাংশ জমি → পৃথক করার মাপ</h3><p>আয়তক্ষেত্র/সমান প্রস্থের জমিতে মোট দৈর্ঘ্য ও প্রস্থ এবং কাঙ্ক্ষিত শতাংশ দিলে কোথায় বিভাজন রেখা হবে তা নির্ণয় করুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
+  </button>
+  <button class="featured-card" type="button" data-feature-target="featured-reverse">
+    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M21 29h58v42H21z" fill="#fff" stroke="#082336" stroke-width="3"/><path d="M31 50h38" stroke="#08747b" stroke-width="5"/><path d="M39 39l-10 11 10 11M61 39l10 11-10 11" fill="none" stroke="#ef7d22" stroke-width="3"/></svg></span>
+    <span><h3>মোট জমি + নিজের জমি → আনা-গণ্ডা হিস্যা</h3><p>মোট জমির পরিমাণ এবং আপনার প্রাপ্ত জমির পরিমাণ দিলে হিস্যাটি আনা, গণ্ডা, কড়া, ক্রান্তি ও তিলে ভেঙে দেখাবে।</p></span><span class="featured-go" aria-hidden="true">↓</span>
+  </button>
+</section>
+
+<section class="featured-panel" id="featured-hissa" aria-labelledby="featured-hissa-title">
+  <div class="featured-panel-head"><h3 id="featured-hissa-title">📜 খতিয়ানের হিস্যা থেকে জমির পরিমাণ</h3><p>পূর্ণ হিস্যা = ১৬ আনা = ৭৬,৮০০ তিল। ১ আনা = ২০ গণ্ডা, ১ গণ্ডা = ৪ কড়া, ১ কড়া = ৩ ক্রান্তি, ১ ক্রান্তি = ২০ তিল।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="fhTotalLand">মোট জমির পরিমাণ</label><input id="fhTotalLand" type="number" min="0" step="any" placeholder="যেমন ১০.০০"></div>
+      <div class="calc-field"><label for="fhLandUnit">মোট জমির একক</label><select id="fhLandUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="acre">একর</option></select></div>
+      <div class="calc-field"><label for="fhAna">আনা (০–১৫)</label><input id="fhAna" type="number" min="0" max="15" step="1" value="0"></div>
+      <div class="calc-field"><label for="fhGonda">গণ্ডা (০–১৯)</label><input id="fhGonda" type="number" min="0" max="19" step="1" value="0"></div>
+      <div class="calc-field"><label for="fhKora">কড়া (০–৩)</label><input id="fhKora" type="number" min="0" max="3" step="1" value="0"></div>
+      <div class="calc-field"><label for="fhKranti">ক্রান্তি (০–২)</label><input id="fhKranti" type="number" min="0" max="2" step="1" value="0"></div>
+      <div class="calc-field"><label for="fhTil">তিল (০–১৯)</label><input id="fhTil" type="number" min="0" max="19" step="1" value="0"></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fhCalc">হিস্যা হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fhReset">রিসেট</button></div>
+    <div class="calc-result" id="fhResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="featured-panel" id="featured-symbolic" aria-labelledby="featured-symbolic-title">
+  <div class="featured-panel-head"><h3 id="featured-symbolic-title">🔣 খতিয়ানের সাংকেতিক চিহ্ন থেকে হিস্যা</h3><p>পুরোনো খতিয়ানে ব্যবহৃত আনার সাংকেতিক চিহ্ন নির্বাচন করুন। গণ্ডা, কড়া, ক্রান্তি ও তিল সংখ্যা হিসেবে দিন।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="fsTotalLand">মোট জমির পরিমাণ</label><input id="fsTotalLand" type="number" min="0" step="any" placeholder="যেমন ২৫"></div>
+      <div class="calc-field"><label for="fsLandUnit">মোট জমির একক</label><select id="fsLandUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="acre">একর</option></select></div>
+      <div class="calc-field"><label for="fsAnaSymbol">আনার সাংকেতিক চিহ্ন</label><select id="fsAnaSymbol"></select></div>
+      <div class="calc-field"><label for="fsGonda">গণ্ডা</label><select id="fsGonda"></select></div>
+      <div class="calc-field"><label for="fsKora">কড়া</label><select id="fsKora"></select></div>
+      <div class="calc-field"><label for="fsKranti">ক্রান্তি</label><select id="fsKranti"></select></div>
+      <div class="calc-field"><label for="fsTil">তিল</label><select id="fsTil"></select></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fsCalc">সাংকেতিক চিহ্ন থেকে হিস্যা বের করুন</button><button class="calc-btn calc-secondary" type="button" id="fsReset">রিসেট</button></div>
+    <div class="calc-result" id="fsResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="featured-panel" id="featured-quad-angle" aria-labelledby="featured-quad-title">
+  <div class="featured-panel-head"><h3 id="featured-quad-title">📐 অনিয়মিত জমির ক্ষেত্রফল ও কোণের মান</h3><p>চার বাহু AB, BC, CD, DA এবং কর্ণ AC দিলে দুটি বৈধ ত্রিভুজে ভাগ করে ক্ষেত্রফল এবং চার কোণ নির্ণয় করা হবে।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="fqAB">উত্তর বাহু AB (a)</label><input id="fqAB" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label for="fqBC">দক্ষিণ বাহু BC (b)</label><input id="fqBC" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label for="fqCD">পূর্ব বাহু CD (d)</label><input id="fqCD" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label for="fqDA">পশ্চিম বাহু DA (c)</label><input id="fqDA" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label for="fqAC">কর্ণ AC</label><input id="fqAC" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label for="fqUnit">একক</label><select id="fqUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fqCalc">ক্ষেত্রফল ও কোণ হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fqReset">রিসেট</button></div>
+    <div class="calc-result" id="fqResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="featured-panel" id="featured-separate" aria-labelledby="featured-separate-title">
+  <div class="featured-panel-head"><h3 id="featured-separate-title">✂️ নির্দিষ্ট শতাংশ জমি পৃথক করার মাপ</h3><p>এটি কেবল আয়তক্ষেত্র বা সমান প্রস্থের জমির জন্য সঠিক। অনিয়মিত জমিতে এই সরল সূত্র ব্যবহার করবেন না।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="fsepLength">মোট দৈর্ঘ্য</label><input id="fsepLength" type="number" min="0" step="any" placeholder="যেমন ১০০"></div>
+      <div class="calc-field"><label for="fsepWidth">প্রস্থ</label><input id="fsepWidth" type="number" min="0" step="any" placeholder="যেমন ৫০"></div>
+      <div class="calc-field"><label for="fsepPercent">যে শতাংশ জমি পৃথক করতে চান (%)</label><input id="fsepPercent" type="number" min="0.000001" max="99.999999" step="any" placeholder="যেমন ৩০"></div>
+      <div class="calc-field"><label for="fsepUnit">দৈর্ঘ্য/প্রস্থের একক</label><select id="fsepUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fsepCalc">পৃথক করার মাপ বের করুন</button><button class="calc-btn calc-secondary" type="button" id="fsepReset">রিসেট</button></div>
+    <div class="calc-result" id="fsepResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="featured-panel" id="featured-reverse" aria-labelledby="featured-reverse-title">
+  <div class="featured-panel-head"><h3 id="featured-reverse-title">🔄 মোট জমি থেকে নিজের জমির হিস্যা বের করুন</h3><p>মোট জমি ও আপনার অংশ একই এককে লিখলে হিস্যাটি নিকটতম তিল পর্যন্ত আনা–গণ্ডা–কড়া–ক্রান্তি–তিলে ভেঙে দেখানো হবে।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="frTotal">খতিয়ানের মোট জমি</label><input id="frTotal" type="number" min="0" step="any" placeholder="যেমন ৮০"></div>
+      <div class="calc-field"><label for="frOwn">আপনার জমির পরিমাণ</label><input id="frOwn" type="number" min="0" step="any" placeholder="যেমন ৩০"></div>
+      <div class="calc-field"><label for="frUnit">জমির একক</label><select id="frUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="acre">একর</option></select></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="frCalc">হিস্যা বের করুন</button><button class="calc-btn calc-secondary" type="button" id="frReset">রিসেট</button></div>
+    <div class="calc-result" id="frResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<div class="featured-separator">🧮 আরও পেশাদার সূত্রভিত্তিক ক্যালকুলেটর</div>
 <div class="calc-tabs" role="tablist" aria-label="ক্যালকুলেটর নির্বাচন">
 <button class="calc-tab active" data-tab="quad-diagonal" role="tab" aria-selected="true">কর্ণসহ অনিয়মিত চতুর্ভুজ</button>
 <button class="calc-tab" data-tab="quad-angle" role="tab" aria-selected="false">কর্ণ ছাড়া অনিয়মিত চতুর্ভুজ</button>
@@ -704,6 +822,107 @@
 })();
 </script>
 
+
+<script id="featured-calculators-js">
+(() => {
+  const $ = id => document.getElementById(id);
+  const fmt = (n,d=4) => Number(n).toLocaleString('en-US',{maximumFractionDigits:d});
+  const bn = n => Number(n).toLocaleString('bn-BD',{maximumFractionDigits:6});
+  const esc = s => String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const T=76800, G=4800, K=240, KR=80, TL=1;
+  const unitSqft={decimal:435.6,sqft:1,sqm:10.763910416709722,acre:43560};
+  const unitLabel={decimal:'শতাংশ',sqft:'বর্গফুট',sqm:'বর্গমিটার',acre:'একর'};
+  const anaSymbols=['০','⁄','৵','৶','৷','৷⁄','৷৵','৷৶','৷৷','৷৷⁄','৷৷৵','৷৷৶','৸','৸⁄','৸৵','৸৶','১'];
+  function err(el,msg){el.innerHTML='<div class="warning">'+esc(msg)+'</div>';}
+  function readParts(ids){return ids.map(id=>Number($(id).value));}
+  function validateParts(a,g,k,kr,t){
+    if(!Number.isInteger(a)||a<0||a>15) return 'আনা ০ থেকে ১৫-এর মধ্যে পূর্ণসংখ্যা হতে হবে। ১৬ আনা পূর্ণ হিস্যা, তাই নিচের ঘরগুলো শূন্য থাকতে হবে।';
+    if(!Number.isInteger(g)||g<0||g>19) return 'গণ্ডা ০ থেকে ১৯-এর মধ্যে পূর্ণসংখ্যা দিন।';
+    if(!Number.isInteger(k)||k<0||k>3) return 'কড়া ০ থেকে ৩-এর মধ্যে পূর্ণসংখ্যা দিন।';
+    if(!Number.isInteger(kr)||kr<0||kr>2) return 'ক্রান্তি ০ থেকে ২-এর মধ্যে পূর্ণসংখ্যা দিন।';
+    if(!Number.isInteger(t)||t<0||t>19) return 'তিল ০ থেকে ১৯-এর মধ্যে পূর্ণসংখ্যা দিন।';
+    const til=a*G+g*K+k*KR+kr*20+t;
+    if(til<=0) return 'হিস্যার অন্তত একটি মান ০-এর বেশি দিন।';
+    if(til>T) return 'প্রদত্ত হিস্যা পূর্ণ সম্পত্তির চেয়ে বেশি হয়েছে।';
+    return '';
+  }
+  function partsToTil(a,g,k,kr,t){return a*G+g*K+k*KR+kr*20+t;}
+  function renderLandResult(el,total,unit,til){
+    const fraction=til/T, percent=fraction*100, totalSqft=total*unitSqft[unit], ownSqft=totalSqft*fraction, ownDecimal=ownSqft/435.6;
+    const acre=ownSqft/43560, katha=ownSqft/720, bigha=ownSqft/14400, ayut=acre*10000;
+    const ownInInput=total*fraction;
+    const ana=Math.floor(til/G), remA=til-ana*G, g=Math.floor(remA/K), remG=remA-g*K, k=Math.floor(remG/KR), remK=remG-k*KR, kr=Math.floor(remK/20), t=remK-kr*20;
+    el.innerHTML='<div class="result-main">আপনার হিস্যা = '+fmt(fraction,8)+' (পূর্ণ সম্পত্তির অংশ)</div>'+
+      '<div class="result-list">'+
+      '<div class="result-item result-item-primary"><strong>'+fmt(percent,6)+'%</strong><span>শতাংশ হারে হিস্যা</span></div>'+
+      '<div class="result-item"><strong>'+fmt(ownInInput,6)+' '+unitLabel[unit]+'</strong><span>আপনার জমির পরিমাণ</span></div>'+
+      '<div class="result-item"><strong>'+fmt(ownDecimal,6)+' শতাংশ</strong><span>ডেসিমেল</span></div>'+
+      '<div class="result-item"><strong>'+fmt(ayut,4)+' অযুতাংশ</strong><span>১ একর = ১০,০০০ অযুতাংশ</span></div>'+
+      '<div class="result-item"><strong>'+fmt(ownSqft,4)+' বর্গফুট</strong><span>ক্ষেত্রফল</span></div>'+
+      '<div class="result-item"><strong>'+fmt(katha,6)+' কাঠা</strong><span>১ কাঠা = ৭২০ বর্গফুট</span></div>'+ 
+      '<div class="result-item"><strong>'+fmt(bigha,6)+' বিঘা</strong><span>১ বিঘা = ১৪,৪০০ বর্গফুট</span></div>'+ 
+      '<div class="result-item"><strong>'+ana+' আনা '+g+' গণ্ডা '+k+' কড়া '+kr+' ক্রান্তি '+t+' তিল</strong><span>নিকটতম তিল পর্যন্ত</span></div>'+ 
+      '</div><p class="conversion-note">হিস্যা-রূপান্তর: ১৬ আনা = পূর্ণ সম্পত্তি; ১ আনা = ২০ গণ্ডা; ১ গণ্ডা = ৪ কড়া; ১ কড়া = ৩ ক্রান্তি; ১ ক্রান্তি = ২০ তিল। জমির পরিমাণের একক স্থানীয়/সরকারি রেকর্ডের সঙ্গে মিলিয়ে নিন।</p>';
+  }
+  function calcFromFields(prefix,resultId){
+    const total=Number($(prefix+'TotalLand').value), unit=$(prefix+'LandUnit').value;
+    const [a,g,k,kr,t]=readParts([prefix+'Ana',prefix+'Gonda',prefix+'Kora',prefix+'Kranti',prefix+'Til']);
+    const r=$(resultId);
+    if(!(total>0)) return err(r,'মোট জমির পরিমাণ ০-এর বেশি দিন।');
+    const msg=validateParts(a,g,k,kr,t); if(msg) return err(r,msg);
+    renderLandResult(r,total,unit,partsToTil(a,g,k,kr,t));
+  }
+  // Fill symbolic selects.
+  anaSymbols.forEach((sym,i)=>{const o=document.createElement('option');o.value=i;o.textContent=i+' আনা — '+sym;$('fsAnaSymbol').appendChild(o)});
+  for(let i=0;i<=19;i++){const o=document.createElement('option');o.value=i;o.textContent=i+' গণ্ডা';$('fsGonda').appendChild(o);$('fsTil').appendChild(Object.assign(document.createElement('option'),{value:i,textContent:i+' তিল'}));}
+  for(let i=0;i<=3;i++){const o=document.createElement('option');o.value=i;o.textContent=i+' কড়া';$('fsKora').appendChild(o)}
+  for(let i=0;i<=2;i++){const o=document.createElement('option');o.value=i;o.textContent=i+' ক্রান্তি';$('fsKranti').appendChild(o)}
+  $('fhCalc').onclick=()=>calcFromFields('fh','fhResult');
+  $('fhReset').onclick=()=>{['fhTotalLand','fhAna','fhGonda','fhKora','fhKranti','fhTil'].forEach(id=>$(id).value=id==='fhTotalLand'?'':'0');$('fhResult').innerHTML='';};
+  $('fsCalc').onclick=()=>{
+    const total=Number($('fsTotalLand').value), unit=$('fsLandUnit').value, a=Number($('fsAnaSymbol').value),g=Number($('fsGonda').value),k=Number($('fsKora').value),kr=Number($('fsKranti').value),t=Number($('fsTil').value),r=$('fsResult');
+    if(!(total>0)) return err(r,'মোট জমির পরিমাণ ০-এর বেশি দিন।');
+    if(a===16 && (g||k||kr||t)) return err(r,'১৬ আনা পূর্ণ হিস্যা; এর সঙ্গে গণ্ডা/কড়া/ক্রান্তি/তিল যোগ করা যাবে না।');
+    if(a===16){renderLandResult(r,total,unit,T);return;}
+    const msg=validateParts(a,g,k,kr,t);if(msg)return err(r,msg);renderLandResult(r,total,unit,partsToTil(a,g,k,kr,t));
+  };
+  $('fsReset').onclick=()=>{['fsTotalLand'].forEach(id=>$(id).value='');['fsAnaSymbol','fsGonda','fsKora','fsKranti','fsTil'].forEach(id=>$(id).value='0');$('fsResult').innerHTML='';};
+  // Irregular quadrilateral: area + all four interior angles.
+  const tri=(a,b,c)=>{const s=(a+b+c)/2,z=s*(s-a)*(s-b)*(s-c);return z>1e-12?Math.sqrt(z):null};
+  const angle=(x,y,z)=>{const den=2*x*y;if(!(den>0))return null;let c=(x*x+y*y-z*z)/den;c=Math.max(-1,Math.min(1,c));return Math.acos(c)*180/Math.PI};
+  $('fqCalc').onclick=()=>{
+    const a=Number($('fqAB').value),b=Number($('fqBC').value),c=Number($('fqCD').value),d=Number($('fqDA').value),diag=Number($('fqAC').value),u=$('fqUnit').value,r=$('fqResult');
+    if(![a,b,c,d,diag].every(v=>v>0))return err(r,'চারটি বাহু ও কর্ণ AC—সবগুলোর সঠিক মান দিন।');
+    const t1=tri(a,b,diag),t2=tri(c,d,diag);if(t1===null||t2===null)return err(r,'এই মাপগুলো দিয়ে দুটি বৈধ ত্রিভুজ তৈরি হচ্ছে না। কর্ণ AC অবশ্যই উভয় ত্রিভুজের triangle inequality পূরণ করবে।');
+    const A1=angle(a,diag,b),A2=angle(d,diag,c),A=A1+A2,B=angle(a,b,diag),C=angle(b,c,diag),D=angle(c,d,diag);const sum=A+B+C+D;
+    if(![A,B,C,D].every(Number.isFinite)||Math.abs(sum-360)>0.01)return err(r,'কোণ নির্ণয়ে জ্যামিতিক অসামঞ্জস্য পাওয়া গেছে। মাঠের মাপ/কর্ণ পুনরায় যাচাই করুন।');
+    const area=t1+t2, sqft=u==='ft'?area:area*10.763910416709722, dec=sqft/435.6;
+    r.innerHTML='<div class="result-main">মোট ক্ষেত্রফল = '+fmt(area)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</div><div class="result-list">'+
+      '<div class="result-item result-item-primary"><strong>'+fmt(sqft,4)+' বর্গফুট</strong><span>মোট ক্ষেত্রফল</span></div><div class="result-item"><strong>'+fmt(dec,6)+' শতাংশ</strong><span>ডেসিমেল</span></div><div class="result-item"><strong>'+fmt(t1)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>△ABC</span></div><div class="result-item"><strong>'+fmt(t2)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>△ACD</span></div></div>'+
+      '<div class="angle-grid"><div class="angle-box"><strong>'+fmt(A,6)+'°</strong><span>∠A</span></div><div class="angle-box"><strong>'+fmt(B,6)+'°</strong><span>∠B</span></div><div class="angle-box"><strong>'+fmt(C,6)+'°</strong><span>∠C</span></div><div class="angle-box"><strong>'+fmt(D,6)+'°</strong><span>∠D</span></div></div><p class="conversion-note">যাচাই: চার কোণের যোগফল ≈ ৩৬০°। এই হিসাব একটি সরল, উত্তল চতুর্ভুজ এবং সঠিক A–C কর্ণের মাপ ধরে করা হয়েছে।</p>';
+  };
+  $('fqReset').onclick=()=>{['fqAB','fqBC','fqCD','fqDA','fqAC'].forEach(id=>$(id).value='');$('fqResult').innerHTML='';};
+  // Exact rectangular separation.
+  $('fsepCalc').onclick=()=>{
+    const L=Number($('fsepLength').value),W=Number($('fsepWidth').value),p=Number($('fsepPercent').value),u=$('fsepUnit').value,r=$('fsepResult');
+    if(!(L>0&&W>0))return err(r,'দৈর্ঘ্য ও প্রস্থ ০-এর বেশি দিন।');if(!(p>0&&p<100))return err(r,'পৃথক করার শতাংশ ০-এর বেশি এবং ১০০%-এর কম হতে হবে.');
+    const cut=L*p/100, area=L*W, part=area*p/100;const areaSqft=u==='ft'?part:part*10.763910416709722;const partDec=areaSqft/435.6;
+    r.innerHTML='<div class="result-main">বিভাজন রেখা = '+fmt(cut,6)+' '+(u==='ft'?'ফুট':'মিটার')+' (এক প্রান্ত থেকে)</div><div class="result-list"><div class="result-item result-item-primary"><strong>'+fmt(part,6)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>পৃথক অংশ</span></div><div class="result-item"><strong>'+fmt(100-p,6)+'%</strong><span>অবশিষ্ট অংশ</span></div><div class="result-item"><strong>'+fmt(area,6)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>মোট ক্ষেত্রফল</span></div><div class="result-item"><strong>'+fmt(partDec,6)+' শতাংশ</strong><span>পৃথক অংশের ডেসিমেল</span></div></div><p class="conversion-note">শর্ত: জমিটি আয়তক্ষেত্র/সমান প্রস্থের এবং বিভাজন রেখা দৈর্ঘ্যের উপর লম্ব ধরে নেওয়া হয়েছে। অনিয়মিত চতুর্ভুজে এই সূত্র ব্যবহার করবেন না।</p>';
+  };
+  $('fsepReset').onclick=()=>{['fsepLength','fsepWidth','fsepPercent'].forEach(id=>$(id).value='');$('fsepResult').innerHTML='';};
+  // Reverse land -> hissa.
+  function reverseHissa(){
+    const total=Number($('frTotal').value),own=Number($('frOwn').value),u=$('frUnit').value,r=$('frResult');
+    if(!(total>0&&own>=0))return err(r,'মোট জমি ০-এর বেশি এবং আপনার জমি ০ বা তার বেশি দিন।');if(own>total+1e-10)return err(r,'আপনার জমির পরিমাণ মোট জমির চেয়ে বেশি হতে পারবে না.');
+    const ratio=own/total, raw=ratio*T, til=Math.round(raw);if(til>T)return err(r,'হিস্যা পূর্ণ সম্পত্তির বেশি হয়েছে।');
+    const a=Math.floor(til/G),remA=til-a*G,g=Math.floor(remA/K),remG=remA-g*K,k=Math.floor(remG/KR),remK=remG-k*KR,kr=Math.floor(remK/20),t=remK-kr*20;
+    const symbol=a<=16?anaSymbols[a]:'—';
+    r.innerHTML='<div class="result-main">আপনার হিস্যা ≈ '+fmt(ratio,8)+'</div><div class="result-list"><div class="result-item result-item-primary"><strong>'+a+' আনা '+g+' গণ্ডা '+k+' কড়া '+kr+' ক্রান্তি '+t+' তিল</strong><span>নিকটতম তিল পর্যন্ত</span></div><div class="result-item"><strong>'+symbol+'</strong><span>আনার সাংকেতিক চিহ্ন</span></div><div class="result-item"><strong>'+fmt(ratio*100,6)+'%</strong><span>মোট সম্পত্তির অংশ</span></div><div class="result-item"><strong>'+fmt(raw,3)+' তিল → '+til+' তিল</strong><span>রাউন্ডিং যাচাই</span></div></div><p class="conversion-note">আপনার দেওয়া পরিমাণটি ৭৬,৮০০ তিলের পূর্ণ হিস্যার স্কেলে রূপান্তর করা হয়েছে। ফলে ভগ্নাংশের ক্ষেত্রে নিকটতম তিল পর্যন্ত সামান্য rounding হতে পারে।</p>';
+  }
+  $('frCalc').onclick=reverseHissa;$('frReset').onclick=()=>{['frTotal','frOwn'].forEach(id=>$(id).value='');$('frResult').innerHTML='';};
+  document.querySelectorAll('[data-feature-target]').forEach(btn=>btn.addEventListener('click',()=>$(btn.dataset.featureTarget)?.scrollIntoView({behavior:'smooth',block:'start'})));
+})();
+</script>
 <link id="leaflet-css-upgrade" rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
