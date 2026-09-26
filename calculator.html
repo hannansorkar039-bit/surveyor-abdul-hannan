@@ -12,11 +12,21 @@
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <link rel="apple-touch-icon" href="icons/icon-192.png"/>
-<title>ভূমি পরিমাপ ও মুসলিম উত্তরাধিকার ক্যালকুলেটর | Surveyor Abdul Hannan</title>
-<meta name="description" content="আয়তক্ষেত্র, হেরন ও ব্রহ্মগুপ্তের সূত্রে ভূমির ক্ষেত্রফল এবং বাংলাদেশের প্রযোজ্য মুসলিম উত্তরাধিকার বিধানের ভিত্তিতে সাধারণ উত্তরাধিকার হিসাবের অনলাইন ক্যালকুলেটর।"/>
+<title>ভূমি পরিমাপ ও উত্তরাধিকার ক্যালকুলেটর | Surveyor Abdul Hannan</title>
+<meta name="description" content="আয়তক্ষেত্র, হেরন ও ব্রহ্মগুপ্তের সূত্রে ভূমির ক্ষেত্রফল এবং সাধারণ মুসলিম উত্তরাধিকার হিসাবের জন্য অনলাইন ক্যালকুলেটর।"/>
 <meta name="robots" content="index, follow"/>
 <link rel="canonical" href="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/calculator.html"/>
 <link href="icons/icon-192.png" rel="icon" type="image/jpeg"/>
+<meta property="og:type" content="website"/>
+<meta property="og:locale" content="bn_BD"/>
+<meta property="og:title" content="ভূমি পরিমাপ ও উত্তরাধিকার ক্যালকুলেটর | Surveyor Abdul Hannan"/>
+<meta property="og:description" content="ভূমি পরিমাপের বিভিন্ন সূত্র ও সাধারণ মুসলিম উত্তরাধিকার হিসাবের অনলাইন ক্যালকুলেটর।"/>
+<meta property="og:url" content="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/calculator.html"/>
+<meta property="og:image" content="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/profile-abdul-hannan.webp"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="ভূমি পরিমাপ ও উত্তরাধিকার ক্যালকুলেটর | Surveyor Abdul Hannan"/>
+<meta name="twitter:description" content="ভূমি পরিমাপ ও সাধারণ মুসলিম উত্তরাধিকার হিসাবের অনলাইন ক্যালকুলেটর।"/>
+<meta name="twitter:image" content="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/profile-abdul-hannan.webp"/>
 <link rel="stylesheet" href="styles.css">
 <style>
 .site-brand{display:inline-flex;align-items:center;gap:8px}.site-brand img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.75);box-shadow:0 2px 8px rgba(0,0,0,.18)}.site-brand span{line-height:1.2}
@@ -63,6 +73,36 @@
 .sources a{color:var(--teal);font-weight:800;text-decoration:underline}
 @media(max-width:850px){.calc-tabs{grid-template-columns:repeat(2,1fr)}.heirs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.calc-grid,.result-list,.heirs-grid{grid-template-columns:1fr}.calc-panel{padding:18px}.calc-tabs{grid-template-columns:1fr 1fr}.calc-tab{font-size:14px;padding:11px 7px}}
+
+/* ===== Registry Calculator Upgrade — additive only ===== */
+.registry-upgrade{margin-top:30px}
+.registry-upgrade .registry-head{margin-bottom:18px}
+.registry-upgrade .registry-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:18px}
+.registry-upgrade .registry-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+.registry-upgrade .registry-rate{display:inline-flex;align-items:center;gap:7px;margin:0 0 12px;padding:7px 11px;border-radius:999px;background:#eef7f8;color:var(--teal);font-size:13px;font-weight:900}
+.registry-upgrade .registry-summary{position:sticky;top:84px}
+.registry-upgrade .cost-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.registry-upgrade .cost-row:last-child{border-bottom:0}
+.registry-upgrade .cost-name{font-weight:800;color:var(--navy)}
+.registry-upgrade .cost-meta{display:block;font-size:12px;color:var(--muted);font-weight:600}
+.registry-upgrade .cost-amount{font-weight:900;color:var(--navy);white-space:nowrap}
+.registry-upgrade .registry-total{margin-top:14px;padding:16px;border-radius:14px;background:linear-gradient(135deg,#082336,#08747b);color:#fff}
+.registry-upgrade .registry-total strong{display:block;font-size:28px;line-height:1.2}
+.registry-upgrade .registry-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.registry-upgrade .registry-actions button{border:0;border-radius:999px;padding:11px 16px;font:inherit;font-weight:900;cursor:pointer}
+.registry-upgrade .registry-primary{background:var(--orange);color:#fff}
+.registry-upgrade .registry-secondary{background:#edf4f6;color:var(--navy)}
+.registry-upgrade .registry-note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7}
+.registry-upgrade .shape-box,.registry-upgrade .map-box{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#f7fafb}
+.registry-upgrade #landShapeCanvas{display:block;width:100%;height:320px}
+.registry-upgrade #registryMap{height:360px;width:100%}
+.registry-upgrade .map-offline-note{display:none;margin:0;padding:10px 12px;border:1px solid rgba(8,116,123,.18);border-radius:10px;background:#f6fbfc;color:#284b55;font-size:13px;line-height:1.55}
+.registry-upgrade .map-offline-note.show{display:block}
+.registry-upgrade .map-tools{display:flex;gap:8px;flex-wrap:wrap;padding:10px;background:#fff;border-top:1px solid var(--line)}
+.registry-upgrade .map-tools button{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:8px 12px;font:inherit;font-weight:800;cursor:pointer}
+.registry-upgrade .badge-rate{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;background:#fff3e9;color:#9b4b16;font-size:11px}
+@media(max-width:850px){.registry-upgrade .registry-grid{grid-template-columns:1fr}.registry-upgrade .registry-summary{position:static}}
+@media(max-width:620px){.registry-upgrade .registry-card{padding:16px}.registry-upgrade #landShapeCanvas{height:260px}.registry-upgrade #registryMap{height:300px}}
 </style>
 </head>
 <body id="top">
@@ -180,6 +220,78 @@
 <a href="https://bdlaws.minlaw.gov.bd/act-print-305/section-print-13528.html" target="_blank" rel="noopener noreferrer">Muslim Family Laws Ordinance, 1961 — ধারা ৪</a>
 <a href="https://inheritance.gov.bd/" target="_blank" rel="noopener noreferrer">সরকারি উত্তরাধিকার তথ্য</a>
 </div>
+</div>
+</section>
+
+<section class="registry-upgrade" id="registry-calculator" aria-labelledby="registry-title">
+<div class="registry-head">
+<h2 class="section-title" id="registry-title">🧾 জমি রেজিস্ট্রি খরচ ক্যালকুলেটর</h2>
+<p class="lead">দলিলের মূল্য, স্থানীয় সরকার কর ও উৎসে করের হার নির্বাচন করে আনুমানিক সরকারি খরচের হিসাব দেখুন। ইনপুট পরিবর্তন করলেই ফলাফল লাইভ আপডেট হবে।</p>
+<div class="warning"><strong>হার সম্পর্কে গুরুত্বপূর্ণ:</strong> বর্তমান আইন/বাজেট ও দলিলের ধরন অনুযায়ী হার পরিবর্তিত হতে পারে। এই টুলটি আনুমানিক হিসাবের জন্য; চূড়ান্ত অর্থ প্রদানের আগে সংশ্লিষ্ট সাব-রেজিস্ট্রি অফিস/সরকারি গেজেট যাচাই করুন।</div>
+</div>
+
+<div class="registry-grid">
+<div>
+<div class="registry-card">
+<div class="registry-rate">⚙️ কনফিগারযোগ্য সরকারি হার</div>
+<div class="calc-grid">
+<div class="calc-field"><label for="regClient">ক্লায়েন্টের নাম</label><input id="regClient" type="text" placeholder="নাম লিখুন"></div>
+<div class="calc-field"><label for="regKhatian">খতিয়ান/দাগ নম্বর</label><input id="regKhatian" type="text" placeholder="যেমন: CS ১২৩ / দাগ ৪৫৬"></div>
+<div class="calc-field"><label for="regValue">দলিল/সম্পত্তির মূল্য (৳)</label><input id="regValue" type="number" min="0" step="0.01" placeholder="যেমন 1000000" required></div>
+<div class="calc-field"><label for="regLocalRate">স্থানীয় সরকার কর</label><select id="regLocalRate"><option value="2">২%</option><option value="3" selected>৩%</option></select></div>
+<div class="calc-field"><label for="regStampRate">স্ট্যাম্প ডিউটি</label><select id="regStampRate"><option value="1.5" selected>১.৫% — বর্তমান ডিফল্ট</option></select></div>
+<div class="calc-field"><label for="regSourceRate">উৎসে করের হার</label><select id="regSourceRate"><option value="2" selected>২%</option><option value="4">৪%</option><option value="6">৬%</option><option value="8">৮%</option><option value="fixed">ফিক্সড টাকা</option></select></div>
+<div class="calc-field" id="regFixedSourceWrap" hidden><label for="regFixedSource">ফিক্সড উৎসে কর (৳)</label><input id="regFixedSource" type="number" min="0" step="0.01" value="0"></div>
+<div class="calc-field"><label for="regSourceMinimum">উৎসে করের ন্যূনতম টাকা (প্রযোজ্য হলে)</label><input id="regSourceMinimum" type="number" min="0" step="1" value="0" placeholder="যেমন 500000"></div>
+<div class="calc-field"><label for="regAffidavit">হলফনামা স্ট্যাম্প (৳)</label><input id="regAffidavit" type="number" min="0" step="1" value="200"></div>
+<div class="calc-field"><label for="regPages">N-Fee পৃষ্ঠা</label><input id="regPages" type="number" min="0" step="1" value="1"></div>
+<div class="calc-field"><label for="regNFee">পৃষ্ঠা প্রতি N-Fee (৳)</label><input id="regNFee" type="number" min="0" step="0.01" value="24"></div>
+<div class="calc-field"><label for="regNNFee">NN-Fee (৳)</label><input id="regNNFee" type="number" min="0" step="0.01" value="36"></div>
+<div class="calc-field"><label for="regEFee">E-Fee (৳)</label><input id="regEFee" type="number" min="0" step="0.01" value="100"></div>
+</div>
+
+<div class="calc-actions">
+<button class="calc-btn calc-primary" type="button" id="regCalculate">লাইভ হিসাব আপডেট</button>
+<button class="calc-btn calc-secondary" type="button" id="regReset">ফর্ম পরিষ্কার</button>
+</div>
+
+<div class="shape-box">
+<canvas id="landShapeCanvas" width="900" height="420" aria-label="জমির আনুমানিক ডিজিটাল স্কেচ"></canvas>
+</div>
+
+<div class="calc-grid" style="margin-top:18px">
+<div class="calc-field"><label for="regCourtFee">কোর্ট ফি (এল.টি. নোটিশ)</label><input id="regCourtFee" type="number" min="0" step="1" value="10"></div><div class="calc-field"><label for="shapeA">বাহু A–B</label><input id="shapeA" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="shapeB">বাহু B–C</label><input id="shapeB" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="shapeC">বাহু C–D / C</label><input id="shapeC" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="calc-field"><label for="shapeD">বাহু D–A (চতুর্ভুজ হলে)</label><input id="shapeD" type="number" min="0" step="any" placeholder="ফুট"></div>
+</div>
+<p class="calc-help">৩টি বাহু দিলে ত্রিভুজ; ৪টি বাহু দিলে একটি আনুমানিক চতুর্ভুজ স্কেচ দেখানো হবে। চার বাহু দিয়ে প্রকৃত চতুর্ভুজের একক/সুনির্দিষ্ট ক্ষেত্রফল সবসময় নির্ধারিত হয় না—এটি কেবল ভিজ্যুয়াল ধারণার জন্য।</p>
+</div>
+</div>
+
+<div class="registry-card registry-summary" id="registryResult" aria-live="polite">
+<div class="registry-rate">📊 Live Calculation Summary</div>
+<div id="registryRows">
+<div class="small-note">দলিলের মূল্য লিখলে ফলাফল এখানে দেখাবে।</div>
+</div>
+<div class="registry-total">
+<span>মোট আনুমানিক খরচ</span>
+<strong id="registryTotal">৳ ০</strong>
+</div>
+<div class="registry-actions">
+<button class="registry-primary" type="button" id="registryPrint">🖨️ প্রিন্ট রিপোর্ট</button>
+<button class="registry-secondary" type="button" id="registryPdf">📄 PDF রিপোর্ট</button>
+</div>
+<p class="registry-note">বি.দ্র: এটি একটি আনুমানিক হিসাব। সরকারি বিধিমালা, দলিলের ধরন, সম্পত্তির শ্রেণি, মৌজা রেইট, এলাকা এবং প্রযোজ্য উৎসে কর/ন্যূনতম কর অনুযায়ী প্রকৃত ফি পরিবর্তিত হতে পারে। চূড়ান্ত হিসাব সংশ্লিষ্ট সাব-রেজিস্ট্রি অফিসের নির্ধারিত হিসাব অনুযায়ী যাচাই করুন।</p>
+<p class="registry-note">রেজিস্ট্রেশন ফি: ১% • স্ট্যাম্প ডিউটি: বর্তমান ডিফল্ট ১% • স্থানীয় সরকার কর: ২%/৩% • উৎসে কর: নির্বাচিত হার বা ফিক্সড পরিমাণ।</p>
+</div>
+</div>
+
+<div class="registry-card" style="margin-top:18px">
+<h3 style="margin-top:0">🗺️ ম্যাপে পয়েন্ট বসিয়ে জমির আনুমানিক ক্ষেত্রফল</h3>
+<p class="calc-help">মানচিত্রে ধারাবাহিকভাবে পয়েন্টে ক্লিক করুন। ৩ বা তার বেশি পয়েন্ট হলে বহুভুজের আনুমানিক ক্ষেত্রফল হিসাব হবে। Leaflet লোড না হলে ক্যালকুলেটর/স্কেচ অংশ স্বাভাবিকভাবে কাজ করবে।</p>
+<div class="map-box"><div id="registryMap"></div><div id="mapOfflineNote" class="map-offline-note" role="status">ইন্টারনেট সংযোগ ছাড়া মানচিত্রের টাইল/ভৌগোলিক পয়েন্ট-ভিত্তিক ক্ষেত্রফল সাময়িকভাবে পাওয়া যাবে না। তবে এই পাতার অন্যান্য ক্যালকুলেটর ও ৩/৪ বাহুর স্কেচ অফলাইনে কাজ করবে।</div><div class="map-tools"><button type="button" id="mapClear">সব পয়েন্ট মুছুন</button><button type="button" id="mapClose">পলিগন বন্ধ করুন</button><strong id="mapArea" style="margin-left:auto">ক্ষেত্রফল: —</strong></div></div>
+<p class="registry-note">ম্যাপ-ভিত্তিক ফলাফল আনুমানিক; সুনির্দিষ্ট জরিপ/সীমানা নির্ধারণের বিকল্প নয়।</p>
 </div>
 </section>
 
@@ -345,6 +457,258 @@
     }
     panel.querySelectorAll('.calc-result').forEach(r=>r.innerHTML='');
   }));
+})();
+</script>
+
+<link id="leaflet-css-upgrade" rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+<script>
+/* ===== Registry calculator logic — ES6+, additive only ===== */
+(() => {
+  const $ = id => document.getElementById(id);
+  const bn = n => Number(n || 0).toLocaleString('bn-BD', {maximumFractionDigits:2});
+  const money = n => '৳ ' + bn(n);
+  const val = id => Number($(id)?.value || 0);
+
+  const rows = $('registryRows');
+  const totalEl = $('registryTotal');
+  const fixedWrap = $('regFixedSourceWrap');
+
+  function calcRegistry() {
+    const base = val('regValue');
+    const registration = Math.max(base * 0.01, base > 0 ? 100 : 0);
+    const stampRate = val('regStampRate') / 100;
+    const stamp = base * stampRate;
+    const localRate = val('regLocalRate') / 100;
+    const localTax = base * localRate;
+    const sourceSel = $('regSourceRate').value;
+    const sourceMinimum = val('regSourceMinimum');
+    const source = sourceSel === 'fixed'
+      ? val('regFixedSource')
+      : Math.max(base * (Number(sourceSel) / 100), sourceMinimum);
+    const affidavit = val('regAffidavit');
+    const nFee = val('regPages') * val('regNFee');
+    const nnFee = val('regPages') * val('regNNFee');
+    const eFee = val('regEFee');
+    const courtFee = val('regCourtFee');
+    const total = registration + stamp + localTax + source + affidavit + nFee + nnFee + eFee + courtFee;
+
+    const data = [
+      ['💳','রেজিস্ট্রেশন ফি','১%',registration],
+      ['📜','স্ট্যাম্প ডিউটি',$('regStampRate').value+'%',stamp],
+      ['🏛️','স্থানীয় সরকার কর', $('regLocalRate').value+'%',localTax],
+      ['💰','উৎসে কর', sourceSel === 'fixed' ? 'ফিক্সড' : sourceSel+'%',source],
+      ['📄','হলফনামা স্ট্যাম্প','ফিক্সড',affidavit],
+      ['🧾','N-Fee',bn(val('regPages'))+' পৃষ্ঠা',nFee],
+      ['🧾','NN-Fee',bn(val('regPages'))+' পৃষ্ঠা',nnFee],
+      ['💼','E-Fee','ফিক্সড',eFee],
+      ['⚖️','কোর্ট ফি','ফিক্সড',courtFee]
+    ];
+    rows.innerHTML = data.map(r => `<div class="cost-row"><div><span class="cost-name">${r[0]} ${r[1]} <span class="badge-rate">${r[2]}</span></span><span class="cost-meta">${r[1] === 'N-Fee' ? 'পৃষ্ঠা × নির্ধারিত হার' : 'আনুমানিক'}</span></div><span class="cost-amount">${money(r[3])}</span></div>`).join('');
+    totalEl.textContent = money(total);
+    window.__registryLast = {base, registration, stamp, stampRate, localTax, localRate, source, sourceSel, sourceMinimum, affidavit, nFee, nnFee, eFee, courtFee, total};
+  }
+
+  function clearRegistry() {
+    ['regClient','regKhatian','regValue'].forEach(id => $(id).value = '');
+    $('regLocalRate').value='3';
+    $('regStampRate').value='1.5';
+    $('regSourceRate').value='2';
+    $('regFixedSource').value='0';
+    $('regSourceMinimum').value='0';
+    $('regAffidavit').value='200';
+    $('regPages').value='1';
+    $('regNFee').value='24';
+    $('regNNFee').value='36';
+    $('regEFee').value='100';
+    $('regCourtFee').value='10';
+    fixedWrap.hidden=true;
+    rows.innerHTML='<div class="small-note">দলিলের মূল্য লিখলে ফলাফল এখানে দেখাবে।</div>';
+    totalEl.textContent='৳ ০';
+    drawShape();
+  }
+
+  function printReport() {
+    calcRegistry();
+    const r = window.__registryLast;
+    const client = $('regClient').value.trim() || '—';
+    const khatian = $('regKhatian').value.trim() || '—';
+    const report = `<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>Land Registration Calculation Sheet</title>
+<style>body{font-family:Arial,"Noto Sans Bengali",sans-serif;padding:28px;color:#15242e}h1{color:#082336}table{width:100%;border-collapse:collapse;margin-top:18px}td,th{border:1px solid #dce5e9;padding:10px;text-align:left}th{background:#f2f6f7}.total{font-size:20px;font-weight:800}.note{margin-top:18px;font-size:12px;color:#5e6f79}</style></head>
+<body><h1>Land Registration Calculation Sheet</h1>
+<p><strong>ক্লায়েন্ট:</strong> ${escapeHtml(client)}<br><strong>খতিয়ান/দাগ:</strong> ${escapeHtml(khatian)}<br><strong>দলিল মূল্য:</strong> ${money(r.base)}</p>
+<table><tr><th>খরচের খাত</th><th>হার/ধরন</th><th>পরিমাণ</th></tr>
+<tr><td>রেজিস্ট্রেশন ফি</td><td>১%</td><td>${money(r.registration)}</td></tr>
+<tr><td>স্ট্যাম্প ডিউটি</td><td>${$('regStampRate').value}%</td><td>${money(r.stamp)}</td></tr>
+<tr><td>স্থানীয় সরকার কর</td><td>${$('regLocalRate').value}%</td><td>${money(r.localTax)}</td></tr>
+<tr><td>উৎসে কর</td><td>${r.sourceSel==='fixed'?'ফিক্সড':r.sourceSel+'%'+(r.sourceMinimum>0?' / ন্যূনতম '+bn(r.sourceMinimum):'')}</td><td>${money(r.source)}</td></tr>
+<tr><td>হলফনামা স্ট্যাম্প</td><td>ফিক্সড</td><td>${money(r.affidavit)}</td></tr>
+<tr><td>N-Fee</td><td>${bn(val('regPages'))} পৃষ্ঠা</td><td>${money(r.nFee)}</td></tr>
+<tr><td>NN-Fee</td><td>${bn(val('regPages'))} পৃষ্ঠা</td><td>${money(r.nnFee)}</td></tr>
+<tr><td>E-Fee</td><td>ফিক্সড</td><td>${money(r.eFee)}</td></tr><tr><td>কোর্ট ফি</td><td>ফিক্সড</td><td>${money(r.courtFee)}</td></tr>
+<tr><td colspan="2" class="total">মোট আনুমানিক খরচ</td><td class="total">${money(r.total)}</td></tr></table>
+<p class="note">বি.দ্র: এটি একটি আনুমানিক হিসাব। সরকারি বিধিমালা, দলিলের ধরন, সম্পত্তির শ্রেণি, মৌজা রেইট, এলাকা এবং প্রযোজ্য উৎসে কর/ন্যূনতম কর অনুযায়ী প্রকৃত ফি পরিবর্তিত হতে পারে। চূড়ান্ত হিসাব সংশ্লিষ্ট সাব-রেজিস্ট্রি অফিসের নির্ধারিত হিসাব অনুযায়ী যাচাই করুন। এই শিটটি আনুমানিক হিসাব; চূড়ান্ত অর্থ প্রদানের আগে সংশ্লিষ্ট কর্তৃপক্ষের হার যাচাই করুন।</p>
+</body></html>`;
+    const w = window.open('', '_blank');
+    if (!w) { alert('পপ-আপ ব্লক হয়েছে। ব্রাউজারের পপ-আপ অনুমতি দিয়ে আবার চেষ্টা করুন।'); return; }
+    w.document.write(report); w.document.close(); w.focus();
+    setTimeout(() => w.print(), 250);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  function pdfReport() {
+    calcRegistry();
+    const r = window.__registryLast;
+    const client = $('regClient').value.trim() || 'N/A';
+    const khatian = $('regKhatian').value.trim() || 'N/A';
+    if (window.jspdf && window.jspdf.jsPDF) {
+      const doc = new window.jspdf.jsPDF({unit:'mm',format:'a4'});
+      doc.setFont('helvetica','bold'); doc.setFontSize(16);
+      doc.text('Land Registration Calculation Sheet', 18, 18);
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      doc.text(`Client: ${client}`, 18, 28);
+      doc.text(`Khatian/Dag: ${khatian}`, 18, 35);
+      doc.text(`Deed Value: BDT ${r.base.toLocaleString('en-US',{maximumFractionDigits:2})}`, 18, 42);
+      const lines = [
+        ['Registration Fee (1%, min BDT 100)', r.registration],
+        [`Stamp Duty (${$('regStampRate').value}%)`, r.stamp],
+        [`Local Government Tax (${$('regLocalRate').value}%)`, r.localTax],
+        [`Source Tax (${r.sourceSel==='fixed'?'Fixed':r.sourceSel+'%'})`, r.source],
+        ['Affidavit Stamp', r.affidavit],
+        ['N-Fee', r.nFee],
+        ['NN-Fee', r.nnFee],
+        ['E-Fee', r.eFee],
+        ['Court Fee', r.courtFee],
+      ];
+      let y=54;
+      doc.setFontSize(10);
+      lines.forEach(([label,amount]) => { doc.text(label,18,y); doc.text('BDT '+Number(amount).toLocaleString('en-US',{maximumFractionDigits:2}),190,y,{align:'right'}); y+=8; });
+      doc.setFont('helvetica','bold'); doc.text('Estimated Total',18,y+4); doc.text('BDT '+r.total.toLocaleString('en-US',{maximumFractionDigits:2}),190,y+4,{align:'right'});
+      doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      doc.text('Note: Rates can vary by mouza, deed type and applicable government rules.',18,y+16);
+      doc.save('land-registration-calculation-sheet.pdf');
+    } else {
+      printReport();
+    }
+  }
+
+  ['regValue','regLocalRate','regStampRate','regSourceRate','regFixedSource','regSourceMinimum','regAffidavit','regPages','regNFee','regNNFee','regEFee','regCourtFee'].forEach(id => {
+    $(id)?.addEventListener('input', calcRegistry);
+    $(id)?.addEventListener('change', calcRegistry);
+  });
+  $('regSourceRate')?.addEventListener('change', () => { fixedWrap.hidden = $('regSourceRate').value !== 'fixed'; calcRegistry(); });
+  $('regCalculate')?.addEventListener('click', calcRegistry);
+  $('regReset')?.addEventListener('click', clearRegistry);
+  $('registryPrint')?.addEventListener('click', printReport);
+  $('registryPdf')?.addEventListener('click', pdfReport);
+
+  // -------- Canvas shape sketch --------
+  const canvas=$('landShapeCanvas'), ctx=canvas?.getContext('2d');
+  function drawShape() {
+    if (!ctx) return;
+    const vals=[val('shapeA'),val('shapeB'),val('shapeC'),val('shapeD')];
+    const sides=vals.filter(v=>v>0);
+    const w=canvas.width,h=canvas.height;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#f7fafb'; ctx.fillRect(0,0,w,h);
+    if (sides.length<3) {
+      ctx.fillStyle='#5e6f79'; ctx.font='22px Arial'; ctx.textAlign='center';
+      ctx.fillText('৩ বা ৪টি বাহুর দৈর্ঘ্য দিন',w/2,h/2); return;
+    }
+    let pts;
+    const a=vals[0],b=vals[1],c=vals[2];
+    if (vals[3]>0) {
+      const xC=(a*a+b*b-c*c)/(2*a);
+      const yC=Math.sqrt(Math.max(0,b*b-xC*xC));
+      const d=vals[3];
+      // Circle intersection A(0,0), C(xC,yC), radii d,c.
+      const dist=Math.hypot(xC,yC);
+      if (dist>0 && Math.abs(d-c)<=dist && dist<=d+c) {
+        const along=(d*d-c*c+dist*dist)/(2*dist);
+        const height=Math.sqrt(Math.max(0,d*d-along*along));
+        const ux=xC/dist, uy=yC/dist;
+        const px=-uy, py=ux;
+        let dx=along*ux+height*px, dy=along*uy+height*py;
+        if (dy>0) { dx=along*ux-height*px; dy=along*uy-height*py; }
+        pts=[[0,0],[a,0],[xC,yC],[dx,dy]];
+      } else {
+        pts=[[0,0],[a,0],[xC,yC]];
+      }
+    } else {
+      const xC=(a*a+b*b-c*c)/(2*a);
+      const yC=Math.sqrt(Math.max(0,b*b-xC*xC));
+      pts=[[0,0],[a,0],[xC,yC]];
+    }
+    const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+    const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+    const pad=55, scale=Math.min((w-2*pad)/Math.max(1,maxX-minX),(h-2*pad)/Math.max(1,maxY-minY));
+    const mapped=pts.map(([x,y])=>[pad+(x-minX)*scale,h-pad-(y-minY)*scale]);
+    ctx.beginPath(); ctx.moveTo(mapped[0][0],mapped[0][1]); mapped.slice(1).forEach(p=>ctx.lineTo(p[0],p[1])); ctx.closePath();
+    ctx.fillStyle='rgba(8,116,123,.12)'; ctx.fill(); ctx.strokeStyle='#08747b'; ctx.lineWidth=3; ctx.stroke();
+    ctx.fillStyle='#082336'; ctx.font='bold 18px Arial'; ctx.textAlign='center';
+    mapped.forEach((p,i)=>ctx.fillText(String.fromCharCode(65+i),p[0],p[1]-10));
+    ctx.fillStyle='#5e6f79'; ctx.font='13px Arial';
+    mapped.forEach((p,i)=>{ const j=(i+1)%mapped.length; if(i<vals.length && vals[i]>0) ctx.fillText(String(vals[i])+' ft',(p[0]+mapped[j][0])/2,(p[1]+mapped[j][1])/2-6); });
+  }
+  ['shapeA','shapeB','shapeC','shapeD'].forEach(id => $(id)?.addEventListener('input',drawShape));
+  drawShape();
+
+  // -------- Leaflet map + polygon area --------
+  let map, poly, markers=[];
+  const mapAreaEl=$('mapArea');
+  const mapOfflineNote=$('mapOfflineNote');
+  function polygonAreaM2(latlngs) {
+    if (latlngs.length<3) return 0;
+    const R=6378137, lat0=latlngs.reduce((s,p)=>s+p.lat,0)/latlngs.length*Math.PI/180;
+    const pts=latlngs.map(p=>({x:R*p.lng*Math.PI/180*Math.cos(lat0),y:R*p.lat*Math.PI/180}));
+    let area=0;
+    for(let i=0;i<pts.length;i++){const j=(i+1)%pts.length; area+=pts[i].x*pts[j].y-pts[j].x*pts[i].y;}
+    return Math.abs(area)/2;
+  }
+  function updateMapArea() {
+    const latlngs=markers.map(m=>m.getLatLng());
+    const m2=polygonAreaM2(latlngs);
+    mapAreaEl.textContent=latlngs.length>=3 ? `ক্ষেত্রফল: ${bn(m2)} বর্গমিটার • ${(m2/10000).toLocaleString('bn-BD',{maximumFractionDigits:4})} হেক্টর` : `পয়েন্ট: ${bn(latlngs.length)}টি`;
+    if(poly && map) { map.removeLayer(poly); poly=null; }
+    if(latlngs.length>=3 && map) poly=L.polygon(latlngs,{color:'#08747b',weight:3,fillOpacity:.12}).addTo(map);
+  }
+  function showMapOfflineState() {
+    if (mapOfflineNote) mapOfflineNote.classList.add('show');
+    if (mapAreaEl) mapAreaEl.textContent='মানচিত্র: অনলাইন সংযোগ প্রয়োজন';
+  }
+  function initMap() {
+    if(!$('registryMap')) return;
+    if(!window.L){
+      showMapOfflineState();
+      return;
+    }
+    try {
+      map=L.map('registryMap').setView([22.95,90.84],12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
+      if (navigator.onLine && mapOfflineNote) mapOfflineNote.classList.remove('show');
+      map.on('click',e=>{
+        const m=L.marker(e.latlng,{draggable:true}).addTo(map);
+        m.on('dragend',updateMapArea); markers.push(m); updateMapArea();
+      });
+      map.on('tileerror',()=>showMapOfflineState());
+    } catch(err) {
+      showMapOfflineState();
+    }
+  }
+  $('mapClear')?.addEventListener('click',()=>{
+    markers.forEach(m=>map?.removeLayer(m)); markers=[];
+    if(poly && map){map.removeLayer(poly);poly=null;}
+    mapAreaEl.textContent=map ? 'ক্ষেত্রফল: —' : 'মানচিত্র: অনলাইন সংযোগ প্রয়োজন';
+  });
+  $('mapClose')?.addEventListener('click',updateMapArea);
+  window.addEventListener('offline',showMapOfflineState);
+  window.addEventListener('online',()=>{ if(mapOfflineNote) mapOfflineNote.classList.remove('show'); });
+  initMap();
+
 })();
 </script>
 <script>
