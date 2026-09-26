@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v11-calculator-offline";
+const CACHE_NAME = "sah-pwa-v12-calculator-visibility-fix";
 const CORE_ASSETS = [
   "./", "./index.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./profile-abdul-hannan.webp",
