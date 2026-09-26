@@ -810,3 +810,15 @@ h1{font-weight:700;letter-spacing:-1px}
   .reveal{opacity:1;transform:none;transition:none}
   .showcase-card,.card,.service,.gallery-item,.post-card,.video-card{transition:none}
 }
+
+
+/* FINAL CALCULATOR VISIBILITY FIX */
+.mobile-calculator-link{display:none!important}
+.calculator-feature-card{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:28px 30px;border:1px solid var(--premium-border);border-radius:22px;background:linear-gradient(135deg,rgba(20,89,199,.06),rgba(22,132,91,.06));box-shadow:0 14px 38px rgba(8,35,54,.08)}
+.calculator-feature-card .section-title{margin:4px 0 8px}
+.calculator-feature-card .lead{margin:0;max-width:760px}
+@media(max-width:900px){
+  .mobile-calculator-link{display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 auto;margin-left:auto;padding:9px 12px;border-radius:12px;background:linear-gradient(135deg,#1459c7,#16845b);color:#fff!important;font-weight:800;text-decoration:none;box-shadow:0 6px 16px rgba(20,89,199,.22);white-space:nowrap}
+  .calculator-feature-card{flex-direction:column;align-items:flex-start;padding:24px 20px}
+  .calculator-feature-card .btn{width:100%;text-align:center}
+}
