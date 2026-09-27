@@ -1180,26 +1180,50 @@
     let pts;
     const a=vals[0],b=vals[1],c=vals[2],d=vals[3];
 
-    // 3 sides: exact triangle from AB, BC, CD(used as AC for the 3-side mode).
-    // 4 sides: four side lengths alone do not determine a unique quadrilateral.
-    // Choose a valid AC diagonal from the common feasible interval, then construct
-    // ABC and ACD on opposite sides of AC. This produces a consistent approximate
-    // convex quadrilateral without pretending that its shape is uniquely determined.
+    // 3 sides: exact triangle from AB, BC and AC (the third entered length).
     if (d>0) {
-      const qMin=Math.max(Math.abs(a-b),Math.abs(c-d));
-      const qMax=Math.min(a+b,c+d);
-      if (!(qMax>qMin+1e-9)) {
+      // Four side lengths do not uniquely determine one quadrilateral.
+      // For this visual-only sketch, automatically find a stable interior angle
+      // at B that lets the four entered sides close without asking for a diagonal.
+      const rad = deg => deg*Math.PI/180;
+      const makeQuad = angleDeg => {
+        const th=rad(angleDeg);
+        const Cx=a+b*Math.cos(th), Cy=b*Math.sin(th);
+        const AC=Math.hypot(Cx,Cy);
+        const eps=1e-9;
+        if (!(AC>eps) || AC>c+d+eps || AC<Math.abs(c-d)-eps) return null;
+
+        // D is the intersection of circles centered at A and C,
+        // with radii DA=d and CD=c. Choose the solution on the
+        // opposite side of AB from C to keep the sketch readable.
+        const ux=Cx/AC, uy=Cy/AC;
+        const x=(d*d-c*c+AC*AC)/(2*AC);
+        const h2=d*d-x*x;
+        if (h2 < -eps) return null;
+        const hh=Math.sqrt(Math.max(0,h2));
+        const D1={x:x*ux-hh*uy,y:x*uy+hh*ux};
+        const D2={x:x*ux+hh*uy,y:x*uy-hh*ux};
+        const D=D1.y<0 ? D1 : D2.y<0 ? D2 : (Math.abs(D1.y)<Math.abs(D2.y)?D1:D2);
+        if (Math.hypot(D.x,D.y-d*0)>0 && Math.abs(Math.hypot(D.x,D.y)-d)<1e-5 && Math.abs(Math.hypot(D.x-Cx,D.y-Cy)-c)<1e-5) {
+          return [[0,0],[a,0],[Cx,Cy],[D.x,D.y]];
+        }
+        return null;
+      };
+
+      // Prefer a near-right-angle shape, then search the full useful range.
+      const candidates=[90,80,100,70,110,60,120,50,130,40,140,30,150,20,160];
+      let quad=null;
+      for(const ang of candidates){ quad=makeQuad(ang); if(quad) break; }
+      if(!quad){
+        for(let ang=10;ang<=170;ang+=2){ quad=makeQuad(ang); if(quad) break; }
+      }
+      if(!quad){
         ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
-        ctx.fillText('এই ৪টি বাহু দিয়ে বৈধ চতুর্ভুজ স্কেচ তৈরি করা যাচ্ছে না',w/2,h/2-10);
+        ctx.fillText('এই ৪টি বাহুর মাপ দিয়ে বৈধ আনুমানিক স্কেচ তৈরি করা যাচ্ছে না',w/2,h/2-10);
         ctx.font='14px Arial'; ctx.fillStyle='#5e6f79';
         ctx.fillText('বাহুগুলোর মাপ পুনরায় যাচাই করুন',w/2,h/2+20); return;
       }
-      const q=(qMin+qMax)/2; // a neutral, valid diagonal for the approximate sketch
-      const xC=(a*a+q*q-b*b)/(2*a);
-      const yC=Math.sqrt(Math.max(0,q*q-xC*xC));
-      const xD=(d*d+q*q-c*c)/(2*q);
-      const yD=Math.sqrt(Math.max(0,d*d-xD*xD));
-      pts=[[0,0],[a,0],[xC,yC],[xD,-yD]];
+      pts=quad;
     } else {
       const xC=(a*a+b*b-c*c)/(2*a);
       const yC=Math.sqrt(Math.max(0,b*b-xC*xC));
@@ -1222,16 +1246,8 @@
       const j=(i+1)%mapped.length;
       if(i>=labels.length) return;
       const mx=(p[0]+mapped[j][0])/2, my=(p[1]+mapped[j][1])/2;
-      ctx.fillText((d>0 ? labels[i]+' • ' : labels[i]+' • ')+String(vals[i])+' ft',mx,my-7);
+      ctx.fillText(labels[i]+' • '+String(vals[i])+' ft',mx,my-7);
     });
-
-    if(d>0){
-      const q1=[mapped[0][0],mapped[0][1]], q2=[mapped[2][0],mapped[2][1]];
-      ctx.save(); ctx.setLineDash([7,6]); ctx.strokeStyle='#8a9ba3'; ctx.lineWidth=1.5;
-      ctx.beginPath(); ctx.moveTo(q1[0],q1[1]); ctx.lineTo(q2[0],q2[1]); ctx.stroke(); ctx.restore();
-      ctx.fillStyle='#6a7c84'; ctx.font='12px Arial';
-      ctx.fillText('AC কর্ণ ≈ '+q.toFixed(2)+' ft',(q1[0]+q2[0])/2,(q1[1]+q2[1])/2-9);
-    }
   }
   ['shapeA','shapeB','shapeC','shapeD'].forEach(id => $(id)?.addEventListener('input',drawShape));
   drawShape();
