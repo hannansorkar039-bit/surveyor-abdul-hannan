@@ -727,14 +727,6 @@
     r.innerHTML=`<div class="result-main">ব্রহ্মগুপ্ত ক্ষেত্রফল = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div><p>অর্ধপরিসীমা (s) = ${fmt(s)} ${u}</p><div class="warning">এই ফলটি ব্রহ্মগুপ্তের সূত্রের শর্ত অনুযায়ী <strong>cyclic quadrilateral</strong>-এর জন্য প্রযোজ্য। সাধারণ চতুর্ভুজে শুধু চার বাহু থেকে প্রকৃত ক্ষেত্রফল নিশ্চিত করা যায় না।</div>${landLines(area,u)}`;
   };
 
-  function toggleGender(){
-    const male=$('deceasedGender').value==='male';
-    $('wifeField').style.display=male?'block':'none';
-    $('husbandField').style.display=male?'none':'block';
-    if(male) $('husband').value='0'; else $('wives').value='0';
-  }
-  $('deceasedGender').addEventListener('change',toggleGender); toggleGender();
-
   const money=n=>'৳ '+Number(n||0).toLocaleString('bn-BD',{minimumFractionDigits:2,maximumFractionDigits:2});
   const frac=n=>{const k=[[1,2,'১/২'],[1,3,'১/৩'],[1,4,'১/৪'],[1,6,'১/৬'],[1,8,'১/৮'],[2,3,'২/৩'],[1,12,'১/১২'],[1,24,'১/২৪']];for(const [a,b,t] of k)if(Math.abs(n-a/b)<1e-8)return t;return (n*100).toFixed(2)+'%';};
   const F=[
