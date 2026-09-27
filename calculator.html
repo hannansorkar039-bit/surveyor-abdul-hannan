@@ -1176,40 +1176,62 @@
       ctx.fillStyle='#5e6f79'; ctx.font='22px Arial'; ctx.textAlign='center';
       ctx.fillText('৩ বা ৪টি বাহুর দৈর্ঘ্য দিন',w/2,h/2); return;
     }
+
     let pts;
-    const a=vals[0],b=vals[1],c=vals[2];
-    if (vals[3]>0) {
-      const xC=(a*a+b*b-c*c)/(2*a);
-      const yC=Math.sqrt(Math.max(0,b*b-xC*xC));
-      const d=vals[3];
-      // Circle intersection A(0,0), C(xC,yC), radii d,c.
-      const dist=Math.hypot(xC,yC);
-      if (dist>0 && Math.abs(d-c)<=dist && dist<=d+c) {
-        const along=(d*d-c*c+dist*dist)/(2*dist);
-        const height=Math.sqrt(Math.max(0,d*d-along*along));
-        const ux=xC/dist, uy=yC/dist;
-        const px=-uy, py=ux;
-        let dx=along*ux+height*px, dy=along*uy+height*py;
-        if (dy>0) { dx=along*ux-height*px; dy=along*uy-height*py; }
-        pts=[[0,0],[a,0],[xC,yC],[dx,dy]];
-      } else {
-        pts=[[0,0],[a,0],[xC,yC]];
+    const a=vals[0],b=vals[1],c=vals[2],d=vals[3];
+
+    // 3 sides: exact triangle from AB, BC, CD(used as AC for the 3-side mode).
+    // 4 sides: four side lengths alone do not determine a unique quadrilateral.
+    // Choose a valid AC diagonal from the common feasible interval, then construct
+    // ABC and ACD on opposite sides of AC. This produces a consistent approximate
+    // convex quadrilateral without pretending that its shape is uniquely determined.
+    if (d>0) {
+      const qMin=Math.max(Math.abs(a-b),Math.abs(c-d));
+      const qMax=Math.min(a+b,c+d);
+      if (!(qMax>qMin+1e-9)) {
+        ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
+        ctx.fillText('এই ৪টি বাহু দিয়ে বৈধ চতুর্ভুজ স্কেচ তৈরি করা যাচ্ছে না',w/2,h/2-10);
+        ctx.font='14px Arial'; ctx.fillStyle='#5e6f79';
+        ctx.fillText('বাহুগুলোর মাপ পুনরায় যাচাই করুন',w/2,h/2+20); return;
       }
+      const q=(qMin+qMax)/2; // a neutral, valid diagonal for the approximate sketch
+      const xC=(a*a+q*q-b*b)/(2*a);
+      const yC=Math.sqrt(Math.max(0,q*q-xC*xC));
+      const xD=(d*d+q*q-c*c)/(2*q);
+      const yD=Math.sqrt(Math.max(0,d*d-xD*xD));
+      pts=[[0,0],[a,0],[xC,yC],[xD,-yD]];
     } else {
       const xC=(a*a+b*b-c*c)/(2*a);
       const yC=Math.sqrt(Math.max(0,b*b-xC*xC));
       pts=[[0,0],[a,0],[xC,yC]];
     }
+
     const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
     const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
-    const pad=55, scale=Math.min((w-2*pad)/Math.max(1,maxX-minX),(h-2*pad)/Math.max(1,maxY-minY));
+    const pad=70, scale=Math.min((w-2*pad)/Math.max(1,maxX-minX),(h-2*pad)/Math.max(1,maxY-minY));
     const mapped=pts.map(([x,y])=>[pad+(x-minX)*scale,h-pad-(y-minY)*scale]);
     ctx.beginPath(); ctx.moveTo(mapped[0][0],mapped[0][1]); mapped.slice(1).forEach(p=>ctx.lineTo(p[0],p[1])); ctx.closePath();
     ctx.fillStyle='rgba(8,116,123,.12)'; ctx.fill(); ctx.strokeStyle='#08747b'; ctx.lineWidth=3; ctx.stroke();
+
     ctx.fillStyle='#082336'; ctx.font='bold 18px Arial'; ctx.textAlign='center';
-    mapped.forEach((p,i)=>ctx.fillText(String.fromCharCode(65+i),p[0],p[1]-10));
-    ctx.fillStyle='#5e6f79'; ctx.font='13px Arial';
-    mapped.forEach((p,i)=>{ const j=(i+1)%mapped.length; if(i<vals.length && vals[i]>0) ctx.fillText(String(vals[i])+' ft',(p[0]+mapped[j][0])/2,(p[1]+mapped[j][1])/2-6); });
+    mapped.forEach((p,i)=>ctx.fillText(String.fromCharCode(65+i),p[0],p[1]-12));
+
+    const labels=d>0 ? ['উত্তর • AB','পূর্ব • BC','দক্ষিণ • CD','পশ্চিম • DA'] : ['AB','BC','CA'];
+    ctx.font='bold 13px Arial'; ctx.fillStyle='#36525d';
+    mapped.forEach((p,i)=>{
+      const j=(i+1)%mapped.length;
+      if(i>=labels.length) return;
+      const mx=(p[0]+mapped[j][0])/2, my=(p[1]+mapped[j][1])/2;
+      ctx.fillText((d>0 ? labels[i]+' • ' : labels[i]+' • ')+String(vals[i])+' ft',mx,my-7);
+    });
+
+    if(d>0){
+      const q1=[mapped[0][0],mapped[0][1]], q2=[mapped[2][0],mapped[2][1]];
+      ctx.save(); ctx.setLineDash([7,6]); ctx.strokeStyle='#8a9ba3'; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(q1[0],q1[1]); ctx.lineTo(q2[0],q2[1]); ctx.stroke(); ctx.restore();
+      ctx.fillStyle='#6a7c84'; ctx.font='12px Arial';
+      ctx.fillText('AC কর্ণ ≈ '+q.toFixed(2)+' ft',(q1[0]+q2[0])/2,(q1[1]+q2[1])/2-9);
+    }
   }
   ['shapeA','shapeB','shapeC','shapeD'].forEach(id => $(id)?.addEventListener('input',drawShape));
   drawShape();
