@@ -105,6 +105,37 @@
 @media(max-width:620px){.registry-upgrade .registry-card{padding:16px}.registry-upgrade #landShapeCanvas{height:260px}.registry-upgrade #registryMap{height:300px}}
 
 
+
+.shape-snap-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;padding:9px 12px;border:1px solid #cfe4e7;border-radius:12px;background:#f4fbfb;color:#31515b;font-size:12px;font-weight:800}.shape-snap-badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#08747b;color:#fff;letter-spacing:.3px}.shape-dimension-head{display:flex;justify-content:space-between;gap:10px;margin-top:16px;color:var(--navy);font-weight:900}.shape-dimension-head span{font-size:12px;color:var(--muted)}.feet-inch{display:grid;grid-template-columns:1fr 1fr;gap:7px}.feet-inch input{width:100%}.shape-unit-note{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.55}.shape-dimension-grid .calc-field{min-width:0}
+/* ===== Multi-field drawing / area / save / edit ===== */
+.multi-field-panel{margin-top:26px}
+.multi-field-toolbar{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:14px}
+.multi-field-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.multi-field-actions .calc-btn{min-height:44px}
+.multi-field-status{margin-top:13px;padding:11px 13px;border:1px solid #d8e7ea;border-radius:12px;background:#f4fafb;color:#31515b;font-size:13px;line-height:1.6}
+.multi-field-canvas-wrap{margin-top:14px;border:1px solid #cfe0e4;border-radius:16px;overflow:hidden;background:#fff;touch-action:none}
+#multiFieldCanvas{display:block;width:100%;height:360px;background:#fbfefe;cursor:default;touch-action:none}
+.multi-field-result{margin-top:14px;min-height:0}
+.multi-field-result:empty{display:none}
+.multi-field-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.multi-field-kpi{padding:12px;border:1px solid #d7e6e9;border-radius:12px;background:#fff;text-align:center}
+.multi-field-kpi strong{display:block;font-size:18px;color:var(--navy)}
+.multi-field-kpi span{display:block;margin-top:3px;font-size:12px;color:#64777e}
+.multi-field-saved-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;padding-bottom:9px;border-bottom:1px solid var(--line);color:var(--navy)}
+.multi-field-saved-head span{font-size:12px;color:var(--muted)}
+.multi-field-list{display:grid;gap:9px;margin-top:10px}
+.multi-field-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 12px;border:1px solid #dbe7ea;border-radius:12px;background:#fff}
+.multi-field-item-main{min-width:0}
+.multi-field-item-main strong{display:block;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.multi-field-item-main span{display:block;margin-top:3px;font-size:12px;color:var(--muted)}
+.multi-field-item-actions{display:flex;gap:6px;flex-wrap:wrap;flex:0 0 auto}
+.multi-field-item-actions button{border:1px solid #d4e3e7;background:#f5f9fa;color:var(--navy);border-radius:9px;padding:7px 10px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.multi-field-item-actions .danger{color:#9b3d2a;border-color:#efd2ca;background:#fff8f6}
+.multi-field-compass{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px;padding:9px 12px;border:1px solid #d8e7ea;border-radius:12px;background:#f8fcfc;font-size:12px;font-weight:900;text-align:center}
+.multi-field-compass .compass-n{color:#155b9d}.multi-field-compass .compass-e{color:#176b49}.multi-field-compass .compass-s{color:#a64a2b}.multi-field-compass .compass-w{color:#60459b}
+.multi-field-total{margin-top:12px;padding:13px 15px;border:1px solid #cfe4e7;border-radius:13px;background:linear-gradient(135deg,#eef9f9,#fff8f1);font-weight:900;color:var(--navy);line-height:1.7}
+@media(max-width:620px){.multi-field-toolbar{grid-template-columns:1fr}.multi-field-actions .calc-btn{flex:1 1 calc(50% - 9px);padding:10px 11px;font-size:13px}#multiFieldCanvas{height:300px}.multi-field-kpis{grid-template-columns:1fr}.multi-field-item{align-items:flex-start;flex-direction:column}.multi-field-item-actions{width:100%}.multi-field-item-actions button{flex:1}}
+
 /* ===== Requested title emphasis — titles only ===== */
 .formula-suite-title{font-size:clamp(24px,3.6vw,36px);font-weight:950;letter-spacing:.1px;padding:21px 22px;border-radius:20px;box-shadow:0 16px 36px rgba(8,35,54,.22),0 0 0 2px rgba(255,255,255,.08) inset;text-shadow:0 2px 10px rgba(0,0,0,.22)}
 .formula-suite-title span{font-size:1.05em;margin-right:9px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
@@ -413,21 +444,32 @@
 </section>
 
 <section class="featured-panel shape-sketch-panel" id="featured-shape-sketch" aria-labelledby="shape-sketch-heading">
-<div class="shape-sketch-title" id="shape-sketch-heading" aria-label="৩/৪ বাহুর জমির আনুমানিক স্কেচ"><span>📐</span><span>৩/৪ বাহুর জমির আনুমানিক স্কেচ</span></div>
-<p class="shape-sketch-note"><strong>শুধু ভিজ্যুয়াল ধারণার জন্য:</strong> ৩টি বাহু দিলে ত্রিভুজ এবং ৪টি বাহু দিলে আনুমানিক চতুর্ভুজ স্কেচ দেখানো হবে। ৪টি বাহু দিয়ে সাধারণ চতুর্ভুজের প্রকৃত/সুনির্দিষ্ট ক্ষেত্রফল সবসময় নির্ধারণ করা যায় না।</p>
-
-<div class="shape-box">
-<canvas id="landShapeCanvas" width="900" height="420" aria-label="জমির আনুমানিক ডিজিটাল স্কেচ"></canvas>
+<div class="shape-sketch-title" id="shape-sketch-heading"><span>📐</span><span>৩/৪ বাহুর জমির আনুমানিক স্কেচ</span></div>
+<p class="shape-sketch-note"><strong>ফুট–ইঞ্চি মাপ দিয়ে স্বয়ংক্রিয় স্কেচ:</strong> পয়েন্টে ট্যাপ বা হাতে আঁকার প্রয়োজন নেই। উত্তর, পূর্ব, দক্ষিণ ও পশ্চিমের বাহুর মাপ দিলে SNAP ON অবস্থায় সীমানা নিজে থেকে যুক্ত হয়ে বন্ধ ক্ষেত্র এবং আনুমানিক ক্ষেত্রফল দেখাবে।</p>
+<div class="shape-box"><canvas id="landShapeCanvas" width="900" height="420" aria-label="জমির আনুমানিক ডিজিটাল স্কেচ"></canvas></div>
+<div class="shape-snap-bar"><span class="shape-snap-badge">🧲 SNAP: ON</span><span>দিক স্বয়ংক্রিয়ভাবে উত্তর → পূর্ব → দক্ষিণ → পশ্চিমে যুক্ত হবে</span></div>
+<div class="shape-multi-divider" aria-hidden="true"></div>
+<div class="shape-multi-head"><h3>🗺️ এই ৩/৪ বাহুর স্কেচের মধ্যেই বহু ক্ষেত্র</h3><p>প্রতিটি নতুন ক্ষেত্র আঁকার আগে কোন বিদ্যমান ক্ষেত্রের কোন পাশে হবে তা নির্বাচন করুন। তারপর নিচে সেই নতুন ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন।</p></div>
+<div class="multi-field-toolbar" id="multiFieldPlacement">
+  <div class="calc-field"><label for="mfBaseField">১. কোন ক্ষেত্রের পাশে আঁকবেন?</label><select id="mfBaseField"><option value="__first__">প্রথম ক্ষেত্র / নতুন শুরু</option></select></div>
+  <div class="calc-field"><label for="mfSide">২. কোন পাশে?</label><select id="mfSide"><option value="north">↑ উত্তর</option><option value="east">→ পূর্ব</option><option value="south">↓ দক্ষিণ</option><option value="west">← পশ্চিম</option></select></div>
 </div>
-
-<div class="calc-grid" style="margin-top:18px">
-<div class="calc-field"><label for="shapeA"><span class="direction-badge north">উত্তর</span> বাহু AB</label><input id="shapeA" type="number" min="0" step="any" placeholder="ফুট"></div>
-<div class="calc-field"><label for="shapeB"><span class="direction-badge east">পূর্ব</span> বাহু BC</label><input id="shapeB" type="number" min="0" step="any" placeholder="ফুট"></div>
-<div class="calc-field"><label for="shapeC"><span class="direction-badge south">দক্ষিণ</span> বাহু CD</label><input id="shapeC" type="number" min="0" step="any" placeholder="ফুট"></div>
-<div class="calc-field"><label for="shapeD"><span class="direction-badge west">পশ্চিম</span> বাহু DA</label><input id="shapeD" type="number" min="0" step="any" placeholder="ফুট"></div>
+<div class="multi-field-status" id="mfPlacementStatus" role="status">প্রথম ক্ষেত্র তৈরি করুন। দ্বিতীয়/পরবর্তী ক্ষেত্রের আগে কোন ক্ষেত্রের উত্তর/দক্ষিণ/পূর্ব/পশ্চিম পাশে হবে তা নির্বাচন করুন।</div>
+<div class="shape-dimension-head"><strong>📏 ৩. নতুন/নির্বাচিত ক্ষেত্রের বাহুর মাপ</strong><span>ফুট + ইঞ্চি</span></div>
+<div class="calc-grid shape-dimension-grid" style="margin-top:12px">
+<div class="calc-field"><label for="shapeAft"><span class="direction-badge north">উত্তর</span> বাহু AB</label><div class="feet-inch"><input id="shapeAft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeAin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি"></div><input id="shapeA" type="hidden"></div>
+<div class="calc-field"><label for="shapeBft"><span class="direction-badge east">পূর্ব</span> বাহু BC</label><div class="feet-inch"><input id="shapeBft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeBin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি"></div><input id="shapeB" type="hidden"></div>
+<div class="calc-field"><label for="shapeCft"><span class="direction-badge south">দক্ষিণ</span> বাহু CD</label><div class="feet-inch"><input id="shapeCft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeCin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি"></div><input id="shapeC" type="hidden"></div>
+<div class="calc-field"><label for="shapeDft"><span class="direction-badge west">পশ্চিম</span> বাহু DA</label><div class="feet-inch"><input id="shapeDft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeDin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি"></div><input id="shapeD" type="hidden"></div>
 </div>
-<p class="calc-help">৩টি বাহু দিলে ত্রিভুজ; ৪টি বাহু দিলে একটি আনুমানিক চতুর্ভুজ স্কেচ দেখানো হবে। চার বাহু দিয়ে প্রকৃত চতুর্ভুজের একক/সুনির্দিষ্ট ক্ষেত্রফল সবসময় নির্ধারিত হয় না—এটি কেবল ভিজ্যুয়াল ধারণার জন্য।</p>
-
+<div class="shape-unit-note">ইঞ্চি ০–১১.৯৯৯ পর্যন্ত দিন। ১২ ইঞ্চি হলে স্বয়ংক্রিয়ভাবে ১ ফুটে রূপান্তর হবে। ৩টি বাহু দিলে ত্রিভুজ, ৪টি দিলে আনুমানিক চতুর্ভুজ তৈরি হবে। <strong>পয়েন্ট ধরে আঁকা বাধ্যতামূলক নয়।</strong></div>
+<div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="shapeNew">＋ নতুন ক্ষেত্র</button><button class="calc-btn calc-secondary" type="button" id="shapeSave">💾 ক্ষেত্র সেভ করুন</button><button class="calc-btn calc-secondary" type="button" id="shapePointEdit">✋ পয়েন্ট এডিট: OFF</button><button class="calc-btn calc-secondary" type="button" id="shapeClear">↶ মাপ পরিষ্কার</button></div>
+<div class="multi-field-status" id="shapeStatus" role="status">প্রথম ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন। নতুন ক্ষেত্রের ক্ষেত্রে আগে পাশ নির্বাচন করে তারপর এই ৪টি বাহুর মাপ দিন।</div>
+<div class="multi-field-result" id="shapeResult" aria-live="polite"></div>
+<div class="multi-field-compass" aria-label="দিকনির্দেশ"><span class="compass-n">↑ উত্তর • AB</span><span class="compass-e">পূর্ব → BC</span><span class="compass-s">↓ দক্ষিণ • CD</span><span class="compass-w">← পশ্চিম • DA</span></div>
+<div class="multi-field-canvas-wrap"><canvas id="multiFieldCanvas" width="1000" height="560" aria-label="ফুট-ইঞ্চি মাপ থেকে বহু ক্ষেত্রের স্বয়ংক্রিয় স্কেচ"></canvas></div>
+<div class="multi-field-saved-head"><strong>💾 সেভ করা ক্ষেত্র</strong><span id="mfSavedCount">০টি</span></div><div class="multi-field-list" id="mfSavedList"></div><div class="multi-field-total" id="mfSavedTotal" aria-live="polite"></div>
+<p class="calc-help">গুরুত্বপূর্ণ: ৪টি বাহু দিয়ে প্রকৃত জমির একক/সুনির্দিষ্ট আকৃতি ও ক্ষেত্রফল নির্ধারণ করা যায় না। এখানে চার বাহুর মাপ থেকে একটি সামঞ্জস্যপূর্ণ আনুমানিক স্কেচ/ক্ষেত্রফল দেখানো হয়।</p>
 </section>
 
 <section class="featured-panel" id="featured-hissa" aria-labelledby="featured-hissa-title">
@@ -1163,113 +1205,254 @@
   $('registryPrint')?.addEventListener('click', printReport);
   $('registryPdf')?.addEventListener('click', pdfReport);
 
-  // -------- Canvas shape sketch --------
-  const canvas=$('landShapeCanvas'), ctx=canvas?.getContext('2d');
-  function drawShape() {
-    if (!ctx) return;
-    const vals=[val('shapeA'),val('shapeB'),val('shapeC'),val('shapeD')];
-    const sides=vals.filter(v=>v>0);
-    const w=canvas.width,h=canvas.height;
-    ctx.clearRect(0,0,w,h);
-    ctx.fillStyle='#f7fafb'; ctx.fillRect(0,0,w,h);
-    if (sides.length<3) {
-      ctx.fillStyle='#5e6f79'; ctx.font='22px Arial'; ctx.textAlign='center';
-      ctx.fillText('৩ বা ৪টি বাহুর দৈর্ঘ্য দিন',w/2,h/2); return;
+  // -------- Automatic dimension-based 3/4 side sketch + multi-field placement/edit --------
+  (() => {
+    const main=$('landShapeCanvas'), multi=$('multiFieldCanvas'); if(!main||!multi)return;
+    const mctx=main.getContext('2d'), ctx=multi.getContext('2d');
+    const names=['A','B','C','D'], labels=['উত্তর • AB','পূর্ব • BC','দক্ষিণ • CD','পশ্চিম • DA'];
+    const STORAGE='abdul_hannan_dimension_land_fields_v6';
+    let saved=[]; try{saved=JSON.parse(localStorage.getItem(STORAGE)||'[]')}catch(e){saved=[]}
+    let selectedId=null, current=null, editMode=false, dragIndex=-1, silentInputs=false;
+    let view={zoom:1,panX:0,panY:0};
+    // এডিটের সময় একটি স্থির scene transform রাখা হয়, যাতে অন্য ক্ষেত্রের অবস্থান/স্কেল না বদলায়।
+    let lockedTr=null;
+    let pinch=null;
+    const bn=n=>Number(n||0).toLocaleString('bn-BD',{maximumFractionDigits:2});
+    function ftInText(value){const n=Math.max(0,Number(value)||0);const ft=Math.floor(n+1e-9);let inch=(n-ft)*12;if(inch<0.005)inch=0;if(inch>=11.995){return (ft+1)+'′';}const inchText=Number(inch.toFixed(2)).toLocaleString('bn-BD',{maximumFractionDigits:2});return ft+'′ '+inchText+'″';}
+    const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function inp(ftId,inId){const f=Number($(ftId)?.value||0),i=Number($(inId)?.value||0);return Math.max(0,f+i/12)}
+    function dims(){return [inp('shapeAft','shapeAin'),inp('shapeBft','shapeBin'),inp('shapeCft','shapeCin'),inp('shapeDft','shapeDin')]}
+    function syncHidden(v){['A','B','C','D'].forEach((x,i)=>{const e=$('shape'+x);if(e)e.value=v[i]||0})}
+    function setInputs(v){v=v||[0,0,0,0];silentInputs=true;v.forEach((x,i)=>{const ft=Math.floor(Math.max(0,x)+1e-9),inch=(Math.max(0,x)-ft)*12; $('shape'+names[i]+'ft').value=ft||''; $('shape'+names[i]+'in').value=inch?inch.toFixed(3):''});syncHidden(v);silentInputs=false}
+    function valid4(a,b,c,d){return a>0&&b>0&&c>0&&d>0&&Math.max(a,b,c,d)<(a+b+c+d)-Math.max(a,b,c,d)}
+    function quadPoints(v){
+      const [a,b,c,d]=v;if(!valid4(a,b,c,d))return null;
+      const qMin=Math.max(Math.abs(a-b),Math.abs(c-d)), qMax=Math.min(a+b,c+d); if(!(qMax-qMin>1e-7))return null;
+      const q=(qMin+qMax)/2;
+      const x=(a*a+q*q-b*b)/(2*a), y=Math.sqrt(Math.max(0,q*q-x*x)); if(!(y>1e-8))return null;
+      const xd=(d*d+q*q-c*c)/(2*q), yd=Math.sqrt(Math.max(0,d*d-xd*xd)); if(!(yd>1e-8))return null;
+      const ux=x/q,uy=y/q,nx=-uy,ny=ux;
+      const D=[xd*ux+yd*nx,xd*uy+yd*ny];
+      const pts=[[0,0],[a,0],[x,-y],[D[0],-D[1]]];
+      const lens=pts.map((p,i)=>{const z=pts[(i+1)%4];return Math.hypot(z[0]-p[0],z[1]-p[1])});
+      if(lens.some((z,i)=>Math.abs(z-v[i])>1e-4))return null;
+      return pts;
     }
-
-    let pts;
-    const a=vals[0],b=vals[1],c=vals[2],d=vals[3];
-
-    // 3 sides: exact triangle from AB, BC and AC (the third entered length).
-    if (d>0) {
-      // চারটি বাহু দিয়ে একটিমাত্র চতুর্ভুজ নির্ধারিত হয় না।
-      // তাই স্কেচের জন্য একটি canonical convex cyclic quadrilateral
-      // (অর্থাৎ একই চার বাহু ও একটি স্বাভাবিক উত্তল বিন্যাস) তৈরি করা হয়।
-      // এখানে কোনো কর্ণ ব্যবহারকারীকে দিতে হয় না; AC ভিতরে স্বয়ংক্রিয়ভাবে নির্ণীত।
-      const eps=1e-9;
-      const longest=Math.max(a,b,c,d);
-      if (!(a>0&&b>0&&c>0&&d>0) || longest >= (a+b+c+d)-longest-eps) {
-        ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
-        ctx.fillText('এই ৪টি বাহু দিয়ে বৈধ চতুর্ভুজ তৈরি করা যাচ্ছে না',w/2,h/2-10);
-        ctx.font='14px Arial'; ctx.fillStyle='#5e6f79';
-        ctx.fillText('যেকোনো একটি বাহু বাকি তিন বাহুর যোগফলের চেয়ে ছোট হতে হবে',w/2,h/2+20); return;
-      }
-
-      // Cyclic quadrilateral-এর AC diagonal-এর canonical মান:
-      // AC² = ((AB×CD + BC×DA)×(AB×DA + BC×CD)) / (AB×BC + CD×DA)
-      const q2=((a*c+b*d)*(a*d+b*c))/(a*b+c*d);
-      const q=Math.sqrt(Math.max(0,q2));
-      if (!(q>eps) || q>=a+b-eps || q<=Math.abs(a-b)+eps || q>=c+d-eps || q<=Math.abs(c-d)+eps) {
-        ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
-        ctx.fillText('এই মাপগুলো দিয়ে স্থিতিশীল চতুর্ভুজ স্কেচ তৈরি করা যাচ্ছে না',w/2,h/2-10);
-        ctx.font='14px Arial'; ctx.fillStyle='#5e6f79';
-        ctx.fillText('বাহুগুলোর মাপ পুনরায় যাচাই করুন',w/2,h/2+20); return;
-      }
-
-      // A=(0,0), B=(AB,0), C from triangle ABC.
-      const xC=(a*a+q*q-b*b)/(2*a);
-      const yC2=q*q-xC*xC;
-      if (yC2<=eps) {
-        ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
-        ctx.fillText('এই মাপগুলোতে চতুর্ভুজটি প্রায় সরলরেখায় চলে যাচ্ছে',w/2,h/2); return;
-      }
-      const yC=Math.sqrt(yC2);
-
-      // D from triangle ACD; D MUST be on the opposite side of AC from B
-      // so A-B-C-D is a normal convex quadrilateral.
-      const xD=(d*d+q*q-c*c)/(2*q);
-      const yD2=d*d-xD*xD;
-      if (yD2<=eps) {
-        ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
-        ctx.fillText('এই মাপগুলোতে স্থিতিশীল চতুর্ভুজ স্কেচ তৈরি করা যাচ্ছে না',w/2,h/2); return;
-      }
-      const yD=Math.sqrt(yD2);
-      // AC-কে স্থানীয় x-axis ধরে A→C বরাবর D-এর অবস্থান তৈরি করি।
-      // B ও D-কে AC-এর বিপরীত পাশে রাখলে A-B-C-D একটি উত্তল চতুর্ভুজ হয়।
-      const ux=xC/q, uy=yC/q;
-      const nx=-uy, ny=ux;
-      const Dx=xD*ux + yD*nx;
-      const Dy=xD*uy + yD*ny;
-
-      // চারটি বাহুই সত্যিই দেওয়া মাপের সমান কি না যাচাই।
-      const checks=[
-        Math.hypot(xC-a,yC)-b,
-        Math.hypot(Dx-xC,Dy-yC)-c,
-        Math.hypot(Dx,Dy)-d,
-        Math.hypot(a,0)-a
-      ];
-      if (Math.max(...checks.map(Math.abs))>1e-6) {
-        ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
-        ctx.fillText('স্কেচ তৈরিতে জ্যামিতিক অসামঞ্জস্য পাওয়া গেছে',w/2,h/2); return;
-      }
-      pts=[[0,0],[a,0],[xC,yC],[Dx,Dy]];
-    } else {
-      const xC=(a*a+b*b-c*c)/(2*a);
-      const yC=Math.sqrt(Math.max(0,b*b-xC*xC));
-      pts=[[0,0],[a,0],[xC,yC]];
+    function triPoints(v){const [a,b,c]=v;if(!(a>0&&b>0&&c>0)||a+b<=c||a+c<=b||b+c<=a)return null;const x=(a*a+c*c-b*b)/(2*a),y=Math.sqrt(Math.max(0,c*c-x*x));return [[0,0],[a,0],[x,-y]]}
+    function area(pts){let s=0;for(let i=0;i<pts.length;i++){const j=(i+1)%pts.length;s+=pts[i][0]*pts[j][1]-pts[j][0]*pts[i][1]}return Math.abs(s)/2}
+    function sideLengths(pts){return pts.map((p,i)=>{const q=pts[(i+1)%pts.length];return Math.hypot(q[0]-p[0],q[1]-p[1])})}
+    function bbox(pts){return {minX:Math.min(...pts.map(p=>p[0])),maxX:Math.max(...pts.map(p=>p[0])),minY:Math.min(...pts.map(p=>p[1])),maxY:Math.max(...pts.map(p=>p[1]))}}
+    function centroid(pts){return [pts.reduce((s,p)=>s+p[0],0)/pts.length,pts.reduce((s,p)=>s+p[1],0)/pts.length]}
+    function translate(pts,dx,dy){return pts.map(p=>[p[0]+dx,p[1]+dy])}
+    function rotatePts(pts,ang){const ca=Math.cos(ang),sa=Math.sin(ang);return pts.map(p=>[p[0]*ca-p[1]*sa,p[0]*sa+p[1]*ca])}
+    function edgeMid(pts,i){const a=pts[i],b=pts[(i+1)%pts.length];return [(a[0]+b[0])/2,(a[1]+b[1])/2]}
+    function edgeVec(pts,i){const a=pts[i],b=pts[(i+1)%pts.length];return [b[0]-a[0],b[1]-a[1]]}
+    function sideEdges(side){
+      return {baseEdge:{north:0,east:1,south:2,west:3}[side],newEdge:{north:2,east:3,south:0,west:1}[side]};
     }
-
-    const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
-    const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
-    const pad=70, scale=Math.min((w-2*pad)/Math.max(1,maxX-minX),(h-2*pad)/Math.max(1,maxY-minY));
-    const mapped=pts.map(([x,y])=>[pad+(x-minX)*scale,h-pad-(y-minY)*scale]);
-    ctx.beginPath(); ctx.moveTo(mapped[0][0],mapped[0][1]); mapped.slice(1).forEach(p=>ctx.lineTo(p[0],p[1])); ctx.closePath();
-    ctx.fillStyle='rgba(8,116,123,.12)'; ctx.fill(); ctx.strokeStyle='#08747b'; ctx.lineWidth=3; ctx.stroke();
-
-    ctx.fillStyle='#082336'; ctx.font='bold 18px Arial'; ctx.textAlign='center';
-    mapped.forEach((p,i)=>ctx.fillText(String.fromCharCode(65+i),p[0],p[1]-12));
-
-    const labels=d>0 ? ['উত্তর • AB','পূর্ব • BC','দক্ষিণ • CD','পশ্চিম • DA'] : ['AB','BC','CA'];
-    ctx.font='bold 13px Arial'; ctx.fillStyle='#36525d';
-    mapped.forEach((p,i)=>{
-      const j=(i+1)%mapped.length;
-      if(i>=labels.length) return;
-      const mx=(p[0]+mapped[j][0])/2, my=(p[1]+mapped[j][1])/2;
-      ctx.fillText(labels[i]+' • '+String(vals[i])+' ft',mx,my-7);
+    function alignToBase(shape,base,side){
+      // বিদ্যমান shape-এর আকার/point-edit অক্ষুণ্ণ রেখে শুধু RIGID MOVE করি:
+      // সংযুক্ত দুই বাহু একই সরলরেখায়, একই মধ্যবিন্দুতে থাকবে—তাই ফাঁকা থাকবে না।
+      const {baseEdge,newEdge}=sideEdges(side);
+      const bv=edgeVec(base,baseEdge), lv=edgeVec(shape,newEdge);
+      const bl=Math.hypot(bv[0],bv[1]), ll=Math.hypot(lv[0],lv[1]);
+      if(!(bl>1e-9&&ll>1e-9))return shape.map(p=>[...p]);
+      const targetAng=Math.atan2(-bv[1],-bv[0]), localAng=Math.atan2(lv[1],lv[0]);
+      const r=rotatePts(shape,targetAng-localAng);
+      const bm=edgeMid(base,baseEdge), rm=edgeMid(r,newEdge);
+      return translate(r,bm[0]-rm[0],bm[1]-rm[1]);
+    }
+    function placeNext(local,base,side){return alignToBase(local,base,side);}
+    function reflowDependents(baseId){
+      // যে ক্ষেত্রগুলো এই ক্ষেত্রের ওপর SNAP হয়ে আছে, তাদের নতুন অবস্থানও ধারাবাহিকভাবে ঠিক করি।
+      const walk=(parentId)=>{
+        saved.forEach(f=>{
+          if(String(f.baseId)!==String(parentId))return;
+          const base=saved.find(x=>String(x.id)===String(parentId));
+          if(!base)return;
+          const side=f.side||'east';
+          f.pts=alignToBase(f.pts,base.pts,side);
+          f.area=area(f.pts);
+          walk(f.id);
+        });
+      };
+      if(baseId!=null)walk(baseId);
+    }
+    function fitAll(all,w,h,pad=65){const pts=all.flatMap(f=>f.pts||[]);if(!pts.length)return {scale:1,ox:w/2,oy:h/2};const bb=bbox(pts),sc=Math.min((w-2*pad)/Math.max(1,bb.maxX-bb.minX),(h-2*pad)/Math.max(1,bb.maxY-bb.minY));return {scale:sc,ox:pad-bb.minX*sc,oy:h-pad+bb.minY*sc}}
+    function applyView(pt,w,h){const cx=w/2,cy=h/2;return [cx+(pt[0]-cx)*view.zoom+view.panX,cy+(pt[1]-cy)*view.zoom+view.panY]}
+    function invertView(pt,w,h){const cx=w/2,cy=h/2;return [cx+(pt[0]-cx-view.panX)/view.zoom,cy+(pt[1]-cy-view.panY)/view.zoom]}
+    function screenPoint(p,tr,h,w=multi.width){return applyView([tr.ox+p[0]*tr.scale,h-(tr.oy+p[1]*tr.scale)],w,h)}
+    function worldPoint(sx,sy,tr,h){const q=invertView([sx,sy],multi.width,h);return [(q[0]-tr.ox)/tr.scale,(h-q[1]-tr.oy)/tr.scale]}
+    function grid(c,w,h){c.clearRect(0,0,w,h);c.fillStyle='#fbfefe';c.fillRect(0,0,w,h);c.strokeStyle='#e5eff1';c.lineWidth=1;for(let x=0;x<w;x+=25){c.beginPath();c.moveTo(x,0);c.lineTo(x,h);c.stroke()}for(let y=0;y<h;y+=25){c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke()}c.fillStyle='#155b9d';c.font='bold 16px Arial';c.textAlign='center';c.fillText('↑ উত্তর',w/2,24);c.fillStyle='#176b49';c.textAlign='right';c.fillText('পূর্ব →',w-14,h/2);c.fillStyle='#a64a2b';c.textAlign='center';c.fillText('↓ দক্ষিণ',w/2,h-10);c.fillStyle='#60459b';c.textAlign='left';c.fillText('← পশ্চিম',14,h/2)}
+    function drawField(c,pts,v,name,tr,offset=0,alpha=.14,selected=false){
+      const mp=pts.map(p=>screenPoint(p,tr,c.canvas.height,c.canvas.width));
+      c.beginPath();c.moveTo(mp[0][0],mp[0][1]);mp.slice(1).forEach(p=>c.lineTo(p[0],p[1]));c.closePath();
+      c.fillStyle=offset?'rgba(8,116,123,'+alpha+')':'rgba(239,125,34,.18)';c.fill();
+      c.strokeStyle=offset?'#08747b':'#ef7d22';c.lineWidth=selected?4:(offset?2.5:3);c.stroke();
+      c.fillStyle='#082336';c.font='bold 15px Arial';c.textAlign='center';
+      mp.forEach((p,i)=>c.fillText(names[i],p[0],p[1]-10));
+      const cx=mp.reduce((s,p)=>s+p[0],0)/mp.length,cy=mp.reduce((s,p)=>s+p[1],0)/mp.length;
+      for(let i=0;i<mp.length;i++){
+        const j=(i+1)%mp.length,ax=mp[i][0],ay=mp[i][1],bx=mp[j][0],by=mp[j][1];
+        const mx=(ax+bx)/2,my=(ay+by)/2;
+        // মাপের লেখা সবসময় ক্ষেত্রের ভেতরে, সংশ্লিষ্ট লাইনের পাশে থাকবে এবং লাইনের দিকেই সোজা থাকবে।
+        let ix=cx-mx,iy=cy-my,ilen=Math.hypot(ix,iy)||1; const gap=22;
+        let lx=mx+ix/ilen*gap,ly=my+iy/ilen*gap;
+        let ang=Math.atan2(by-ay,bx-ax);
+        // লেখা উল্টো/মাথা নিচে না দেখিয়ে পাঠযোগ্য রাখি।
+        if(ang>Math.PI/2)ang-=Math.PI;
+        if(ang<-Math.PI/2)ang+=Math.PI;
+        const dimText=labels[i]+' • '+ftInText(v[i]);
+        c.save();
+        c.translate(lx,ly);
+        c.rotate(ang);
+        c.font='bold 18px Arial';
+        const tw=c.measureText(dimText).width+18;
+        c.fillStyle='rgba(255,255,255,.96)';
+        c.fillRect(-tw/2,-16,tw,32);
+        c.fillStyle='#183b49';c.textAlign='center';c.fillText(dimText,0,6);
+        c.restore();
+      }
+      c.fillStyle='#31515b';c.font='bold 13px Arial';c.fillText(name||'বর্তমান ক্ষেত্র',cx,cy);
+      if(selected&&editMode){mp.forEach((p,i)=>{c.beginPath();c.arc(p[0],p[1],8,0,Math.PI*2);c.fillStyle='#fff';c.fill();c.strokeStyle='#ef7d22';c.lineWidth=3;c.stroke()})}
+    }
+    function localFromDims(v){const n=v.filter(x=>x>0).length;return n===3?triPoints(v.slice(0,3)):n===4?quadPoints(v):null}
+    function renderMain(){const v=dims(),pts=localFromDims(v);syncHidden(v);grid(mctx,main.width,main.height);if(pts){const tr=fitAll([{pts}],main.width,main.height);drawField(mctx,pts,v,v.filter(x=>x>0).length===3?'৩ বাহুর বর্তমান ক্ষেত্র':'৪ বাহুর বর্তমান ক্ষেত্র',tr,0,.18,true);const sf=area(pts);$('shapeStatus').textContent='SNAP ON: সব ক্ষেত্র একই ফুট–ইঞ্চি একক ও একই স্কেলে তৈরি হচ্ছে।';$('shapeResult').innerHTML='<div class="multi-field-kpis"><div class="multi-field-kpi"><strong>'+bn(sf)+' বর্গফুট</strong><span>আনুমানিক ক্ষেত্রফল</span></div><div class="multi-field-kpi"><strong>'+bn(sf/435.6)+' শতাংশ</strong><span>ডেসিমেল</span></div><div class="multi-field-kpi"><strong>'+bn(sf/10.7639104167)+' বর্গমিটার</strong><span>বর্গমিটার</span></div></div>'}else{$('shapeStatus').textContent=v.filter(x=>x>0).length<3?'কমপক্ষে ৩টি বাহুর মাপ দিন।':'এই মাপ দিয়ে বৈধ আনুমানিক ক্ষেত্র তৈরি করা যাচ্ছে না।';$('shapeResult').innerHTML=''}}
+    function ensureCurrentFromInputs(){const v=dims(),local=localFromDims(v);if(!local)return null;if(selectedId){const f=saved.find(x=>x.id===selectedId);if(f){const oldC=centroid(f.pts),newC=centroid(local);current={...f,pts:translate(local,oldC[0]-newC[0],oldC[1]-newC[1]),v,area:area(local)};return current}}let base=null,side=$('mfSide')?.value||'east';const baseVal=$('mfBaseField')?.value||'__first__';if(baseVal!=='__first__')base=saved.find(f=>String(f.id)===String(baseVal));const pts=base?placeNext(local,base.pts,side):translate(local,-centroid(local)[0],-centroid(local)[1]);current={id:null,name:'নতুন ক্ষেত্র',v,pts,area:area(local),baseId:base?.id||null,side};return current}
+    function drawAll(){grid(ctx,multi.width,multi.height);const all=saved.map((f,i)=>({...f,_i:i}));if(current&&!selectedId)all.push(current);let tr=lockedTr;
+      if(!tr){tr=fitAll(all,multi.width,multi.height);}
+      saved.forEach((f,i)=>drawField(ctx,f.pts,f.v,f.name||('ক্ষেত্র '+(i+1)),tr,i+1,.09,String(f.id)===String(selectedId)));
+      if(current&&!selectedId)drawField(ctx,current.pts,current.v,'নতুন ক্ষেত্র',tr,0,.18,true)}
+    function persist(){localStorage.setItem(STORAGE,JSON.stringify(saved))}
+    function renderList(){const listEl=$('mfSavedList');$('mfSavedCount').textContent=bn(saved.length)+'টি';const total=saved.reduce((s,f)=>s+Number(f.area||0),0);$('mfSavedTotal').innerHTML=saved.length?'মোট সেভ করা ক্ষেত্র: <strong>'+bn(total)+' বর্গফুট</strong> • <strong>'+bn(total/435.6)+' শতাংশ</strong>':'';listEl.innerHTML=saved.length?saved.map((f,i)=>'<div class="multi-field-item"><div class="multi-field-item-main"><strong>'+esc(f.name||('ক্ষেত্র '+(i+1)))+'</strong><span>'+f.v.map((x,j)=>labels[j]+': '+bn(x)+' ft').join(' • ')+' • '+bn(f.area)+' বর্গফুট</span></div><div class="multi-field-item-actions"><button type="button" data-load="'+f.id+'">লোড / এডিট</button><button type="button" class="danger" data-del="'+f.id+'">মুছুন</button></div></div>').join(''):'<div class="small-note">এখনও কোনো ক্ষেত্র সেভ করা হয়নি।</div>';listEl.querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>load(Number(b.dataset.load)));listEl.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(Number(b.dataset.del)));updateBaseOptions();drawAll()}
+    function updateBaseOptions(){const sel=$('mfBaseField'),old=sel.value;sel.innerHTML='<option value="__first__">প্রথম ক্ষেত্র / নতুন শুরু</option>'+saved.map((f,i)=>'<option value="'+f.id+'">'+esc(f.name||('ক্ষেত্র '+(i+1)))+'</option>').join('');if([...sel.options].some(o=>o.value===old))sel.value=old;}
+    function save(){
+      const r=selectedId?saved.find(x=>String(x.id)===String(selectedId)):ensureCurrentFromInputs();
+      if(!r){$('shapeStatus').textContent='বৈধ ৩/৪ বাহুর মাপ দিন।';return}
+      const name=prompt('এই ক্ষেত্রের নাম লিখুন:',r.name&&r.name!=='নতুন ক্ষেত্র'?r.name:'ক্ষেত্র '+(saved.length+1));
+      if(name===null)return;
+      const item={id:selectedId||Date.now(),name:name.trim()||('ক্ষেত্র '+(saved.length+1)),v:r.v.map(Number),pts:r.pts.map(p=>[...p]),area:area(r.pts),baseId:r.baseId||null,side:r.side||null};
+      const idx=saved.findIndex(x=>String(x.id)===String(item.id));
+      if(idx>=0)saved[idx]=item;else saved.push(item);
+      selectedId=item.id;current=null;editMode=true;persist();
+      $('shapePointEdit').textContent='✋ পয়েন্ট এডিট: ON';
+      $('shapeStatus').textContent='“'+item.name+'” আপডেট করে সেভ হয়েছে। ফুট–ইঞ্চির ইনপুট পরিবর্তন করলে আবারও আপডেট করা যাবে।';
+      renderList();
+    }
+    function load(id){
+      const f=saved.find(x=>String(x.id)===String(id));
+      if(!f)return;
+      // এডিট শুরু হওয়ার আগের পুরো দৃশ্যের স্কেল/অফসেট ধরে রাখি।
+      lockedTr=fitAll(saved,multi.width,multi.height);
+      selectedId=f.id;
+      current={...f,pts:f.pts.map(p=>[...p]),v:f.v.map(Number)};
+      setInputs(current.v);
+      editMode=true;
+      $('shapePointEdit').textContent='✋ পয়েন্ট এডিট: ON';
+      $('mfBaseField').value='__first__';
+      $('mfPlacementStatus').textContent='“'+f.name+'” এডিট মোডে। উপরের ফুট–ইঞ্চি ঘরে সরাসরি মাপ পরিবর্তন করুন; তারপর “ক্ষেত্র সেভ করুন” চাপুন।';
+      $('shapeStatus').textContent='“'+f.name+'” এডিট হচ্ছে — ফুট ও ইঞ্চি পরিবর্তন করলে স্কেচ ও ক্ষেত্রফল সঙ্গে সঙ্গে আপডেট হবে।';
+      renderMain();drawAll();
+    }
+    function del(id){saved=saved.filter(x=>String(x.id)!==String(id));if(String(selectedId)===String(id)){selectedId=null;current=null;lockedTr=null;setInputs([0,0,0,0])}persist();renderList();renderMain()}
+    function newField(){view={zoom:1,panX:0,panY:0};pinch=null;lockedTr=null;selectedId=null;current=null;editMode=false;$('shapePointEdit').textContent='✋ পয়েন্ট এডিট: OFF';setInputs([0,0,0,0]);$('shapeResult').innerHTML='';const n=saved.length+1;$('shapeStatus').textContent=n===1?'প্রথম ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন।':'আগে নির্বাচন করুন: কোন ক্ষেত্রের উত্তর/দক্ষিণ/পূর্ব/পশ্চিম পাশে নতুন ক্ষেত্রটি হবে।';$('mfPlacementStatus').textContent=n===1?'প্রথম ক্ষেত্র তৈরি হবে।':'নতুন ক্ষেত্রের আগে “কোন ক্ষেত্রের পাশে” এবং “কোন পাশে” নির্বাচন করুন।';drawAll()}
+    function clear(){view={zoom:1,panX:0,panY:0};pinch=null;lockedTr=null;selectedId=null;current=null;editMode=false;$('shapePointEdit').textContent='✋ পয়েন্ট এডিট: OFF';setInputs([0,0,0,0]);$('shapeResult').innerHTML='';$('shapeStatus').textContent='মাপ পরিষ্কার করা হয়েছে।';drawAll()}
+    function updateCurrent(){
+      const v=dims();
+      const local=localFromDims(v);
+      if(selectedId){
+        const f=saved.find(x=>String(x.id)===String(selectedId));
+        if(f&&local){
+          const c=centroid(f.pts),lc=centroid(local);
+          f.v=v.slice();
+          f.pts=translate(local,c[0]-lc[0],c[1]-lc[1]);
+          f.area=area(f.pts);
+          // এই ক্ষেত্রটি অন্য কোনো ক্ষেত্রের সঙ্গে যুক্ত থাকলে তার নিজের ALIGNMENT অক্ষুণ্ণ রাখি।
+          if(f.baseId!=null){
+            const base=saved.find(x=>String(x.id)===String(f.baseId));
+            if(base) f.pts=alignToBase(f.pts,base.pts,f.side||'east');
+          }
+          // বর্তমান ক্ষেত্র বড়/ছোট হলে এর সঙ্গে যুক্ত পরের ক্ষেত্রগুলোও নতুন edge-এ সঙ্গে সঙ্গে বসবে।
+          reflowDependents(f.id);
+          current={...f,pts:f.pts.map(p=>[...p]),v:f.v.slice()};
+          persist();
+          $('shapeStatus').textContent='এডিট চলছে — ফুট–ইঞ্চির নতুন মাপ স্কেচে প্রয়োগ হয়েছে। “ক্ষেত্র সেভ করুন” চাপলে স্থায়ীভাবে সংরক্ষণ হবে।';
+        }
+      }else{
+        current=ensureCurrentFromInputs();
+      }
+      renderMain();drawAll();
+    }
+    ['A','B','C','D'].forEach(x=>['ft','in'].forEach(u=>$( 'shape'+x+u)?.addEventListener('input',()=>{if(!silentInputs)updateCurrent()})));
+    $('shapeNew')?.addEventListener('click',newField);
+    $('shapeSave')?.addEventListener('click',save);
+    $('shapeClear')?.addEventListener('click',clear);
+    $('shapePointEdit')?.addEventListener('click',()=>{
+      editMode=!editMode;
+      $('shapePointEdit').textContent='✋ পয়েন্ট এডিট: '+(editMode?'ON':'OFF');
+      $('mfPlacementStatus').textContent=editMode
+        ?'পয়েন্ট এডিট চালু: বর্তমান ক্ষেত্রের A/B/C/D পয়েন্ট ধরে টানুন। ফুট–ইঞ্চি দিয়েও সরাসরি মাপ পরিবর্তন করা যাবে।'
+        :'পয়েন্ট এডিট বন্ধ। ফুট–ইঞ্চি দিয়ে মাপ পরিবর্তন করুন।';
+      drawAll();
     });
-  }
-  ['shapeA','shapeB','shapeC','shapeD'].forEach(id => $(id)?.addEventListener('input',drawShape));
-  drawShape();
+    $('mfBaseField')?.addEventListener('change',()=>{if(!selectedId){$('mfPlacementStatus').textContent=$('mfBaseField').value==='__first__'?'প্রথম ক্ষেত্র হিসেবে তৈরি হবে।':'নির্বাচিত ক্ষেত্রের কোন পাশে বসবে তা “কোন পাশে?” থেকে নির্বাচন করুন।';updateCurrent()}});
+    $('mfSide')?.addEventListener('change',()=>{if(!selectedId)updateCurrent()});
+    const dist=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+    function canvasXY(e){const r=multi.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]}
+    multi.addEventListener('pointerdown',e=>{
+      if(e.pointerType==='touch'){
+        if(!pinch){pinch={ids:{},startDist:0,startZoom:view.zoom,startCenter:null,startPanX:view.panX,startPanY:view.panY,startSingle:null};}
+        pinch.ids[e.pointerId]=e;
+        const ids=Object.keys(pinch.ids);
+        if(ids.length===2){
+          const a=pinch.ids[ids[0]],b=pinch.ids[ids[1]],r=multi.getBoundingClientRect();
+          pinch.startDist=dist(a,b);pinch.startZoom=view.zoom;
+          pinch.startCenter=[(a.clientX+b.clientX)/2-r.left,(a.clientY+b.clientY)/2-r.top];
+          pinch.startPanX=view.panX;pinch.startPanY=view.panY;dragIndex=-1;
+          return;
+        }
+        if(ids.length===1 && editMode){
+          const [sx,sy]=canvasXY(e);
+          const all=saved.map(f=>f);if(current&&!selectedId)all.push(current);
+          const tr=fitAll(all,multi.width,multi.height);
+          const target=selectedId?saved.find(f=>String(f.id)===String(selectedId)):current;
+          if(target){let best=-1,bd=24;target.pts.forEach((p,i)=>{const q=screenPoint(p,tr,multi.height,multi.width),d=Math.hypot(q[0]-sx,q[1]-sy);if(d<bd){bd=d;best=i}});
+            if(best>=0){dragIndex=best;pinch.startSingle=e;multi.setPointerCapture(e.pointerId);}
+          }
+        }
+        return;
+      }
+      if(!editMode)return;
+      const [sx,sy]=canvasXY(e);const all=saved.map(f=>f);if(current&&!selectedId)all.push(current);const tr=fitAll(all,multi.width,multi.height);let target=selectedId?saved.find(f=>String(f.id)===String(selectedId)):current;if(!target)return;let best=-1,bd=18;target.pts.forEach((p,i)=>{const q=screenPoint(p,tr,multi.height,multi.width),d=Math.hypot(q[0]-sx,q[1]-sy);if(d<bd){bd=d;best=i}});if(best<0)return;dragIndex=best;multi.setPointerCapture(e.pointerId);
+    });
+    multi.addEventListener('pointermove',e=>{
+      if(e.pointerType==='touch' && pinch && pinch.ids[e.pointerId]){
+        pinch.ids[e.pointerId]=e;const ids=Object.keys(pinch.ids);
+        if(ids.length===2){
+          const a=pinch.ids[ids[0]],b=pinch.ids[ids[1]],r=multi.getBoundingClientRect(),d=Math.max(20,dist(a,b)),ratio=d/pinch.startDist;
+          view.zoom=Math.min(3,Math.max(.55,pinch.startZoom*ratio));
+          const c=[(a.clientX+b.clientX)/2-r.left,(a.clientY+b.clientY)/2-r.top];
+          view.panX=pinch.startPanX+(c[0]-pinch.startCenter[0]);view.panY=pinch.startPanY+(c[1]-pinch.startCenter[1]);drawAll();
+        }else if(ids.length===1 && dragIndex>=0 && editMode){
+          const [sx,sy]=canvasXY(e);const all=saved.map(f=>f);if(current&&!selectedId)all.push(current);
+          const tr=fitAll(all,multi.width,multi.height);const target=selectedId?saved.find(f=>String(f.id)===String(selectedId)):current;if(!target)return;
+          target.pts[dragIndex]=worldPoint(sx,sy,tr,multi.height);target.v=sideLengths(target.pts).map(x=>Math.round(x*12)/12);target.area=area(target.pts);
+          reflowDependents(target.id);
+          setInputs(target.v);syncHidden(target.v);
+          $('shapeStatus').textContent='পয়েন্ট এডিট করা হচ্ছে — ফুট/ইঞ্চির মাপও আপডেট হয়েছে; যুক্ত ক্ষেত্রগুলোর ALIGNMENT-ও বজায় আছে।';renderMain();drawAll();
+        }
+        return;
+      }
+      if(dragIndex<0)return;const [sx,sy]=canvasXY(e);const all=saved.map(f=>f);if(current&&!selectedId)all.push(current);const tr=fitAll(all,multi.width,multi.height);let target=selectedId?saved.find(f=>String(f.id)===String(selectedId)):current;if(!target)return;target.pts[dragIndex]=worldPoint(sx,sy,tr,multi.height);target.v=sideLengths(target.pts).map(x=>Math.round(x*12)/12);target.area=area(target.pts);reflowDependents(target.id);setInputs(target.v);syncHidden(target.v);$('shapeStatus').textContent='পয়েন্ট এডিট করা হচ্ছে — ফুট/ইঞ্চির মাপও আপডেট হয়েছে; যুক্ত ক্ষেত্রগুলোর ALIGNMENT-ও বজায় আছে।';renderMain();drawAll();
+    });
+    multi.addEventListener('pointerup',e=>{
+      if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2){pinch=null;}return;}
+      if(dragIndex>=0){dragIndex=-1;if(selectedId){const f=saved.find(x=>String(x.id)===String(selectedId));if(f){f.v=sideLengths(f.pts);f.area=area(f.pts);persist();renderList()}}}
+    });
+    multi.addEventListener('pointercancel',e=>{if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2)pinch=null;}dragIndex=-1;});
+    // SNAP ON: প্রথম ক্ষেত্র দেখাবে, কিন্তু দ্বিতীয়/তৃতীয় ক্ষেত্র তৈরি করার আগে পাশ নির্বাচন বাধ্যতামূলক।
+    setInputs(saved[0]?.v||[50,80,55,85]); if(saved[0]){selectedId=saved[0].id;current=null}else{selectedId=null;current=null} updateBaseOptions(); renderMain(); renderList();
+  })();
 
   // -------- Leaflet map + polygon area --------
   let map, poly, markers=[];
