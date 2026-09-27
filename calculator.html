@@ -174,8 +174,8 @@
 
 <style id="professional-featured-calculators">
 .featured-calcs{margin:0 0 30px;display:grid;gap:18px}
-.featured-head{padding:22px 22px 16px;border-radius:22px;background:linear-gradient(135deg,#082336,#08747b);color:#fff;box-shadow:0 16px 38px rgba(8,35,54,.16)}
-.featured-head h2{margin:0 0 6px;font-size:clamp(25px,4vw,34px);font-weight:950}.featured-head p{margin:0;color:#dff5f6;line-height:1.7;font-size:14px}
+.featured-head{position:relative;overflow:hidden;padding:24px 22px 18px;border-radius:22px;background:linear-gradient(135deg,#082336,#08747b);color:#fff;box-shadow:0 16px 38px rgba(8,35,54,.16)}
+.calc-title-kicker{display:inline-flex;align-items:center;gap:7px;margin-bottom:7px;padding:6px 11px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.10);color:#dff5f6;font-size:12px;font-weight:900;letter-spacing:.7px}.featured-head h2{margin:0 0 6px;font-size:clamp(25px,4vw,34px);font-weight:950}.featured-head p{margin:0;color:#dff5f6;line-height:1.7;font-size:14px}
 .featured-card{display:grid;grid-template-columns:104px minmax(0,1fr) auto;gap:18px;align-items:center;padding:18px;border:1px solid #d7e5e8;border-radius:22px;background:linear-gradient(145deg,#fff,#f7fbfc);box-shadow:0 12px 30px rgba(8,35,54,.08);cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;text-align:left}
 .featured-card:hover{transform:translateY(-2px);box-shadow:0 17px 35px rgba(8,35,54,.13);border-color:#a7cfd3}.featured-icon{width:104px;height:104px;border-radius:20px;display:grid;place-items:center;background:#edf8f8;border:1px solid #cde6e8}.featured-icon svg{width:84px;height:84px}.featured-card h3{margin:0 0 5px;color:#082336;font-size:21px;font-weight:950}.featured-card p{margin:0;color:#60757e;font-size:13px;line-height:1.65}.featured-go{width:44px;height:44px;border:0;border-radius:50%;background:#08747b;color:#fff;font-size:23px;font-weight:900}.featured-card:focus-visible{outline:3px solid rgba(8,116,123,.25);outline-offset:3px}
 .featured-panel{margin:0 0 22px;border:1px solid #d7e5e8;border-radius:22px;background:#fff;box-shadow:0 16px 38px rgba(8,35,54,.09);overflow:hidden}.featured-panel-head{padding:20px 22px;background:linear-gradient(135deg,#eef9f9,#fff);border-bottom:1px solid #dcebed}.featured-panel-head h3{margin:0;color:#082336;font-size:23px;font-weight:950}.featured-panel-head p{margin:6px 0 0;color:#63777f;font-size:13px;line-height:1.65}.featured-panel-body{padding:22px}.featured-panel .calc-grid{margin-top:14px}.featured-panel .calc-result{margin-top:20px}.share-symbol{font-family:"Noto Sans Bengali","Hind Siliguri",sans-serif;font-size:24px;font-weight:900}.angle-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}.angle-box{padding:12px;border-radius:13px;background:#fff;border:1px solid #dbe7ea;text-align:center}.angle-box strong{display:block;font-size:21px;color:#08747b}.angle-box span{font-size:12px;color:#667a82}
@@ -291,7 +291,8 @@
 
 <section class="featured-calcs" aria-labelledby="featured-calc-title">
   <div class="featured-head">
-    <h2 id="featured-calc-title">⭐ নতুন প্রফেশনাল ভূমি ক্যালকুলেটর</h2>
+    <div class="calc-title-kicker">🧮 PROFESSIONAL LAND CALCULATOR</div>
+    <h2 id="featured-calc-title">ভূমি ক্যালকুলেটর</h2>
     <p>আপনার দেওয়া নমুনাগুলোর ধারণা অনুসারে বড় আইকন, পরিষ্কার বাংলা লেখা এবং এক-কলাম মোবাইল-ফ্রেন্ডলি বিন্যাসে সাজানো হয়েছে। প্রতিটি টুল সূত্রভিত্তিক ফলাফল দেখায় এবং ভুল ইনপুট হলে সতর্ক করে।</p>
   </div>
   <button class="featured-card" type="button" data-feature-target="featured-hissa">
