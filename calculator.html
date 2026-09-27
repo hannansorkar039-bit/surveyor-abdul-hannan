@@ -473,7 +473,7 @@
 <div class="calc-field" id="shapeDWrap"><label for="shapeDft"><span class="direction-badge west">পশ্চিম</span> বাহু DA</label><div class="feet-inch"><input id="shapeDft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeDin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি"></div><input id="shapeD" type="hidden"></div>
 </div>
 <div class="shape-unit-note">ইঞ্চি ০–১১.৯৯৯ পর্যন্ত দিন। ১২ ইঞ্চি হলে স্বয়ংক্রিয়ভাবে ১ ফুটে রূপান্তর হবে। <strong>ত্রিভুজে ৩টি বাহু, চতুর্ভুজে ৪টি বাহু</strong> দিন। নতুন ক্ষেত্রটি আগের SNAP/দুই-পাশের boundary assignment/অ্যালাইনমেন্ট মেনে যুক্ত হবে। <strong>ম্যানুয়ালি ড্র্যাগ করেও অ্যালাইন করা যাবে; কাছে এলে SNAP অটো-অ্যাডজাস্ট হবে।</strong></div>
-<div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="shapeNew">＋ নতুন ক্ষেত্র</button><button class="calc-btn calc-secondary" type="button" id="shapeSave">💾 ক্ষেত্র সেভ করুন</button><button class="calc-btn calc-secondary" type="button" id="shapePointEdit">✋ পয়েন্ট এডিট: OFF</button><button class="calc-btn calc-secondary" type="button" id="shapeClear">↶ মাপ পরিষ্কার</button></div>
+<div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="shapeNew">＋ নতুন ক্ষেত্র</button><button class="calc-btn calc-secondary" type="button" id="shapeSave">💾 ক্ষেত্র সেভ করুন</button><button class="calc-btn calc-secondary" type="button" id="shapePdf">📄 PDF ডাউনলোড</button><button class="calc-btn calc-secondary" type="button" id="shapePointEdit">✋ পয়েন্ট এডিট: OFF</button><button class="calc-btn calc-secondary" type="button" id="shapeClear">↶ মাপ পরিষ্কার</button></div>
 <div class="multi-field-status" id="shapeStatus" role="status">প্রথম ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন। নতুন ক্ষেত্রের ক্ষেত্রে আগে পাশ নির্বাচন করে তারপর বাহুর মাপ দিন।</div>
 <div class="multi-field-result" id="shapeResult" aria-live="polite"></div>
 <div class="multi-field-compass" aria-label="দিকনির্দেশ"><span class="compass-n">↑ উত্তর • AB</span><span class="compass-e">পূর্ব → BC</span><span class="compass-s">↓ দক্ষিণ • CD</span><span class="compass-w">← পশ্চিম • DA</span></div>
@@ -1693,6 +1693,39 @@
     function persist(){localStorage.setItem(STORAGE,JSON.stringify(saved))}
     function renderList(){const listEl=$('mfSavedList');$('mfSavedCount').textContent=bn(saved.length)+'টি';const total=saved.reduce((s,f)=>s+Number(f.area||0),0);$('mfSavedTotal').innerHTML=saved.length?'মোট সেভ করা ক্ষেত্র: <strong>'+bn(total)+' বর্গফুট</strong> • <strong>'+bn(total/435.6)+' শতাংশ</strong>':'';listEl.innerHTML=saved.length?saved.map((f,i)=>'<div class="multi-field-item"><div class="multi-field-item-main"><strong>'+esc(f.name||('ক্ষেত্র '+(i+1)))+'</strong><span>'+f.v.slice(0,shapeTypeOf(f)==='tri'?3:4).map((x,j)=>(shapeTypeOf(f)==='tri'?['AB','BC','CA'][j]:labels[j])+': '+bn(x)+' ft').join(' • ')+' • '+bn(f.area)+' বর্গফুট</span></div><div class="multi-field-item-actions"><button type="button" data-load="'+f.id+'">লোড / এডিট</button><button type="button" class="danger" data-del="'+f.id+'">মুছুন</button></div></div>').join(''):'<div class="small-note">এখনও কোনো ক্ষেত্র সেভ করা হয়নি।</div>';listEl.querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>load(Number(b.dataset.load)));listEl.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(Number(b.dataset.del)));updateBaseOptions();drawAll()}
     function updateBaseOptions(){const sel=$('mfBaseField'),old=sel.value;sel.innerHTML='<option value="__first__">প্রথম ক্ষেত্র / নতুন শুরু</option>'+saved.map((f,i)=>'<option value="'+f.id+'">'+esc(f.name||('ক্ষেত্র '+(i+1)))+'</option>').join('');if([...sel.options].some(o=>o.value===old))sel.value=old;}
+    function downloadMultiFieldPDF(){
+      const list=saved.slice();
+      if(!list.length && !current){
+        $('shapeStatus').textContent='PDF তৈরি করতে অন্তত একটি ক্ষেত্র আঁকুন বা সেভ করুন।';
+        return;
+      }
+      if(!(window.jspdf&&window.jspdf.jsPDF)){
+        $('shapeStatus').textContent='PDF লাইব্রেরি লোড হয়নি। ইন্টারনেট সংযোগ চালু করে আবার চেষ্টা করুন।';
+        return;
+      }
+      // PDF-তে যে দৃশ্যটি দেখা যাচ্ছে সেটিই নেওয়া হবে—অর্থাৎ saved + unsaved current field দুটিই থাকবে।
+      drawAll();
+      const doc=new window.jspdf.jsPDF({unit:'mm',format:'a4',orientation:'portrait',compress:true});
+      const pageW=210,pageH=297,margin=10;
+      const title='Land Drawing & Alignment';
+      const now=new Date();
+      const stamp=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+      doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text(title,pageW/2,13,{align:'center'});
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text('Drawing & Alignment',pageW/2,18,{align:'center'});
+      const data=multi.toDataURL('image/png');
+      const imgW=pageW-margin*2;
+      const imgH=Math.min(220,imgW*(multi.height/multi.width));
+      const imgY=23;
+      doc.addImage(data,'PNG',margin,imgY,imgW,imgH,undefined,'FAST');
+      let y=imgY+imgH+9;
+      doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text('Fields: '+String(list.length+(current&&!selectedId?1:0)),margin,y);y+=6;
+      const total=(list.reduce((sum,f)=>sum+Number(f.area||0),0))+(current&&!selectedId?Number(current.area||area(current.pts)||0):0);
+      doc.setFont('helvetica','normal');doc.text('Total area (sq ft): '+total.toFixed(2),margin,y);y+=5;
+      doc.text('Generated: '+stamp,margin,y);y+=7;
+      doc.setFontSize(7);doc.text('This PDF is a drawing record; field measurement should be verified on site.',margin,y);
+      doc.save('multi-field-drawing-alignment.pdf');
+      $('shapeStatus').textContent='📄 বহু ক্ষেত্রের drawing ও alignment PDF হিসেবে ডাউনলোড হয়েছে।';
+    }
     function save(){
       const r=selectedId?saved.find(x=>String(x.id)===String(selectedId)):ensureCurrentFromInputs();
       if(!r){$('shapeStatus').textContent='বৈধ ৩/৪ বাহুর মাপ দিন।';return}
@@ -1769,6 +1802,7 @@
     $('mfQuadAttachEdge')?.addEventListener('change',()=>{if(selectedId){const f=saved.find(x=>String(x.id)===String(selectedId));if(f&&shapeTypeOf(f)!=='tri'){f.quadAttachEdge=Number($('mfQuadAttachEdge').value)||0;if(f.baseId!=null){const base=saved.find(x=>String(x.id)===String(f.baseId));if(base)f.pts=placeNext(f.pts,base.pts,f.side||'east',normalizedAttach(f),Number(f.triAttachEdge)||0,f.quadAttachEdge);}f.area=area(f.pts);reflowDependents(f.id);current={...f,pts:f.pts.map(p=>[...p]),v:f.v.slice()};persist();renderList();}}else updateCurrent();});
     $('shapeNew')?.addEventListener('click',newField);
     $('shapeSave')?.addEventListener('click',save);
+    $('shapePdf')?.addEventListener('click',downloadMultiFieldPDF);
     $('shapeClear')?.addEventListener('click',clear);
     $('shapePointEdit')?.addEventListener('click',()=>{
       editMode=!editMode;
