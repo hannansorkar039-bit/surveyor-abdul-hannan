@@ -104,6 +104,15 @@
 @media(max-width:850px){.registry-upgrade .registry-grid{grid-template-columns:1fr}.registry-upgrade .registry-summary{position:static}}
 @media(max-width:620px){.registry-upgrade .registry-card{padding:16px}.registry-upgrade #landShapeCanvas{height:260px}.registry-upgrade #registryMap{height:300px}}
 
+
+/* ===== Requested title emphasis — titles only ===== */
+.formula-suite-title{font-size:clamp(24px,3.6vw,36px);font-weight:950;letter-spacing:.1px;padding:21px 22px;border-radius:20px;box-shadow:0 16px 36px rgba(8,35,54,.22),0 0 0 2px rgba(255,255,255,.08) inset;text-shadow:0 2px 10px rgba(0,0,0,.22)}
+.formula-suite-title span{font-size:1.05em;margin-right:9px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+.registry-title{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 18px;padding:18px 22px;border-radius:20px;background:linear-gradient(135deg,#082336 0%,#08747b 58%,#0b8b91 100%);color:#fff;border:1px solid rgba(217,164,65,.72);box-shadow:0 14px 32px rgba(8,35,54,.20),0 0 0 2px rgba(255,255,255,.06) inset;font-size:clamp(23px,3.3vw,34px);font-weight:950;letter-spacing:.1px;text-align:center;text-shadow:0 2px 10px rgba(0,0,0,.22);overflow:hidden}
+.registry-title:after{content:"";position:absolute;left:8%;right:8%;bottom:7px;height:3px;border-radius:999px;background:rgba(255,255,255,.22);pointer-events:none}
+.registry-title-icon{font-size:1.05em;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+@media(max-width:620px){.formula-suite-title{font-size:clamp(24px,7vw,32px) !important;padding:19px 14px}.registry-title{font-size:clamp(21px,6vw,29px);padding:17px 14px;gap:7px}}
+
 /* ===== Professional Land Calculator UI v2 — calculator page only ===== */
 :root{--calc-deep:#082336;--calc-teal:#08747b;--calc-teal-2:#0b8b91;--calc-orange:#ef7d22;--calc-soft:#f4fafb;--calc-line:#d8e6ea;--calc-shadow:0 18px 45px rgba(8,35,54,.10)}
 .calc-wrap{max-width:1120px}
@@ -151,6 +160,14 @@
 .inherit-hero{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:22px;border-radius:18px;background:linear-gradient(135deg,#082336,#08747b);color:#fff;margin-bottom:14px;box-shadow:0 14px 35px rgba(8,35,54,.16)}
 .inherit-hero h3{margin:7px 0 4px;font-size:25px;color:#fff}.inherit-hero p{margin:0;color:rgba(255,255,255,.86);font-size:14px}.inherit-badge{display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.14);font-size:12px;font-weight:900}.inherit-mark{text-align:center;min-width:92px;font-size:22px;font-weight:900;line-height:1.1}.inherit-mark span{font-size:12px;color:#d9f5f4}.inherit-steps{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 18px;padding:10px;border:1px solid var(--line);border-radius:14px;background:#fff}.inherit-steps span{padding:7px 11px;border-radius:999px;background:#f1f6f7;color:#526872;font-size:12px}.inherit-steps span.active{background:#e6f7f6;color:#08747b}.inherit-steps i{font-style:normal;color:#a1b2b8}.inherit-card{margin-top:16px;padding:18px;border:1px solid #dbe7ea;border-radius:18px;background:linear-gradient(180deg,#fff,#fbfdfd);box-shadow:0 8px 22px rgba(8,35,54,.05)}.inherit-card-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.inherit-card-head span:first-child{color:#08747b;font-weight:900;font-size:13px}.inherit-card-head h4{margin:3px 0 0;color:var(--navy);font-size:20px}.mini-tip{font-size:11px;padding:6px 9px;border-radius:999px;background:#f1f6f7;color:#60737c}.heir-groups{display:grid;gap:14px;margin-top:14px}.heir-group{padding:14px;border:1px solid #e3ecee;border-radius:15px;background:#f9fbfb}.heir-group h5{margin:0 0 11px;color:#17313d;font-size:15px}.heir-group .heirs-grid{margin:0}.heir-field{position:relative;background:#fff;border:1px solid #d8e3e6;padding:11px;border-radius:13px;box-shadow:0 3px 10px rgba(8,35,54,.04)}.heir-field label{min-height:40px;display:flex;align-items:center}.heir-counter{display:grid;grid-template-columns:36px minmax(0,1fr) 36px;gap:7px;align-items:center}.heir-counter button{width:36px;height:36px;border:0;border-radius:10px;background:#8fe83b;color:#174b14;font-size:24px;font-weight:900;cursor:pointer;line-height:1}.heir-counter input{text-align:center;font-weight:900;font-size:17px;background:#fff;border:1px solid #ccdadd;border-radius:9px;min-height:36px;width:100%;box-sizing:border-box}.asset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:13px}.asset-box{padding:15px;border:1px solid #dbe7ea;border-radius:15px;background:#fff;text-align:center}.asset-icon{font-size:25px;margin-bottom:4px}.asset-box label{display:block;font-weight:900;color:var(--navy);margin-bottom:7px}.asset-box label small{font-weight:700;color:#70828a}.asset-box input{width:100%;box-sizing:border-box;text-align:center;border:1px solid #cbd8de;border-radius:10px;padding:10px;font:inherit;font-weight:800}.inherit-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}.inherit-primary{background:linear-gradient(135deg,#08747b,#0b9aa0);color:#fff;box-shadow:0 8px 18px rgba(8,116,123,.22)}.inherit-result{background:linear-gradient(180deg,#f5fbfb,#fff);border:1px solid #cde5e6}.result-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.result-kpi{padding:12px;border-radius:13px;background:#fff;border:1px solid #dbe7ea;text-align:center}.result-kpi strong{display:block;font-size:19px;color:#08747b}.result-kpi span{font-size:11px;color:#687b84}.method-box{margin-top:14px;padding:13px;border-radius:13px;background:#fff;border-left:4px solid #08747b}.method-box ul{margin:7px 0 0 18px;padding:0}
 @media(max-width:700px){.inherit-hero{align-items:flex-start}.inherit-mark{display:none}.asset-grid,.result-kpis{grid-template-columns:1fr}.inherit-steps i{display:none}.inherit-steps span{flex:1;text-align:center}.heir-field label{min-height:34px}}
+
+/* Requested visual/order update: formula + inheritance heading and option names */
+.formula-suite-title{position:relative;display:block;overflow:hidden;margin:24px 0 18px;padding:24px 22px;border-radius:20px;background:linear-gradient(135deg,#082336 0%,#08747b 52%,#0b9aa0 100%) !important;color:#fff !important;border:2px solid #d9a441;box-shadow:0 14px 34px rgba(8,35,54,.22),0 0 0 3px rgba(217,164,65,.10);font-size:clamp(28px,4vw,40px) !important;line-height:1.25;font-weight:950 !important;letter-spacing:-.2px;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.28)}
+.formula-suite-title:after{content:"";position:absolute;inset:auto -10% -18px;height:45px;background:rgba(255,255,255,.10);transform:rotate(-3deg);pointer-events:none}
+.formula-suite-title span{display:inline-flex;align-items:center;justify-content:center;margin-right:9px;font-size:1em;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+.calc-tabs .calc-tab{font-weight:900;border-width:1.5px;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+.calc-tabs .calc-tab:hover{transform:translateY(-1px);box-shadow:0 7px 16px rgba(8,35,54,.10)}
+.calc-tabs .calc-tab.active{box-shadow:0 8px 18px rgba(8,116,123,.16);font-weight:950}
 </style>
 
 <style id="professional-land-suite">
@@ -229,172 +246,7 @@
 </div>
 
 
-<section class="land-suite" id="professional-land-suite" aria-labelledby="land-suite-title">
-  <div class="land-suite-hero">
-    <div>
-      <span class="land-suite-badge">🧭 Professional Land Calculator Suite</span>
-      <h2 class="land-suite-title" id="land-suite-title">ভূমি হিসাব <span>এক জায়গায়</span></h2>
-      <p class="land-suite-sub">জমির ক্ষেত্রফল, একক রূপান্তর, দ্রুত হিসাব ও পূর্বের হিসাব—সবকিছু একটি পরিষ্কার ও মোবাইল-ফ্রেন্ডলি ইন্টারফেসে।</p>
-    </div>
-    <div class="land-suite-actions">
-      <button class="land-suite-btn" type="button" id="suitePrint">🖨️ ফলাফল প্রিন্ট</button>
-      <button class="land-suite-btn alt" type="button" id="suiteShare">↗️ শেয়ার</button>
-    </div>
-  </div>
-  <div class="land-suite-grid">
-    <div class="suite-card">
-      <h3>⚡ দ্রুত জমির পরিমাণ ও ভাগ</h3>
-      <p class="suite-help">মোট জমি ও নির্দিষ্ট ভাগের পরিমাণ লিখে দ্রুত শতাংশ/বর্গফুটের সমতুল্য দেখুন। সুনির্দিষ্ট সীমানার ফুট-ইঞ্চি পেতে নিচের “চতুর্ভুজ ভাগ-বণ্টন” মডিউল ব্যবহার করুন।</p>
-      <div class="suite-form">
-        <div class="suite-field"><label for="suiteLength">মোট জমি</label><input id="suiteLength" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 5"></div>
-        <div class="suite-field"><label for="suiteWidth">ভাগের পরিমাণ</label><input id="suiteWidth" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 2"></div>
-        <div class="suite-field"><label for="suiteUnit">বর্তমান একক</label><select id="suiteUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div>
-        <div class="suite-field"><label for="suiteDecimals">দশমিক</label><select id="suiteDecimals"><option value="2">২ ঘর</option><option value="4" selected>৪ ঘর</option><option value="6">৬ ঘর</option></select></div>
-      </div>
-      <div class="quick-tools"><button type="button" id="suiteCalc">ভাগ হিসাব করুন</button><button type="button" id="suiteClear">পরিষ্কার</button></div>
-      <div class="suite-result" id="suiteResult" aria-live="polite">মোট জমি ও ভাগের পরিমাণ দিলে ফলাফল এখানে দেখাবে।</div>
-    </div>
-    <div class="suite-card">
-      <h3>🔄 ভূমি একক রূপান্তর</h3>
-      <p class="suite-help">একটি এককে জমির পরিমাণ লিখলে অন্যান্য প্রচলিত এককে সমতুল্য পরিমাণ দেখাবে।</p>
-      <div class="suite-form">
-        <div class="suite-field"><label for="suiteArea">জমির পরিমাণ</label><input id="suiteArea" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 5"></div>
-        <div class="suite-field"><label for="suiteAreaUnit">বর্তমান একক</label><select id="suiteAreaUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="katha">কাঠা</option><option value="bigha">বিঘা</option><option value="acre">একর</option><option value="hectare">হেক্টর</option></select></div>
-      </div>
-      <div class="quick-tools"><button type="button" id="suiteConvert">রূপান্তর করুন</button><button type="button" id="suiteCopy" disabled>ফলাফল কপি</button></div>
-      <div class="suite-result" id="suiteConversionResult" aria-live="polite">জমির পরিমাণ দিলে রূপান্তরের ফলাফল এখানে দেখাবে।</div>
-      <p class="suite-note">রূপান্তরের মান: ১ শতাংশ/ডেসিমেল = ৪৩৫.৬ বর্গফুট; ১ কাঠা = ৭২০ বর্গফুট; ১ বিঘা = ১৪,৪০০ বর্গফুট; ১ একর = ৪৩,৫৬০ বর্গফুট।</p>
-    </div>
-    <div class="suite-card">
-      <h3>📌 দ্রুত রেফারেন্স</h3>
-      <p class="suite-help">জমির হিসাব করার সময় ব্যবহৃত গুরুত্বপূর্ণ রূপান্তরগুলো এক নজরে।</p>
-      <div class="unit-grid">
-        <div class="unit-pill"><b>১ শতাংশ</b><span>৪৩৫.৬ sq ft</span></div>
-        <div class="unit-pill"><b>১ কাঠা</b><span>৭২০ sq ft</span></div>
-        <div class="unit-pill"><b>১ বিঘা</b><span>১৪,৪০০ sq ft</span></div>
-        <div class="unit-pill"><b>১ একর</b><span>৪৩,৫৬০ sq ft</span></div>
-        <div class="unit-pill"><b>১ হেক্টর</b><span>১০৭,৬৩৯.১০৪ sq ft</span></div>
-        <div class="unit-pill"><b>১ sq m</b><span>১০.৭৬৩৯ sq ft</span></div>
-      </div>
-      <p class="suite-note">স্থানীয় রেকর্ড বা সরকারি জরিপে কোনো ভিন্ন মান নির্ধারিত থাকলে সেই নির্দিষ্ট মান অনুসরণ করুন।</p>
-    </div>
-    <div class="suite-card">
-      <h3>🕘 সাম্প্রতিক হিসাব</h3>
-      <p class="suite-help">এই ডিভাইসে করা সর্বশেষ কয়েকটি দ্রুত হিসাব এখানে থাকবে।</p>
-      <div class="history-list" id="suiteHistory"><div class="suite-note">এখনও কোনো হিসাব সংরক্ষিত নেই।</div></div>
-      <div class="quick-tools"><button type="button" id="suiteClearHistory">ইতিহাস মুছুন</button></div>
-    </div>
-  </div>
-</section>
-<div class="suite-toast" id="suiteToast" role="status" aria-live="polite"></div>
-
-
-<section class="featured-calcs" aria-labelledby="featured-calc-title">
-  <div class="featured-head">
-    <div class="calc-title-kicker">🧮 PROFESSIONAL LAND CALCULATOR</div>
-    <h2 id="featured-calc-title">ভূমি ক্যালকুলেটর</h2>
-    <p>আপনার দেওয়া নমুনাগুলোর ধারণা অনুসারে বড় আইকন, পরিষ্কার বাংলা লেখা এবং এক-কলাম মোবাইল-ফ্রেন্ডলি বিন্যাসে সাজানো হয়েছে। প্রতিটি টুল সূত্রভিত্তিক ফলাফল দেখায় এবং ভুল ইনপুট হলে সতর্ক করে।</p>
-  </div>
-  <button class="featured-card" type="button" data-feature-target="featured-hissa">
-    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="13" y="17" width="74" height="66" rx="6" fill="#0b8b91" stroke="#082336" stroke-width="3"/><path d="M23 67h54M23 52h54M23 37h54" stroke="#fff" stroke-width="4"/><circle cx="30" cy="26" r="4" fill="#d9a441"/><circle cx="50" cy="26" r="4" fill="#d9a441"/><circle cx="70" cy="26" r="4" fill="#d9a441"/></svg></span>
-    <span><h3>খতিয়ানের হিস্যা → জমির পরিমাণ</h3><p>আনা, গণ্ডা, কড়া, ক্রান্তি ও তিল লিখে মোট জমির মধ্যে আপনার প্রকৃত অংশ, শতাংশ, অযুতাংশ, বর্গফুট, কাঠা ও বিঘা দেখুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
-  </button>
-  <button class="featured-card" type="button" data-feature-target="featured-symbolic">
-    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="14" y="16" width="72" height="68" rx="8" fill="#f7fbfc" stroke="#082336" stroke-width="3"/><text x="50" y="50" text-anchor="middle" font-size="32" font-weight="900" fill="#08747b">৷৵</text><path d="M26 68h48" stroke="#d9a441" stroke-width="6" stroke-linecap="round"/></svg></span>
-    <span><h3>খতিয়ানের সাংকেতিক চিহ্ন → হিস্যা</h3><p>পুরোনো খতিয়ানের আনার সাংকেতিক চিহ্ন নির্বাচন করে গণ্ডা, কড়া, ক্রান্তি ও তিলসহ হিস্যা নির্ণয় করুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
-  </button>
-  <button class="featured-card" type="button" data-feature-target="featured-quad-angle">
-    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M16 25L73 18L86 75L25 84Z" fill="#e8f7f7" stroke="#082336" stroke-width="3"/><path d="M16 25L86 75" stroke="#ef7d22" stroke-width="3"/><path d="M32 29A16 16 0 0 1 25 42" fill="none" stroke="#08747b" stroke-width="4"/></svg></span>
-    <span><h3>অনিয়মিত জমি → ক্ষেত্রফল ও ৪ কোণ</h3><p>চার বাহু ও একটি কর্ণ দিলে দুটি ত্রিভুজে ভাগ করে ক্ষেত্রফল এবং A, B, C, D—চারটি কোণের মান দেখাবে।</p></span><span class="featured-go" aria-hidden="true">↓</span>
-  </button>
-  <button class="featured-card" type="button" data-feature-target="featured-separate">
-    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="14" y="19" width="72" height="62" rx="4" fill="#e8f7f7" stroke="#082336" stroke-width="3"/><path d="M56 19v62" stroke="#ef7d22" stroke-width="4"/><path d="M50 50h-19M69 50h16" stroke="#08747b" stroke-width="3"/><path d="M31 44l-7 6 7 6M76 44l7 6-7 6" fill="none" stroke="#08747b" stroke-width="3"/></svg></span>
-    <span><h3>নির্দিষ্ট শতাংশ জমি → পৃথক করার মাপ</h3><p>আয়তক্ষেত্র/সমান প্রস্থের জমিতে মোট দৈর্ঘ্য ও প্রস্থ এবং কাঙ্ক্ষিত শতাংশ দিলে কোথায় বিভাজন রেখা হবে তা নির্ণয় করুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
-  </button>
-  <button class="featured-card" type="button" data-feature-target="featured-reverse">
-    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M21 29h58v42H21z" fill="#fff" stroke="#082336" stroke-width="3"/><path d="M31 50h38" stroke="#08747b" stroke-width="5"/><path d="M39 39l-10 11 10 11M61 39l10 11-10 11" fill="none" stroke="#ef7d22" stroke-width="3"/></svg></span>
-    <span><h3>মোট জমি + নিজের জমি → আনা-গণ্ডা হিস্যা</h3><p>মোট জমির পরিমাণ এবং আপনার প্রাপ্ত জমির পরিমাণ দিলে হিস্যাটি আনা, গণ্ডা, কড়া, ক্রান্তি ও তিলে ভেঙে দেখাবে।</p></span><span class="featured-go" aria-hidden="true">↓</span>
-  </button>
-</section>
-
-<section class="featured-panel" id="featured-hissa" aria-labelledby="featured-hissa-title">
-  <div class="featured-panel-head"><h3 id="featured-hissa-title">📜 খতিয়ানের হিস্যা থেকে জমির পরিমাণ</h3><p>পূর্ণ হিস্যা = ১৬ আনা = ৭৬,৮০০ তিল। ১ আনা = ২০ গণ্ডা, ১ গণ্ডা = ৪ কড়া, ১ কড়া = ৩ ক্রান্তি, ১ ক্রান্তি = ২০ তিল।</p></div>
-  <div class="featured-panel-body">
-    <div class="calc-grid">
-      <div class="calc-field"><label for="fhTotalLand">মোট জমির পরিমাণ</label><input id="fhTotalLand" type="number" min="0" step="any" placeholder="যেমন ১০.০০"></div>
-      <div class="calc-field"><label for="fhLandUnit">মোট জমির একক</label><select id="fhLandUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="acre">একর</option></select></div>
-      <div class="calc-field"><label for="fhAna">আনা (০–১৫)</label><input id="fhAna" type="number" min="0" max="15" step="1" value="0"></div>
-      <div class="calc-field"><label for="fhGonda">গণ্ডা (০–১৯)</label><input id="fhGonda" type="number" min="0" max="19" step="1" value="0"></div>
-      <div class="calc-field"><label for="fhKora">কড়া (০–৩)</label><input id="fhKora" type="number" min="0" max="3" step="1" value="0"></div>
-      <div class="calc-field"><label for="fhKranti">ক্রান্তি (০–২)</label><input id="fhKranti" type="number" min="0" max="2" step="1" value="0"></div>
-      <div class="calc-field"><label for="fhTil">তিল (০–১৯)</label><input id="fhTil" type="number" min="0" max="19" step="1" value="0"></div>
-    </div>
-    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fhCalc">হিস্যা হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fhReset">রিসেট</button></div>
-    <div class="calc-result" id="fhResult" aria-live="polite"></div>
-  </div>
-</section>
-
-<section class="featured-panel" id="featured-symbolic" aria-labelledby="featured-symbolic-title">
-  <div class="featured-panel-head"><h3 id="featured-symbolic-title">🔣 খতিয়ানের সাংকেতিক চিহ্ন থেকে হিস্যা</h3><p>পুরোনো খতিয়ানে ব্যবহৃত আনার সাংকেতিক চিহ্ন নির্বাচন করুন। গণ্ডা, কড়া, ক্রান্তি ও তিল সংখ্যা হিসেবে দিন।</p></div>
-  <div class="featured-panel-body">
-    <div class="calc-grid">
-      <div class="calc-field"><label for="fsTotalLand">মোট জমির পরিমাণ</label><input id="fsTotalLand" type="number" min="0" step="any" placeholder="যেমন ২৫"></div>
-      <div class="calc-field"><label for="fsLandUnit">মোট জমির একক</label><select id="fsLandUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="acre">একর</option></select></div>
-      <div class="calc-field"><label for="fsAnaSymbol">আনার সাংকেতিক চিহ্ন</label><select id="fsAnaSymbol"></select></div>
-      <div class="calc-field"><label for="fsGonda">গণ্ডা</label><select id="fsGonda"></select></div>
-      <div class="calc-field"><label for="fsKora">কড়া</label><select id="fsKora"></select></div>
-      <div class="calc-field"><label for="fsKranti">ক্রান্তি</label><select id="fsKranti"></select></div>
-      <div class="calc-field"><label for="fsTil">তিল</label><select id="fsTil"></select></div>
-    </div>
-    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fsCalc">সাংকেতিক চিহ্ন থেকে হিস্যা বের করুন</button><button class="calc-btn calc-secondary" type="button" id="fsReset">রিসেট</button></div>
-    <div class="calc-result" id="fsResult" aria-live="polite"></div>
-  </div>
-</section>
-
-<section class="featured-panel" id="featured-quad-angle" aria-labelledby="featured-quad-title">
-  <div class="featured-panel-head"><h3 id="featured-quad-title">📐 অনিয়মিত জমির ক্ষেত্রফল ও কোণের মান</h3><p>চার বাহু AB, BC, CD, DA এবং কর্ণ AC দিলে দুটি বৈধ ত্রিভুজে ভাগ করে ক্ষেত্রফল এবং চার কোণ নির্ণয় করা হবে।</p></div>
-  <div class="featured-panel-body">
-    <div class="calc-grid">
-      <div class="calc-field"><label for="fqAB">উত্তর বাহু AB (a)</label><input id="fqAB" type="number" min="0" step="any" placeholder="ফুট"></div>
-      <div class="calc-field"><label for="fqBC">দক্ষিণ বাহু BC (b)</label><input id="fqBC" type="number" min="0" step="any" placeholder="ফুট"></div>
-      <div class="calc-field"><label for="fqCD">পূর্ব বাহু CD (d)</label><input id="fqCD" type="number" min="0" step="any" placeholder="ফুট"></div>
-      <div class="calc-field"><label for="fqDA">পশ্চিম বাহু DA (c)</label><input id="fqDA" type="number" min="0" step="any" placeholder="ফুট"></div>
-      <div class="calc-field"><label for="fqAC">কর্ণ AC</label><input id="fqAC" type="number" min="0" step="any" placeholder="ফুট"></div>
-      <div class="calc-field"><label for="fqUnit">একক</label><select id="fqUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
-    </div>
-    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fqCalc">ক্ষেত্রফল ও কোণ হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fqReset">রিসেট</button></div>
-    <div class="calc-result" id="fqResult" aria-live="polite"></div>
-  </div>
-</section>
-
-<section class="featured-panel" id="featured-separate" aria-labelledby="featured-separate-title">
-  <div class="featured-panel-head"><h3 id="featured-separate-title">✂️ নির্দিষ্ট শতাংশ জমি পৃথক করার মাপ</h3><p>এটি কেবল আয়তক্ষেত্র বা সমান প্রস্থের জমির জন্য সঠিক। অনিয়মিত জমিতে এই সরল সূত্র ব্যবহার করবেন না।</p></div>
-  <div class="featured-panel-body">
-    <div class="calc-grid">
-      <div class="calc-field"><label for="fsepLength">মোট দৈর্ঘ্য</label><input id="fsepLength" type="number" min="0" step="any" placeholder="যেমন ১০০"></div>
-      <div class="calc-field"><label for="fsepWidth">প্রস্থ</label><input id="fsepWidth" type="number" min="0" step="any" placeholder="যেমন ৫০"></div>
-      <div class="calc-field"><label for="fsepPercent">যে শতাংশ জমি পৃথক করতে চান (%)</label><input id="fsepPercent" type="number" min="0.000001" max="99.999999" step="any" placeholder="যেমন ৩০"></div>
-      <div class="calc-field"><label for="fsepUnit">দৈর্ঘ্য/প্রস্থের একক</label><select id="fsepUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
-    </div>
-    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fsepCalc">পৃথক করার মাপ বের করুন</button><button class="calc-btn calc-secondary" type="button" id="fsepReset">রিসেট</button></div>
-    <div class="calc-result" id="fsepResult" aria-live="polite"></div>
-  </div>
-</section>
-
-<section class="featured-panel" id="featured-reverse" aria-labelledby="featured-reverse-title">
-  <div class="featured-panel-head"><h3 id="featured-reverse-title">🔄 মোট জমি থেকে নিজের জমির হিস্যা বের করুন</h3><p>মোট জমি ও আপনার অংশ একই এককে লিখলে হিস্যাটি নিকটতম তিল পর্যন্ত আনা–গণ্ডা–কড়া–ক্রান্তি–তিলে ভেঙে দেখানো হবে।</p></div>
-  <div class="featured-panel-body">
-    <div class="calc-grid">
-      <div class="calc-field"><label for="frTotal">খতিয়ানের মোট জমি</label><input id="frTotal" type="number" min="0" step="any" placeholder="যেমন ৮০"></div>
-      <div class="calc-field"><label for="frOwn">আপনার জমির পরিমাণ</label><input id="frOwn" type="number" min="0" step="any" placeholder="যেমন ৩০"></div>
-      <div class="calc-field"><label for="frUnit">জমির একক</label><select id="frUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="acre">একর</option></select></div>
-    </div>
-    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="frCalc">হিস্যা বের করুন</button><button class="calc-btn calc-secondary" type="button" id="frReset">রিসেট</button></div>
-    <div class="calc-result" id="frResult" aria-live="polite"></div>
-  </div>
-</section>
-
-<div class="featured-separator">🧮 আরও পেশাদার সূত্রভিত্তিক ক্যালকুলেটর</div>
+<div class="featured-separator formula-suite-title"><span>🧮</span> সূত্র ভিত্তিক ক্যালকুলেটর ও মুসলিম উত্তরাধিকার</div>
 <div class="calc-tabs" role="tablist" aria-label="ক্যালকুলেটর নির্বাচন">
 <button class="calc-tab active" data-tab="quad-diagonal" role="tab" aria-selected="true">কর্ণসহ অনিয়মিত চতুর্ভুজ</button>
 <button class="calc-tab" data-tab="quad-angle" role="tab" aria-selected="false">কর্ণ ছাড়া অনিয়মিত চতুর্ভুজ</button>
@@ -510,12 +362,180 @@
 <div class="inherit-actions"><button class="calc-btn inherit-primary" id="inheritCalc">⚖️ উত্তরাধিকার হিসাব করুন</button><button class="calc-btn calc-secondary" id="inheritReset">↺ সব পরিষ্কার</button></div>
 </div>
 <div class="calc-result inherit-result" id="inheritResult" aria-live="polite"></div>
+</section>
+
+<section class="featured-calcs" aria-labelledby="featured-calc-title">
+  <div class="featured-head">
+    <div class="calc-title-kicker">🧮 PROFESSIONAL LAND CALCULATOR</div>
+    <h2 id="featured-calc-title">ভূমি ক্যালকুলেটর</h2>
+    <p>আপনার দেওয়া নমুনাগুলোর ধারণা অনুসারে বড় আইকন, পরিষ্কার বাংলা লেখা এবং এক-কলাম মোবাইল-ফ্রেন্ডলি বিন্যাসে সাজানো হয়েছে। প্রতিটি টুল সূত্রভিত্তিক ফলাফল দেখায় এবং ভুল ইনপুট হলে সতর্ক করে।</p>
+  </div>
+  <button class="featured-card" type="button" data-feature-target="featured-hissa">
+    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="13" y="17" width="74" height="66" rx="6" fill="#0b8b91" stroke="#082336" stroke-width="3"/><path d="M23 67h54M23 52h54M23 37h54" stroke="#fff" stroke-width="4"/><circle cx="30" cy="26" r="4" fill="#d9a441"/><circle cx="50" cy="26" r="4" fill="#d9a441"/><circle cx="70" cy="26" r="4" fill="#d9a441"/></svg></span>
+    <span><h3>খতিয়ানের হিস্যা → জমির পরিমাণ</h3><p>আনা, গণ্ডা, কড়া, ক্রান্তি ও তিল লিখে মোট জমির মধ্যে আপনার প্রকৃত অংশ, শতাংশ, অযুতাংশ, বর্গফুট, কাঠা ও বিঘা দেখুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
+  </button>
+  <button class="featured-card" type="button" data-feature-target="featured-symbolic">
+    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="14" y="16" width="72" height="68" rx="8" fill="#f7fbfc" stroke="#082336" stroke-width="3"/><text x="50" y="50" text-anchor="middle" font-size="32" font-weight="900" fill="#08747b">৷৵</text><path d="M26 68h48" stroke="#d9a441" stroke-width="6" stroke-linecap="round"/></svg></span>
+    <span><h3>খতিয়ানের সাংকেতিক চিহ্ন → হিস্যা</h3><p>পুরোনো খতিয়ানের আনার সাংকেতিক চিহ্ন নির্বাচন করে গণ্ডা, কড়া, ক্রান্তি ও তিলসহ হিস্যা নির্ণয় করুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
+  </button>
+  <button class="featured-card" type="button" data-feature-target="featured-quad-angle">
+    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M16 25L73 18L86 75L25 84Z" fill="#e8f7f7" stroke="#082336" stroke-width="3"/><path d="M16 25L86 75" stroke="#ef7d22" stroke-width="3"/><path d="M32 29A16 16 0 0 1 25 42" fill="none" stroke="#08747b" stroke-width="4"/></svg></span>
+    <span><h3>অনিয়মিত জমি → ক্ষেত্রফল ও ৪ কোণ</h3><p>চার বাহু ও একটি কর্ণ দিলে দুটি ত্রিভুজে ভাগ করে ক্ষেত্রফল এবং A, B, C, D—চারটি কোণের মান দেখাবে।</p></span><span class="featured-go" aria-hidden="true">↓</span>
+  </button>
+  <button class="featured-card" type="button" data-feature-target="featured-separate">
+    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="14" y="19" width="72" height="62" rx="4" fill="#e8f7f7" stroke="#082336" stroke-width="3"/><path d="M56 19v62" stroke="#ef7d22" stroke-width="4"/><path d="M50 50h-19M69 50h16" stroke="#08747b" stroke-width="3"/><path d="M31 44l-7 6 7 6M76 44l7 6-7 6" fill="none" stroke="#08747b" stroke-width="3"/></svg></span>
+    <span><h3>নির্দিষ্ট শতাংশ জমি → পৃথক করার মাপ</h3><p>আয়তক্ষেত্র/সমান প্রস্থের জমিতে মোট দৈর্ঘ্য ও প্রস্থ এবং কাঙ্ক্ষিত শতাংশ দিলে কোথায় বিভাজন রেখা হবে তা নির্ণয় করুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
+  </button>
+  <button class="featured-card" type="button" data-feature-target="featured-reverse">
+    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M21 29h58v42H21z" fill="#fff" stroke="#082336" stroke-width="3"/><path d="M31 50h38" stroke="#08747b" stroke-width="5"/><path d="M39 39l-10 11 10 11M61 39l10 11-10 11" fill="none" stroke="#ef7d22" stroke-width="3"/></svg></span>
+    <span><h3>মোট জমি + নিজের জমি → আনা-গণ্ডা হিস্যা</h3><p>মোট জমির পরিমাণ এবং আপনার প্রাপ্ত জমির পরিমাণ দিলে হিস্যাটি আনা, গণ্ডা, কড়া, ক্রান্তি ও তিলে ভেঙে দেখাবে।</p></span><span class="featured-go" aria-hidden="true">↓</span>
+  </button>
+</section>
+
+<section class="featured-panel" id="featured-hissa" aria-labelledby="featured-hissa-title">
+  <div class="featured-panel-head"><h3 id="featured-hissa-title">📜 খতিয়ানের হিস্যা থেকে জমির পরিমাণ</h3><p>পূর্ণ হিস্যা = ১৬ আনা = ৭৬,৮০০ তিল। ১ আনা = ২০ গণ্ডা, ১ গণ্ডা = ৪ কড়া, ১ কড়া = ৩ ক্রান্তি, ১ ক্রান্তি = ২০ তিল।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="fhTotalLand">মোট জমির পরিমাণ</label><input id="fhTotalLand" type="number" min="0" step="any" placeholder="যেমন ১০.০০"></div>
+      <div class="calc-field"><label for="fhLandUnit">মোট জমির একক</label><select id="fhLandUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="acre">একর</option></select></div>
+      <div class="calc-field"><label for="fhAna">আনা (০–১৫)</label><input id="fhAna" type="number" min="0" max="15" step="1" value="0"></div>
+      <div class="calc-field"><label for="fhGonda">গণ্ডা (০–১৯)</label><input id="fhGonda" type="number" min="0" max="19" step="1" value="0"></div>
+      <div class="calc-field"><label for="fhKora">কড়া (০–৩)</label><input id="fhKora" type="number" min="0" max="3" step="1" value="0"></div>
+      <div class="calc-field"><label for="fhKranti">ক্রান্তি (০–২)</label><input id="fhKranti" type="number" min="0" max="2" step="1" value="0"></div>
+      <div class="calc-field"><label for="fhTil">তিল (০–১৯)</label><input id="fhTil" type="number" min="0" max="19" step="1" value="0"></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fhCalc">হিস্যা হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fhReset">রিসেট</button></div>
+    <div class="calc-result" id="fhResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="featured-panel" id="featured-symbolic" aria-labelledby="featured-symbolic-title">
+  <div class="featured-panel-head"><h3 id="featured-symbolic-title">🔣 খতিয়ানের সাংকেতিক চিহ্ন থেকে হিস্যা</h3><p>পুরোনো খতিয়ানে ব্যবহৃত আনার সাংকেতিক চিহ্ন নির্বাচন করুন। গণ্ডা, কড়া, ক্রান্তি ও তিল সংখ্যা হিসেবে দিন।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="fsTotalLand">মোট জমির পরিমাণ</label><input id="fsTotalLand" type="number" min="0" step="any" placeholder="যেমন ২৫"></div>
+      <div class="calc-field"><label for="fsLandUnit">মোট জমির একক</label><select id="fsLandUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="acre">একর</option></select></div>
+      <div class="calc-field"><label for="fsAnaSymbol">আনার সাংকেতিক চিহ্ন</label><select id="fsAnaSymbol"></select></div>
+      <div class="calc-field"><label for="fsGonda">গণ্ডা</label><select id="fsGonda"></select></div>
+      <div class="calc-field"><label for="fsKora">কড়া</label><select id="fsKora"></select></div>
+      <div class="calc-field"><label for="fsKranti">ক্রান্তি</label><select id="fsKranti"></select></div>
+      <div class="calc-field"><label for="fsTil">তিল</label><select id="fsTil"></select></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fsCalc">সাংকেতিক চিহ্ন থেকে হিস্যা বের করুন</button><button class="calc-btn calc-secondary" type="button" id="fsReset">রিসেট</button></div>
+    <div class="calc-result" id="fsResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="featured-panel" id="featured-quad-angle" aria-labelledby="featured-quad-title">
+  <div class="featured-panel-head"><h3 id="featured-quad-title">📐 অনিয়মিত জমির ক্ষেত্রফল ও কোণের মান</h3><p>চার বাহু AB, BC, CD, DA এবং কর্ণ AC দিলে দুটি বৈধ ত্রিভুজে ভাগ করে ক্ষেত্রফল এবং চার কোণ নির্ণয় করা হবে।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="fqAB">উত্তর বাহু AB (a)</label><input id="fqAB" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label for="fqBC">দক্ষিণ বাহু BC (b)</label><input id="fqBC" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label for="fqCD">পূর্ব বাহু CD (d)</label><input id="fqCD" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label for="fqDA">পশ্চিম বাহু DA (c)</label><input id="fqDA" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label for="fqAC">কর্ণ AC</label><input id="fqAC" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label for="fqUnit">একক</label><select id="fqUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fqCalc">ক্ষেত্রফল ও কোণ হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fqReset">রিসেট</button></div>
+    <div class="calc-result" id="fqResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="featured-panel" id="featured-separate" aria-labelledby="featured-separate-title">
+  <div class="featured-panel-head"><h3 id="featured-separate-title">✂️ নির্দিষ্ট শতাংশ জমি পৃথক করার মাপ</h3><p>এটি কেবল আয়তক্ষেত্র বা সমান প্রস্থের জমির জন্য সঠিক। অনিয়মিত জমিতে এই সরল সূত্র ব্যবহার করবেন না।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="fsepLength">মোট দৈর্ঘ্য</label><input id="fsepLength" type="number" min="0" step="any" placeholder="যেমন ১০০"></div>
+      <div class="calc-field"><label for="fsepWidth">প্রস্থ</label><input id="fsepWidth" type="number" min="0" step="any" placeholder="যেমন ৫০"></div>
+      <div class="calc-field"><label for="fsepPercent">যে শতাংশ জমি পৃথক করতে চান (%)</label><input id="fsepPercent" type="number" min="0.000001" max="99.999999" step="any" placeholder="যেমন ৩০"></div>
+      <div class="calc-field"><label for="fsepUnit">দৈর্ঘ্য/প্রস্থের একক</label><select id="fsepUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fsepCalc">পৃথক করার মাপ বের করুন</button><button class="calc-btn calc-secondary" type="button" id="fsepReset">রিসেট</button></div>
+    <div class="calc-result" id="fsepResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="featured-panel" id="featured-reverse" aria-labelledby="featured-reverse-title">
+  <div class="featured-panel-head"><h3 id="featured-reverse-title">🔄 মোট জমি থেকে নিজের জমির হিস্যা বের করুন</h3><p>মোট জমি ও আপনার অংশ একই এককে লিখলে হিস্যাটি নিকটতম তিল পর্যন্ত আনা–গণ্ডা–কড়া–ক্রান্তি–তিলে ভেঙে দেখানো হবে।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="frTotal">খতিয়ানের মোট জমি</label><input id="frTotal" type="number" min="0" step="any" placeholder="যেমন ৮০"></div>
+      <div class="calc-field"><label for="frOwn">আপনার জমির পরিমাণ</label><input id="frOwn" type="number" min="0" step="any" placeholder="যেমন ৩০"></div>
+      <div class="calc-field"><label for="frUnit">জমির একক</label><select id="frUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="acre">একর</option></select></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="frCalc">হিস্যা বের করুন</button><button class="calc-btn calc-secondary" type="button" id="frReset">রিসেট</button></div>
+    <div class="calc-result" id="frResult" aria-live="polite"></div>
+  </div>
+</section>
+
+
+
+<section class="land-suite" id="professional-land-suite" aria-labelledby="land-suite-title">
+  <div class="land-suite-hero">
+    <div>
+      <span class="land-suite-badge">🧭 Professional Land Calculator Suite</span>
+      <h2 class="land-suite-title" id="land-suite-title">ভূমি হিসাব <span>এক জায়গায়</span></h2>
+      <p class="land-suite-sub">জমির ক্ষেত্রফল, একক রূপান্তর, দ্রুত হিসাব ও পূর্বের হিসাব—সবকিছু একটি পরিষ্কার ও মোবাইল-ফ্রেন্ডলি ইন্টারফেসে।</p>
+    </div>
+    <div class="land-suite-actions">
+      <button class="land-suite-btn" type="button" id="suitePrint">🖨️ ফলাফল প্রিন্ট</button>
+      <button class="land-suite-btn alt" type="button" id="suiteShare">↗️ শেয়ার</button>
+    </div>
+  </div>
+  <div class="land-suite-grid">
+    <div class="suite-card">
+      <h3>⚡ দ্রুত জমির পরিমাণ ও ভাগ</h3>
+      <p class="suite-help">মোট জমি ও নির্দিষ্ট ভাগের পরিমাণ লিখে দ্রুত শতাংশ/বর্গফুটের সমতুল্য দেখুন। সুনির্দিষ্ট সীমানার ফুট-ইঞ্চি পেতে নিচের “চতুর্ভুজ ভাগ-বণ্টন” মডিউল ব্যবহার করুন।</p>
+      <div class="suite-form">
+        <div class="suite-field"><label for="suiteLength">মোট জমি</label><input id="suiteLength" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 5"></div>
+        <div class="suite-field"><label for="suiteWidth">ভাগের পরিমাণ</label><input id="suiteWidth" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 2"></div>
+        <div class="suite-field"><label for="suiteUnit">বর্তমান একক</label><select id="suiteUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div>
+        <div class="suite-field"><label for="suiteDecimals">দশমিক</label><select id="suiteDecimals"><option value="2">২ ঘর</option><option value="4" selected>৪ ঘর</option><option value="6">৬ ঘর</option></select></div>
+      </div>
+      <div class="quick-tools"><button type="button" id="suiteCalc">ভাগ হিসাব করুন</button><button type="button" id="suiteClear">পরিষ্কার</button></div>
+      <div class="suite-result" id="suiteResult" aria-live="polite">মোট জমি ও ভাগের পরিমাণ দিলে ফলাফল এখানে দেখাবে।</div>
+    </div>
+    <div class="suite-card">
+      <h3>🔄 ভূমি একক রূপান্তর</h3>
+      <p class="suite-help">একটি এককে জমির পরিমাণ লিখলে অন্যান্য প্রচলিত এককে সমতুল্য পরিমাণ দেখাবে।</p>
+      <div class="suite-form">
+        <div class="suite-field"><label for="suiteArea">জমির পরিমাণ</label><input id="suiteArea" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 5"></div>
+        <div class="suite-field"><label for="suiteAreaUnit">বর্তমান একক</label><select id="suiteAreaUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="katha">কাঠা</option><option value="bigha">বিঘা</option><option value="acre">একর</option><option value="hectare">হেক্টর</option></select></div>
+      </div>
+      <div class="quick-tools"><button type="button" id="suiteConvert">রূপান্তর করুন</button><button type="button" id="suiteCopy" disabled>ফলাফল কপি</button></div>
+      <div class="suite-result" id="suiteConversionResult" aria-live="polite">জমির পরিমাণ দিলে রূপান্তরের ফলাফল এখানে দেখাবে।</div>
+      <p class="suite-note">রূপান্তরের মান: ১ শতাংশ/ডেসিমেল = ৪৩৫.৬ বর্গফুট; ১ কাঠা = ৭২০ বর্গফুট; ১ বিঘা = ১৪,৪০০ বর্গফুট; ১ একর = ৪৩,৫৬০ বর্গফুট।</p>
+    </div>
+    <div class="suite-card">
+      <h3>📌 দ্রুত রেফারেন্স</h3>
+      <p class="suite-help">জমির হিসাব করার সময় ব্যবহৃত গুরুত্বপূর্ণ রূপান্তরগুলো এক নজরে।</p>
+      <div class="unit-grid">
+        <div class="unit-pill"><b>১ শতাংশ</b><span>৪৩৫.৬ sq ft</span></div>
+        <div class="unit-pill"><b>১ কাঠা</b><span>৭২০ sq ft</span></div>
+        <div class="unit-pill"><b>১ বিঘা</b><span>১৪,৪০০ sq ft</span></div>
+        <div class="unit-pill"><b>১ একর</b><span>৪৩,৫৬০ sq ft</span></div>
+        <div class="unit-pill"><b>১ হেক্টর</b><span>১০৭,৬৩৯.১০৪ sq ft</span></div>
+        <div class="unit-pill"><b>১ sq m</b><span>১০.৭৬৩৯ sq ft</span></div>
+      </div>
+      <p class="suite-note">স্থানীয় রেকর্ড বা সরকারি জরিপে কোনো ভিন্ন মান নির্ধারিত থাকলে সেই নির্দিষ্ট মান অনুসরণ করুন।</p>
+    </div>
+    <div class="suite-card">
+      <h3>🕘 সাম্প্রতিক হিসাব</h3>
+      <p class="suite-help">এই ডিভাইসে করা সর্বশেষ কয়েকটি দ্রুত হিসাব এখানে থাকবে।</p>
+      <div class="history-list" id="suiteHistory"><div class="suite-note">এখনও কোনো হিসাব সংরক্ষিত নেই।</div></div>
+      <div class="quick-tools"><button type="button" id="suiteClearHistory">ইতিহাস মুছুন</button></div>
+    </div>
+  </div>
+</section>
+<div class="suite-toast" id="suiteToast" role="status" aria-live="polite"></div>
+
 <div class="legal-note"><strong>আইনি/তথ্যসূত্র:</strong> মুসলিমদের intestate succession-এর ক্ষেত্রে Muslim Personal Law (Shariat) Application Act, 1937 প্রাসঙ্গিক; Muslim Family Laws Ordinance, 1961-এর ধারা ৪ পূর্বমৃত পুত্র/কন্যার জীবিত সন্তানদের বিষয়ে বিশেষ বিধান দেয়। <div class="sources"><a href="https://bdlaws.minlaw.gov.bd/act-print-173.html" target="_blank" rel="noopener noreferrer">Shariat Application Act, 1937</a><a href="https://bdlaws.minlaw.gov.bd/act-print-305/section-print-13528.html" target="_blank" rel="noopener noreferrer">MFLO 1961 — ধারা ৪</a><a href="https://inheritance.gov.bd/" target="_blank" rel="noopener noreferrer">সরকারি উত্তরাধিকার তথ্য</a></div></div>
 </section>
 
 <section class="registry-upgrade" id="registry-calculator" aria-labelledby="registry-title">
 <div class="registry-head">
-<h2 class="section-title" id="registry-title">🧾 জমি রেজিস্ট্রি খরচ ক্যালকুলেটর</h2>
+<h2 class="section-title registry-title" id="registry-title"><span class="registry-title-icon">🧾</span> ভূমি রেজিস্ট্রি খরচ ক্যালকুলেটর</h2>
 <p class="lead">দলিলের মূল্য, স্থানীয় সরকার কর ও উৎসে করের হার নির্বাচন করে আনুমানিক সরকারি খরচের হিসাব দেখুন। ইনপুট পরিবর্তন করলেই ফলাফল লাইভ আপডেট হবে।</p>
 <div class="warning"><strong>হার সম্পর্কে গুরুত্বপূর্ণ:</strong> বর্তমান আইন/বাজেট ও দলিলের ধরন অনুযায়ী হার পরিবর্তিত হতে পারে। এই টুলটি আনুমানিক হিসাবের জন্য; চূড়ান্ত অর্থ প্রদানের আগে সংশ্লিষ্ট সাব-রেজিস্ট্রি অফিস/সরকারি গেজেট যাচাই করুন।</div>
 </div>
