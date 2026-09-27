@@ -1194,8 +1194,10 @@
         if (!(AC>eps) || AC>c+d+eps || AC<Math.abs(c-d)-eps) return null;
 
         // D is the intersection of circles centered at A and C,
-        // with radii DA=d and CD=c. Choose the solution on the
-        // opposite side of AB from C to keep the sketch readable.
+        // with radii DA=d and CD=c. For a normal convex quadrilateral,
+        // D must stay on the SAME side of AB as C. The previous version
+        // selected the opposite-side solution, which made the drawing
+        // look folded/incorrect.
         const ux=Cx/AC, uy=Cy/AC;
         const x=(d*d-c*c+AC*AC)/(2*AC);
         const h2=d*d-x*x;
@@ -1203,8 +1205,13 @@
         const hh=Math.sqrt(Math.max(0,h2));
         const D1={x:x*ux-hh*uy,y:x*uy+hh*ux};
         const D2={x:x*ux+hh*uy,y:x*uy-hh*ux};
-        const D=D1.y<0 ? D1 : D2.y<0 ? D2 : (Math.abs(D1.y)<Math.abs(D2.y)?D1:D2);
-        if (Math.hypot(D.x,D.y-d*0)>0 && Math.abs(Math.hypot(D.x,D.y)-d)<1e-5 && Math.abs(Math.hypot(D.x-Cx,D.y-Cy)-c)<1e-5) {
+        const sameSide = p => p.y >= -eps;
+        const candidatesD = [D1,D2].filter(sameSide);
+        // If both circle intersections are usable, choose the one with the
+        // larger X value so the four points occupy the canvas naturally
+        // instead of collapsing into a thin/folded-looking figure.
+        const D = candidatesD.length ? candidatesD.sort((p,q)=>q.x-p.x)[0] : null;
+        if (D && Math.abs(Math.hypot(D.x,D.y)-d)<1e-5 && Math.abs(Math.hypot(D.x-Cx,D.y-Cy)-c)<1e-5) {
           return [[0,0],[a,0],[Cx,Cy],[D.x,D.y]];
         }
         return null;
