@@ -1182,55 +1182,67 @@
 
     // 3 sides: exact triangle from AB, BC and AC (the third entered length).
     if (d>0) {
-      // Four side lengths do not uniquely determine one quadrilateral.
-      // For this visual-only sketch, automatically find a stable interior angle
-      // at B that lets the four entered sides close without asking for a diagonal.
-      const rad = deg => deg*Math.PI/180;
-      const makeQuad = angleDeg => {
-        const th=rad(angleDeg);
-        const Cx=a+b*Math.cos(th), Cy=b*Math.sin(th);
-        const AC=Math.hypot(Cx,Cy);
-        const eps=1e-9;
-        if (!(AC>eps) || AC>c+d+eps || AC<Math.abs(c-d)-eps) return null;
-
-        // D is the intersection of circles centered at A and C,
-        // with radii DA=d and CD=c. For a normal convex quadrilateral,
-        // D must stay on the SAME side of AB as C. The previous version
-        // selected the opposite-side solution, which made the drawing
-        // look folded/incorrect.
-        const ux=Cx/AC, uy=Cy/AC;
-        const x=(d*d-c*c+AC*AC)/(2*AC);
-        const h2=d*d-x*x;
-        if (h2 < -eps) return null;
-        const hh=Math.sqrt(Math.max(0,h2));
-        const D1={x:x*ux-hh*uy,y:x*uy+hh*ux};
-        const D2={x:x*ux+hh*uy,y:x*uy-hh*ux};
-        const sameSide = p => p.y >= -eps;
-        const candidatesD = [D1,D2].filter(sameSide);
-        // If both circle intersections are usable, choose the one with the
-        // larger X value so the four points occupy the canvas naturally
-        // instead of collapsing into a thin/folded-looking figure.
-        const D = candidatesD.length ? candidatesD.sort((p,q)=>q.x-p.x)[0] : null;
-        if (D && Math.abs(Math.hypot(D.x,D.y)-d)<1e-5 && Math.abs(Math.hypot(D.x-Cx,D.y-Cy)-c)<1e-5) {
-          return [[0,0],[a,0],[Cx,Cy],[D.x,D.y]];
-        }
-        return null;
-      };
-
-      // Prefer a near-right-angle shape, then search the full useful range.
-      const candidates=[90,80,100,70,110,60,120,50,130,40,140,30,150,20,160];
-      let quad=null;
-      for(const ang of candidates){ quad=makeQuad(ang); if(quad) break; }
-      if(!quad){
-        for(let ang=10;ang<=170;ang+=2){ quad=makeQuad(ang); if(quad) break; }
-      }
-      if(!quad){
+      // চারটি বাহু দিয়ে একটিমাত্র চতুর্ভুজ নির্ধারিত হয় না।
+      // তাই স্কেচের জন্য একটি canonical convex cyclic quadrilateral
+      // (অর্থাৎ একই চার বাহু ও একটি স্বাভাবিক উত্তল বিন্যাস) তৈরি করা হয়।
+      // এখানে কোনো কর্ণ ব্যবহারকারীকে দিতে হয় না; AC ভিতরে স্বয়ংক্রিয়ভাবে নির্ণীত।
+      const eps=1e-9;
+      const longest=Math.max(a,b,c,d);
+      if (!(a>0&&b>0&&c>0&&d>0) || longest >= (a+b+c+d)-longest-eps) {
         ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
-        ctx.fillText('এই ৪টি বাহুর মাপ দিয়ে বৈধ আনুমানিক স্কেচ তৈরি করা যাচ্ছে না',w/2,h/2-10);
+        ctx.fillText('এই ৪টি বাহু দিয়ে বৈধ চতুর্ভুজ তৈরি করা যাচ্ছে না',w/2,h/2-10);
+        ctx.font='14px Arial'; ctx.fillStyle='#5e6f79';
+        ctx.fillText('যেকোনো একটি বাহু বাকি তিন বাহুর যোগফলের চেয়ে ছোট হতে হবে',w/2,h/2+20); return;
+      }
+
+      // Cyclic quadrilateral-এর AC diagonal-এর canonical মান:
+      // AC² = ((AB×CD + BC×DA)×(AB×DA + BC×CD)) / (AB×BC + CD×DA)
+      const q2=((a*c+b*d)*(a*d+b*c))/(a*b+c*d);
+      const q=Math.sqrt(Math.max(0,q2));
+      if (!(q>eps) || q>=a+b-eps || q<=Math.abs(a-b)+eps || q>=c+d-eps || q<=Math.abs(c-d)+eps) {
+        ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
+        ctx.fillText('এই মাপগুলো দিয়ে স্থিতিশীল চতুর্ভুজ স্কেচ তৈরি করা যাচ্ছে না',w/2,h/2-10);
         ctx.font='14px Arial'; ctx.fillStyle='#5e6f79';
         ctx.fillText('বাহুগুলোর মাপ পুনরায় যাচাই করুন',w/2,h/2+20); return;
       }
-      pts=quad;
+
+      // A=(0,0), B=(AB,0), C from triangle ABC.
+      const xC=(a*a+q*q-b*b)/(2*a);
+      const yC2=q*q-xC*xC;
+      if (yC2<=eps) {
+        ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
+        ctx.fillText('এই মাপগুলোতে চতুর্ভুজটি প্রায় সরলরেখায় চলে যাচ্ছে',w/2,h/2); return;
+      }
+      const yC=Math.sqrt(yC2);
+
+      // D from triangle ACD; D MUST be on the opposite side of AC from B
+      // so A-B-C-D is a normal convex quadrilateral.
+      const xD=(d*d+q*q-c*c)/(2*q);
+      const yD2=d*d-xD*xD;
+      if (yD2<=eps) {
+        ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
+        ctx.fillText('এই মাপগুলোতে স্থিতিশীল চতুর্ভুজ স্কেচ তৈরি করা যাচ্ছে না',w/2,h/2); return;
+      }
+      const yD=Math.sqrt(yD2);
+      // AC-কে স্থানীয় x-axis ধরে A→C বরাবর D-এর অবস্থান তৈরি করি।
+      // B ও D-কে AC-এর বিপরীত পাশে রাখলে A-B-C-D একটি উত্তল চতুর্ভুজ হয়।
+      const ux=xC/q, uy=yC/q;
+      const nx=-uy, ny=ux;
+      const Dx=xD*ux + yD*nx;
+      const Dy=xD*uy + yD*ny;
+
+      // চারটি বাহুই সত্যিই দেওয়া মাপের সমান কি না যাচাই।
+      const checks=[
+        Math.hypot(xC-a,yC)-b,
+        Math.hypot(Dx-xC,Dy-yC)-c,
+        Math.hypot(Dx,Dy)-d,
+        Math.hypot(a,0)-a
+      ];
+      if (Math.max(...checks.map(Math.abs))>1e-6) {
+        ctx.fillStyle='#9b3d2a'; ctx.font='bold 17px Arial'; ctx.textAlign='center';
+        ctx.fillText('স্কেচ তৈরিতে জ্যামিতিক অসামঞ্জস্য পাওয়া গেছে',w/2,h/2); return;
+      }
+      pts=[[0,0],[a,0],[xC,yC],[Dx,Dy]];
     } else {
       const xC=(a*a+b*b-c*c)/(2*a);
       const yC=Math.sqrt(Math.max(0,b*b-xC*xC));
