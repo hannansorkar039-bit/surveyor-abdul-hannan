@@ -110,6 +110,21 @@
 
 <link rel="stylesheet" href="styles.css">
 <style>.site-brand{display:inline-flex;align-items:center;gap:8px}.site-brand img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.75);box-shadow:0 2px 8px rgba(0,0,0,.18)}.site-brand span{line-height:1.2}@media(max-width:560px){.site-brand img{width:30px;height:30px}}</style>
+
+<style>
+/* Homepage-only refinement: preserves the existing theme, typography, buttons and sections. */
+.home-quick-access{padding-top:34px;padding-bottom:24px;background:#fff}
+.home-quick-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:22px}
+.home-quick-head .section-title{margin:4px 0 6px}.home-quick-head .lead{margin:0;max-width:760px}
+.home-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.home-quick-card{display:flex;align-items:center;gap:12px;min-width:0;padding:17px 16px;background:#fff;border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow-sm);color:inherit;text-decoration:none;transition:transform .22s,box-shadow .22s,border-color .22s}
+.home-quick-card:hover{transform:translateY(-3px);border-color:#bfd0e2;box-shadow:var(--shadow-md)}
+.home-quick-card-accent{background:linear-gradient(135deg,#f8fcfb,#eef8f5);border-color:#cfe5dc}
+.home-quick-icon{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border-radius:13px;background:#eef5ff;font-size:21px}
+.home-quick-card strong{display:block;color:var(--navy);font-size:15px;line-height:1.35}.home-quick-card small{display:block;margin-top:3px;color:var(--muted);font-size:12px;line-height:1.45}.home-quick-card b{margin-left:auto;color:var(--royal);font-size:19px}
+@media(max-width:980px){.home-quick-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.home-quick-head{align-items:flex-start;flex-direction:column}.home-quick-head .btn{width:100%;text-align:center}.home-quick-grid{grid-template-columns:1fr}.home-quick-access{padding-top:28px;padding-bottom:18px}}
+</style>
 </head>
 <body id="top">
 <a class="skip" href="#main">মূল কনটেন্টে যান</a>
@@ -157,10 +172,31 @@
 <a class="btn btn-light" href="order.html">📋 কাজের অনুরোধ</a>
 <a class="btn btn-light" href="https://maps.app.goo.gl/h4aToTaR9BaDNni79?g_st=ac" rel="noopener noreferrer" target="_blank">📍 লোকেশন</a>
 </div>
-<p class="source-note">তথ্যভিত্তিক সাইট • গুরুত্বপূর্ণ ভূমি-তথ্যের জন্য সরকারি উৎসের লিংক রাখা হয়েছে • সর্বশেষ সাইট পর্যালোচনা: ২৫ সেপ্টেম্বর ২০২৬</p>
+<p class="source-note">তথ্যভিত্তিক সাইট • গুরুত্বপূর্ণ ভূমি-তথ্যের জন্য সরকারি উৎসের লিংক রাখা হয়েছে • সর্বশেষ সাইট পর্যালোচনা: ২৭ সেপ্টেম্বর ২০২৬</p>
 </div>
 </div>
 </header>
+
+<!-- Homepage-only quick access; existing site design and sections remain intact. -->
+<section class="section home-quick-access" aria-labelledby="home-quick-title">
+  <div class="container">
+    <div class="home-quick-head">
+      <div>
+        <span class="section-overline">QUICK ACCESS</span>
+        <h2 id="home-quick-title" class="section-title">প্রয়োজনীয় কাজ এক জায়গা থেকে শুরু করুন</h2>
+        <p class="lead">আপনার প্রয়োজন অনুযায়ী সেবা, ভূমি তথ্য, ক্যালকুলেটর বা কাজের অনুরোধ—সরাসরি সংশ্লিষ্ট বিভাগে যান।</p>
+      </div>
+      <a class="btn btn-outline" href="services.html">সব সেবা দেখুন →</a>
+    </div>
+    <div class="home-quick-grid">
+      <a class="home-quick-card" href="calculator.html"><span class="home-quick-icon">🧮</span><span><strong>ভূমি ক্যালকুলেটর</strong><small>জমির মাপ ও প্রয়োজনীয় হিসাব</small></span><b aria-hidden="true">→</b></a>
+      <a class="home-quick-card" href="services.html"><span class="home-quick-icon">📐</span><span><strong>সার্ভে সেবা</strong><small>পরিমাপ, নকশা ও মাঠপর্যায়ের কাজ</small></span><b aria-hidden="true">→</b></a>
+      <a class="home-quick-card" href="knowledge.html"><span class="home-quick-icon">📚</span><span><strong>ভূমি তথ্য</strong><small>খতিয়ান, দাগ, নকশা ও যাচাই</small></span><b aria-hidden="true">→</b></a>
+      <a class="home-quick-card home-quick-card-accent" href="order.html"><span class="home-quick-icon">📋</span><span><strong>কাজের অনুরোধ</strong><small>প্রয়োজনীয় তথ্য দিয়ে অনুরোধ পাঠান</small></span><b aria-hidden="true">→</b></a>
+    </div>
+  </div>
+</section>
+
 <section class="section knowledge-front-banner" aria-labelledby="knowledge-front-title">
   <div class="container">
     <div class="knowledge-front-shell">
@@ -268,7 +304,7 @@
       <article class="trust-card"><span class="trust-icon">↗</span><div><strong>সরাসরি যোগাযোগ</strong><p>কাজের প্রয়োজন বুঝে ফোন, WhatsApp অথবা Work Request-এর মাধ্যমে যোগাযোগ করুন।</p></div></article>
     </div>
     <div class="review-placeholder">
-      <div><span class="review-stars" aria-hidden="true">★★★★★</span><strong>ক্লায়েন্ট রিভিউ</strong><p>প্রকৃত ক্লায়েন্টের অনুমোদিত রিভিউ সংগ্রহ হলে এই অংশে সংক্ষিপ্ত, যাচাইযোগ্য মতামত প্রকাশ করা যাবে।</p></div>
+      <div><strong>ক্লায়েন্ট রিভিউ</strong><p>প্রকৃত ক্লায়েন্টের অনুমোদিত মতামত সংগ্রহ হলে এই অংশে সংক্ষিপ্ত ও যাচাইযোগ্য রিভিউ প্রকাশ করা হবে।</p></div>
       <a class="btn btn-outline" href="feedback.html">মতামত দিন →</a>
     </div>
   </div>
