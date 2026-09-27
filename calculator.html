@@ -453,7 +453,10 @@
 <div class="multi-field-toolbar" id="multiFieldPlacement">
   <div class="calc-field"><label for="mfBaseField">১. কোন ক্ষেত্রের পাশে আঁকবেন?</label><select id="mfBaseField"><option value="__first__">প্রথম ক্ষেত্র / নতুন শুরু</option></select></div>
   <div class="calc-field"><label for="mfSide">২. কোন পাশে?</label><select id="mfSide"><option value="north">↑ উত্তর</option><option value="east">→ পূর্ব</option><option value="south">↓ দক্ষিণ</option><option value="west">← পশ্চিম</option></select></div>
+  <div class="calc-field"><label for="mfAttachMode">৩. ওই পাশের কোথায় যুক্ত হবে?</label><select id="mfAttachMode"><option value="center">↕ মাঝখানে</option><option value="north">↑ উত্তর প্রান্তে</option><option value="south">↓ দক্ষিণ প্রান্তে</option><option value="custom">📏 নির্দিষ্ট দূরত্বে</option></select></div>
+  <div class="calc-field" id="mfAttachOffsetWrap" style="display:none"><label for="mfAttachRef">নির্দিষ্ট দূরত্ব কোন দিক থেকে?</label><select id="mfAttachRef"><option value="start">↑ উত্তর থেকে</option><option value="end">↓ দক্ষিণ থেকে</option></select><label for="mfAttachOffsetFt" style="margin-top:8px"><span id="mfAttachOffsetLabel">উত্তর প্রান্ত থেকে দূরত্ব</span></label><div class="feet-inch"><input id="mfAttachOffsetFt" type="number" min="0" step="any" placeholder="ফুট"><input id="mfAttachOffsetIn" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি"></div></div>
 </div>
+<div class="multi-field-status" id="mfAttachInfo" role="status">মাঝখানে যুক্ত হলে সীমানার দুই প্রান্তে সমান ফাঁক থাকবে। নতুন ক্ষেত্রের মাপ দেওয়ার পর উত্তর/দক্ষিণ (বা পশ্চিম/পূর্ব) দিক থেকে সঠিক দূরত্ব দেখানো হবে।</div>
 <div class="multi-field-status" id="mfPlacementStatus" role="status">প্রথম ক্ষেত্র তৈরি করুন। দ্বিতীয়/পরবর্তী ক্ষেত্রের আগে কোন ক্ষেত্রের উত্তর/দক্ষিণ/পূর্ব/পশ্চিম পাশে হবে তা নির্বাচন করুন।</div>
 <div class="shape-dimension-head"><strong>📏 ৩. নতুন/নির্বাচিত ক্ষেত্রের বাহুর মাপ</strong><span>ফুট + ইঞ্চি</span></div>
 <div class="calc-grid shape-dimension-grid" style="margin-top:12px">
@@ -1250,28 +1253,104 @@
     function sideEdges(side){
       return {baseEdge:{north:0,east:1,south:2,west:3}[side],newEdge:{north:2,east:3,south:0,west:1}[side]};
     }
-    function alignToBase(shape,base,side){
-      // বিদ্যমান shape-এর আকার/point-edit অক্ষুণ্ণ রেখে শুধু RIGID MOVE করি:
-      // সংযুক্ত দুই বাহু একই সরলরেখায়, একই মধ্যবিন্দুতে থাকবে—তাই ফাঁকা থাকবে না।
+    function attachmentMeta(side){
+      // যে বাহুতে নতুন ক্ষেত্র যুক্ত হচ্ছে, তার বরাবর অবস্থান মাপার দুই প্রান্ত।
+      // পূর্ব/পশ্চিম পাশে বসালে উত্তর↕দক্ষিণ; উত্তর/দক্ষিণ পাশে বসালে পশ্চিম↔পূর্ব।
+      if(side==='east'||side==='west')return {start:'উত্তর',end:'দক্ষিণ',startArrow:'↑',endArrow:'↓'};
+      return {start:'পশ্চিম',end:'পূর্ব',startArrow:'←',endArrow:'→'};
+    }
+    function attachmentModeLabels(side){
+      const meta=attachmentMeta(side);
+      return {
+        center:'↕ মাঝখানে',
+        start:meta.startArrow+' '+meta.start+' প্রান্তে',
+        end:meta.endArrow+' '+meta.end+' প্রান্তে',
+        custom:'📏 নির্দিষ্ট দূরত্বে'
+      };
+    }
+    function attachSettings(){
+      const side=$('mfSide')?.value||'east', mode=$('mfAttachMode')?.value||'center';
+      const ft=Number($('mfAttachOffsetFt')?.value||0), inch=Number($('mfAttachOffsetIn')?.value||0);
+      const ref=$('mfAttachRef')?.value||'start';
+      return {mode,offset:Math.max(0,ft+inch/12),ref};
+    }
+    function normalizedAttach(f){
+      return {mode:f?.attachMode||'center',offset:Math.max(0,Number(f?.attachOffset)||0),ref:f?.attachRef||'start'};
+    }
+    function alignToBase(shape,base,side,attach){
+      // সংযুক্ত দুই বাহু একই সরলরেখায় থাকবে; attach দিয়ে সেই বাহুর বরাবর অবস্থান নির্ধারণ হয়।
+      // east/west হলে reference হলো উত্তর প্রান্ত, north/south হলে reference হলো পশ্চিম প্রান্ত।
       const {baseEdge,newEdge}=sideEdges(side);
       const bv=edgeVec(base,baseEdge), lv=edgeVec(shape,newEdge);
       const bl=Math.hypot(bv[0],bv[1]), ll=Math.hypot(lv[0],lv[1]);
       if(!(bl>1e-9&&ll>1e-9))return shape.map(p=>[...p]);
+      const meta=attachmentMeta(side), a=attach||{mode:'center',offset:0};
+      let startOffset=(bl-ll)/2;
+      if(a.mode==='north')startOffset=0;
+      else if(a.mode==='south')startOffset=bl-ll;
+      else if(a.mode==='custom'){
+        const off=Math.max(0,Number(a.offset)||0), maxGap=Math.max(0,bl-ll);
+        startOffset=(a.ref==='end') ? (maxGap-off) : off;
+      }
+      if(startOffset<0)startOffset=0;
+      if(startOffset>bl-ll)startOffset=Math.max(0,bl-ll);
+      const ux=bv[0]/bl,uy=bv[1]/bl;
       const targetAng=Math.atan2(-bv[1],-bv[0]), localAng=Math.atan2(lv[1],lv[0]);
       const r=rotatePts(shape,targetAng-localAng);
-      const bm=edgeMid(base,baseEdge), rm=edgeMid(r,newEdge);
-      return translate(r,bm[0]-rm[0],bm[1]-rm[1]);
+      const bp=base[baseEdge];
+      const targetMid=[bp[0]+ux*(startOffset+ll/2),bp[1]+uy*(startOffset+ll/2)];
+      const rm=edgeMid(r,newEdge);
+      return translate(r,targetMid[0]-rm[0],targetMid[1]-rm[1]);
     }
-    function placeNext(local,base,side){return alignToBase(local,base,side);}
+    function placementInfo(base,shape,side,attach){
+      if(!base||!shape)return 'প্রথমে ক্ষেত্রের মাপ দিন।';
+      const {baseEdge}=sideEdges(side), bl=Math.hypot(...edgeVec(base,baseEdge)), ll=Math.hypot(...edgeVec(shape,sideEdges(side).newEdge));
+      const meta=attachmentMeta(side), gap=bl-ll, a=attach||{mode:'center',offset:0};
+      if(gap<-1e-7)return meta.start+' থেকে '+ftInText(bl)+' হলেও নতুন ক্ষেত্রের যুক্ত বাহু '+ftInText(ll)+' — এটি ওই পাশে সম্পূর্ণভাবে বসবে না।';
+      let fromStart=gap/2;
+      if(a.mode==='north')fromStart=0;
+      else if(a.mode==='south')fromStart=gap;
+      else if(a.mode==='custom'){
+        const off=Math.max(0,Number(a.offset)||0);
+        fromStart=(a.ref==='end') ? Math.max(0,gap-off) : Math.min(gap,off);
+      }
+      if(fromStart>gap)fromStart=gap;
+      const fromEnd=gap-fromStart;
+      const modeText=a.mode==='center'?'মাঝখানে':a.mode==='north'?meta.start+' প্রান্তে':a.mode==='south'?meta.end+' প্রান্তে':('নির্দিষ্ট দূরত্বে • '+(a.ref==='end'?meta.end:meta.start)+' থেকে '+ftInText(Math.max(0,Number(a.offset)||0)));
+      return 'যুক্তি: '+modeText+' • '+meta.start+' থেকে '+ftInText(fromStart)+' • '+meta.end+' থেকে '+ftInText(fromEnd)+' • মোট ফাঁকা অংশ '+ftInText(gap);
+    }
+    function updateAttachUI(){
+      const side=$('mfSide')?.value||'east', meta=attachmentMeta(side), mode=$('mfAttachMode')?.value||'center';
+      const wrap=$('mfAttachOffsetWrap'), label=$('mfAttachOffsetLabel'), ref=$('mfAttachRef'), modeSel=$('mfAttachMode');
+      // সংযুক্তির দিক অনুযায়ী অপশনগুলো স্বয়ংক্রিয়ভাবে বদলাবে:
+      // উত্তর/দক্ষিণে বসালে পশ্চিম↔পূর্ব, পূর্ব/পশ্চিমে বসালে উত্তর↕দক্ষিণ।
+      if(modeSel){
+        const current=modeSel.value||'center', L=attachmentModeLabels(side);
+        modeSel.innerHTML='<option value="center">'+L.center+'</option><option value="north">'+L.start+'</option><option value="south">'+L.end+'</option><option value="custom">'+L.custom+'</option>';
+        modeSel.value=['center','north','south','custom'].includes(current)?current:'center';
+      }
+      const refStart=ref?.value||'start';
+      if(ref){
+        ref.innerHTML='<option value="start">'+meta.startArrow+' '+meta.start+' থেকে</option><option value="end">'+meta.endArrow+' '+meta.end+' থেকে</option>';
+        ref.value=refStart==='end'?'end':'start';
+      }
+      if(label)label.textContent=(refStart==='end'?meta.end:meta.start)+' প্রান্ত থেকে দূরত্ব';
+      if(wrap)wrap.style.display=mode==='custom'?'block':'none';
+      const baseVal=$('mfBaseField')?.value||'__first__';
+      const base=baseVal==='__first__'?null:saved.find(f=>String(f.id)===String(baseVal));
+      const local=localFromDims(dims());
+      if($('mfAttachInfo'))$('mfAttachInfo').textContent=base&&local?placementInfo(base,local,side,attachSettings()):'মাঝখানে যুক্ত হলে নির্বাচিত পাশের দুই প্রান্তে সমান ফাঁক থাকবে। 새로운 ক্ষেত্রের মাপ দেওয়ার পর '+meta.start+' ও '+meta.end+' দিক থেকে সঠিক দূরত্ব দেখানো হবে।';
+    }
+    function placeNext(local,base,side,attach){return alignToBase(local,base,side,attach);}
     function reflowDependents(baseId){
-      // যে ক্ষেত্রগুলো এই ক্ষেত্রের ওপর SNAP হয়ে আছে, তাদের নতুন অবস্থানও ধারাবাহিকভাবে ঠিক করি।
+      // যে ক্ষেত্রগুলো এই ক্ষেত্রের ওপর SNAP হয়ে আছে, তাদের সংরক্ষিত attachment অবস্থান অনুযায়ী ধারাবাহিকভাবে বসাই।
       const walk=(parentId)=>{
         saved.forEach(f=>{
           if(String(f.baseId)!==String(parentId))return;
           const base=saved.find(x=>String(x.id)===String(parentId));
           if(!base)return;
-          const side=f.side||'east';
-          f.pts=alignToBase(f.pts,base.pts,side);
+          const side=f.side||'east', attach=normalizedAttach(f);
+          f.pts=alignToBase(f.pts,base.pts,side,attach);
           f.area=area(f.pts);
           walk(f.id);
         });
@@ -1318,7 +1397,7 @@
     }
     function localFromDims(v){const n=v.filter(x=>x>0).length;return n===3?triPoints(v.slice(0,3)):n===4?quadPoints(v):null}
     function renderMain(){const v=dims(),pts=localFromDims(v);syncHidden(v);grid(mctx,main.width,main.height);if(pts){const tr=fitAll([{pts}],main.width,main.height);drawField(mctx,pts,v,v.filter(x=>x>0).length===3?'৩ বাহুর বর্তমান ক্ষেত্র':'৪ বাহুর বর্তমান ক্ষেত্র',tr,0,.18,true);const sf=area(pts);$('shapeStatus').textContent='SNAP ON: সব ক্ষেত্র একই ফুট–ইঞ্চি একক ও একই স্কেলে তৈরি হচ্ছে।';$('shapeResult').innerHTML='<div class="multi-field-kpis"><div class="multi-field-kpi"><strong>'+bn(sf)+' বর্গফুট</strong><span>আনুমানিক ক্ষেত্রফল</span></div><div class="multi-field-kpi"><strong>'+bn(sf/435.6)+' শতাংশ</strong><span>ডেসিমেল</span></div><div class="multi-field-kpi"><strong>'+bn(sf/10.7639104167)+' বর্গমিটার</strong><span>বর্গমিটার</span></div></div>'}else{$('shapeStatus').textContent=v.filter(x=>x>0).length<3?'কমপক্ষে ৩টি বাহুর মাপ দিন।':'এই মাপ দিয়ে বৈধ আনুমানিক ক্ষেত্র তৈরি করা যাচ্ছে না।';$('shapeResult').innerHTML=''}}
-    function ensureCurrentFromInputs(){const v=dims(),local=localFromDims(v);if(!local)return null;if(selectedId){const f=saved.find(x=>x.id===selectedId);if(f){const oldC=centroid(f.pts),newC=centroid(local);current={...f,pts:translate(local,oldC[0]-newC[0],oldC[1]-newC[1]),v,area:area(local)};return current}}let base=null,side=$('mfSide')?.value||'east';const baseVal=$('mfBaseField')?.value||'__first__';if(baseVal!=='__first__')base=saved.find(f=>String(f.id)===String(baseVal));const pts=base?placeNext(local,base.pts,side):translate(local,-centroid(local)[0],-centroid(local)[1]);current={id:null,name:'নতুন ক্ষেত্র',v,pts,area:area(local),baseId:base?.id||null,side};return current}
+    function ensureCurrentFromInputs(){const v=dims(),local=localFromDims(v);if(!local)return null;if(selectedId){const f=saved.find(x=>x.id===selectedId);if(f){const oldC=centroid(f.pts),newC=centroid(local);current={...f,pts:translate(local,oldC[0]-newC[0],oldC[1]-newC[1]),v,area:area(local)};return current}}let base=null,side=$('mfSide')?.value||'east';const attach=attachSettings();const baseVal=$('mfBaseField')?.value||'__first__';if(baseVal!=='__first__')base=saved.find(f=>String(f.id)===String(baseVal));if(base){const baseEdge=sideEdges(side).baseEdge,baseLen=Math.hypot(...edgeVec(base.pts,baseEdge)),newLen=Math.hypot(...edgeVec(local,sideEdges(side).newEdge));if(newLen>baseLen+1e-7){$('shapeStatus').textContent='নতুন ক্ষেত্রের যুক্ত বাহু '+ftInText(newLen)+'; নির্বাচিত '+side+' পাশের দৈর্ঘ্য '+ftInText(baseLen)+'. এই পাশে সম্পূর্ণভাবে বসাতে নতুন ক্ষেত্রের যুক্ত বাহু ছোট বা সমান হতে হবে।';return null;}}const pts=base?placeNext(local,base.pts,side,attach):translate(local,-centroid(local)[0],-centroid(local)[1]);current={id:null,name:'নতুন ক্ষেত্র',v,pts,area:area(local),baseId:base?.id||null,side,attachMode:attach.mode,attachOffset:attach.offset,attachRef:attach.ref};return current}
     function drawAll(){grid(ctx,multi.width,multi.height);const all=saved.map((f,i)=>({...f,_i:i}));if(current&&!selectedId)all.push(current);let tr=lockedTr;
       if(!tr){tr=fitAll(all,multi.width,multi.height);}
       saved.forEach((f,i)=>drawField(ctx,f.pts,f.v,f.name||('ক্ষেত্র '+(i+1)),tr,i+1,.09,String(f.id)===String(selectedId)));
@@ -1331,7 +1410,7 @@
       if(!r){$('shapeStatus').textContent='বৈধ ৩/৪ বাহুর মাপ দিন।';return}
       const name=prompt('এই ক্ষেত্রের নাম লিখুন:',r.name&&r.name!=='নতুন ক্ষেত্র'?r.name:'ক্ষেত্র '+(saved.length+1));
       if(name===null)return;
-      const item={id:selectedId||Date.now(),name:name.trim()||('ক্ষেত্র '+(saved.length+1)),v:r.v.map(Number),pts:r.pts.map(p=>[...p]),area:area(r.pts),baseId:r.baseId||null,side:r.side||null};
+      const item={id:selectedId||Date.now(),name:name.trim()||('ক্ষেত্র '+(saved.length+1)),v:r.v.map(Number),pts:r.pts.map(p=>[...p]),area:area(r.pts),baseId:r.baseId||null,side:r.side||null,attachMode:r.attachMode||'center',attachOffset:Number(r.attachOffset)||0,attachRef:r.attachRef||'start'};
       const idx=saved.findIndex(x=>String(x.id)===String(item.id));
       if(idx>=0)saved[idx]=item;else saved.push(item);
       selectedId=item.id;current=null;editMode=true;persist();
@@ -1350,12 +1429,17 @@
       editMode=true;
       $('shapePointEdit').textContent='✋ পয়েন্ট এডিট: ON';
       $('mfBaseField').value='__first__';
-      $('mfPlacementStatus').textContent='“'+f.name+'” এডিট মোডে। উপরের ফুট–ইঞ্চি ঘরে সরাসরি মাপ পরিবর্তন করুন; তারপর “ক্ষেত্র সেভ করুন” চাপুন।';
+      $('mfAttachMode').value=f.attachMode||'center';
+      $('mfAttachRef').value=f.attachRef||'start';
+      $('mfAttachOffsetFt').value=f.attachOffset?Math.floor(Number(f.attachOffset)) : '';
+      $('mfAttachOffsetIn').value=f.attachOffset?((Number(f.attachOffset)-Math.floor(Number(f.attachOffset)))*12).toFixed(3) : '';
+      updateAttachUI();
+      $('mfPlacementStatus').textContent='“'+f.name+'” এডিট মোডে। এই ক্ষেত্রের সংযুক্তির অবস্থান সংরক্ষিত আছে; ফুট–ইঞ্চি বদলালে সেই অ্যালাইনমেন্ট বজায় থাকবে।';
       $('shapeStatus').textContent='“'+f.name+'” এডিট হচ্ছে — ফুট ও ইঞ্চি পরিবর্তন করলে স্কেচ ও ক্ষেত্রফল সঙ্গে সঙ্গে আপডেট হবে।';
       renderMain();drawAll();
     }
     function del(id){saved=saved.filter(x=>String(x.id)!==String(id));if(String(selectedId)===String(id)){selectedId=null;current=null;lockedTr=null;setInputs([0,0,0,0])}persist();renderList();renderMain()}
-    function newField(){view={zoom:1,panX:0,panY:0};pinch=null;lockedTr=null;selectedId=null;current=null;editMode=false;$('shapePointEdit').textContent='✋ পয়েন্ট এডিট: OFF';setInputs([0,0,0,0]);$('shapeResult').innerHTML='';const n=saved.length+1;$('shapeStatus').textContent=n===1?'প্রথম ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন।':'আগে নির্বাচন করুন: কোন ক্ষেত্রের উত্তর/দক্ষিণ/পূর্ব/পশ্চিম পাশে নতুন ক্ষেত্রটি হবে।';$('mfPlacementStatus').textContent=n===1?'প্রথম ক্ষেত্র তৈরি হবে।':'নতুন ক্ষেত্রের আগে “কোন ক্ষেত্রের পাশে” এবং “কোন পাশে” নির্বাচন করুন।';drawAll()}
+    function newField(){view={zoom:1,panX:0,panY:0};pinch=null;lockedTr=null;selectedId=null;current=null;editMode=false;$('shapePointEdit').textContent='✋ পয়েন্ট এডিট: OFF';$('mfAttachMode').value='center';$('mfAttachRef').value='start';$('mfAttachOffsetFt').value='';$('mfAttachOffsetIn').value='';updateAttachUI();setInputs([0,0,0,0]);$('shapeResult').innerHTML='';const n=saved.length+1;$('shapeStatus').textContent=n===1?'প্রথম ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন।':'আগে নির্বাচন করুন: কোন ক্ষেত্রের উত্তর/দক্ষিণ/পূর্ব/পশ্চিম পাশে নতুন ক্ষেত্রটি হবে।';$('mfPlacementStatus').textContent=n===1?'প্রথম ক্ষেত্র তৈরি হবে।':'নতুন ক্ষেত্রের আগে “কোন ক্ষেত্রের পাশে” এবং “কোন পাশে” নির্বাচন করুন।';drawAll()}
     function clear(){view={zoom:1,panX:0,panY:0};pinch=null;lockedTr=null;selectedId=null;current=null;editMode=false;$('shapePointEdit').textContent='✋ পয়েন্ট এডিট: OFF';setInputs([0,0,0,0]);$('shapeResult').innerHTML='';$('shapeStatus').textContent='মাপ পরিষ্কার করা হয়েছে।';drawAll()}
     function updateCurrent(){
       const v=dims();
@@ -1370,7 +1454,7 @@
           // এই ক্ষেত্রটি অন্য কোনো ক্ষেত্রের সঙ্গে যুক্ত থাকলে তার নিজের ALIGNMENT অক্ষুণ্ণ রাখি।
           if(f.baseId!=null){
             const base=saved.find(x=>String(x.id)===String(f.baseId));
-            if(base) f.pts=alignToBase(f.pts,base.pts,f.side||'east');
+            if(base) f.pts=alignToBase(f.pts,base.pts,f.side||'east',normalizedAttach(f));
           }
           // বর্তমান ক্ষেত্র বড়/ছোট হলে এর সঙ্গে যুক্ত পরের ক্ষেত্রগুলোও নতুন edge-এ সঙ্গে সঙ্গে বসবে।
           reflowDependents(f.id);
@@ -1395,8 +1479,12 @@
         :'পয়েন্ট এডিট বন্ধ। ফুট–ইঞ্চি দিয়ে মাপ পরিবর্তন করুন।';
       drawAll();
     });
-    $('mfBaseField')?.addEventListener('change',()=>{if(!selectedId){$('mfPlacementStatus').textContent=$('mfBaseField').value==='__first__'?'প্রথম ক্ষেত্র হিসেবে তৈরি হবে।':'নির্বাচিত ক্ষেত্রের কোন পাশে বসবে তা “কোন পাশে?” থেকে নির্বাচন করুন।';updateCurrent()}});
-    $('mfSide')?.addEventListener('change',()=>{if(!selectedId)updateCurrent()});
+    $('mfBaseField')?.addEventListener('change',()=>{if(!selectedId){$('mfPlacementStatus').textContent=$('mfBaseField').value==='__first__'?'প্রথম ক্ষেত্র হিসেবে তৈরি হবে।':'নির্বাচিত ক্ষেত্রের কোন পাশে ও কোন অবস্থানে বসবে তা নির্বাচন করুন।';updateAttachUI();updateCurrent()}});
+    $('mfSide')?.addEventListener('change',()=>{updateAttachUI();if(!selectedId)updateCurrent()});
+    $('mfAttachMode')?.addEventListener('change',()=>{updateAttachUI();if(!selectedId)updateCurrent()});
+    $('mfAttachRef')?.addEventListener('change',()=>{updateAttachUI();if(!selectedId)updateCurrent()});
+    $('mfAttachOffsetFt')?.addEventListener('input',()=>{updateAttachUI();if(!selectedId)updateCurrent()});
+    $('mfAttachOffsetIn')?.addEventListener('input',()=>{updateAttachUI();if(!selectedId)updateCurrent()});
     const dist=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
     function canvasXY(e){const r=multi.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]}
     multi.addEventListener('pointerdown',e=>{
@@ -1451,7 +1539,7 @@
     });
     multi.addEventListener('pointercancel',e=>{if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2)pinch=null;}dragIndex=-1;});
     // SNAP ON: প্রথম ক্ষেত্র দেখাবে, কিন্তু দ্বিতীয়/তৃতীয় ক্ষেত্র তৈরি করার আগে পাশ নির্বাচন বাধ্যতামূলক।
-    setInputs(saved[0]?.v||[50,80,55,85]); if(saved[0]){selectedId=saved[0].id;current=null}else{selectedId=null;current=null} updateBaseOptions(); renderMain(); renderList();
+    setInputs(saved[0]?.v||[50,80,55,85]); if(saved[0]){selectedId=saved[0].id;current=null}else{selectedId=null;current=null} updateBaseOptions(); updateAttachUI(); renderMain(); renderList();
   })();
 
   // -------- Leaflet map + polygon area --------
