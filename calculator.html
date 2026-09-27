@@ -146,6 +146,11 @@
 .calc-tabs .calc-tab:focus-visible,.calc-btn:focus-visible,.registry-actions button:focus-visible,.map-tools button:focus-visible{outline:3px solid rgba(8,116,123,.24);outline-offset:2px}
 @media(max-width:850px){.result-list{grid-template-columns:repeat(2,minmax(0,1fr))}.calc-tabs{position:static}}
 @media(max-width:620px){.calc-intro{padding:21px 18px;border-radius:19px}.calc-panel{padding:19px;border-radius:18px}.result-list{grid-template-columns:1fr}.calc-tab{min-height:48px}.calc-actions .calc-btn{width:100%}.result-main{font-size:24px}}
+
+/* ===== Professional Muslim Inheritance Calculator ===== */
+.inherit-hero{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:22px;border-radius:18px;background:linear-gradient(135deg,#082336,#08747b);color:#fff;margin-bottom:14px;box-shadow:0 14px 35px rgba(8,35,54,.16)}
+.inherit-hero h3{margin:7px 0 4px;font-size:25px;color:#fff}.inherit-hero p{margin:0;color:rgba(255,255,255,.86);font-size:14px}.inherit-badge{display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.14);font-size:12px;font-weight:900}.inherit-mark{text-align:center;min-width:92px;font-size:22px;font-weight:900;line-height:1.1}.inherit-mark span{font-size:12px;color:#d9f5f4}.inherit-steps{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 18px;padding:10px;border:1px solid var(--line);border-radius:14px;background:#fff}.inherit-steps span{padding:7px 11px;border-radius:999px;background:#f1f6f7;color:#526872;font-size:12px}.inherit-steps span.active{background:#e6f7f6;color:#08747b}.inherit-steps i{font-style:normal;color:#a1b2b8}.inherit-card{margin-top:16px;padding:18px;border:1px solid #dbe7ea;border-radius:18px;background:linear-gradient(180deg,#fff,#fbfdfd);box-shadow:0 8px 22px rgba(8,35,54,.05)}.inherit-card-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.inherit-card-head span:first-child{color:#08747b;font-weight:900;font-size:13px}.inherit-card-head h4{margin:3px 0 0;color:var(--navy);font-size:20px}.mini-tip{font-size:11px;padding:6px 9px;border-radius:999px;background:#f1f6f7;color:#60737c}.heir-groups{display:grid;gap:14px;margin-top:14px}.heir-group{padding:14px;border:1px solid #e3ecee;border-radius:15px;background:#f9fbfb}.heir-group h5{margin:0 0 11px;color:#17313d;font-size:15px}.heir-group .heirs-grid{margin:0}.heir-field{position:relative;background:#fff;border:1px solid #d8e3e6;padding:11px;border-radius:13px;box-shadow:0 3px 10px rgba(8,35,54,.04)}.heir-field label{min-height:40px;display:flex;align-items:center}.heir-counter{display:grid;grid-template-columns:36px minmax(0,1fr) 36px;gap:7px;align-items:center}.heir-counter button{width:36px;height:36px;border:0;border-radius:10px;background:#8fe83b;color:#174b14;font-size:24px;font-weight:900;cursor:pointer;line-height:1}.heir-counter input{text-align:center;font-weight:900;font-size:17px;background:#fff;border:1px solid #ccdadd;border-radius:9px;min-height:36px;width:100%;box-sizing:border-box}.asset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:13px}.asset-box{padding:15px;border:1px solid #dbe7ea;border-radius:15px;background:#fff;text-align:center}.asset-icon{font-size:25px;margin-bottom:4px}.asset-box label{display:block;font-weight:900;color:var(--navy);margin-bottom:7px}.asset-box label small{font-weight:700;color:#70828a}.asset-box input{width:100%;box-sizing:border-box;text-align:center;border:1px solid #cbd8de;border-radius:10px;padding:10px;font:inherit;font-weight:800}.inherit-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}.inherit-primary{background:linear-gradient(135deg,#08747b,#0b9aa0);color:#fff;box-shadow:0 8px 18px rgba(8,116,123,.22)}.inherit-result{background:linear-gradient(180deg,#f5fbfb,#fff);border:1px solid #cde5e6}.result-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.result-kpi{padding:12px;border-radius:13px;background:#fff;border:1px solid #dbe7ea;text-align:center}.result-kpi strong{display:block;font-size:19px;color:#08747b}.result-kpi span{font-size:11px;color:#687b84}.method-box{margin-top:14px;padding:13px;border-radius:13px;background:#fff;border-left:4px solid #08747b}.method-box ul{margin:7px 0 0 18px;padding:0}
+@media(max-width:700px){.inherit-hero{align-items:flex-start}.inherit-mark{display:none}.asset-grid,.result-kpis{grid-template-columns:1fr}.inherit-steps i{display:none}.inherit-steps span{flex:1;text-align:center}.heir-field label{min-height:34px}}
 </style>
 
 <style id="professional-land-suite">
@@ -478,32 +483,33 @@
 </section>
 
 <section class="calc-panel" id="panel-inheritance" role="tabpanel">
-
-<h3>মুসলিম উত্তরাধিকার — সাধারণ পারিবারিক কেস</h3>
-<p class="lead" style="font-size:15px">এই অংশে জীবিত স্বামী/স্ত্রী, পিতা, মাতা, পুত্র ও কন্যার ভিত্তিতে সাধারণ সুন্নি-হানাফি ফারায়েজের হিসাব করা হয়। বাংলাদেশের Muslim Personal Law (Shariat) Application Act, 1937 এবং Muslim Family Laws Ordinance, 1961-এর প্রাসঙ্গিক বিধান বিবেচনায় রাখা হয়েছে।</p>
-<div class="warning"><strong>প্রথমে নিট উত্তরাধিকারযোগ্য সম্পত্তি নির্ধারণ করুন:</strong> দাফন/শেষকৃত্যের প্রয়োজনীয় খরচ, দেনা এবং আইনসম্মত দাবিগুলো নিষ্পত্তির পর যে সম্পত্তি উত্তরাধিকার হিসেবে বণ্টনযোগ্য, সেটিই এখানে লিখুন।</div>
-<div class="calc-grid" style="margin-top:18px">
-<div class="calc-field"><label for="estate">নিট উত্তরাধিকারযোগ্য সম্পত্তি (৳)</label><input id="estate" type="number" min="0" step="0.01" placeholder="যেমন 2400000"></div>
-<div class="calc-field"><label for="deceasedGender">মৃত ব্যক্তি</label><select id="deceasedGender"><option value="male">পুরুষ</option><option value="female">নারী</option></select></div>
+<div class="inherit-hero">
+  <div><span class="inherit-badge">⚖️ বাংলাদেশ • মুসলিম উত্তরাধিকার</span><h3>প্রফেশনাল মুসলিম উত্তরাধিকার ক্যালকুলেটর</h3><p>জীবিত উত্তরাধিকারী নির্বাচন করুন, নিট সম্পত্তি দিন এবং অংশ, শতাংশ ও সম্পদের পরিমাণসহ বিস্তারিত ফলাফল দেখুন।</p></div>
+  <div class="inherit-mark">ফারায়েজ<br><span>+ আইন</span></div>
 </div>
-<div class="heirs-grid" style="margin-top:18px">
-<div class="heir-field" id="wifeField"><label for="wives">জীবিত স্ত্রী (জন)</label><input id="wives" type="number" min="0" max="4" step="1" value="1"></div>
-<div class="heir-field" id="husbandField"><label for="husband">জীবিত স্বামী</label><select id="husband"><option value="1">আছেন</option><option value="0">নেই</option></select></div>
-<div class="heir-field"><label for="father">জীবিত পিতা</label><select id="father"><option value="1">আছেন</option><option value="0">নেই</option></select></div>
-<div class="heir-field"><label for="mother">জীবিত মাতা</label><select id="mother"><option value="1">আছেন</option><option value="0">নেই</option></select></div>
-<div class="heir-field"><label for="sons">জীবিত পুত্র (জন)</label><input id="sons" type="number" min="0" step="1" value="1"></div>
-<div class="heir-field"><label for="daughters">জীবিত কন্যা (জন)</label><input id="daughters" type="number" min="0" step="1" value="1"></div>
+<div class="inherit-steps"><span class="active">১ <b>উত্তরাধিকারী</b></span><i>→</i><span>২ <b>সম্পদ</b></span><i>→</i><span>৩ <b>ফলাফল</b></span></div>
+<div class="warning"><strong>গুরুত্বপূর্ণ:</strong> আগে দাফন/শেষকৃত্যের প্রয়োজনীয় খরচ, বৈধ দেনা ও প্রযোজ্য দাবিগুলো নিষ্পত্তি করে <strong>নিট উত্তরাধিকারযোগ্য সম্পত্তি</strong> নির্ধারণ করুন।</div>
+<div class="inherit-card"><div class="inherit-card-head"><div><span>👤 ধাপ ১</span><h4>মৃত ব্যক্তির তথ্য</h4></div></div>
+<div class="calc-grid"><div class="calc-field"><label for="deceasedGender">মৃত ব্যক্তি</label><select id="deceasedGender"><option value="male">পুরুষ</option><option value="female">নারী</option></select></div></div></div>
+<div class="inherit-card"><div class="inherit-card-head"><div><span>👨‍👩‍👧‍👦 ধাপ ২</span><h4>জীবিত আত্মীয়-স্বজনের তালিকা</h4></div><span class="mini-tip">− / সংখ্যা / +</span></div>
+<p class="calc-help">জীবিত উত্তরাধিকারীর সংখ্যা দিন। একই সম্পর্কের একাধিক ব্যক্তি থাকলে সংখ্যা ব্যবহার করুন।</p>
+<div class="heir-groups">
+<div class="heir-group"><h5>💍 স্বামী/স্ত্রী ও সন্তান</h5><div class="heirs-grid" id="heirs-core"></div></div>
+<div class="heir-group"><h5>🌳 পুত্র/কন্যার বংশধর</h5><div class="heirs-grid" id="heirs-descendants"></div></div>
+<div class="heir-group"><h5>👴 পিতা-মাতা ও দাদা-দাদি</h5><div class="heirs-grid" id="heirs-ascendants"></div></div>
+<div class="heir-group"><h5>🤝 ভাই-বোন ও তাঁদের বংশধর</h5><div class="heirs-grid" id="heirs-siblings"></div></div>
+<div class="heir-group"><h5>🌿 চাচা ও চাচাতো বংশ</h5><div class="heirs-grid" id="heirs-uncles"></div></div>
+</div></div>
+<div class="inherit-card"><div class="inherit-card-head"><div><span>💰 ধাপ ৩</span><h4>সম্পদের বিবরণ</h4></div></div>
+<div class="asset-grid">
+<div class="asset-box"><div class="asset-icon">🌾</div><label for="estateLand">জমি <small>(শতাংশ)</small></label><input id="estateLand" type="number" min="0" step="any" placeholder="যেমন ১০.৫০"></div>
+<div class="asset-box"><div class="asset-icon">৳</div><label for="estateMoney">মুদ্রা <small>(টাকা)</small></label><input id="estateMoney" type="number" min="0" step="0.01" placeholder="যেমন 2400000"></div>
+<div class="asset-box"><div class="asset-icon">🏅</div><label for="estateGold">স্বর্ণ <small>(ভরি)</small></label><input id="estateGold" type="number" min="0" step="any" placeholder="যেমন ৫.২৫"></div>
 </div>
-<div class="calc-actions"><button class="calc-btn calc-primary" id="inheritCalc">উত্তরাধিকার হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="inheritance">ফর্ম পরিষ্কার</button></div>
-<div class="calc-result" id="inheritResult" aria-live="polite"></div>
-<div class="legal-note">
-<strong>বাংলাদেশের আইনি প্রেক্ষাপট:</strong> মুসলিমদের intestate succession-এর ক্ষেত্রে Muslim Personal Law (Shariat) Application Act, 1937 প্রযোজ্য; আর Muslim Family Laws Ordinance, 1961-এর ধারা ৪ অনুযায়ী কোনো পুত্র বা কন্যা উত্তরাধিকার খোলার আগে মারা গেলে তার জীবিত সন্তানরা নির্দিষ্ট পরিস্থিতিতে per stirpes সেই পুত্র/কন্যা জীবিত থাকলে যে অংশ পেতেন তার সমপরিমাণ অংশ পেতে পারেন। এই পেজের সাধারণ ক্যালকুলেটর ওই জটিল প্রতিনিধিত্বমূলক কেস স্বয়ংক্রিয়ভাবে নিষ্পত্তি করে না।
-<div class="sources">
-<a href="https://bdlaws.minlaw.gov.bd/act-print-173.html" target="_blank" rel="noopener noreferrer">Muslim Personal Law (Shariat) Application Act, 1937</a>
-<a href="https://bdlaws.minlaw.gov.bd/act-print-305/section-print-13528.html" target="_blank" rel="noopener noreferrer">Muslim Family Laws Ordinance, 1961 — ধারা ৪</a>
-<a href="https://inheritance.gov.bd/" target="_blank" rel="noopener noreferrer">সরকারি উত্তরাধিকার তথ্য</a>
+<div class="inherit-actions"><button class="calc-btn inherit-primary" id="inheritCalc">⚖️ উত্তরাধিকার হিসাব করুন</button><button class="calc-btn calc-secondary" id="inheritReset">↺ সব পরিষ্কার</button></div>
 </div>
-</div>
+<div class="calc-result inherit-result" id="inheritResult" aria-live="polite"></div>
+<div class="legal-note"><strong>আইনি/তথ্যসূত্র:</strong> মুসলিমদের intestate succession-এর ক্ষেত্রে Muslim Personal Law (Shariat) Application Act, 1937 প্রাসঙ্গিক; Muslim Family Laws Ordinance, 1961-এর ধারা ৪ পূর্বমৃত পুত্র/কন্যার জীবিত সন্তানদের বিষয়ে বিশেষ বিধান দেয়। <div class="sources"><a href="https://bdlaws.minlaw.gov.bd/act-print-173.html" target="_blank" rel="noopener noreferrer">Shariat Application Act, 1937</a><a href="https://bdlaws.minlaw.gov.bd/act-print-305/section-print-13528.html" target="_blank" rel="noopener noreferrer">MFLO 1961 — ধারা ৪</a><a href="https://inheritance.gov.bd/" target="_blank" rel="noopener noreferrer">সরকারি উত্তরাধিকার তথ্য</a></div></div>
 </section>
 
 <section class="registry-upgrade" id="registry-calculator" aria-labelledby="registry-title">
@@ -729,87 +735,134 @@
   }
   $('deceasedGender').addEventListener('change',toggleGender); toggleGender();
 
-  const money=n=>'৳ '+Number(n).toLocaleString('bn-BD',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const frac=(n)=> {
-    const eps=1e-9, known=[[1,2,'১/২'],[1,3,'১/৩'],[1,4,'১/৪'],[1,6,'১/৬'],[1,8,'১/৮'],[2,3,'২/৩'],[5,6,'৫/৬']];
-    for(const [a,b,s] of known) if(Math.abs(n-a/b)<eps) return s;
-    return (n*100).toFixed(2)+'%';
-  };
+  const money=n=>'৳ '+Number(n||0).toLocaleString('bn-BD',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const frac=n=>{const k=[[1,2,'১/২'],[1,3,'১/৩'],[1,4,'১/৪'],[1,6,'১/৬'],[1,8,'১/৮'],[2,3,'২/৩'],[1,12,'১/১২'],[1,24,'১/২৪']];for(const [a,b,t] of k)if(Math.abs(n-a/b)<1e-8)return t;return (n*100).toFixed(2)+'%';};
+  const F=[
+    ['wives','জীবিত স্ত্রী','core'],['husband','জীবিত স্বামী','core'],['sons','জীবিত পুত্র','core'],['deceasedSons','মৃত পুত্র','core'],['daughters','জীবিত কন্যা','core'],['deceasedDaughters','মৃত কন্যা','core'],
+    ['deadSonSons','মৃত পুত্রের পুত্র','descendants'],['deadSonDaughters','মৃত পুত্রের কন্যা','descendants'],['deadDaughterSons','মৃত কন্যার পুত্র','descendants'],['deadDaughterDaughters','মৃত কন্যার কন্যা','descendants'],['sonsons','পুত্রের পুত্র','descendants'],['sondaughters','পুত্রের কন্যা','descendants'],
+    ['father','পিতা','ascendants'],['mother','মাতা','ascendants'],['grandfather','দাদা (পিতার পিতা)','ascendants'],['paternalGrandmother','দাদি (পিতার মাতা)','ascendants'],['maternalGrandmother','নানি (মাতার মাতা)','ascendants'],
+    ['fullBrothers','সহোদর ভাই','siblings'],['fullSisters','সহোদর বোন','siblings'],['paternalHalfBrothers','সৎ ভাই (বৈমাত্রেয়)','siblings'],['paternalHalfSisters','সৎ বোন (বৈমাত্রেয়)','siblings'],['maternalBrothers','সৎ ভাই (বৈপিত্রেয়)','siblings'],['maternalSisters','সৎ বোন (বৈপিত্রেয়)','siblings'],['brotherSons','সহোদর ভাইয়ের পুত্র','siblings'],['paternalBrotherSons','সৎ ভাই (বৈমাত্রেয়)-এর পুত্র','siblings'],['brotherSonSons','সহোদর ভাইয়ের পুত্রের পুত্র','siblings'],['paternalBrotherSonSons','সৎ ভাই (বৈমাত্রেয়)-এর পুত্রের পুত্র','siblings'],
+    ['paternalUncles','চাচা','uncles'],['paternalHalfUncles','চাচা (বৈমাত্রেয়)','uncles'],['paternalCousins','চাচাতো ভাই','uncles'],['paternalHalfCousins','চাচাতো ভাই (বৈমাত্রেয়)','uncles'],['paternalCousinSons','চাচাতো ভাইয়ের পুত্র','uncles'],['paternalHalfCousinSons','চাচাতো ভাই (বৈমাত্রেয়)-এর পুত্র','uncles'],['paternalCousinSonSons','চাচাতো ভাইয়ের পুত্রের পুত্র','uncles'],['paternalHalfCousinSonSons','চাচাতো ভাই (বৈমাত্রেয়)-এর পুত্রের পুত্র','uncles']
+  ];
+  const labels=Object.fromEntries(F.map(x=>[x[0],x[1]]));
+  ['core','descendants','ascendants','siblings','uncles'].forEach(g=>{const box=$('heirs-'+g);F.filter(x=>x[2]===g).forEach(([id,label])=>{const max=id==='wives'?4:99;box.insertAdjacentHTML('beforeend',`<div class="heir-field"><label for="${id}">${label}</label><div class="heir-counter"><button type="button" data-minus="${id}" aria-label="${label} কমান">−</button><input id="${id}" type="number" min="0" max="${max}" step="1" value="0"><button type="button" data-plus="${id}" aria-label="${label} বাড়ান">+</button></div></div>`);});});
+  document.querySelectorAll('[data-plus],[data-minus]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.plus||b.dataset.minus,i=$(id);let v=Math.max(0,Math.floor(+i.value||0));v+=b.dataset.plus?1:-1;v=Math.max(0,Math.min(+i.max||99,v));i.value=v;toggleGender();}));
+  function toggleGender(){const male=$('deceasedGender').value==='male';$('wives').closest('.heir-field').style.display=male?'block':'none';$('husband').closest('.heir-field').style.display=male?'none':'block';if(male)$('husband').value=0;else $('wives').value=0;}
+  $('deceasedGender').addEventListener('change',toggleGender);toggleGender();
 
-  $('inheritCalc').onclick=()=>{
-    const estate=+$('estate').value;
-    const gender=$('deceasedGender').value;
-    const wives=gender==='male'?Math.max(0,Math.floor(+$('wives').value||0)):0;
-    const husband=gender==='female'&&$('husband').value==='1'?1:0;
-    const father=$('father').value==='1'?1:0, mother=$('mother').value==='1'?1:0;
-    const sons=Math.max(0,Math.floor(+$('sons').value||0)), daughters=Math.max(0,Math.floor(+$('daughters').value||0));
-    const r=$('inheritResult');
-    if(!(estate>0)) return err(r,'নিট উত্তরাধিকারযোগ্য সম্পত্তির সঠিক পরিমাণ দিন।');
-    if(gender==='male'&&wives===0&&father===0&&mother===0&&sons===0&&daughters===0) return err(r,'কমপক্ষে একজন জীবিত উত্তরাধিকারী নির্বাচন করুন।');
-    if(gender==='female'&&husband===0&&father===0&&mother===0&&sons===0&&daughters===0) return err(r,'কমপক্ষে একজন জীবিত উত্তরাধিকারী নির্বাচন করুন।');
-
-    const hasDesc=sons>0||daughters>0;
-    const rows=[];
-    let fixed=0;
-    if(gender==='male'&&wives>0){
-      const sh=hasDesc?1/8:1/4; rows.push({name:wives===1?'স্ত্রী':'স্ত্রীগণ (সমষ্টিগত)',count:wives,share:sh,each:sh/wives,reason:hasDesc?'সন্তান/বংশধর থাকায় ১/৮':'সন্তান/বংশধর না থাকায় ১/৪'}); fixed+=sh;
-    }
-    if(gender==='female'&&husband){
-      const sh=hasDesc?1/4:1/2; rows.push({name:'স্বামী',count:1,share:sh,each:sh,reason:hasDesc?'সন্তান/বংশধর থাকায় ১/৪':'সন্তান/বংশধর না থাকায় ১/২'}); fixed+=sh;
-    }
-
-    // Mother: special Umarayn cases; otherwise 1/6 with descendant, or 2+ siblings (not entered here), else 1/3.
-    let motherShare=0, motherSpecial=false;
+  function v(id){return Math.max(0,Math.floor(+$(id).value||0));}
+  function add(rows,name,count,share,reason,branchKey){if(share>1e-10)rows.push({name,count,share,each:share/(count||1),reason,branchKey});}
+  function sum(o){return Object.values(o).reduce((a,b)=>a+b,0);}
+  function computeShares(){
+    const male=$('deceasedGender').value==='male', wives=v('wives'), husband=v('husband');
+    const sons=v('sons'), deadSons=v('deceasedSons'), daughters=v('daughters'), deadDaughters=v('deceasedDaughters');
+    const father=v('father'), mother=v('mother'), grandfather=v('grandfather'), pgm=v('paternalGrandmother'), mgm=v('maternalGrandmother');
+    const fullB=v('fullBrothers'), fullS=v('fullSisters'), patB=v('paternalHalfBrothers'), patS=v('paternalHalfSisters'), matB=v('maternalBrothers'), matS=v('maternalSisters');
+    const ss=v('sonsons'), sd=v('sondaughters');
+    const statutoryDesc=deadSons+deadDaughters, hasDesc=(sons+daughters+deadSons+deadDaughters+ss+sd)>0;
+    const hasMaleDesc=sons>0||ss>0;
+    const rows=[],notes=[];
+    function push(name,count,share,reason){if(share>1e-10)rows.push({name,count,share,each:share/(count||1),reason});}
+    if(male&&wives)push(wives===1?'স্ত্রী':'স্ত্রীগণ',wives,hasDesc?1/8:1/4,hasDesc?'সন্তান/পুত্রের সন্তান থাকায় ১/৮':'সন্তান/পুত্রের সন্তান না থাকায় ১/৪');
+    if(!male&&husband)push('স্বামী',1,hasDesc?1/4:1/2,hasDesc?'সন্তান/পুত্রের সন্তান থাকায় ১/৪':'সন্তান/পুত্রের সন্তান না থাকায় ১/২');
+    const spouseShare=male?(wives?(hasDesc?1/8:1/4):0):(husband?(hasDesc?1/4:1/2):0);
+    const siblingCount=fullB+fullS+patB+patS+matB+matS;
     if(mother){
-      if(father && !hasDesc && (gender==='male'?wives>0:husband)){
-        const spouseShare = gender==='male'?(wives>0?1/4:0):(husband?1/2:0);
-        motherShare=(1-spouseShare)/3; motherSpecial=true;
-      } else motherShare=hasDesc?1/6:1/3;
-      rows.push({name:'মাতা',count:1,share:motherShare,each:motherShare,reason:motherSpecial?'স্বামী/স্ত্রী ও পিতার সঙ্গে বিশেষ ক্ষেত্রে অবশিষ্টের ১/৩':hasDesc?'সন্তান/বংশধর থাকায় ১/৬':'সন্তান/বংশধর না থাকায় ১/৩'}); fixed+=motherShare;
+      let ms=(father&&!hasDesc&&spouseShare)?(1-spouseShare)/3:((hasDesc||siblingCount>=2)?1/6:1/3);
+      push('মাতা',1,ms,father&&!hasDesc&&spouseShare?'উমরিয়াতাইন: অবশিষ্টের ১/৩':((hasDesc||siblingCount>=2)?'সন্তান/বংশধর বা ২+ ভাই-বোন থাকায় ১/৬':'অন্যথায় ১/৩'));
     }
-
-    if(father && hasDesc){
-      const sh=1/6; rows.push({name:'পিতা',count:1,share:sh,each:sh,reason:sons>0?'পুত্র/পুরুষ বংশধর থাকায় ১/৬':'শুধু কন্যা থাকায় ১/৬ + অবশিষ্ট'}); fixed+=sh;
-    } else if(father && !hasDesc){
-      // Father takes residue below.
-      rows.push({name:'পিতা',count:1,share:0,each:0,reason:'অবশিষ্টভোগী (residuary)'}); 
+    if(!mother){
+      const gs=[]; if(pgm)gs.push(['দাদি',pgm]); if(mgm)gs.push(['নানি',mgm]);
+      if(gs.length)push(gs.length===1?gs[0][0]:'দাদি/নানি (সমষ্টিগত)',gs.reduce((a,x)=>a+x[1],0),1/6,'যোগ্য দাদি/নানি মিলিয়ে ১/৬');
     }
-
-    if(daughters>0 && sons===0){
-      const sh=daughters===1?1/2:2/3;
-      rows.push({name:daughters===1?'কন্যা':'কন্যাগণ (সমষ্টিগত)',count:daughters,share:sh,each:sh/daughters,reason:daughters===1?'একজন কন্যা, পুত্র নেই: ১/২':'দুই বা ততোধিক কন্যা, পুত্র নেই: ২/৩'}); fixed+=sh;
+    if(father){
+      if(hasMaleDesc)push('পিতা',1,1/6,'পুত্র/পুত্রের পুত্র থাকায় ১/৬');
+      else if(hasDesc)push('পিতা',1,1/6,'কন্যা/পুত্রের কন্যা থাকায় ১/৬ এবং অবশিষ্টের দাবিদার');
+    } else if(grandfather&&hasDesc) push('দাদা',1,1/6,'পিতা অনুপস্থিত; যোগ্য দাদা ১/৬ এবং অবশিষ্টের দাবিদার');
+    // Direct children, including a deceased son/daughter as a statutory branch under section 4.
+    const childSonBranches=sons+deadSons, childDaughterBranches=daughters+deadDaughters;
+    if(childSonBranches>0){
+      const fixedBeforeChildren=rows.reduce((a,x)=>a+x.share,0);
+      const residueForChildren=Math.max(0,1-fixedBeforeChildren);
+      const units=childSonBranches*2+childDaughterBranches, per=residueForChildren/(units||1);
+      if(sons)push(sons===1?'পুত্র':'পুত্রগণ',sons,per*2*sons,'অবশিষ্ট অংশ; পুত্র-কন্যা ২:১ অনুপাতে');
+      if(daughters)push(daughters===1?'কন্যা':'কন্যাগণ',daughters,per*daughters,'পুত্রের সঙ্গে অবশিষ্ট অংশে ২:১ অনুপাত');
+      if(deadSons&&(v('deadSonSons')+v('deadSonDaughters'))){push('মৃত পুত্রের সন্তান (ধারা ৪)',v('deadSonSons')+v('deadSonDaughters'),per*2*deadSons,'MFLO 1961 ধারা ৪: মৃত পুত্র জীবিত থাকলে যে অংশ পেতেন, সেই শাখার সমপরিমাণ অংশ');notes.push('পূর্বমৃত পুত্রের সন্তানদের অংশ ধারা ৪-এর statutory representation হিসেবে দেখানো হয়েছে।');}
+      if(deadDaughters&&(v('deadDaughterSons')+v('deadDaughterDaughters'))){push('মৃত কন্যার সন্তান (ধারা ৪)',v('deadDaughterSons')+v('deadDaughterDaughters'),per*deadDaughters,'MFLO 1961 ধারা ৪: মৃত কন্যা জীবিত থাকলে যে অংশ পেতেন, সেই শাখার সমপরিমাণ অংশ');notes.push('পূর্বমৃত কন্যার সন্তানদের অংশ ধারা ৪-এর statutory representation হিসেবে দেখানো হয়েছে।');}
+      return {rows,notes,fixedTotal:rows.reduce((a,x)=>a+x.share,0),male,wives,husband,sons,deadSons,daughters,deadDaughters,ss,sd,father,mother,grandfather,fullB,fullS,patB,patS,matB,matS,hasDesc,hasMaleDesc,childSonBranches,childDaughterBranches,childrenConsumed:true};
     }
-
-    let residue=1-fixed;
-    if(residue < -1e-9) return err(r,'এই পারিবারিক বিন্যাসে নির্দিষ্ট অংশগুলোর যোগফল ১-এর বেশি হয়েছে। এই টুলের আওতার বাইরে থাকা জটিল উত্তরাধিকার বিধান প্রযোজ্য হতে পারে।');
-    if(residue<0) residue=0;
-
-    if(sons>0){
-      const units=sons*2+daughters;
-      const sonEach=residue*(2/units), daughterEach=daughters?residue*(1/units):0;
-      rows.push({name:sons===1?'পুত্র':'পুত্রগণ (সমষ্টিগত)',count:sons,share:sonEach*sons,each:sonEach,reason:'অবশিষ্ট অংশ; পুত্র-কন্যা একত্রে ২:১'});
-      if(daughters>0) rows.push({name:daughters===1?'কন্যা':'কন্যাগণ (অবশিষ্ট অংশ)',count:daughters,share:daughterEach*daughters,each:daughterEach,reason:'পুত্রের সঙ্গে অবশিষ্ট অংশে ২:১ অনুপাত'});
-      residue=0;
-    } else if(father){
-      // father gets remaining residue when no sons; if only daughters, father gets 1/6 plus residue.
-      const row=rows.find(x=>x.name==='পিতা');
-      if(row){row.share+=residue; row.each=row.share; row.reason += residue>0?' এবং অবশিষ্ট অংশ':' '; }
-      residue=0;
-    } else if(residue>1e-9){
-      // For this simplified calculator, do not silently assign radd.
-      return err(r,'এই কেসে নির্দিষ্ট অংশ দেওয়ার পর অবশিষ্ট অংশ রয়েছে। রদ/অন্যান্য আসাবা/নিকটাত্মীয়ের নিয়ম প্রযোজ্য হতে পারে; তাই এই ক্যালকুলেটর চূড়ান্ত ফল দেয়নি।');
+    // No direct son branch. Daughters/deceased daughters get fixed 1/2 or 2/3 collectively.
+    if(childDaughterBranches>0){
+      const ds=childDaughterBranches===1?1/2:2/3;
+      if(daughters)push(daughters===1?'কন্যা':'কন্যাগণ',daughters,ds*(daughters/childDaughterBranches),childDaughterBranches===1?'একজন কন্যা: ১/২':'দুই বা ততোধিক কন্যা: ২/৩');
+      if(deadDaughters&&(v('deadDaughterSons')+v('deadDaughterDaughters')))push('মৃত কন্যার সন্তান (ধারা ৪)',v('deadDaughterSons')+v('deadDaughterDaughters'),ds*(deadDaughters/childDaughterBranches),'MFLO 1961 ধারা ৪: মৃত কন্যা জীবিত থাকলে যে অংশ পেতেন');
     }
-
-    const total=rows.reduce((s,x)=>s+x.share,0);
-    const table=`<div class="result-main">উত্তরাধিকার হিসাব</div>
-      <p><strong>নিট সম্পত্তি:</strong> ${money(estate)} &nbsp; | &nbsp; <strong>মোট বণ্টন:</strong> ${fmt(total*100,2)}%</p>
-      <div class="inheritance-summary"><table class="inheritance-table"><thead><tr><th>উত্তরাধিকারী</th><th>প্রযোজ্য অংশ</th><th>শতাংশ</th><th>আনুমানিক টাকা</th></tr></thead><tbody>
-      ${rows.filter(x=>x.share>1e-10).map(x=>`<tr><td><strong>${esc(x.name)}</strong><br><span class="small-note">${esc(x.reason)}</span>${x.count>1?`<br><span class="small-note">প্রতি জন ≈ ${money(estate*x.each)}</span>`:''}</td><td>${frac(x.share)}${x.count>1?' (সমষ্টিগত)':''}</td><td>${fmt(x.share*100,2)}%</td><td>${money(estate*x.share)}</td></tr>`).join('')}
-      </tbody></table></div>
-      <p class="small-note">এটি প্রদত্ত পারিবারিক তথ্যের ভিত্তিতে সাধারণ হিসাব। পুত্র/কন্যার পূর্বমৃত্যু, নাতি-নাতনি, দাদা-দাদী, ভাই-বোন, রদ/আউল, বা অন্য উত্তরাধিকারী থাকলে ফল পরিবর্তিত হতে পারে।</p>`;
-    r.innerHTML=table;
+    // Son's descendants.
+    if(sons===0&&ss===0&&sd>0){
+      const before=rows.reduce((a,x)=>a+x.share,0);
+      if(childDaughterBranches===0)push(sd===1?'পুত্রের কন্যা':'পুত্রের কন্যাগণ',sd,sd===1?1/2:2/3,sd===1?'একজন পুত্রের কন্যা: ১/২':'দুই বা ততোধিক পুত্রের কন্যা: ২/৩');
+      else if(childDaughterBranches===1)push('পুত্রের কন্যা',sd,1/6,'একজন কন্যার সঙ্গে পরিপূরক ১/৬');
+    }
+    if(!hasDesc&&!father&&!grandfather&&(matB+matS)>0){
+      const n=matB+matS; push(n===1?(matB?'বৈপিত্রেয় ভাই':'বৈপিত্রেয় বোন'):'বৈপিত্রেয় ভাই-বোন (সমষ্টিগত)',n,n===1?1/6:1/3,'বৈপিত্রেয় ভাই-বোনের নির্ধারিত অংশ');
+    }
+    const noNear=!hasDesc&&!father&&!grandfather;
+    if(noNear&&fullB===0&&patB===0&&fullS>0){
+      push(fullS===1?'সহোদর বোন':'সহোদর বোনগণ',fullS,fullS===1?1/2:2/3,fullS===1?'একজন সহোদর বোন: ১/২':'দুই বা ততোধিক সহোদর বোন: ২/৩');
+      if(patS&&fullS===1)push('বৈমাত্রেয় বোন',patS,1/6,'একজন সহোদর বোনের সঙ্গে পরিপূরক ১/৬');
+    } else if(noNear&&fullB===0&&patB===0&&patS>0){
+      push(patS===1?'বৈমাত্রেয় বোন':'বৈমাত্রেয় বোনগণ',patS,patS===1?1/2:2/3,'বৈমাত্রেয় বোনের নির্ধারিত অংশ');
+    }
+    return {rows,notes,fixedTotal:rows.reduce((a,x)=>a+x.share,0),male,wives,husband,sons,deadSons,daughters,deadDaughters,ss,sd,father,mother,grandfather,fullB,fullS,patB,patS,matB,matS,hasDesc,hasMaleDesc,childSonBranches,childDaughterBranches,childrenConsumed:false};
+  }
+  $('inheritCalc').onclick=()=>{
+    const r=$('inheritResult'),land=Math.max(0,+$('estateLand').value||0),estate=Math.max(0,+$('estateMoney').value||0),gold=Math.max(0,+$('estateGold').value||0);
+    if(!(land||estate||gold))return err(r,'কমপক্ষে জমি, মুদ্রা বা স্বর্ণের একটি পরিমাণ দিন।');
+    const c=computeShares(); let rows=c.rows.slice(), notes=c.notes.slice();
+    const activeCount=F.reduce((n,[id])=>n+v(id),0);
+    if(!activeCount)return err(r,'কমপক্ষে একজন জীবিত উত্তরাধিকারী নির্বাচন করুন।');
+    let fixed=rows.reduce((a,x)=>a+x.share,0);
+    if(fixed>1+1e-9){const scale=1/fixed;rows.forEach(x=>{x.share*=scale;x.each=x.share/(x.count||1);});fixed=1;notes.push('আউলনীতি: নির্ধারিত অংশের যোগফল ১-এর বেশি হওয়ায় আনুপাতিকভাবে সমন্বয় করা হয়েছে।');}
+    let residue=Math.max(0,1-fixed),method='ফারায়েজ';
+    if(!c.childrenConsumed){
+      if(c.ss>0){
+        const units=c.ss*2+c.sd,per=residue/units;pushRows();
+        function pushRows(){rows.push({name:c.ss===1?'পুত্রের পুত্র':'পুত্রের পুত্রগণ',count:c.ss,share:per*2*c.ss,each:per*2,reason:'অবশিষ্টভোগী; পুত্রের পুত্র-কন্যা ২:১'});if(c.sd)rows.push({name:c.sd===1?'পুত্রের কন্যা':'পুত্রের কন্যাগণ',count:c.sd,share:per*c.sd,each:per,reason:'পুত্রের পুত্রের সঙ্গে অবশিষ্টে ২:১'});}
+        residue=0;method='আসাবা — পুত্রের বংশধর';
+      } else if(c.father){
+        const row=rows.find(x=>x.name==='পিতা');if(row){row.share+=residue;row.each=row.share;row.reason+=(residue?' এবং অবশিষ্ট অংশ':'');}else rows.push({name:'পিতা',count:1,share:residue,each:residue,reason:'অবশিষ্টভোগী পিতা'});residue=0;method='আসাবা — পিতা';
+      } else if(c.grandfather){
+        const row=rows.find(x=>x.name==='দাদা');if(row){row.share+=residue;row.each=row.share;row.reason+=(residue?' এবং অবশিষ্ট অংশ':'');}else rows.push({name:'দাদা',count:1,share:residue,each:residue,reason:'অবশিষ্টভোগী দাদা'});residue=0;method='আসাবা — দাদা';
+      } else {
+        const candidates=[['সহোদর ভাই',c.fullB],['বৈমাত্রেয় ভাই',c.patB],['সহোদর ভাইয়ের পুত্র',v('brotherSons')],['বৈমাত্রেয় ভাইয়ের পুত্র',v('paternalBrotherSons')],['সহোদর ভাইয়ের পুত্রের পুত্র',v('brotherSonSons')],['বৈমাত্রেয় ভাইয়ের পুত্রের পুত্র',v('paternalBrotherSonSons')],['চাচা',v('paternalUncles')],['চাচা (বৈমাত্রেয়)',v('paternalHalfUncles')],['চাচাতো ভাই',v('paternalCousins')],['চাচাতো ভাই (বৈমাত্রেয়)',v('paternalHalfCousins')],['চাচাতো ভাইয়ের পুত্র',v('paternalCousinSons')],['চাচাতো ভাই (বৈমাত্রেয়)-এর পুত্র',v('paternalHalfCousinSons')],['চাচাতো ভাইয়ের পুত্রের পুত্র',v('paternalCousinSonSons')],['চাচাতো ভাই (বৈমাত্রেয়)-এর পুত্রের পুত্র',v('paternalHalfCousinSonSons')]];
+        const g=candidates.find(x=>x[1]>0);
+        if(g){
+          if(g[0]==='সহোদর ভাই'&&c.fullS){const units=g[1]*2+c.fullS,per=residue/units;rows.push({name:'সহোদর ভাই',count:g[1],share:per*2*g[1],each:per*2,reason:'আসাবা: সহোদর ভাই-বোন ২:১'});rows.push({name:'সহোদর বোন',count:c.fullS,share:per*c.fullS,each:per,reason:'সহোদর ভাইয়ের সঙ্গে আসাবা ২:১'});}
+          else if(g[0]==='বৈমাত্রেয় ভাই'&&c.patS){const units=g[1]*2+c.patS,per=residue/units;rows.push({name:'বৈমাত্রেয় ভাই',count:g[1],share:per*2*g[1],each:per*2,reason:'আসাবা: বৈমাত্রেয় ভাই-বোন ২:১'});rows.push({name:'বৈমাত্রেয় বোন',count:c.patS,share:per*c.patS,each:per,reason:'বৈমাত্রেয় ভাইয়ের সঙ্গে আসাবা ২:১'});}
+          else rows.push({name:g[0],count:g[1],share:residue,each:residue/g[1],reason:'নিকটতম আসাবা শ্রেণীর অবশিষ্টভোগী'});
+          residue=0;method='আসাবা — নিকটতম শ্রেণী';
+        }
+      }
+    }
+    // Radd: only where no residuary remains and eligible fixed sharers exist.
+    let total=rows.reduce((a,x)=>a+x.share,0);
+    if(residue>1e-9){
+      const spouseNames=new Set(['স্বামী','স্ত্রী','স্ত্রীগণ']),eligible=rows.filter(x=>!spouseNames.has(x.name)),eligibleTotal=eligible.reduce((a,x)=>a+x.share,0);
+      if(eligibleTotal>1e-10){eligible.forEach(x=>{x.share+=residue*(x.share/eligibleTotal);x.each=x.share/(x.count||1);});notes.push('রদনীতি: আসাবা না থাকায় স্বামী/স্ত্রীর নির্ধারিত অংশ অপরিবর্তিত রেখে অবশিষ্ট অংশ যোগ্য অংশীদারদের মধ্যে বণ্টন করা হয়েছে।');residue=0;method='রদনীতি';}
+    }
+    total=rows.reduce((a,x)=>a+x.share,0);
+    if(residue>1e-9){notes.push('অবশিষ্ট অংশের জন্য তালিকায় উপযুক্ত আসাবা পাওয়া যায়নি; তাই এই কেসটি সম্পূর্ণ স্বয়ংক্রিয়ভাবে নিষ্পত্তি করা হয়নি।');}
+    const merged=new Map();rows.forEach(x=>{if(x.share<=1e-10)return;if(merged.has(x.name)){const y=merged.get(x.name);y.share+=x.share;y.count+=x.count;y.each=y.share/y.count;}else merged.set(x.name,{...x});});
+    const finalRows=[...merged.values()];
+    const assets=[['জমি',land,'শতাংশ'],['মুদ্রা',estate,'টাকা'],['স্বর্ণ',gold,'ভরি']].filter(x=>x[1]>0);
+    const rowsHtml=finalRows.map(x=>`<tr><td><strong>${esc(x.name)}</strong><br><span class="small-note">${esc(x.reason||'')}</span>${x.count>1?`<br><span class="small-note">প্রতি জন ≈ ${frac(x.share/x.count)}</span>`:''}</td><td><span class="share-chip">${frac(x.share)}</span></td><td>${(x.share*100).toFixed(2)}%</td><td>${assets.map(a=>`<div><strong>${a[0]}:</strong> ${Number(a[1]*x.share).toLocaleString('bn-BD',{maximumFractionDigits:4})} ${a[2]}</div>`).join('')}</td></tr>`).join('');
+    const notesHtml=notes.length?`<div class="method-box"><strong>হিসাবের নোট</strong><ul>${notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul></div>`:'';
+    r.innerHTML=`<div class="result-main">⚖️ উত্তরাধিকার হিসাবের ফলাফল</div>
+      <div class="result-kpis"><div class="result-kpi"><strong>${(total*100).toFixed(2)}%</strong><span>মোট বণ্টন</span></div><div class="result-kpi"><strong>${finalRows.length}</strong><span>ফলাফলে অংশীদার</span></div><div class="result-kpi"><strong>${esc(method)}</strong><span>প্রধান পদ্ধতি</span></div></div>
+      <div class="inheritance-summary"><table class="inheritance-table"><thead><tr><th>উত্তরাধিকারী</th><th>অংশ</th><th>শতাংশ</th><th>সম্পদ অনুযায়ী প্রাপ্য</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>${notesHtml}
+      <p class="small-note" style="margin-top:14px"><strong>সতর্কতা:</strong> ফলাফলটি প্রদত্ত পারিবারিক তথ্যের ভিত্তিতে। বিশেষত পূর্বমৃত উত্তরাধিকারীর শাখা, বঞ্চনা/হাজব, আউল-রদ, দাদা-ভাইয়ের জটিলতা বা বিরোধ থাকলে সরকারি নথি ও যোগ্য আইনজীবী/ফারায়েজ বিশেষজ্ঞের যাচাই করুন।</p>`;
   };
-
+  $('inheritReset').onclick=()=>{document.querySelectorAll('#panel-inheritance input').forEach(i=>i.value='0');$('deceasedGender').value='male';toggleGender();$('inheritResult').innerHTML='';};
   document.querySelectorAll('[data-clear]').forEach(btn=>btn.addEventListener('click',()=>{
     const type=btn.dataset.clear;
     const panel=$('panel-'+type);
