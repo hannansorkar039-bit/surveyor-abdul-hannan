@@ -1386,31 +1386,61 @@
       const errReverse=Math.hypot(rr1[0]-e1[0],rr1[1]-e1[1]);
       if(errReverse<errForward) r=rr;
 
-      // Determine the base interior side from ALL non-endpoint vertices, not from
-      // the centroid alone. This is robust even when the drawing is very elongated
-      // or the selected edge is almost horizontal/vertical.
+      // Direction is a GLOBAL cardinal instruction (উত্তর/পূর্ব/দক্ষিণ/পশ্চিম).
+      // Do not infer it from the base polygon's interior: an irregular/concave
+      // sketch can have vertices on both sides of the selected edge, which makes
+      // a sign/centroid vote ambiguous and can flip a requested NORTH placement
+      // to SOUTH. Instead, choose the rigid candidate whose centroid lies on the
+      // requested cardinal side of the shared boundary.
       const edgeA=r[newEdge], edgeB=r[(newEdge+1)%r.length];
-      const ex=edgeB[0]-edgeA[0], ey=edgeB[1]-edgeA[1];
-      const baseSigns=[];
-      base.forEach((p,i)=>{
-        if(i===baseEdge || i===(baseEdge+1)%base.length)return;
-        const c=ex*(p[1]-edgeA[1])-ey*(p[0]-edgeA[0]);
-        if(Math.abs(c)>1e-8)baseSigns.push(Math.sign(c));
-      });
-      const baseSide=baseSigns.reduce((sum,v)=>sum+v,0)>=0?1:-1;
-      const newSigns=[];
-      r.forEach((p,i)=>{
-        if(i===newEdge || i===(newEdge+1)%r.length)return;
-        const c=ex*(p[1]-edgeA[1])-ey*(p[0]-edgeA[0]);
-        if(Math.abs(c)>1e-8)newSigns.push(Math.sign(c));
-      });
-      const newSide=newSigns.reduce((sum,v)=>sum+v,0)>=0?1:-1;
+      const edgeMidPt=[(edgeA[0]+edgeB[0])/2,(edgeA[1]+edgeB[1])/2];
 
-      // The new field MUST occupy the opposite half-plane from the base field.
-      // Reflect the entire rigid polygon when necessary; this keeps every side
-      // length unchanged and prevents the new field from climbing over the base.
-      if(newSigns.length && baseSigns.length && newSide===baseSide){
-        r=reflectAcrossLine(r,edgeA,edgeB);
+      if(side==='north'||side==='east'||side==='south'||side==='west'){
+        const desired =
+          side==='north' ? [0,1] :
+          side==='east'  ? [1,0] :
+          side==='south' ? [0,-1] : [-1,0];
+
+        const centroidOf=pts=>{
+          let sx=0,sy=0;
+          pts.forEach(p=>{sx+=p[0];sy+=p[1]});
+          return [sx/pts.length,sy/pts.length];
+        };
+        const sideScore=pts=>{
+          const c=centroidOf(pts);
+          return (c[0]-edgeMidPt[0])*desired[0] +
+                 (c[1]-edgeMidPt[1])*desired[1];
+        };
+
+        // Reflection preserves every side length and keeps the selected edge
+        // exactly on the same line. Pick the candidate on the requested side.
+        const reflected=reflectAcrossLine(r,edgeA,edgeB);
+        if(sideScore(reflected)>sideScore(r)){
+          r=reflected;
+        }
+      }else{
+        // Explicit triangle-edge attachment keeps the previous geometric
+        // outside-half-plane behaviour; only cardinal placement uses the
+        // corrected global-direction rule above.
+        const baseSigns=[];
+        base.forEach((p,i)=>{
+          if(i===baseEdge || i===(baseEdge+1)%base.length)return;
+          const c=(edgeB[0]-edgeA[0])*(p[1]-edgeA[1])-
+                  (edgeB[1]-edgeA[1])*(p[0]-edgeA[0]);
+          if(Math.abs(c)>1e-8)baseSigns.push(Math.sign(c));
+        });
+        const newSigns=[];
+        r.forEach((p,i)=>{
+          if(i===newEdge || i===(newEdge+1)%r.length)return;
+          const c=(edgeB[0]-edgeA[0])*(p[1]-edgeA[1])-
+                  (edgeB[1]-edgeA[1])*(p[0]-edgeA[0]);
+          if(Math.abs(c)>1e-8)newSigns.push(Math.sign(c));
+        });
+        const baseSide=baseSigns.reduce((sum,v)=>sum+v,0)>=0?1:-1;
+        const newSide=newSigns.reduce((sum,v)=>sum+v,0)>=0?1:-1;
+        if(newSigns.length && baseSigns.length && newSide===baseSide){
+          r=reflectAcrossLine(r,edgeA,edgeB);
+        }
       }
 
       // Recompute the edge endpoints after reflection because its orientation may
