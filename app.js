@@ -53,7 +53,7 @@
   if (photoGallery) {
     photoGallery.innerHTML = SITE.photos.map(p => `
       <figure class="gallery-item">
-        <img src="${esc(p.src)}" alt="${esc(p.alt)}" loading="lazy">
+        <img src="${esc(p.src)}" alt="${esc(p.alt)}" loading="lazy" decoding="async" tabindex="0">
         <figcaption class="gallery-caption"><strong>${esc(p.title)}</strong><span>${esc(p.caption || "")}</span></figcaption>
       </figure>`).join("");
   }
@@ -189,9 +189,10 @@
 ${details ? "বিস্তারিত: " + details : ""}`;
 
     const whatsappNumber = "8801810811989";
-    const url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(text);
-
-    success.textContent = "অর্ডারের তথ্য প্রস্তুত হয়েছে। WhatsApp খুলে বার্তাটি পাঠিয়ে দিন।";
+    const orderId = `SAH-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${Math.floor(1000+Math.random()*9000)}`;
+    const url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(text + "\nরেফারেন্স: " + orderId);
+    success.innerHTML = `✓ অনুরোধ প্রস্তুত হয়েছে। <strong>রেফারেন্স: ${orderId}</strong><br><span>এখন WhatsApp-এ বার্তাটি পাঠিয়ে দিন।</span>`;
+    success.setAttribute('role','status'); success.setAttribute('aria-live','polite');
     success.classList.add("show");
     window.open(url, "_blank", "noopener,noreferrer");
   });
@@ -239,11 +240,21 @@ ${details ? "বিস্তারিত: " + details : ""}`;
 
   const gallery=document.querySelector('.gallery');
   if(gallery){
-    const box=document.createElement('div'); box.className='lightbox'; box.innerHTML='<button class="lightbox-close" aria-label="ছবি বন্ধ করুন">×</button><img alt="">'; document.body.appendChild(box);
-    const img=box.querySelector('img'); const close=()=>box.classList.remove('open');
-    gallery.querySelectorAll('img').forEach(source=>source.addEventListener('click',()=>{img.src=source.currentSrc||source.src;img.alt=source.alt||'';box.classList.add('open');}));
-    box.addEventListener('click',e=>{if(e.target===box||e.target.classList.contains('lightbox-close'))close();});
-    document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+    const box=document.createElement('div');
+    box.className='lightbox';
+    box.setAttribute('role','dialog'); box.setAttribute('aria-modal','true'); box.setAttribute('aria-label','ছবি বড় করে দেখুন');
+    box.innerHTML='<button class="lightbox-close" aria-label="ছবি বন্ধ করুন">×</button><button class="lightbox-nav lightbox-prev" aria-label="আগের ছবি">‹</button><img alt=""><button class="lightbox-nav lightbox-next" aria-label="পরের ছবি">›</button><div class="lightbox-counter" aria-live="polite"></div>';
+    document.body.appendChild(box);
+    const img=box.querySelector('img'), counter=box.querySelector('.lightbox-counter');
+    const sources=[...gallery.querySelectorAll('img')]; let index=0; let previousFocus=null;
+    const render=()=>{const source=sources[index]; if(!source)return; img.src=source.currentSrc||source.src; img.alt=source.alt||''; counter.textContent=`${index+1} / ${sources.length}`;};
+    const openAt=i=>{index=(i+sources.length)%sources.length; previousFocus=document.activeElement; render(); box.classList.add('open'); document.body.style.overflow='hidden'; box.querySelector('.lightbox-close').focus();};
+    const close=()=>{box.classList.remove('open');document.body.style.overflow='';previousFocus?.focus();};
+    const next=()=>openAt(index+1), prev=()=>openAt(index-1);
+    sources.forEach((source,i)=>{source.addEventListener('click',()=>openAt(i));source.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openAt(i)}})});
+    box.querySelector('.lightbox-close').addEventListener('click',close); box.querySelector('.lightbox-next').addEventListener('click',next); box.querySelector('.lightbox-prev').addEventListener('click',prev);
+    box.addEventListener('click',e=>{if(e.target===box)close();});
+    document.addEventListener('keydown',e=>{if(!box.classList.contains('open'))return;if(e.key==='Escape')close();else if(e.key==='ArrowRight')next();else if(e.key==='ArrowLeft')prev();});
   }
 
   let deferredInstallPrompt=null;
@@ -270,6 +281,8 @@ ${details ? "বিস্তারিত: " + details : ""}`;
 (function(){
   document.querySelectorAll('img').forEach(img=>{
     if(!img.hasAttribute('decoding')) img.setAttribute('decoding','async');
+    if(!img.hasAttribute('width') && img.naturalWidth) img.setAttribute('width',img.naturalWidth);
+    if(!img.hasAttribute('height') && img.naturalHeight) img.setAttribute('height',img.naturalHeight);
   });
 
   const classify = (text)=>{
