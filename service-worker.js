@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v17-professional";
+const CACHE_NAME = "sah-pwa-v18-readability-final";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 const CORE_ASSETS = [
   "./", "./index.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
