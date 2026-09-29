@@ -209,9 +209,17 @@ ${details ? "বিস্তারিত: " + details : ""}`;
     const btn = document.createElement('button');
     btn.className='nav-toggle'; btn.type='button'; btn.setAttribute('aria-label','মেনু খুলুন'); btn.setAttribute('aria-expanded','false'); btn.innerHTML='☰';
     nav.querySelector('.nav-inner')?.appendChild(btn);
-    const close=()=>{navLinks.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.innerHTML='☰';};
-    btn.addEventListener('click',()=>{const open=navLinks.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));btn.innerHTML=open?'✕':'☰';});
+    const close=()=>{navLinks.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label','মেনু খুলুন');btn.innerHTML='☰';};
+    btn.addEventListener('click',()=>{const open=navLinks.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));btn.setAttribute('aria-label',open?'মেনু বন্ধ করুন':'মেনু খুলুন');btn.innerHTML=open?'✕':'☰';});
     navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&navLinks.classList.contains('open')){close();btn.focus();}});
+    const current=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+    navLinks.querySelectorAll('a[href]').forEach(a=>{
+      const href=(a.getAttribute('href')||'').split('#')[0].split('?')[0].toLowerCase();
+      const target=href||'index.html';
+      const isHome=(current===''||current==='index.html')&&(target==='index.html'||target==='./');
+      if(isHome||target===current){a.setAttribute('aria-current','page');a.classList.add('active');}
+    });
   }
 
   const progress=document.createElement('div'); progress.className='scroll-progress'; document.body.appendChild(progress);
