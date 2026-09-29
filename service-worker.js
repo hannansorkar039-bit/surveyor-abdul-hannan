@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v14-professional-modular-calculator";
+const CACHE_NAME = "sah-pwa-v16-professional-final";
 const CORE_ASSETS = [
   "./", "./index.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
   "./profile-abdul-hannan.webp",
@@ -17,7 +17,13 @@ const OPTIONAL_EXTERNAL = [
 ];
 const CACHE_FIRST = new Set(["./calculator.html", "./styles.css", "./app.js", "./calculator-pdf.js", "./calculator-core.js", "./calculator-featured.js", "./calculator-registry.js", "./calculator-land-suite.js", "./calculator-bootstrap.js", "./fonts/Lohit-Bengali.ttf"]);
 const isSameOrigin = url => url.origin === self.location.origin;
-const isCacheFirstAsset = url => CACHE_FIRST.has(url.pathname === "/" ? "./" : "./" + url.pathname.replace(/^\/+/, ""));
+const BASE_PATH = new URL("./", self.location.href).pathname;
+const isCacheFirstAsset = url => {
+  if (!isSameOrigin(url)) return false;
+  if (!url.pathname.startsWith(BASE_PATH)) return false;
+  const rel = url.pathname.slice(BASE_PATH.length);
+  return CACHE_FIRST.has(rel ? "./" + rel : "./");
+};
 self.addEventListener("install", event => { event.waitUntil(caches.open(CACHE_NAME).then(async cache => { await Promise.allSettled(CORE_ASSETS.map(async asset => { try { await cache.add(asset); } catch(_) {} })); await Promise.allSettled(OPTIONAL_EXTERNAL.map(async url => { try { const response=await fetch(url,{mode:"cors",cache:"no-cache"}); if(response&&(response.ok||response.type==="opaque")) await cache.put(url,response.clone()); } catch(_){} })); await self.skipWaiting(); })); });
 self.addEventListener("activate", event => { event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE_NAME).map(key=>caches.delete(key)))).then(()=>self.clients.claim())); });
 async function cacheFirst(request){ const cached=await caches.match(request); if(cached)return cached; const response=await fetch(request); if(response&&response.ok){const cache=await caches.open(CACHE_NAME);cache.put(request,response.clone())} return response; }
