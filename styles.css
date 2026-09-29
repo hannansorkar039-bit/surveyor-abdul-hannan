@@ -870,3 +870,13 @@ button,.btn,a,.filter-btn,.v6-mobile-bar a{touch-action:manipulation}
   .lightbox{padding:58px 10px 60px}.lightbox-nav{width:42px;height:42px;font-size:23px}.lightbox-prev{left:8px}.lightbox-next{right:8px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card,.service,.info-card,.post-card,.video-card,.contact-card,.order-card,.gallery-item,.social,.showcase-card,.trust-card,.btn-large{transition:none}.lightbox.open img{animation:none}}
+
+/* Professional accessibility/performance baseline */
+:root{--font-bn:"Hind Siliguri","Noto Sans Bengali","Lohit Bengali",system-ui,-apple-system,"Segoe UI",sans-serif}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-bn)}
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #f5b85b;outline-offset:3px}
+:where(button,.btn,input,select,textarea){min-height:44px}
+:where(a,button,input,select,textarea){touch-action:manipulation}
+img{height:auto}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
