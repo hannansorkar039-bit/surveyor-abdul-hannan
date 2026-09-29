@@ -73,7 +73,7 @@
     const report = `<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>Land Registration Calculation Sheet</title>
 <style>body{font-family:Arial,"Noto Sans Bengali",sans-serif;padding:28px;color:#15242e}h1{color:#082336}table{width:100%;border-collapse:collapse;margin-top:18px}td,th{border:1px solid #dce5e9;padding:10px;text-align:left}th{background:#f2f6f7}.total{font-size:20px;font-weight:800}.note{margin-top:18px;font-size:12px;color:#5e6f79}</style></head>
 <body><h1>Land Registration Calculation Sheet</h1>
-<p><strong>ক্লায়েন্ট:</strong> ${escapeHtml(client)}<br><strong>খতিয়ান/দাগ:</strong> ${escapeHtml(khatian)}<br><strong>দলিল মূল্য:</strong> ${money(r.base)}</p>
+<p><strong>ক্লায়েন্ট:</strong> ${escapeHtml(client)}<br><strong>খতিয়ান/দাগ:</strong> ${escapeHtml(khatian)}<br><strong>দলিল মূল্য:</strong> ${money(r.base)}</p>
 <table><tr><th>খরচের খাত</th><th>হার/ধরন</th><th>পরিমাণ</th></tr>
 <tr><td>রেজিস্ট্রেশন ফি</td><td>১%</td><td>${money(r.registration)}</td></tr>
 <tr><td>স্ট্যাম্প ডিউটি</td><td>${$('regStampRate').value}%</td><td>${money(r.stamp)}</td></tr>
