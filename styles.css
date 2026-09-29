@@ -1346,3 +1346,55 @@ small{
   }
 }
 
+/* ===== FINAL TEXT CONTRAST / CLARITY PATCH =====
+   Darken secondary text that appears directly beneath section titles.
+   Hero text remains light because it sits on the dark hero background.
+*/
+.section-title + p,
+.section-title + .lead,
+.section-title + .knowledge-front-lead,
+.calc-intro .lead,
+.featured-head p,
+.featured-panel-head p,
+.card p,
+.service p,
+.info-card p,
+.post-card p,
+.video-card p,
+.contact-card p,
+.trust-card p{
+  color:#17212b !important;
+  font-weight:500 !important;
+}
+
+.knowledge-front-lead{
+  color:#17212b !important;
+  font-size:19px !important;
+  line-height:1.85 !important;
+  font-weight:500 !important;
+}
+
+.calc-help,
+.small-note,
+.legal-note,
+.registry-note,
+.source-box,
+.notice{
+  color:#24313a !important;
+}
+
+/* Supporting labels: darker without competing with headings */
+.post-meta,
+.source-note,
+.form-help{
+  color:#34434d !important;
+}
+
+/* Do not darken text intended for dark hero backgrounds */
+.hero .hero-sub,
+.hero .tagline,
+.hero p,
+.hero a{
+  color:inherit;
+}
+
