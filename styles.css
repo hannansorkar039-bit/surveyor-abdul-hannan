@@ -1398,3 +1398,10 @@ small{
   color:inherit;
 }
 
+
+
+/* Final action-button contrast fix: prevent white-on-white text in Call/WhatsApp/Order/Location rows. */
+.actions .btn-light,.hero .actions .btn-light{background:#fff!important;color:#082336!important;border-color:#d7e2e7!important;text-shadow:none!important;}
+.actions .btn-light:hover,.hero .actions .btn-light:hover{color:#082336!important;background:#f7fbfc!important;}
+.actions .btn-primary{color:#fff!important;}
+.actions .btn-whatsapp{color:#fff!important;}
