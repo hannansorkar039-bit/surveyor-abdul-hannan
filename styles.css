@@ -1398,3 +1398,96 @@ small{
   color:inherit;
 }
 
+/* ===== FINAL TRUE-BLACK TEXT OVERRIDE =====
+   Normal/light-background content text is explicitly black.
+   Text on dark/colored backgrounds keeps its designed contrast.
+*/
+body{
+  color:#000000 !important;
+}
+
+main,
+main p,
+main li,
+main dd,
+main dt,
+main label,
+main .lead,
+main .tagline,
+main .hero-sub,
+main .knowledge-front-lead,
+main .card p,
+main .service p,
+main .info-card p,
+main .post-card p,
+main .video-card p,
+main .contact-card p,
+main .trust-card p,
+main .review-placeholder p,
+main .notice,
+main .source-box,
+main .v3-note p,
+main .form-help,
+main .small-note,
+main .calc-help,
+main .legal-note,
+main .registry-note,
+main .result-item span,
+main .result-item strong,
+main .cost-name,
+main .cost-meta,
+main .shape-sketch-note,
+main .shape-unit-note,
+main .multi-field-status,
+main .multi-field-kpi span,
+main .multi-field-saved-head span,
+main .multi-field-item-main span,
+main .suite-help,
+main .suite-note,
+main .history-item{
+  color:#000000 !important;
+}
+
+/* Form controls */
+main input,
+main select,
+main textarea,
+main option{
+  color:#000000 !important;
+}
+
+/* Buttons remain readable and preserve their existing visual design. */
+main button{
+  color:#000000;
+}
+
+/* Navigation/brand on the normal light header */
+.header .brand,
+.header .navlinks a{
+  color:#000000;
+}
+
+/* Footer/dark sections must retain their light text for contrast. */
+.footer,
+.footer p,
+.footer a,
+.footer .footer-col a,
+.hero,
+.hero p,
+.hero .hero-sub,
+.hero .tagline{
+  color:inherit;
+}
+
+/* Do not override intentionally light text on dark/colored surfaces. */
+[style*="background:#"],
+[style*="background: #"]{
+  color:inherit;
+}
+
+/* Mobile bottom navigation on its normal light surface */
+.v6-mobile-bar a,
+.v6-mobile-bar a span{
+  color:#000000 !important;
+}
+
