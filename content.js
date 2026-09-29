@@ -178,8 +178,8 @@ const SITE = {
     {
       src: "IMG_20260921_065659.jpg",
       alt: "ভাগ বাটোয়ারা",
-      title: "ভাগ বন্টন",
-      caption: "ভাগ বন্টনের ফিল্ডে তৈরি স্কেচ"
+      title: "ভাগ-বণ্টন",
+      caption: "ভাগ-বণ্টনের ফিল্ডে তৈরি স্কেচ"
     },
     {
       src: "CHH.jpg",
@@ -191,7 +191,7 @@ const SITE = {
       src: "CamScanner 12-07-2026 14.52.jpg",
       alt: "ভাগ বাটোয়ারা",
       title: "বন্টন",
-      caption: "ভাগ বন্টনের স্কেচ"
+      caption: "ভাগ-বণ্টনের স্কেচ"
     },
     {
       src: "profile-abdul-hannan.webp",
