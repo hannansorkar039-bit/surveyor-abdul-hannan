@@ -9,6 +9,7 @@
   "scope": "./",
   "display": "standalone",
   "display_override": [
+    "window-controls-overlay",
     "standalone"
   ],
   "theme_color": "#071b33",
@@ -39,7 +40,8 @@
       "purpose": "maskable"
     }
   ],
-  "orientation": "portrait-primary",
+  "orientation": "any",
+  "prefer_related_applications": false,
   "categories": [
     "business",
     "productivity",
