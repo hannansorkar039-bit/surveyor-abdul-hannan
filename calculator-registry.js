@@ -13,7 +13,8 @@
 
   function calcRegistry() {
     const base = val('regValue');
-    const registration = Math.max(base * 0.01, base > 0 ? 100 : 0);
+    const registrationRate = val('regRegistrationRate') / 100;
+    const registration = Math.max(base * registrationRate, base > 0 ? 100 : 0);
     const stampRate = val('regStampRate') / 100;
     const stamp = base * stampRate;
     const localRate = val('regLocalRate') / 100;
@@ -31,7 +32,7 @@
     const total = registration + stamp + localTax + source + affidavit + nFee + nnFee + eFee + courtFee;
 
     const data = [
-      ['💳','রেজিস্ট্রেশন ফি','১%',registration],
+      ['💳','রেজিস্ট্রেশন ফি',$('regRegistrationRate').value+'%',registration],
       ['📜','স্ট্যাম্প ডিউটি',$('regStampRate').value+'%',stamp],
       ['🏛️','স্থানীয় সরকার কর', $('regLocalRate').value+'%',localTax],
       ['💰','উৎসে কর', sourceSel === 'fixed' ? 'ফিক্সড' : sourceSel+'%',source],
@@ -43,11 +44,12 @@
     ];
     rows.innerHTML = data.map(r => `<div class="cost-row"><div><span class="cost-name">${r[0]} ${r[1]} <span class="badge-rate">${r[2]}</span></span><span class="cost-meta">${r[1] === 'N-Fee' ? 'পৃষ্ঠা × নির্ধারিত হার' : 'আনুমানিক'}</span></div><span class="cost-amount">${money(r[3])}</span></div>`).join('');
     totalEl.textContent = money(total);
-    window.__registryLast = {base, registration, stamp, stampRate, localTax, localRate, source, sourceSel, sourceMinimum, affidavit, nFee, nnFee, eFee, courtFee, total};
+    window.__registryLast = {base, registration, registrationRate, stamp, stampRate, localTax, localRate, source, sourceSel, sourceMinimum, affidavit, nFee, nnFee, eFee, courtFee, total};
   }
 
   function clearRegistry() {
     ['regClient','regKhatian','regValue'].forEach(id => $(id).value = '');
+    $('regRegistrationRate').value='1';
     $('regLocalRate').value='3';
     $('regStampRate').value='1.5';
     $('regSourceRate').value='2';
@@ -75,7 +77,7 @@
 <body><h1>Land Registration Calculation Sheet</h1>
 <p><strong>ক্লায়েন্ট:</strong> ${escapeHtml(client)}<br><strong>খতিয়ান/দাগ:</strong> ${escapeHtml(khatian)}<br><strong>দলিল মূল্য:</strong> ${money(r.base)}</p>
 <table><tr><th>খরচের খাত</th><th>হার/ধরন</th><th>পরিমাণ</th></tr>
-<tr><td>রেজিস্ট্রেশন ফি</td><td>১%</td><td>${money(r.registration)}</td></tr>
+<tr><td>রেজিস্ট্রেশন ফি</td><td>${$('regRegistrationRate').value}%</td><td>${money(r.registration)}</td></tr>
 <tr><td>স্ট্যাম্প ডিউটি</td><td>${$('regStampRate').value}%</td><td>${money(r.stamp)}</td></tr>
 <tr><td>স্থানীয় সরকার কর</td><td>${$('regLocalRate').value}%</td><td>${money(r.localTax)}</td></tr>
 <tr><td>উৎসে কর</td><td>${r.sourceSel==='fixed'?'ফিক্সড':r.sourceSel+'%'+(r.sourceMinimum>0?' / ন্যূনতম '+bn(r.sourceMinimum):'')}</td><td>${money(r.source)}</td></tr>
@@ -111,7 +113,7 @@
       doc.text(`খতিয়ান/দাগ: ${khatian}`, 18, 35);
       doc.text(`দলিল মূল্য: BDT ${r.base.toLocaleString('en-US',{maximumFractionDigits:2})}`, 18, 42);
       const lines = [
-        ['রেজিস্ট্রেশন ফি (১%, ন্যূনতম BDT ১০০)', r.registration],
+        [`রেজিস্ট্রেশন ফি (${$('regRegistrationRate').value}%, ন্যূনতম BDT ১০০)`, r.registration],
         [`স্ট্যাম্প ডিউটি (${$('regStampRate').value}%)`, r.stamp],
         [`স্থানীয় সরকার কর (${$('regLocalRate').value}%)`, r.localTax],
         [`Source Tax (${r.sourceSel==='fixed'?'Fixed':r.sourceSel+'%'})`, r.source],
@@ -133,7 +135,7 @@
     }
   }
 
-  ['regValue','regLocalRate','regStampRate','regSourceRate','regFixedSource','regSourceMinimum','regAffidavit','regPages','regNFee','regNNFee','regEFee','regCourtFee'].forEach(id => {
+  ['regValue','regRegistrationRate','regLocalRate','regStampRate','regSourceRate','regFixedSource','regSourceMinimum','regAffidavit','regPages','regNFee','regNNFee','regEFee','regCourtFee'].forEach(id => {
     $(id)?.addEventListener('input', calcRegistry);
     $(id)?.addEventListener('change', calcRegistry);
   });
