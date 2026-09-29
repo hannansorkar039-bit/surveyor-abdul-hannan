@@ -641,18 +641,19 @@
 <section class="registry-upgrade" id="registry-calculator" aria-labelledby="registry-title">
 <div class="registry-head">
 <h2 class="section-title registry-title" id="registry-title"><span class="registry-title-icon">🧾</span> ভূমি রেজিস্ট্রি খরচ ক্যালকুলেটর</h2>
-<p class="lead">দলিলের মূল্য, স্থানীয় সরকার কর ও উৎসে করের হার নির্বাচন করে আনুমানিক সরকারি খরচের হিসাব দেখুন। ইনপুট পরিবর্তন করলেই ফলাফল লাইভ আপডেট হবে।</p>
-<div class="warning"><strong>হার সম্পর্কে গুরুত্বপূর্ণ:</strong> বর্তমান আইন/বাজেট ও দলিলের ধরন অনুযায়ী হার পরিবর্তিত হতে পারে। এই টুলটি আনুমানিক হিসাবের জন্য; চূড়ান্ত অর্থ প্রদানের আগে সংশ্লিষ্ট সাব-রেজিস্ট্রি অফিস/সরকারি গেজেট যাচাই করুন।</div>
+<p class="lead">দলিলের মূল্য ও প্রযোজ্য ফি/করের হার নির্বাচন করে আনুমানিক খরচের হিসাব দেখুন। ইনপুট পরিবর্তন করলেই ফলাফল লাইভ আপডেট হবে।</p>
+<div class="warning"><strong>হার সম্পর্কে গুরুত্বপূর্ণ:</strong> এখানে দেখানো সব হার/ফি ডিফল্ট রেফারেন্স মান মাত্র; এগুলোকে চূড়ান্ত বা সর্বক্ষেত্রে প্রযোজ্য সরকারি হার হিসেবে ধরা যাবে না। বর্তমান আইন/বাজেট, দলিলের ধরন, সম্পত্তির শ্রেণি, এলাকা ও প্রযোজ্য বিধি অনুযায়ী হার পরিবর্তিত হতে পারে। প্রয়োজন অনুযায়ী ইনপুটের হার/ফি পরিবর্তন করে আনুমানিক হিসাব করুন এবং চূড়ান্ত অর্থ প্রদানের আগে সংশ্লিষ্ট সাব-রেজিস্ট্রি অফিস বা সরকারি গেজেটের সর্বশেষ হার যাচাই করুন।</div>
 </div>
 
 <div class="registry-grid">
 <div>
 <div class="registry-card">
-<div class="registry-rate">⚙️ কনফিগারযোগ্য সরকারি হার</div>
+<div class="registry-rate">⚙️ ডিফল্ট/পরিবর্তনযোগ্য হার ও ফি</div>
 <div class="calc-grid">
 <div class="calc-field"><label for="regClient">ক্লায়েন্টের নাম</label><input id="regClient" type="text" placeholder="নাম লিখুন"></div>
 <div class="calc-field"><label for="regKhatian">খতিয়ান/দাগ নম্বর</label><input id="regKhatian" type="text" placeholder="যেমন: CS ১২৩ / দাগ ৪৫৬"></div>
 <div class="calc-field"><label for="regValue">দলিল/সম্পত্তির মূল্য (৳)</label><input id="regValue" type="number" min="0" step="0.01" placeholder="যেমন 1000000" required></div>
+<div class="calc-field"><label for="regRegistrationRate">রেজিস্ট্রেশন ফি (ডিফল্ট ১%)</label><input id="regRegistrationRate" type="number" min="0" step="0.01" value="1"></div>
 <div class="calc-field"><label for="regLocalRate">স্থানীয় সরকার কর</label><select id="regLocalRate"><option value="2">২%</option><option value="3" selected>৩%</option></select></div>
 <div class="calc-field"><label for="regStampRate">স্ট্যাম্প ডিউটি</label><select id="regStampRate"><option value="1.5" selected>১.৫% — বর্তমান ডিফল্ট</option></select></div>
 <div class="calc-field"><label for="regSourceRate">উৎসে করের হার</label><select id="regSourceRate"><option value="2" selected>২%</option><option value="4">৪%</option><option value="6">৬%</option><option value="8">৮%</option><option value="fixed">ফিক্সড টাকা</option></select></div>
@@ -688,7 +689,7 @@
 <button class="registry-secondary" type="button" id="registryPdf">📄 PDF রিপোর্ট</button>
 </div>
 <p class="registry-note">বি.দ্র: এটি একটি আনুমানিক হিসাব। সরকারি বিধিমালা, দলিলের ধরন, সম্পত্তির শ্রেণি, মৌজা রেইট, এলাকা এবং প্রযোজ্য উৎসে কর/ন্যূনতম কর অনুযায়ী প্রকৃত ফি পরিবর্তিত হতে পারে। চূড়ান্ত হিসাব সংশ্লিষ্ট সাব-রেজিস্ট্রি অফিসের নির্ধারিত হিসাব অনুযায়ী যাচাই করুন।</p>
-<p class="registry-note">ডিফল্ট কনফিগারেশন: রেজিস্ট্রেশন ফি ১% (ন্যূনতম প্রযোজ্য সীমাসহ) • স্ট্যাম্প ডিউটি ১.৫% • স্থানীয় সরকার কর ২%/৩% • উৎসে কর: নির্বাচিত হার বা ফিক্সড পরিমাণ।</p>
+<p class="registry-note">ডিফল্ট রেফারেন্স মান: রেজিস্ট্রেশন ফি ১% (ন্যূনতম প্রযোজ্য সীমাসহ) • স্ট্যাম্প ডিউটি ১.৫% • স্থানীয় সরকার কর ২%/৩% • উৎসে কর ২%/৪%/৬%/৮% বা ফিক্সড। প্রদর্শিত মানগুলো পরিবর্তনযোগ্য এবং কেবল আনুমানিক হিসাবের জন্য।</p>
 </div>
 </div>
 
