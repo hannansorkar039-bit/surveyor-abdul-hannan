@@ -467,7 +467,13 @@
     // The calculation geometry is kept untouched. For Drawing only, reflect
     // mathematical Y so AB (North) is at the top, BC (East) is on the right,
     // CD (South) is at the bottom, and DA (West) is on the left.
-    const all=[...q.pts, part.P, part.Q].map(p=>[p[0],-p[1]]);
+    // After editing the four cut-parcel sides, the Drawing must use that exact
+    // rebuilt target geometry; otherwise the labels are calculated from the old
+    // P/Q positions and can show a different feet/inches value than the editor.
+    const drawTargetPoly = editedTarget?.poly || part.targetPoly;
+    const drawCutP = drawTargetPoly[3];
+    const drawCutQ = drawTargetPoly[2];
+    const all=[...q.pts, ...drawTargetPoly, part.P, part.Q].map(p=>[p[0],-p[1]]);
     let minX=Math.min(...all.map(p=>p[0])), maxX=Math.max(...all.map(p=>p[0])), minY=Math.min(...all.map(p=>p[1])), maxY=Math.max(...all.map(p=>p[1]));
     const padX=Math.max((maxX-minX)*0.045,18), padY=Math.max((maxY-minY)*0.055,18);
     minX-=padX; maxX+=padX; minY-=padY; maxY+=padY;
@@ -475,10 +481,10 @@
     const tx=x=>35+(x-minX)*scale;
     const ty=y=>H-35-((-y)-minY)*scale;
     const P=q.pts.map(p=>[tx(p[0]),ty(p[1])]);
-    const PP=[tx(part.P[0]),ty(part.P[1])], QQ=[tx(part.Q[0]),ty(part.Q[1])];
+    const PP=[tx(drawCutP[0]),ty(drawCutP[1])], QQ=[tx(drawCutQ[0]),ty(drawCutQ[1])];
     const poly=P.map(p=>p.join(',')).join(' ');
     const [pA,pB,pC,pD]=P;
-    const ts=part.targetPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
+    const ts=drawTargetPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
     const rs=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
 
     const clampAngle=a=>a>90?a-180:(a<-90?a+180:a);
@@ -508,7 +514,7 @@
     // full BC/DA labels from sitting on top of their split segments.
     const dimParts=[];
     const addSeg=(a,b,label,value,off,sign=1)=>dimParts.push(sideLine(a,b,label,value,off,sign));
-    const t=part.targetPoly.map(p=>[tx(p[0]),ty(p[1])]);
+    const t=drawTargetPoly.map(p=>[tx(p[0]),ty(p[1])]);
     const r=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]);
 
     const meta=SIDE_META[part.direction] || SIDE_META.north;
@@ -531,7 +537,10 @@
     // "অবশিষ্ট" so the Drawing stays clean and readable.
     addSeg(r[0],r[1],`${nextMeta.label} Q${nOppEnd}`,dist(part.remainPoly[0],part.remainPoly[1]),22,-1);
     addSeg(r[1],r[2],`${oppositeMeta.label} ${nOppStart}${nOppEnd}`,dist(part.remainPoly[1],part.remainPoly[2]),24,1);
-    addSeg(r[2],r[3],`${prevMeta.label} ${nOppStart}P`,dist(part.remainPoly[2],part.remainPoly[3]),22,1);
+    // This is the remaining parcel's western segment. Use the actual western
+    // side endpoint name (D/A) rather than the opposite-side endpoint (C/B),
+    // so the western dimension is always rendered on the western line.
+    addSeg(r[2],r[3],`${prevMeta.label} ${prevMeta.start}P`,dist(part.remainPoly[2],part.remainPoly[3]),22,1);
 
     // Original measured diagonals are reference lines; every diagonal is dotted
     // and carries a conventional feet/inches label aligned to that diagonal.
