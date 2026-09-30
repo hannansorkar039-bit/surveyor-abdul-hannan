@@ -272,7 +272,7 @@
 <script type="application/ld+json" id="v7-webpage-schema">{"@context":"https://schema.org","@type":"WebPage","url":"https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/calculator.html","name":"Professional ভূমি ক্যালকুলেটর | Surveyor Abdul Hannan","description":"কর্ণসহ ও কর্ণ ছাড়া অনিয়মিত চতুর্ভুজ, ত্রিভুজ, ভূমি একক রূপান্তর, ভাগ-বণ্টন এবং সাধারণ মুসলিম উত্তরাধিকার হিসাবের জন্য অনলাইন ক্যালকুলেটর।","inLanguage":"bn-BD","isPartOf":{"@type":"WebSite","name":"সার্ভেয়ার আবদুল হান্নান","url":"https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/"}}</script>
 <!-- V7 SEO END -->
 <style>
-.fi-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fi-row input{width:100%;box-sizing:border-box}.qp-editor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.qp-edit-card{border:1px solid #dbe5e9;border-radius:12px;padding:10px;background:#fff}.qp-edit-card label{display:block;font-weight:800;margin-bottom:6px}.qp-edit-card .fi-row{grid-template-columns:1fr 1fr}.qp-drawing{margin-top:16px;border:1px solid #dbe5e9;border-radius:16px;background:#f7fafb;overflow:hidden}.qp-drawing-head{padding:12px 14px;font-weight:900;color:#082336;background:#eef6f7;border-bottom:1px solid #dbe5e9}.qp-svg-wrap{padding:8px;overflow:auto}.qp-svg{display:block;width:100%;min-width:520px;height:430px;background:#fff}.qp-note{font-size:12px;line-height:1.65;color:#52656f;margin:10px 2px}.qp-warning{padding:12px;border-radius:12px;background:#fff5f0;border:1px solid #f0c9b6;color:#7a351c;font-weight:700}.qp-ok{padding:12px;border-radius:12px;background:#eff9f4;border:1px solid #c6e8d4;color:#175d3a;font-weight:700}@media(max-width:620px){.qp-editor{grid-template-columns:1fr}.qp-svg{min-width:460px;height:380px}}
+.fi-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fi-row input{width:100%;box-sizing:border-box}.qp-editor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.qp-edit-card{border:1px solid #dbe5e9;border-radius:12px;padding:10px;background:#fff}.qp-edit-card label{display:block;font-weight:800;margin-bottom:6px}.qp-edit-card .fi-row{grid-template-columns:1fr 1fr}.qp-drawing{margin-top:16px;border:1px solid #dbe5e9;border-radius:16px;background:#f7fafb;overflow:hidden}.qp-drawing-head{padding:12px 14px;font-weight:900;color:#082336;background:#eef6f7;border-bottom:1px solid #dbe5e9}.qp-drawing-meta{padding:8px 14px;font-size:12px;font-weight:700;color:#52656f;background:#fbfdfd;border-bottom:1px solid #e6eef0}.qp-svg-wrap{padding:8px;overflow:auto}.qp-svg{display:block;width:100%;min-width:520px;height:430px;background:#fff}.qp-note{font-size:12px;line-height:1.65;color:#52656f;margin:10px 2px}.qp-warning{padding:12px;border-radius:12px;background:#fff5f0;border:1px solid #f0c9b6;color:#7a351c;font-weight:700}.qp-ok{padding:12px;border-radius:12px;background:#eff9f4;border:1px solid #c6e8d4;color:#175d3a;font-weight:700}@media(max-width:620px){.qp-editor{grid-template-columns:1fr}.qp-svg{min-width:460px;height:380px}}
 </style>
 </head>
 <body id="top">
@@ -363,7 +363,7 @@
 </section>
 
 <section class="calc-panel" id="panel-quad-partition" role="tabpanel">
-  <div class="formula"><code>চার বাহু + কর্ণ → মোট ক্ষেত্রফল → নির্ধারিত ভাগ → ভাগের সীমারেখা ও মাপসহ Drawing</code></div>
+  <div class="formula"><code>চার বাহু + AC কর্ণ → অনিয়মিত অবতল চতুর্ভুজ → মোট ক্ষেত্রফল → নির্ধারিত ভাগ → ফুট/ইঞ্চিসহ ভাগের সীমারেখার Drawing</code></div>
   <div class="calc-grid">
     <div class="calc-field"><label><span class="direction-badge north">উত্তর</span> AB</label><div class="fi-row"><input id="qpABft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpABin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
     <div class="calc-field"><label><span class="direction-badge east">পূর্ব</span> BC</label><div class="fi-row"><input id="qpBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpBCin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
@@ -374,6 +374,7 @@
     <div class="calc-field"><label for="qpTargetUnit">ভাগের একক</label><select id="qpTargetUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div>
   </div>
   <div class="calc-actions"><button class="calc-btn calc-primary" id="qpCalc" type="button">ভাগের সীমারেখা হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="quad-partition" type="button">পরিষ্কার</button></div>
+  <p class="calc-help"><strong>অবতল চতুর্ভুজের নিয়ম:</strong> এই অংশে ইচ্ছাকৃতভাবে উত্তল (convex) চতুর্ভুজ গ্রহণ করা হবে না। প্রদত্ত চার বাহু ও AC কর্ণ দিয়ে যদি সত্যিকারের অবতল চতুর্ভুজ তৈরি করা সম্ভব না হয়, ক্যালকুলেটর ফল জোর করে তৈরি না করে সতর্কবার্তা দেখাবে।</p>
   <div class="calc-result" id="qpResult" aria-live="polite"></div>
 </section>
 
