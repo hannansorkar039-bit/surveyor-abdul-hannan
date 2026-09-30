@@ -26,9 +26,14 @@
     $(ftId).value = ft;
     $(inId).value = inch === 0 ? '' : inch;
   }
+  // Display field dimensions in conventional survey notation: feet + whole inches.
+  // Calculations retain full precision; only the visual dimension label is rounded to
+  // the nearest inch so values such as 29' 1.09" are shown clearly as 29' 1".
   function ftIn(v) {
-    let x = Math.max(0, Number(v) || 0), ft = Math.floor(x + 1e-9), inch = Math.round((x - ft) * 12 * 100) / 100;
-    if (inch >= 12) { ft++; inch = 0; }
+    let x = Math.max(0, Number(v) || 0);
+    let totalIn = Math.round(x * 12);
+    let ft = Math.floor(totalIn / 12);
+    let inch = totalIn % 12;
     return `${bn(ft)}′ ${bn(inch)}″`;
   }
   function sideValues() {
@@ -200,50 +205,77 @@
     const meta=SIDE_META[direction] || SIDE_META.north;
     const pts=q.pts;
     const i=meta.i;
-    const n=(i+1)%4;              // next vertex along the selected side
-    const prev=(i+3)%4;           // adjacent vertex before the selected side
-    const opposite=(i+2)%4;       // far-side opposite vertex
+    const n=(i+1)%4;
+    const prev=(i+3)%4;
+    const opposite=(i+2)%4;
     const A=pts[i], B=pts[n], L=pts[prev], R=pts[opposite];
 
-    // Professional, deterministic quadrilateral partition:
-    // the selected side remains a full boundary of the separated plot;
-    // P and Q are placed at the same proportional distance on the two
-    // adjacent sides.  The cut P-Q therefore divides the original
-    // quadrilateral into TWO quadrilaterals (never a triangle).
-    // This construction works for convex and concave inputs when the
-    // resulting polygons remain inside the original parcel.
+    // The selected boundary A-B remains the complete boundary of the
+    // separated parcel. P lies on A-L and Q lies on B-R. The cut P-Q is
+    // therefore a straight boundary and both resulting parcels have four
+    // vertices. For concave quadrilaterals the area(t) curve need not be
+    // monotonic, so do NOT use a single binary search based on endpoint
+    // monotonicity. Scan the full interval for every valid crossing, then
+    // refine the first crossing (closest to the selected side).
     const areaAt=t=>{
       const P=interpolate(A,L,t);
       const Q=interpolate(B,R,t);
       return polygonArea([A,B,Q,P]);
     };
-    const f0=areaAt(0), f1=areaAt(1);
-    const minA=Math.min(f0,f1), maxA=Math.max(f0,f1);
-    if(target < minA-EPS || target > maxA+1e-6) return null;
-    let lo=0,hi=1;
-    const increasing=f1>=f0;
-    for(let k=0;k<100;k++){
-      const m=(lo+hi)/2, val=areaAt(m);
-      if((increasing && val<target)||(!increasing && val>target)) lo=m; else hi=m;
+    const validAt=(t)=>{
+      const P=interpolate(A,L,t);
+      const Q=interpolate(B,R,t);
+      const targetPoly=[A,B,Q,P];
+      const remainPoly=[P,Q,R,L];
+      if (!polygonIsInside(targetPoly,pts) || !polygonIsInside(remainPoly,pts)) return null;
+      if (!polygonEdgesInside(targetPoly,pts) || !polygonEdgesInside(remainPoly,pts)) return null;
+      if (!segmentInsidePolygon(P,Q,pts)) return null;
+      const targetArea=polygonArea(targetPoly), remainArea=polygonArea(remainPoly);
+      if (Math.abs(targetArea+remainArea-q.area)>1e-4) return null;
+      return {P,Q,targetPoly,remainPoly,targetArea,remainArea};
+    };
+
+    const N=1200;
+    const roots=[];
+    let prevT=0, prevF=areaAt(0)-target;
+    const tolerance=Math.max(1e-6, q.area*1e-10);
+    if (Math.abs(prevF)<=tolerance) roots.push(0);
+    for(let j=1;j<=N;j++){
+      const t=j/N;
+      const f=areaAt(t)-target;
+      if (Math.abs(f)<=tolerance) roots.push(t);
+      if ((prevF<0 && f>0) || (prevF>0 && f<0)) {
+        let lo=prevT, hi=t, flo=prevF;
+        for(let k=0;k<80;k++){
+          const m=(lo+hi)/2, fm=areaAt(m)-target;
+          if ((flo<0 && fm<=0) || (flo>0 && fm>=0)) { lo=m; flo=fm; }
+          else hi=m;
+        }
+        roots.push((lo+hi)/2);
+      }
+      prevT=t; prevF=f;
     }
-    const t=(lo+hi)/2;
-    const P=interpolate(A,L,t);
-    const Q=interpolate(B,R,t);
-    const targetPoly=[A,B,Q,P];
-    const remainPoly=[P,Q,R,L];
+    // Remove near-duplicate roots while preserving order from the selected side.
+    roots.sort((x,y)=>x-y);
+    const uniqueRoots=[];
+    for(const r of roots) if(!uniqueRoots.length || Math.abs(r-uniqueRoots[uniqueRoots.length-1])>1e-5) uniqueRoots.push(r);
 
-    if(!polygonIsInside(targetPoly,pts) || !polygonIsInside(remainPoly,pts)) return null;
-    if(!polygonEdgesInside(targetPoly,pts) || !polygonEdgesInside(remainPoly,pts)) return null;
-    if(!segmentInsidePolygon(P,Q,pts)) return null;
-    const targetArea=polygonArea(targetPoly);
-    const remainArea=polygonArea(remainPoly);
-    if(Math.abs(targetArea-target)>1e-4 || Math.abs((targetArea+remainArea)-q.area)>1e-4) return null;
+    let solved=null;
+    for(const t of uniqueRoots){
+      const candidate=validAt(t);
+      if(candidate && Math.abs(candidate.targetArea-target)<=Math.max(1e-4,q.area*1e-10)) {
+        solved={t,...candidate};
+        break;
+      }
+    }
+    if(!solved) return null;
 
+    const {t,P,Q,targetPoly,remainPoly,targetArea,remainArea}=solved;
     const names=['A','B','C','D'];
     const aName=names[i], bName=names[n], pSideName=names[prev], rName=names[opposite];
     const sideNames=['উত্তর','পূর্ব','দক্ষিণ','পশ্চিম'];
     const sideKeys=['AB','BC','CD','DA'];
-    const cutName=`P–Q`;
+    const cutName='P–Q';
     const makeSeg=(name,label,value,extra={})=>({name,label,value,...extra});
     const targetSegments=[
       makeSeg(`${aName}–${bName}`,`${meta.label} ${meta.key} (পূর্ণ বাহু)`,dist(A,B)),
@@ -263,7 +295,7 @@
     ];
     return {
       P,Q,t,direction,side:meta.key,sideLabel:meta.label,startLabel:meta.start,endLabel:meta.end,
-      fraction:t,partArea:target,cutName,cutLength:dist(P,Q),
+      fraction:t,partArea:targetArea,cutName,cutLength:dist(P,Q),
       pSideIndex:prev,qSideIndex:n,oppositeIndex:opposite,targetPoly,remainPoly,
       targetSegments,remainSegments
     };
@@ -278,25 +310,78 @@
   function makeDrawing(q, part) {
     const all=[...q.pts, part.P, part.Q];
     let minX=Math.min(...all.map(p=>p[0])), maxX=Math.max(...all.map(p=>p[0])), minY=Math.min(...all.map(p=>p[1])), maxY=Math.max(...all.map(p=>p[1]));
-    const padX=Math.max((maxX-minX)*0.20,45), padY=Math.max((maxY-minY)*0.24,55);
+    const padX=Math.max((maxX-minX)*0.28,70), padY=Math.max((maxY-minY)*0.30,75);
     minX-=padX; maxX+=padX; minY-=padY; maxY+=padY;
-    const W=800,H=500, scale=Math.min((W-40)/(maxX-minX),(H-40)/(maxY-minY));
-    // Coordinate convention: north is UP, east RIGHT, south DOWN, west LEFT.
-    const tx=x=>20+(x-minX)*scale, ty=y=>20+(y-minY)*scale;
+    const W=800,H=560, scale=Math.min((W-70)/(maxX-minX),(H-70)/(maxY-minY));
+    // Mathematical y is upward; SVG y is downward. Negate y so NORTH stays at the top.
+    const tx=x=>35+(x-minX)*scale;
+    const ty=y=>H-35-(y-minY)*scale;
     const P=q.pts.map(p=>[tx(p[0]),ty(p[1])]);
     const PP=[tx(part.P[0]),ty(part.P[1])], QQ=[tx(part.Q[0]),ty(part.Q[1])];
     const poly=P.map(p=>p.join(',')).join(' ');
-    const mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
-    const offset=(a,b,dx,dy)=>{const m=mid(a,b);return [m[0]+dx,m[1]+dy]};
     const [pA,pB,pC,pD]=P;
-    const sAB=offset(pA,pB,0,-22), sBC=offset(pB,pC,24,0), sCD=offset(pC,pD,0,25), sDA=offset(pD,pA,-25,0);
-    const sAC=offset(pA,pC,20,0), sBD=offset(pB,pD,-20,0);
-    const sPQ=offset(PP,QQ,0,-18);
-    const sideLabels=`<g>${svgLabel(sAB[0],sAB[1],`উত্তর AB: ${ftIn(q.v.AB)}`)}${svgLabel(sBC[0],sBC[1],`পূর্ব BC: ${ftIn(q.v.BC)}`,'start')}${svgLabel(sCD[0],sCD[1],`দক্ষিণ CD: ${ftIn(q.v.CD)}`)}${svgLabel(sDA[0],sDA[1],`পশ্চিম DA: ${ftIn(q.v.DA)}`,'end')}${svgLabel(sAC[0],sAC[1],`কর্ণ AC: ${ftIn(q.v.AC)}`,'start')}${svgLabel(sBD[0],sBD[1],`কর্ণ BD: ${ftIn(dist(q.B,q.D))}`,'end')}${svgLabel(sPQ[0],sPQ[1],`ভাগরেখা PQ: ${ftIn(part.cutLength)}`,'middle')}</g>`;
     const ts=part.targetPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
     const rs=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
-    const verts=[['A',pA],['B',pB],['C',pC],['D',pD],['P',PP],['Q',QQ]].map(([n,p])=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#08747b"/><text x="${p[0]+9}" y="${p[1]-9}" font-size="15" font-weight="900" fill="#082336">${n}</text>`).join('');
-    return `<div class="qp-drawing"><div class="qp-drawing-head">📐 ${q.type==='convex'?'উত্তল (Convex)':'অবতল (Concave)'} চতুর্ভূজ — ${esc(SIDE_META[part.direction].label)} দিক থেকে ${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ ভাগের Drawing</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • P ও Q = ভাগরেখার দুই প্রান্ত • PQ = নতুন ভাগরেখা</div><div class="qp-svg-wrap"><svg class="qp-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="দিক নির্ধারণসহ দুইটি চতুর্ভূজে জমি ভাগের চিত্র"><polygon points="${poly}" fill="#eaf5f6" stroke="#08747b" stroke-width="3"/><polygon points="${ts}" fill="#fff4d6" opacity="0.95" stroke="#d9a441" stroke-width="2"/><polygon points="${rs}" fill="#eef8f8" opacity="0.35" stroke="#08747b" stroke-width="1"/><line x1="${PP[0]}" y1="${PP[1]}" x2="${QQ[0]}" y2="${QQ[1]}" stroke="#b84b2a" stroke-width="4"/><circle cx="${PP[0]}" cy="${PP[1]}" r="6" fill="#b84b2a"/><circle cx="${QQ[0]}" cy="${QQ[1]}" r="6" fill="#b84b2a"/>${sideLabels}${verts}</svg></div><div class="qp-drawing-legend"><span>🟨 নির্ধারিত ভাগ (${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ)</span><span>⬜ অবশিষ্ট জমি (${bn((q.area-part.partArea)/SQFT_PER_DECIMAL)} শতাংশ)</span></div></div>`;
+
+    const clampAngle=a=>a>90?a-180:(a<-90?a+180:a);
+    const dimLine=(a,b,text,offsetPx=24,opts={})=>{
+      const dx=b[0]-a[0], dy=b[1]-a[1], len=Math.hypot(dx,dy)||1;
+      const nx=-dy/len, ny=dx/len;
+      const sign=opts.sideSign ?? 1;
+      const ox=nx*offsetPx*sign, oy=ny*offsetPx*sign;
+      const x1=a[0]+ox, y1=a[1]+oy, x2=b[0]+ox, y2=b[1]+oy;
+      const mx=(x1+x2)/2, my=(y1+y2)/2;
+      const ang=clampAngle(Math.atan2(dy,dx)*180/Math.PI);
+      const dash=opts.dotted?' stroke-dasharray="7 6"':'';
+      const lineColor=opts.color || '#58707a';
+      const textColor=opts.textColor || '#082336';
+      return `<g class="qp-dim-line"><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${lineColor}" stroke-width="${opts.width||2}"${dash}/><line x1="${(a[0]+ox).toFixed(1)}" y1="${(a[1]+oy).toFixed(1)}" x2="${a[0].toFixed(1)}" y2="${a[1].toFixed(1)}" stroke="${lineColor}" stroke-width="1" opacity="0.65"/><line x1="${(b[0]+ox).toFixed(1)}" y1="${(b[1]+oy).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${lineColor}" stroke-width="1" opacity="0.65"/><text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${mx.toFixed(1)} ${my.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="800" fill="${textColor}" paint-order="stroke" stroke="#fff" stroke-width="5" stroke-linejoin="round">${esc(text)}</text></g>`;
+    };
+    const sideLine=(a,b,label,value,offsetPx,sideSign=1)=>dimLine(a,b,`${label}: ${ftIn(value)}`,offsetPx,{sideSign,color:'#506d76'});
+    const diagonalLine=(a,b,label,value,offsetPx,sideSign=1)=>dimLine(a,b,`${label}: ${ftIn(value)}`,offsetPx,{sideSign,dotted:true,color:'#7b6b9a',width:2});
+
+    // Original parcel boundary.  All visual dimensions are parallel to their measured line.
+    const boundary=`<polygon points="${poly}" fill="#eef8f8" stroke="#08747b" stroke-width="3" stroke-linejoin="round"/>`;
+    const targetFill=`<polygon points="${ts}" fill="#fff0bf" opacity="0.92" stroke="#d59b28" stroke-width="2" stroke-linejoin="round"/>`;
+    const remainFill=`<polygon points="${rs}" fill="#eaf7f7" opacity="0.55" stroke="#08747b" stroke-width="1.5"/>`;
+    const cut=`<line x1="${PP[0]}" y1="${PP[1]}" x2="${QQ[0]}" y2="${QQ[1]}" stroke="#c44f2b" stroke-width="4"/>`;
+
+    // Dimension labels for every line of the two created parcels.
+    const dimParts=[];
+    const addSeg=(a,b,label,value,off,sign=1)=>dimParts.push(sideLine(a,b,label,value,off,sign));
+    // Full north/south/east/west boundary dimensions remain visible and aligned.
+    addSeg(pA,pB,'উত্তর AB',q.v.AB,28,-1);
+    addSeg(pB,pC,'পূর্ব BC',q.v.BC,28,-1);
+    addSeg(pC,pD,'দক্ষিণ CD',q.v.CD,28,1);
+    addSeg(pD,pA,'পশ্চিম DA',q.v.DA,28,1);
+    // Partition line, also aligned with itself.
+    addSeg(PP,QQ,'ভাগরেখা PQ',part.cutLength,24,-1);
+
+    // Every segment of the selected parcel and remaining parcel gets an aligned dimension.
+    const t=part.targetPoly.map(p=>[tx(p[0]),ty(p[1])]);
+    const r=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]);
+    // Offsets are deliberately on opposite sides to avoid overlap.
+    addSeg(t[0],t[1],'৩% উত্তর AB',dist(part.targetPoly[0],part.targetPoly[1]),18,1);
+    addSeg(t[1],t[2],'৩% পূর্ব',dist(part.targetPoly[1],part.targetPoly[2]),18,-1);
+    addSeg(t[3],t[0],'৩% পশ্চিম',dist(part.targetPoly[3],part.targetPoly[0]),18,1);
+    addSeg(r[1],r[2],'অবশিষ্ট দক্ষিণ',dist(part.remainPoly[1],part.remainPoly[2]),18,1);
+    addSeg(r[2],r[3],'অবশিষ্ট পশ্চিম',dist(part.remainPoly[2],part.remainPoly[3]),18,-1);
+    addSeg(r[0],r[1],'অবশিষ্ট পূর্ব',dist(part.remainPoly[0],part.remainPoly[1]),18,-1);
+
+    // Corner/diagonal lines are dotted and carry their own dimensions.
+    const diagLines=[];
+    diagLines.push(diagonalLine(pA,pC,'কর্ণ AC',q.v.AC,30,-1));
+    diagLines.push(diagonalLine(pB,pD,'কর্ণ BD',dist(q.B,q.D),30,1));
+    const A0=t[0], B0=t[1], Q0=t[2], P0=t[3];
+    diagLines.push(diagonalLine(A0,Q0,'৩% কর্ণ AQ',dist(part.targetPoly[0],part.targetPoly[2]),24,-1));
+    diagLines.push(diagonalLine(B0,P0,'৩% কর্ণ BP',dist(part.targetPoly[1],part.targetPoly[3]),24,1));
+    const P1=r[0], Q1=r[1], R1=r[2], L1=r[3];
+    diagLines.push(diagonalLine(P1,R1,'অবশিষ্ট কর্ণ PR',dist(part.remainPoly[0],part.remainPoly[2]),24,1));
+    diagLines.push(diagonalLine(Q1,L1,'অবশিষ্ট কর্ণ QL',dist(part.remainPoly[1],part.remainPoly[3]),24,-1));
+
+    const verts=[['A',pA],['B',pB],['C',pC],['D',pD],['P',PP],['Q',QQ]].map(([n,p])=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#08747b"/><text x="${p[0]+9}" y="${p[1]-9}" font-size="15" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4">${n}</text>`).join('');
+    const northArrow=`<g transform="translate(52 48)"><line x1="0" y1="30" x2="0" y2="0" stroke="#082336" stroke-width="3"/><path d="M0 0 L-7 11 L7 11 Z" fill="#082336"/><text x="0" y="48" text-anchor="middle" font-size="14" font-weight="900" fill="#082336">উত্তর</text></g>`;
+    return `<div class="qp-drawing"><div class="qp-drawing-head">📐 ${q.type==='convex'?'উত্তল (Convex)':'অবতল (Concave)'} চতুর্ভূজ — ${esc(SIDE_META[part.direction].label)} দিক থেকে ${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ ভাগের Drawing</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • প্রতিটি মাপ তার সংশ্লিষ্ট রেখার সমান্তরাল • কর্ণ ডটেড</div><div class="qp-svg-wrap"><svg class="qp-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="দিক নির্ধারণসহ দুইটি চতুর্ভূজে জমি ভাগের চিত্র">${boundary}${remainFill}${targetFill}${diagLines.join('')}${cut}${dimParts.join('')}${northArrow}${verts}</svg></div><div class="qp-drawing-legend"><span>🟨 নির্ধারিত ভাগ (${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ)</span><span>⬜ অবশিষ্ট জমি (${bn((q.area-part.partArea)/SQFT_PER_DECIMAL)} শতাংশ)</span><span>┄ কর্ণ = ডটেড</span></div></div>`;
   }
   function calculate() {
     let v=sideValues();
