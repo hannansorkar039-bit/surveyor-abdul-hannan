@@ -136,29 +136,145 @@
     const targetSq = part ? part.partArea : null;
     const targetDec = targetSq == null ? null : targetSq / SQFT_PER_DECIMAL;
     const totalDec = q ? q.area / SQFT_PER_DECIMAL : null;
-    const actualPct = (targetSq != null && q && q.area > 0) ? (targetSq / q.area * 100) : null;
+    const actualDecimal = targetDec;
     const requestedPct = targetDec;
-    const deltaPctPoints = (actualPct != null && requestedPct != null) ? actualPct - requestedPct : 0;
-    const deltaText = deltaPctPoints > 0.0005
-      ? `বর্তমান অনুপাত ${bn(actualPct)}% — নির্ধারিত ${bn(requestedPct)}%-এর চেয়ে ${bn(deltaPctPoints)} শতাংশ-পয়েন্ট বেশি`
-      : deltaPctPoints < -0.0005
-        ? `বর্তমান অনুপাত ${bn(actualPct)}% — নির্ধারিত ${bn(requestedPct)}%-এর চেয়ে ${bn(Math.abs(deltaPctPoints))} শতাংশ-পয়েন্ট কম`
-        : `বর্তমান অনুপাত ${bn(actualPct || requestedPct || 0)}% — নির্ধারিত ভাগের সঙ্গে মিল আছে`;
+    const deltaPctPoints = 0;
+    const deltaText = `বর্তমান কর্তন ${bn(actualDecimal || 0)} শতাংশ — নির্ধারিত ভাগের সঙ্গে মিল আছে`;
+    const parcelFields = part ? partitionEditFields(part) : [];
     const derived = part ? `
       <div class="qp-derived-card">
-        <div class="qp-derived-title">✂️ ভাগকৃত জমির বর্তমান মাপ — এডিট করলে সঙ্গে সঙ্গে পুনঃহিসাব হবে</div>
+        <div class="qp-derived-title">✂️ কর্তন/ভাগকৃত জমির ৪ দিকের ফুট–ইঞ্চি — সরাসরি এডিটযোগ্য</div>
+        <div class="qp-parcel-edit-note">যে কোনো একটি মাপের ফুট বা ইঞ্চি পরিবর্তন করলে Drawing নতুন জ্যামিতি অনুযায়ী আপডেট হবে এবং নতুন ক্ষেত্রফল দেখাবে। চারটি মাপ একসঙ্গে জ্যামিতিকভাবে সামঞ্জস্যপূর্ণ না হলে ভুল Drawing তৈরি না করে সতর্কবার্তা দেখানো হবে।</div>
+        <div class="qp-parcel-editor">${parcelFields.map((f,idx)=>`<div class="qp-edit-card qp-parcel-edit-card"><label>${f.label}</label><div class="fi-row"><input id="qpPart${idx}ft" data-part-index="${idx}" type="number" min="0" step="any" placeholder="ফুট" value="${Math.floor(f.value)}"><input id="qpPart${idx}in" data-part-index="${idx}" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" value="${Number(((f.value-Math.floor(f.value))*12).toFixed(2)) || ''}"></div></div>`).join('')}</div>
+        <div id="qpPartLive" class="qp-live-area is-match"><strong>লাইভ ক্ষেত্রফল:</strong> কর্তনকৃত অংশ ${bn(targetSq)} বর্গফুট = <strong>${bn(targetDec)} শতাংশ</strong> • নির্ধারিত ${bn(requestedPct)} শতাংশ • ${esc(deltaText)} • মোট জমি ${bn(totalDec)} শতাংশ</div>
         <div class="qp-derived-grid">
           ${dimensionTable(`নির্ধারিত ভাগ (${bn(targetDec)} শতাংশ)`, part.targetSegments)}
           ${dimensionTable(`অবশিষ্ট জমি (${bn((q.area-targetSq)/SQFT_PER_DECIMAL)} শতাংশ)`, part.remainSegments)}
         </div>
-        <div class="qp-live-area ${Math.abs(deltaPctPoints)>0.0005?'is-different':'is-match'}">
-          <strong>লাইভ শতাংশ যাচাই:</strong> মোট বর্তমান জমি ${bn(totalDec)} শতাংশ • নির্ধারিত অংশ ${bn(targetDec)} শতাংশ • ${esc(deltaText)}
-        </div>
       </div>` : '';
-    return `<div class="qp-edit-card"><strong>ড্রয়িংয়ের মাপ সংশোধন করুন</strong><div class="qp-note">মূল জমির ফুট/ইঞ্চি পরিবর্তন করলে নিচের ভাগকৃত অংশ, অবশিষ্ট অংশ, কর্ণ, ভাগরেখা এবং শতাংশের তুলনা স্বয়ংক্রিয়ভাবে আপডেট হবে।</div></div>
+    return `<div class="qp-edit-card"><strong>ড্রয়িংয়ের মাপ সংশোধন করুন</strong><div class="qp-note">উপরের মূল জমির মাপ পরিবর্তন করলে পুরো জমি পুনঃহিসাব হবে। নিচের ৪টি ক্ষেত্র হলো কর্তন/ভাগকৃত অংশের উত্তর, পূর্ব, দক্ষিণ ও পশ্চিমের ফুট–ইঞ্চি; এগুলোও সরাসরি এডিট করা যাবে।</div></div>
       <div class="qp-editor">${items.map(([k,label])=>`<div class="qp-edit-card"><label>${label}</label><div class="fi-row"><input id="qpEdit${k}ft" type="number" min="0" step="any" placeholder="ফুট" value="${Math.floor(v[k])}"><input id="qpEdit${k}in" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" value="${Number(((v[k]-Math.floor(v[k]))*12).toFixed(2)) || ''}"></div></div>`).join('')}</div>
       ${derived}`;
   }
+
+  function partitionEditFields(part) {
+    const m=SIDE_META[part.direction];
+    const names=['উত্তর','পূর্ব','দক্ষিণ','পশ্চিম'];
+    const keys=['AB','BC','CD','DA'];
+    const t=part.targetPoly;
+    return [0,1,2,3].map(i=>({
+      label:`${names[(m.i+i)%4]} • ${i===0?keys[m.i]:i===1?keys[(m.i+1)%4]:i===2?keys[(m.i+2)%4]:keys[(m.i+3)%4]} — ভাগকৃত অংশ`,
+      value:dist(t[i],t[(i+1)%4])
+    }));
+  }
+  function readPartitionEditor() {
+    const vals=[];
+    for(let i=0;i<4;i++){
+      const ft=Number($(`qpPart${i}ft`)?.value || 0), inch=Number($(`qpPart${i}in`)?.value || 0);
+      if(!Number.isFinite(ft)||!Number.isFinite(inch)||ft<0||inch<0||inch>=12) return null;
+      vals.push(ft+inch/12);
+    }
+    return vals.every(x=>x>0)?vals:null;
+  }
+  function reconstructTargetFromFourSides(original, lengths) {
+    if(!original || original.length!==4 || lengths.some(x=>!(x>0))) return null;
+    const [A0,B0,C0,D0]=original;
+    const base=dist(A0,B0);
+    const dA=dist(A0,D0);
+    if(base<EPS || dA<EPS) return null;
+    const ux=(B0[0]-A0[0])/base, uy=(B0[1]-A0[1])/base;
+    const vx=(D0[0]-A0[0])/dA, vy=(D0[1]-A0[1])/dA;
+    let cosTheta=ux*vx+uy*vy;
+    cosTheta=Math.max(-1,Math.min(1,cosTheta));
+    const sinTheta=ux*vy-uy*vx;
+    const theta=Math.atan2(sinTheta,cosTheta);
+    const L0=lengths[0],L1=lengths[1],L2=lengths[2],L3=lengths[3];
+    const O=[0,0], B=[L0,0], D=[L3*Math.cos(theta),L3*Math.sin(theta)];
+    const dx=D[0]-B[0], dy=D[1]-B[1], dd=Math.hypot(dx,dy);
+    if(dd<EPS || dd>L1+L2+EPS || dd<Math.abs(L1-L2)-EPS) return null;
+    const a=(L1*L1-L2*L2+dd*dd)/(2*dd);
+    const h2=L1*L1-a*a;
+    if(h2<-1e-7) return null;
+    const h=Math.sqrt(Math.max(0,h2));
+    const ex=dx/dd, ey=dy/dd, px=-ey, py=ex;
+    const candidates=[[B[0]+a*ex+h*px,B[1]+a*ey+h*py],[B[0]+a*ex-h*px,B[1]+a*ey-h*py]];
+    const targetSign=polygonAreaSigned(original)>0?1:-1;
+    let C=candidates.find(c=>Math.sign(polygonAreaSigned([O,B,c,D]))===targetSign);
+    if(!C) C=candidates[0];
+    const rot= Math.atan2(uy,ux);
+    const cosR=Math.cos(rot), sinR=Math.sin(rot);
+    const map=p=>[A0[0]+p[0]*cosR-p[1]*sinR,A0[1]+p[0]*sinR+p[1]*cosR];
+    const out=[map(O),map(B),map(C),map(D)];
+    const lens=out.map((p,i)=>dist(p,out[(i+1)%4]));
+    if(lens.some((x,i)=>Math.abs(x-lengths[i])>1e-5) || !isSimpleQuad(out)) return null;
+    return out;
+  }
+  function updatePartitionFromEditor() {
+    if(!lastContext) return;
+    const lengths=readPartitionEditor();
+    if(!lengths) return;
+    const editedTarget=reconstructTargetFromFourSides(lastContext.part.targetPoly,lengths);
+    if(!editedTarget) {
+      const box=$('qpPartLive');
+      if(box) box.innerHTML='<strong>লাইভ ক্ষেত্রফল:</strong> এই চারটি মাপ দিয়ে বৈধ চতুর্ভূজ তৈরি করা যাচ্ছে না। চারটি বাহুর মাপ পরস্পরের সঙ্গে সামঞ্জস্যপূর্ণ হতে হবে।';
+      return;
+    }
+    const m=SIDE_META[lastContext.part.direction];
+    const outer=lastContext.q.pts;
+    const remainPoly=[editedTarget[3],editedTarget[2],outer[(m.i+2)%4],outer[(m.i+3)%4]];
+    // Build the complete updated parcel boundary from the edited cut parcel and
+    // the two opposite original corners. This makes the drawing react to the
+    // edited feet/inches instead of merely changing a text label.
+    const updatedWhole=[editedTarget[0],editedTarget[1],editedTarget[2],outer[(m.i+2)%4],outer[(m.i+3)%4],editedTarget[3]];
+    const targetArea=polygonArea(editedTarget);
+    const remainingArea=polygonArea(remainPoly);
+    // The edited target parcel and the remaining parcel share exactly the new
+    // PQ cut line, so their areas add to the current drawing area.  When the
+    // user edits the four cut-parcel sides, the requested quantity must be
+    // compared in decimal/শতাংশ land units—not against targetArea/wholeArea
+    // (which is a percentage of the whole parcel and was misleading in v7).
+    const wholeArea=targetArea+remainingArea;
+    const requested=lastContext.target/SQFT_PER_DECIMAL;
+    const currentDecimal=targetArea/SQFT_PER_DECIMAL;
+    const diff=currentDecimal-requested;
+    const dirNames=['উত্তর','পূর্ব','দক্ষিণ','পশ্চিম'];
+    const mk=(label,value,extra={})=>({label,value,...extra});
+    const newPart={...lastContext.part, targetPoly:editedTarget, remainPoly, partArea:targetArea, remainArea, cutLength:dist(editedTarget[2],editedTarget[3]),
+      targetSegments:[
+        mk(`${dirNames[m.i]} • ভাগকৃত অংশ`,dist(editedTarget[0],editedTarget[1])),
+        mk(`${dirNames[(m.i+1)%4]} • ভাগকৃত অংশ`,dist(editedTarget[1],editedTarget[2])),
+        mk(`${dirNames[(m.i+2)%4]} • ভাগরেখা PQ`,dist(editedTarget[2],editedTarget[3]),{cut:true}),
+        mk(`${dirNames[(m.i+3)%4]} • ভাগকৃত অংশ`,dist(editedTarget[3],editedTarget[0])),
+        mk('ভাগের কর্ণ ১',dist(editedTarget[0],editedTarget[2]),{diagonal:true}),
+        mk('ভাগের কর্ণ ২',dist(editedTarget[1],editedTarget[3]),{diagonal:true})
+      ],
+      remainSegments:[
+        mk(`${dirNames[(m.i+1)%4]} • অবশিষ্ট অংশ`,dist(remainPoly[0],remainPoly[1])),
+        mk(`${dirNames[(m.i+2)%4]} • অবশিষ্ট অংশ`,dist(remainPoly[1],remainPoly[2])),
+        mk(`${dirNames[(m.i+3)%4]} • অবশিষ্ট অংশ`,dist(remainPoly[2],remainPoly[3])),
+        mk('নতুন ভাগরেখা PQ',dist(remainPoly[0],remainPoly[1]),{cut:true}),
+        mk('অবশিষ্ট কর্ণ ১',dist(remainPoly[0],remainPoly[2]),{diagonal:true}),
+        mk('অবশিষ্ট কর্ণ ২',dist(remainPoly[1],remainPoly[3]),{diagonal:true})
+      ]};
+    lastContext.editedTarget=editedTarget;
+    lastContext.editedPart=newPart;
+    lastContext.editedWhole=updatedWhole;
+    const box=$('qpPartLive');
+    if(box){
+      const deltaText=diff>0.0005?`নির্ধারিত ${bn(requested)} শতাংশের চেয়ে ${bn(diff)} শতাংশ বেশি`:diff<-0.0005?`নির্ধারিত ${bn(requested)} শতাংশের চেয়ে ${bn(Math.abs(diff))} শতাংশ কম`:'নির্ধারিত ভাগের সঙ্গে মিল আছে';
+      box.className=`qp-live-area ${Math.abs(diff)>0.0005?'is-different':'is-match'}`;
+      box.innerHTML=`<strong>লাইভ ক্ষেত্রফল:</strong> কর্তনকৃত অংশ ${bn(targetArea)} বর্গফুট = <strong>${bn(currentDecimal)} শতাংশ</strong> • নির্ধারিত ছিল ${bn(requested)} শতাংশ • ${esc(deltaText)} • বর্তমান পুরো Drawing-এর ক্ষেত্রফল ${bn(wholeArea)} বর্গফুট = ${bn(wholeArea/SQFT_PER_DECIMAL)} শতাংশ`;
+    }
+    const host=document.querySelector('.qp-drawing');
+    if(host){ const holder=document.createElement('div'); holder.innerHTML=makeDrawing(lastContext.q,newPart); host.replaceWith(holder.firstElementChild); }
+    const cards=document.querySelectorAll('.qp-derived-grid .qp-dimension-card');
+    if(cards.length>=2){
+      cards[0].outerHTML=dimensionTable(`নির্ধারিত ভাগ (${bn(targetArea/SQFT_PER_DECIMAL)} শতাংশ)`,newPart.targetSegments);
+      cards[1].outerHTML=dimensionTable(`অবশিষ্ট জমি (${bn(remainingArea/SQFT_PER_DECIMAL)} শতাংশ)`,newPart.remainSegments);
+    }
+  }
+  let lastContext=null;
+
   function syncEditor(v) {
     if (!$('qpEditABft')) return;
     for (const k of ['AB','BC','CD','DA','AC']) setFI(`qpEdit${k}ft`,`qpEdit${k}in`,v[k]);
@@ -332,20 +448,27 @@
     return `<div class="qp-dimension-card"><h4>${esc(title)}</h4><div class="qp-dimension-list">${segments.map(s=>`<div class="qp-dimension-row"><span>${esc(s.label)}</span><strong>${ftIn(s.value)}</strong></div>`).join('')}</div></div>`;
   }
   function makeDrawing(q, part) {
-    const all=[...q.pts, part.P, part.Q];
+    const targetForBounds=part.targetPoly || part.editedTarget || [part.P,part.Q];
+    const all=[...q.pts, ...targetForBounds, ...(part.editedWhole || [])];
     let minX=Math.min(...all.map(p=>p[0])), maxX=Math.max(...all.map(p=>p[0])), minY=Math.min(...all.map(p=>p[1])), maxY=Math.max(...all.map(p=>p[1]));
-    const padX=Math.max((maxX-minX)*0.28,70), padY=Math.max((maxY-minY)*0.30,75);
+    const padX=Math.max((maxX-minX)*0.38,110), padY=Math.max((maxY-minY)*0.38,110);
     minX-=padX; maxX+=padX; minY-=padY; maxY+=padY;
-    const W=800,H=560, scale=Math.min((W-70)/(maxX-minX),(H-70)/(maxY-minY));
-    // Mathematical y is upward; SVG y is downward. Negate y so NORTH stays at the top.
+    const W=1100,H=720, scale=Math.min((W-150)/(maxX-minX),(H-150)/(maxY-minY));
+    // The source geometry is oriented with AB as the north boundary. Keep
+    // mathematical y increasing downward for the SVG so AB remains at the top:
+    // north = top, east = right, south = bottom, west = left.
     const tx=x=>35+(x-minX)*scale;
-    const ty=y=>H-35-(y-minY)*scale;
+    const ty=y=>35+(y-minY)*scale;
     const P=q.pts.map(p=>[tx(p[0]),ty(p[1])]);
-    const PP=[tx(part.P[0]),ty(part.P[1])], QQ=[tx(part.Q[0]),ty(part.Q[1])];
+    const targetPoly=part.targetPoly || part.editedTarget;
+    const Pcut=targetPoly[3], Qcut=targetPoly[2];
+    const PP=[tx(Pcut[0]),ty(Pcut[1])], QQ=[tx(Qcut[0]),ty(Qcut[1])];
     const poly=P.map(p=>p.join(',')).join(' ');
     const [pA,pB,pC,pD]=P;
-    const ts=part.targetPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
-    const rs=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
+    const ts=targetPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
+    const editedRemain=[targetPoly[3],targetPoly[2],q.pts[part.oppositeIndex],q.pts[part.pSideIndex]];
+    const remainPoly=part.editedTarget?editedRemain:part.remainPoly;
+    const rs=remainPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
 
     const clampAngle=a=>a>90?a-180:(a<-90?a+180:a);
     const dimLine=(a,b,text,offsetPx=24,opts={})=>{
@@ -359,13 +482,15 @@
       const dash=opts.dotted?' stroke-dasharray="7 6"':'';
       const lineColor=opts.color || '#58707a';
       const textColor=opts.textColor || '#082336';
-      return `<g class="qp-dim-line"><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${lineColor}" stroke-width="${opts.width||2}"${dash}/><line x1="${(a[0]+ox).toFixed(1)}" y1="${(a[1]+oy).toFixed(1)}" x2="${a[0].toFixed(1)}" y2="${a[1].toFixed(1)}" stroke="${lineColor}" stroke-width="1" opacity="0.65"/><line x1="${(b[0]+ox).toFixed(1)}" y1="${(b[1]+oy).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${lineColor}" stroke-width="1" opacity="0.65"/><text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${mx.toFixed(1)} ${my.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="800" fill="${textColor}" paint-order="stroke" stroke="#fff" stroke-width="5" stroke-linejoin="round">${esc(text)}</text></g>`;
+      return `<g class="qp-dim-line"><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${lineColor}" stroke-width="${opts.width||2}"${dash}/><line x1="${(a[0]+ox).toFixed(1)}" y1="${(a[1]+oy).toFixed(1)}" x2="${a[0].toFixed(1)}" y2="${a[1].toFixed(1)}" stroke="${lineColor}" stroke-width="1" opacity="0.65"/><line x1="${(b[0]+ox).toFixed(1)}" y1="${(b[1]+oy).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${lineColor}" stroke-width="1" opacity="0.65"/><text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${mx.toFixed(1)} ${my.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="800" fill="${textColor}" paint-order="stroke" stroke="#fff" stroke-width="5" stroke-linejoin="round">${esc(text)}</text></g>`;
     };
     const sideLine=(a,b,label,value,offsetPx,sideSign=1)=>dimLine(a,b,`${label}: ${ftIn(value)}`,offsetPx,{sideSign,color:'#506d76'});
     const diagonalLine=(a,b,label,value,offsetPx,sideSign=1)=>dimLine(a,b,`${label}: ${ftIn(value)}`,offsetPx,{sideSign,dotted:true,color:'#7b6b9a',width:2});
 
     // Original parcel boundary and the two created parcels.
-    const boundary=`<polygon points="${poly}" fill="#eef8f8" stroke="#08747b" stroke-width="3" stroke-linejoin="round"/>`;
+    const wholeForDraw=part.editedWhole || q.pts;
+    const wholePoly=wholeForDraw.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
+    const boundary=`<polygon points="${wholePoly}" fill="#eef8f8" stroke="#08747b" stroke-width="3" stroke-linejoin="round"/>`;
     const targetFill=`<polygon points="${ts}" fill="#fff0bf" opacity="0.92" stroke="#d59b28" stroke-width="2" stroke-linejoin="round"/>`;
     const remainFill=`<polygon points="${rs}" fill="#eaf7f7" opacity="0.55" stroke="#08747b" stroke-width="1.5"/>`;
     const cut=`<line x1="${PP[0]}" y1="${PP[1]}" x2="${QQ[0]}" y2="${QQ[1]}" stroke="#c44f2b" stroke-width="4"/>`;
@@ -374,19 +499,21 @@
     // full BC/DA labels from sitting on top of their split segments.
     const dimParts=[];
     const addSeg=(a,b,label,value,off,sign=1)=>dimParts.push(sideLine(a,b,label,value,off,sign));
-    const t=part.targetPoly.map(p=>[tx(p[0]),ty(p[1])]);
-    const r=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]);
+    const t=targetPoly.map(p=>[tx(p[0]),ty(p[1])]);
+    const r=remainPoly.map(p=>[tx(p[0]),ty(p[1])]);
 
-    // Selected parcel: AB, BQ, PQ, PA.
-    addSeg(t[0],t[1],`৩% ${SIDE_META[part.direction].label} AB`,dist(part.targetPoly[0],part.targetPoly[1]),24,-1);
-    addSeg(t[1],t[2],`৩% পূর্ব`,dist(part.targetPoly[1],part.targetPoly[2]),22,-1);
-    addSeg(t[2],t[3],`৩% ভাগরেখা PQ`,part.cutLength,24,1);
-    addSeg(t[3],t[0],`৩% পশ্চিম`,dist(part.targetPoly[3],part.targetPoly[0]),22,1);
+    const dirNames=['উত্তর','পূর্ব','দক্ষিণ','পশ্চিম'];
+    const di=SIDE_META[part.direction].i;
+    // Selected parcel: the four sides are always reported in compass order.
+    addSeg(t[0],t[1],`৩% ${dirNames[di]}`,dist(targetPoly[0],targetPoly[1]),30,-1);
+    addSeg(t[1],t[2],`৩% ${dirNames[(di+1)%4]}`,dist(targetPoly[1],targetPoly[2]),28,-1);
+    addSeg(t[2],t[3],`৩% ${dirNames[(di+2)%4]} • ভাগরেখা PQ`,dist(targetPoly[2],targetPoly[3]),30,1);
+    addSeg(t[3],t[0],`৩% ${dirNames[(di+3)%4]}`,dist(targetPoly[3],targetPoly[0]),28,1);
 
-    // Remaining parcel: QC, CD, DP (plus PQ as the common boundary is shown once above).
-    addSeg(r[0],r[1],`অবশিষ্ট পূর্ব`,dist(part.remainPoly[0],part.remainPoly[1]),22,-1);
-    addSeg(r[1],r[2],`অবশিষ্ট দক্ষিণ`,dist(part.remainPoly[1],part.remainPoly[2]),24,1);
-    addSeg(r[2],r[3],`অবশিষ্ট পশ্চিম`,dist(part.remainPoly[2],part.remainPoly[3]),22,1);
+    // Remaining parcel: all four sides are shown in compass order; PQ is shared.
+    addSeg(r[0],r[1],`অবশিষ্ট ${dirNames[(di+1)%4]}`,dist(remainPoly[0],remainPoly[1]),28,-1);
+    addSeg(r[1],r[2],`অবশিষ্ট ${dirNames[(di+2)%4]}`,dist(remainPoly[1],remainPoly[2]),30,1);
+    addSeg(r[2],r[3],`অবশিষ্ট ${dirNames[(di+3)%4]}`,dist(remainPoly[2],remainPoly[3]),28,1);
 
     // Original measured diagonals are reference lines; every diagonal is dotted
     // and carries a conventional feet/inches label aligned to that diagonal.
@@ -394,14 +521,14 @@
     diagLines.push(diagonalLine(pA,pC,'মূল কর্ণ AC',q.v.AC,28,-1));
     diagLines.push(diagonalLine(pB,pD,'মূল কর্ণ BD',dist(q.B,q.D),28,1));
     const A0=t[0], B0=t[1], Q0=t[2], P0=t[3];
-    diagLines.push(diagonalLine(A0,Q0,'৩% কর্ণ AQ',dist(part.targetPoly[0],part.targetPoly[2]),20,-1));
-    diagLines.push(diagonalLine(B0,P0,'৩% কর্ণ BP',dist(part.targetPoly[1],part.targetPoly[3]),20,1));
+    diagLines.push(diagonalLine(A0,Q0,'৩% কর্ণ ১',dist(targetPoly[0],targetPoly[2]),24,-1));
+    diagLines.push(diagonalLine(B0,P0,'৩% কর্ণ ২',dist(targetPoly[1],targetPoly[3]),24,1));
     const P1=r[0], Q1=r[1], R1=r[2], L1=r[3];
-    diagLines.push(diagonalLine(P1,R1,'অবশিষ্ট কর্ণ PC',dist(part.remainPoly[0],part.remainPoly[2]),20,1));
-    diagLines.push(diagonalLine(Q1,L1,'অবশিষ্ট কর্ণ QD',dist(part.remainPoly[1],part.remainPoly[3]),20,-1));
+    diagLines.push(diagonalLine(P1,R1,'অবশিষ্ট কর্ণ PC',dist(remainPoly[0],remainPoly[2]),20,1));
+    diagLines.push(diagonalLine(Q1,L1,'অবশিষ্ট কর্ণ QD',dist(remainPoly[1],remainPoly[3]),20,-1));
 
     const verts=[['A',pA],['B',pB],['C',pC],['D',pD],['P',PP],['Q',QQ]].map(([n,p])=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#08747b"/><text x="${p[0]+9}" y="${p[1]-9}" font-size="15" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4">${n}</text>`).join('');
-    const northArrow=`<g transform="translate(52 48)"><line x1="0" y1="30" x2="0" y2="0" stroke="#082336" stroke-width="3"/><path d="M0 0 L-7 11 L7 11 Z" fill="#082336"/><text x="0" y="48" text-anchor="middle" font-size="14" font-weight="900" fill="#082336">উত্তর</text></g>`;
+    const northArrow=`<g transform="translate(70 70)"><line x1="0" y1="30" x2="0" y2="0" stroke="#082336" stroke-width="3"/><path d="M0 0 L-7 11 L7 11 Z" fill="#082336"/><text x="0" y="48" text-anchor="middle" font-size="14" font-weight="900" fill="#082336">উত্তর</text></g>`;
     return `<div class="qp-drawing"><div class="qp-drawing-head">📐 ${q.type==='convex'?'উত্তল (Convex)':'অবতল (Concave)'} চতুর্ভূজ — ${esc(SIDE_META[part.direction].label)} দিক থেকে ${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ ভাগের Drawing</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • প্রতিটি মাপ তার সংশ্লিষ্ট রেখার সমান্তরাল • কর্ণ ডটেড</div><div class="qp-svg-wrap"><svg class="qp-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="দিক নির্ধারণসহ দুইটি চতুর্ভূজে জমি ভাগের চিত্র">${boundary}${remainFill}${targetFill}${diagLines.join('')}${cut}${dimParts.join('')}${northArrow}${verts}</svg></div><div class="qp-drawing-legend"><span>🟨 নির্ধারিত ভাগ (${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ)</span><span>⬜ অবশিষ্ট জমি (${bn((q.area-part.partArea)/SQFT_PER_DECIMAL)} শতাংশ)</span><span>┄ কর্ণ = ডটেড</span></div></div>`;
   }
   function calculate() {
@@ -428,8 +555,10 @@
     result.innerHTML=`<div class="qp-ok">হিসাব সফল হয়েছে। এটি <strong>অনিয়মিত ${typeBn} চতুর্ভূজ</strong> হিসেবে তৈরি করা হয়েছে। মোট জমি ≈ ${bn(q.area)} বর্গফুট (${bn(q.area/SQFT_PER_DECIMAL)} শতাংশ)। <strong>${esc(SIDE_META[direction].label)} দিক</strong> থেকে ${bn(targetDecimal)} শতাংশ আলাদা করা হয়েছে।</div>
       <div class="result-list"><div class="result-item result-item-primary"><strong>${bn(target)} বর্গফুট</strong><span>নির্ধারিত ভাগ = ${bn(targetDecimal)} শতাংশ</span></div><div class="result-item"><strong>${bn(remainingDecimal)} শতাংশ</strong><span>অবশিষ্ট জমি</span></div><div class="result-item"><strong>${ftIn(part.cutLength)}</strong><span>নতুন ভাগরেখা ${esc(part.cutName)}</span></div><div class="result-item"><strong>${esc(part.side)} বাহু</strong><span>P–Q নতুন ভাগরেখা দিয়ে সীমা নির্ধারিত হয়েছে</span></div></div>
       <div class="qp-dimensions"><div class="qp-dimensions-title">৩ শতাংশ/নির্ধারিত ভাগের আলাদা ফুট-ইঞ্চি মাপ — কর্ণ ও ভাগরেখাসহ</div>${dimensionTable(`নির্ধারিত ভাগ (${bn(targetDecimal)} শতাংশ)`,part.targetSegments)}${dimensionTable(`অবশিষ্ট জমি (${bn(remainingDecimal)} শতাংশ)`,part.remainSegments)}</div>
-      ${editor(v,part,q)}${makeDrawing(q,part)}<p class="qp-note">⚠️ নির্বাচিত দিকের উপর P বিন্দু নির্ধারণ করে তার সংলগ্ন বিপরীত কোণে নতুন ভাগরেখা তৈরি করে নির্ধারিত ক্ষেত্রফল বের করা হয়েছে। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে এবং পশ্চিম বামে রাখা হয়েছে। নির্ধারিত ভাগ ও অবশিষ্ট জমির প্রতিটি অংশের আলাদা ফুট-ইঞ্চি মাপ এবং প্রযোজ্য কর্ণ দেখানো হয়েছে। মাঠে দাগ কাটার আগে বাস্তব সীমানা ও জরিপ মাপ যাচাই করুন।</p>`;
+      ${editor(v,part,q)}${makeDrawing(q,part)}<p class="qp-note">⚠️ নির্বাচিত দিকের উপর P ও Q নির্ধারণ করে নির্ধারিত ক্ষেত্রফল বের করা হয়েছে। নিচের কর্তনকৃত অংশের ৪ দিকের মাপ এডিট করলে সেই চার মাপের জ্যামিতিক সম্পর্ক বজায় রেখে নতুন ক্ষেত্রফল ও Drawing দেখানো হবে। মূল জমির উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে এবং পশ্চিম বামে রাখা হয়েছে। মাঠে দাগ কাটার আগে বাস্তব সীমানা ও জরিপ মাপ যাচাই করুন।</p>`;
+    lastContext={q,part,target,direction};
     bindEditor();
+    bindPartitionEditor();
   }
   let editorTimer=null;
   function bindEditor(){
@@ -454,6 +583,20 @@
       }));
     }
   }
+  let partitionEditorTimer=null;
+  function bindPartitionEditor(){
+    for(let i=0;i<4;i++){
+      [`qpPart${i}ft`,`qpPart${i}in`].forEach(id=>$(id)?.addEventListener('input',e=>{
+        clearTimeout(partitionEditorTimer);
+        const active=e.currentTarget;
+        partitionEditorTimer=setTimeout(()=>{
+          updatePartitionFromEditor();
+          active.focus({preventScroll:true});
+        },700);
+      }));
+    }
+  }
+
   function clear(){
     for(const k of ['AB','BC','CD','DA','AC']) { $(k==='AB'?'qpABft':`qp${k}ft`).value=''; $(k==='AB'?'qpABin':`qp${k}in`).value=''; }
     $('qpTarget').value=''; result.innerHTML='';
