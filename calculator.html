@@ -372,6 +372,7 @@
     <div class="calc-field"><label><span class="diagonal-badge">কর্ণ</span> AC</label><div class="fi-row"><input id="qpACft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpACin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
     <div class="calc-field"><label for="qpTarget">যে পরিমাণ জমি ভাগ করবেন</label><input id="qpTarget" type="number" min="0" step="any" placeholder="যেমন 2"></div>
     <div class="calc-field"><label for="qpTargetUnit">ভাগের একক</label><select id="qpTargetUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div>
+    <div class="calc-field"><label for="qpShapeType">চতুর্ভূজের ধরন</label><select id="qpShapeType"><option value="auto">স্বয়ংক্রিয় — বৈধ ধরন গ্রহণ</option><option value="convex">উত্তল (Convex)</option><option value="concave">অবতল (Concave)</option></select></div>
   </div>
   <div class="calc-actions"><button class="calc-btn calc-primary" id="qpCalc" type="button">ভাগের সীমারেখা হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="quad-partition" type="button">পরিষ্কার</button></div>
   <p class="calc-help"><strong>অবতল চতুর্ভুজের নিয়ম:</strong> এই অংশে ইচ্ছাকৃতভাবে উত্তল (convex) চতুর্ভুজ গ্রহণ করা হবে না। প্রদত্ত চার বাহু ও AC কর্ণ দিয়ে যদি সত্যিকারের অবতল চতুর্ভুজ তৈরি করা সম্ভব না হয়, ক্যালকুলেটর ফল জোর করে তৈরি না করে সতর্কবার্তা দেখাবে।</p>
