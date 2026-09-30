@@ -365,37 +365,63 @@
     const live=$('qpCutLive');
     const button=$('qpCutRecalc');
     if(!button) return;
-    button.addEventListener('click',()=>{
-      const vals=ids.map(i=>readFI(`qpCut${i}ft`,`qpCut${i}in`));
-      if(vals.some(v=>v===null||!(v>0))){
-        if(live) live.innerHTML='<span class="qp-cut-error">চার দিকের ফুট ও ইঞ্চির সব মান সঠিকভাবে দিন।</span>';
-        return;
-      }
-      const rebuilt=reconstructTargetFromEditedSides(part,vals);
-      if(!rebuilt){
-        if(live) live.innerHTML='<span class="qp-cut-error">এই ৪টি মাপ ও স্থির কর্ণ AQ দিয়ে বৈধ চতুর্ভূজ তৈরি হচ্ছে না। মাপগুলো যাচাই করুন।</span>';
-        return;
-      }
-      const area=rebuilt.area, decimal=area/SQFT_PER_DECIMAL;
-      const recalculated=partitionForDirection(q,area,part.direction);
-      if(!recalculated){
-        const meta=SIDE_META[part.direction] || SIDE_META.north;
-        const max=trianglePointsArea(q.pts[meta.i],q.pts[(meta.i+1)%4],q.pts[(meta.i+2)%4]);
-        if(live) live.innerHTML=`<span class="qp-cut-error">নতুন ক্ষেত্রফল ${bn(decimal)} শতাংশ (${bn(area)} বর্গফুট) ${meta.label} দিক থেকে বৈধভাবে ভাগ করা যাচ্ছে না। সর্বোচ্চ প্রায় ${bn(max/SQFT_PER_DECIMAL)} শতাংশ পর্যন্ত নেওয়া যায়।</span>`;
-        return;
-      }
-      part.editedTarget=rebuilt;
-      part.editedTargetSides=vals;
-      part.editedTargetArea=area;
-      part.recalculatedPart=recalculated;
-      if(live) live.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ`;
 
-      // Keep the original parcel fixed and rebuild a valid partition from the
-      // newly calculated area. This keeps the red cut line on the real parcel
-      // boundary instead of drawing an unattached quadrilateral.
-      const oldDrawing=document.querySelector('.qp-drawing');
-      if(oldDrawing) oldDrawing.outerHTML=makeDrawing(q,recalculated);
-    });
+    // The cut editor is injected with result.innerHTML, so bind the button
+    // directly each time the editor is rendered. Use onclick so a re-render
+    // can never leave a stale handler behind.
+    button.onclick=()=>{
+      try{
+        const vals=ids.map(i=>readFI(`qpCut${i}ft`,`qpCut${i}in`));
+        if(vals.some(v=>v===null||!(v>0))){
+          if(live) live.innerHTML='<span class="qp-cut-error">চার দিকের ফুট ও ইঞ্চির সব মান সঠিকভাবে দিন।</span>';
+          return;
+        }
+
+        // AQ remains the fixed reference diagonal from the original partition.
+        // The four edited sides determine the new area.
+        const rebuilt=reconstructTargetFromEditedSides(part,vals);
+        if(!rebuilt){
+          if(live) live.innerHTML='<span class="qp-cut-error">এই ৪টি মাপ ও স্থির কর্ণ AQ দিয়ে বৈধ চতুর্ভূজ তৈরি হচ্ছে না। মাপগুলো যাচাই করুন।</span>';
+          return;
+        }
+
+        const area=rebuilt.area, decimal=area/SQFT_PER_DECIMAL;
+        const recalculated=partitionForDirection(q,area,part.direction);
+        if(!recalculated){
+          const meta=SIDE_META[part.direction] || SIDE_META.north;
+          const max=trianglePointsArea(q.pts[meta.i],q.pts[(meta.i+1)%4],q.pts[(meta.i+2)%4]);
+          if(live) live.innerHTML=`<span class="qp-cut-error">নতুন ক্ষেত্রফল ${bn(decimal)} শতাংশ (${bn(area)} বর্গফুট) ${meta.label} দিক থেকে বৈধভাবে ভাগ করা যাচ্ছে না। সর্বোচ্চ প্রায় ${bn(max/SQFT_PER_DECIMAL)} শতাংশ পর্যন্ত নেওয়া যায়।</span>`;
+          return;
+        }
+
+        // Store the edited calculation without changing the original parcel
+        // geometry. Subsequent edits continue to use the original fixed AQ.
+        part.editedTarget=rebuilt;
+        part.editedTargetSides=vals.slice();
+        part.editedTargetArea=area;
+        part.recalculatedPart=recalculated;
+
+        // Show the new area immediately in the visible result card.
+        const liveArea=document.querySelector('.qp-live-area');
+        if(liveArea) liveArea.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ`;
+        if(live) live.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ`;
+
+        // Refresh both dimension tables so the numbers and Drawing stay in sync
+        // with the newly calculated area. The four edit fields remain untouched.
+        const cards=document.querySelectorAll('.qp-dimensions .qp-dimension-card');
+        const remainingDecimal=(q.area-recalculated.partArea)/SQFT_PER_DECIMAL;
+        if(cards[0]) cards[0].outerHTML=dimensionTable(`নির্ধারিত ভাগ (${bn(recalculated.partArea/SQFT_PER_DECIMAL)} শতাংশ)`,recalculated.targetSegments);
+        if(cards[1]) cards[1].outerHTML=dimensionTable(`অবশিষ্ট জমি (${bn(remainingDecimal)} শতাংশ)`,recalculated.remainSegments);
+
+        // Keep the original parcel fixed and rebuild the visible Drawing from
+        // the newly calculated area. The red P-Q line remains attached to it.
+        const oldDrawing=document.querySelector('.qp-drawing');
+        if(oldDrawing) oldDrawing.outerHTML=makeDrawing(q,recalculated);
+      }catch(err){
+        console.error('qpCutRecalc error:',err);
+        if(live) live.innerHTML='<span class="qp-cut-error">নতুন ক্ষেত্রফল হিসাব করতে একটি সমস্যা হয়েছে। ফুট–ইঞ্চির মানগুলো আবার যাচাই করুন।</span>';
+      }
+    };
   }
   function makeDrawing(q, part) {
     // The calculation geometry is kept untouched. For Drawing only, reflect
