@@ -907,3 +907,128 @@
   initMap();
 
 })();
+
+/* ================================================================
+   Quadrilateral partition: feet/inches + editable live drawing
+   ================================================================ */
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const FT = 12;
+  const SQFT_PER_DECIMAL = 435.6;
+
+  function num(id) {
+    const el = $(id);
+    return el ? Number(el.value) : 0;
+  }
+  function fi(ftId, inId) {
+    const f = num(ftId), i = num(inId);
+    if (!Number.isFinite(f) || !Number.isFinite(i) || f < 0 || i < 0 || i >= FT) return NaN;
+    return f + i / FT;
+  }
+  function setFi(ftId, inId, value) {
+    value = Math.max(0, Number(value) || 0);
+    const f = Math.floor(value + 1e-10);
+    const i = (value - f) * FT;
+    $(ftId).value = String(f);
+    $(inId).value = i < 0.005 ? '0' : i.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+  }
+  function fmtFi(v) {
+    if (!Number.isFinite(v)) return '—';
+    let totalIn = Math.max(0, v * FT);
+    let f = Math.floor(totalIn / FT + 1e-9);
+    let i = totalIn - f * FT;
+    if (i >= 11.995) { f += 1; i = 0; }
+    return `${f}′ ${i.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}″`;
+  }
+  function triArea(a,b,c) {
+    const s=(a+b+c)/2;
+    const x=s*(s-a)*(s-b)*(s-c);
+    return x > 0 ? Math.sqrt(x) : 0;
+  }
+  function coordsFromSides(ab,bc,cd,da,ac) {
+    const abc = (ab+bc+ac)/2, abd=(da+cd+ac)/2;
+    if (!(ab+bc>ac && ab+ac>bc && bc+ac>ab)) throw new Error('উত্তর, পূর্ব ও কর্ণের মাপ একটি বৈধ ত্রিভুজ তৈরি করছে না।');
+    if (!(da+cd>ac && da+ac>cd && cd+ac>da)) throw new Error('পশ্চিম, দক্ষিণ ও কর্ণের মাপ একটি বৈধ ত্রিভুজ তৈরি করছে না।');
+    const xB=(ab*ab+ac*ac-bc*bc)/(2*ac);
+    const yB=Math.sqrt(Math.max(0,ab*ab-xB*xB));
+    const xD=(da*da+ac*ac-cd*cd)/(2*ac);
+    const yD=-Math.sqrt(Math.max(0,da*da-xD*xD));
+    return {A:{x:0,y:0},B:{x:xB,y:yB},C:{x:ac,y:0},D:{x:xD,y:yD}};
+  }
+  function polygonArea(p) {
+    const q=[p.A,p.B,p.C,p.D]; let a=0;
+    for(let i=0;i<q.length;i++){const u=q[i],v=q[(i+1)%q.length];a+=u.x*v.y-v.x*u.y;}
+    return Math.abs(a)/2;
+  }
+  function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  function lineLen(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+  function readInputs(){
+    return {ab:fi('qpABft','qpABin'),bc:fi('qpBCft','qpBCin'),cd:fi('qpCDft','qpCDin'),da:fi('qpDAft','qpDAin'),ac:fi('qpACft','qpACin')};
+  }
+  function targetSqft(totalSqft){
+    const t=num('qpTarget'), unit=$('qpTargetUnit')?.value || 'decimal';
+    if (!Number.isFinite(t) || t < 0) return NaN;
+    return unit==='decimal' ? t*SQFT_PER_DECIMAL : unit==='sqm' ? t*10.76391041671 : t;
+  }
+  function renderDrawing(result){
+    const p=result.points, all=[p.A,p.B,p.C,p.D,p.P];
+    const xs=all.map(v=>v.x), ys=all.map(v=>v.y); const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+    const w=760,h=430,pad=70, sx=(w-2*pad)/Math.max(maxX-minX,1), sy=(h-2*pad)/Math.max(maxY-minY,1), scale=Math.min(sx,sy);
+    const map=v=>({x:pad+(v.x-minX)*scale,y:h-pad-(v.y-minY)*scale});
+    const A=map(p.A),B=map(p.B),C=map(p.C),D=map(p.D),P=map(p.P);
+    const sideLabel=(u,v,text,ox=0,oy=0)=>{const m={x:(u.x+v.x)/2+ox,y:(u.y+v.y)/2+oy};return `<text class="qp-dim" x="${m.x}" y="${m.y}" text-anchor="middle">${esc(text)}</text>`;};
+    const svg=`<svg class="qp-drawing" viewBox="0 0 ${w} ${h}" role="img" aria-label="চতুর্ভুজ ভাগ-বণ্টনের ড্রয়িং">
+      <defs><marker id="qpArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#64748b"/></marker></defs>
+      <polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" fill="#e2e8f0" fill-opacity=".55" stroke="#334155" stroke-width="3"/>
+      <line x1="A.x" y1="A.y" x2="C.x" y2="C.y" stroke="#64748b" stroke-width="2" stroke-dasharray="8 6"/>
+      <line x1="A.x" y1="A.y" x2="P.x" y2="P.y" stroke="#b91c1c" stroke-width="4"/>
+      ${[A,B,C,D,P].map((q,i)=>`<circle cx="${q.x}" cy="${q.y}" r="5" fill="#0f172a"/><text class="qp-label" x="${q.x+8}" y="${q.y-8}">${['A','B','C','D','P'][i]}</text>`).join('')}
+      ${sideLabel(A,B,'উত্তর AB: '+fmtFi(result.ab),0,-12)}
+      ${sideLabel(B,C,'পূর্ব BC: '+fmtFi(result.bc),12,0)}
+      ${sideLabel(C,D,'দক্ষিণ CD: '+fmtFi(result.cd),0,18)}
+      ${sideLabel(D,A,'পশ্চিম DA: '+fmtFi(result.da),-18,0)}
+      ${sideLabel(A,C,'কর্ণ AC: '+fmtFi(result.ac),0,-12)}
+      ${sideLabel(A,P,'ভাগের সীমারেখা AP: '+fmtFi(result.ap),18,0)}
+    </svg>`;
+    return `<div class="qp-drawing-wrap">${svg}<div class="qp-edit-hint">লাল রেখাটি ভাগের সীমারেখা। নিচের ফুট-ইঞ্চির ঘরগুলো পরিবর্তন করলে ড্রয়িংও সঙ্গে সঙ্গে পরিবর্তিত হবে।</div></div>`;
+  }
+  function renderEdit(result){
+    const fields=[['উত্তর AB','qpEabft','qpEabin',result.ab],['পূর্ব BC','qpEbcft','qpEbcin',result.bc],['দক্ষিণ CD','qpEcdft','qpEcdin',result.cd],['পশ্চিম DA','qpEdaft','qpEdain',result.da],['কর্ণ AC','qpEacft','qpEacin',result.ac]];
+    let html='<div class="qp-edit-grid">';
+    fields.forEach(([label,f,i,v])=>{ const ii=i.replace(' ',''); html+=`<div class="qp-edit-card"><label>${label}</label><div class="fi-input"><input data-qp-edit="${f}" id="${f}" type="number" min="0" step="any" placeholder="ফুট"><input data-qp-edit="${ii}" id="${ii}" type="number" min="0" max="11.999999" step="0.01" placeholder="ইঞ্চি"></div></div>`; });
+    html+='</div>'; return html;
+  }
+  let last=null;
+  function calculate(fromEdit=false){
+    const out=$('qpResult'); if(!out)return;
+    try{
+      const v=fromEdit?{ab:fi('qpEabft','qpEabin'),bc:fi('qpEbcft','qpEbcin'),cd:fi('qpEcdft','qpEcdin'),da:fi('qpEdaft','qpEdain'),ac:fi('qpEacft','qpEacin')}:readInputs();
+      if(Object.values(v).some(x=>!Number.isFinite(x)||x<=0)) throw new Error('উত্তর, পূর্ব, দক্ষিণ, পশ্চিম ও কর্ণ—সব মাপ সঠিক ফুট-ইঞ্চিতে দিতে হবে।');
+      const pts=coordsFromSides(v.ab,v.bc,v.cd,v.da,v.ac); const totalSqft=polygonArea(pts); const target=targetSqft(totalSqft);
+      if(!Number.isFinite(target)||target<=0) throw new Error('ভাগের পরিমাণ সঠিকভাবে দিন।');
+      if(target>=totalSqft-1e-7) throw new Error(`ভাগের পরিমাণ মোট জমির চেয়ে কম হতে হবে। মোট ক্ষেত্রফল ≈ ${totalSqft.toFixed(2)} বর্গফুট।`);
+      const areaADC=triArea(v.da,v.cd,v.ac); if(areaADC<=1e-9) throw new Error('দক্ষিণ পাশের ত্রিভুজের ক্ষেত্রফল নির্ণয় করা যাচ্ছে না।');
+      let desiredADC=target, side='A–D–P';
+      if(desiredADC>areaADC){desiredADC=totalSqft-target;side='A–P–C–B';}
+      const t=Math.min(1,Math.max(0,desiredADC/areaADC));
+      const P={x:pts.D.x+(pts.C.x-pts.D.x)*t,y:pts.D.y+(pts.C.y-pts.D.y)*t};
+      const ap=lineLen(pts.A,P), pToC=lineLen(P,pts.C), pToD=lineLen(P,pts.D);
+      const result={...v,points:{...pts,P},ap,pToC,pToD,totalSqft,target,share:target/totalSqft*100,side}; last=result;
+      if(!fromEdit){
+        setFi('qpEabft','qpEabin',v.ab);setFi('qpEbcft','qpEbcin',v.bc);setFi('qpEcdft','qpEcdin',v.cd);setFi('qpEdaft','qpEdain',v.da);setFi('qpEacft','qpEacin',v.ac);
+      }
+      const targetUnit=$('qpTargetUnit')?.value||'decimal';
+      const targetDisplay=targetUnit==='decimal'?(target/SQFT_PER_DECIMAL).toFixed(4)+' শতাংশ':targetUnit==='sqm'?(target/10.76391041671).toFixed(3)+' m²':target.toFixed(2)+' ft²';
+      out.innerHTML=`<div class="qp-status qp-ok"><strong>হিসাব সম্পন্ন।</strong> ভাগের সীমারেখা <strong>A → P</strong>। নির্ধারিত ভাগ: <strong>${targetDisplay}</strong> (${result.share.toFixed(2)}%)।</div><div class="qp-meta"><div><strong>মোট ক্ষেত্রফল</strong>${totalSqft.toFixed(2)} বর্গফুট</div><div><strong>কর্ণ AC</strong>${fmtFi(v.ac)}</div><div><strong>ভাগের সীমারেখা AP</strong>${fmtFi(ap)}</div><div><strong>P–D</strong>${fmtFi(pToD)} &nbsp; | &nbsp; <strong>P–C</strong>${fmtFi(pToC)}</div></div>${renderDrawing(result)}<h4 style="margin:18px 0 4px">✏️ মাপ সংশোধন</h4>${renderEdit(result)}`;
+      bindEdit();
+    }catch(err){ out.innerHTML=`<div class="qp-status qp-error"><strong>হিসাব করা যায়নি:</strong> ${esc(err.message||'ইনপুট যাচাই করুন।')}</div>`; }
+  }
+  function bindEdit(){document.querySelectorAll('[data-qp-edit]').forEach(el=>el.addEventListener('input',()=>calculate(true)));}
+  function init(){
+    const btn=$('qpCalc'); if(!btn)return;
+    btn.addEventListener('click',()=>calculate(false));
+    document.querySelector('[data-clear="quad-partition"]')?.addEventListener('click',()=>{['qpABft','qpABin','qpBCft','qpBCin','qpCDft','qpCDin','qpDAft','qpDAin','qpACft','qpACin','qpTarget'].forEach(id=>{if($(id))$(id).value='';}); if($('qpResult'))$('qpResult').innerHTML='';});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
