@@ -174,9 +174,19 @@
       const xd=(d*d+q*q-c*c)/(2*q), yd=Math.sqrt(Math.max(0,d*d-xd*xd)); if(!(yd>1e-8))return null;
       const ux=x/q,uy=y/q,nx=-uy,ny=ux;
       const D=[xd*ux+yd*nx,xd*uy+yd*ny];
-      const pts=[[0,0],[a,0],[x,-y],[D[0],-D[1]]];
+      let pts=[[0,0],[a,0],[x,-y],[D[0],-D[1]]];
       const lens=pts.map((p,i)=>{const z=pts[(i+1)%4];return Math.hypot(z[0]-p[0],z[1]-p[1])});
       if(lens.some((z,i)=>Math.abs(z-v[i])>1e-4))return null;
+
+      // Keep the user's side naming consistent for a fresh field:
+      // AB = north, BC = east, CD = south, DA = west.
+      // The four entered lengths are preserved exactly; only a mirror of the
+      // sketch is used when the initial construction happens to face left.
+      const cx=pts.reduce((s,p)=>s+p[0],0)/4;
+      const bcMid=(pts[1][0]+pts[2][0])/2;
+      if(bcMid<cx){
+        pts=pts.map(p=>[-p[0],p[1]]);
+      }
       return pts;
     }
     function triPoints(v){const [a,b,c]=v;if(!(a>0&&b>0&&c>0)||a+b<=c||a+c<=b||b+c<=a)return null;const x=(a*a+c*c-b*b)/(2*a),y=Math.sqrt(Math.max(0,c*c-x*x));return [[0,0],[a,0],[x,-y]]}
@@ -372,6 +382,46 @@
         }
       }
 
+      // For a four-sided field, keep BC/DA on their expected global east/west
+      // sides after alignment. The selected shared edge is already exact; the two
+      // endpoint-order candidates are mirror images across the perpendicular
+      // bisector of that shared edge. Choose the one that keeps the conventional
+      // A-B-C-D direction consistent with the selected north/east/south/west side.
+      if(r.length===4 && (attach?.mode||'center')==='center' && (side==='north'||side==='east'||side==='south'||side==='west')){
+        const sa=r[newEdge], sb=r[(newEdge+1)%r.length];
+        const mx=(sa[0]+sb[0])/2, my=(sa[1]+sb[1])/2;
+        const vx=sb[0]-sa[0], vy=sb[1]-sa[1], L=Math.hypot(vx,vy);
+        if(L>1e-9){
+          // Reflect in the perpendicular bisector: this preserves the exact shared
+          // segment as a set, all side lengths, and the polygon area.
+          const ux=vx/L, uy=vy/L;
+          const px=-uy, py=ux;
+          const mirrored=r.map(p=>{
+            const dx=p[0]-mx, dy=p[1]-my;
+            const along=dx*ux+dy*uy;
+            const across=dx*px+dy*py;
+            return [mx+along*ux-across*px, my+along*uy-across*py];
+          });
+          // Score all four named edges against their fixed compass meaning:
+          // AB=north, BC=east, CD=south, DA=west. This makes the entered
+          // east/west values stay on the corresponding physical side after a
+          // center attachment, without changing any side length.
+          const wants=[[0,1],[1,0],[0,-1],[-1,0]];
+          const cardinalScore=pts=>{
+            const cx=pts.reduce((sum,p)=>sum+p[0],0)/pts.length;
+            const cy=pts.reduce((sum,p)=>sum+p[1],0)/pts.length;
+            let score=0;
+            for(let i=0;i<4;i++){
+              const e=pts[i], q=pts[(i+1)%4];
+              const emx=(e[0]+q[0])/2, emy=(e[1]+q[1])/2;
+              score+=(emx-cx)*wants[i][0]+(emy-cy)*wants[i][1];
+            }
+            return score;
+          };
+          if(cardinalScore(mirrored)>cardinalScore(r))r=mirrored;
+        }
+      }
+
       // Recompute the edge endpoints after reflection because its orientation may
       // have reversed. We still keep the exact selected shared edge.
       // Hard numerical cleanup: project only the selected shared edge onto the exact
@@ -437,16 +487,9 @@
       return best;
     }
     function twoLineAssigned(base,shape,side,attach,triAttachEdge=0,quadAttachEdge=0){
-      const {baseEdge,newEdge}=sideEdges(side,base,shape,triAttachEdge,quadAttachEdge);
-      const fitted=affineFitAtCorner(shape,base,baseEdge,newEdge,attach);
-      if(!fitted)return null;
-      // Boundary assignment must never silently change the user's entered
-      // feet/inches. Accept the two-line fit only when it is a rigid fit and
-      // therefore preserves every entered side length exactly (within tolerance).
-      const src=sideLengths(shape), dst=sideLengths(fitted);
-      const tol=1e-7;
-      if(src.length!==dst.length || src.some((v,i)=>Math.abs(v-dst[i])>tol*Math.max(1,v))) return null;
-      return fitted;
+      // A two-line boundary assignment must be rigid. Never use an affine fit:
+      // affine scaling/shearing can change BC/DA (east/west) feet-inches.
+      return null;
     }
     function pointInPoly(pt,pts){let inside=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){
       const xi=pts[i][0],yi=pts[i][1],xj=pts[j][0],yj=pts[j][1];
