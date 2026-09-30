@@ -322,13 +322,23 @@
   function dimensionTable(title,segments){
     return `<div class="qp-dimension-card"><h4>${esc(title)}</h4><div class="qp-dimension-list">${segments.map(s=>`<div class="qp-dimension-row"><span>${esc(s.label)}</span><strong>${ftIn(s.value)}</strong></div>`).join('')}</div></div>`;
   }
+  const SIDE_KEYS=['north','east','south','west'];
   function cutEditor(part){
-    const names=['A','B','Q','P'];
+    // SIDE_META is keyed by direction name, not by numeric index. The previous
+    // version accidentally indexed SIDE_META with 0/1/2/3 here, which threw a
+    // TypeError while building the result HTML and made the Calculate button
+    // appear to do nothing. Keep the selected direction authoritative and derive
+    // the adjacent side names from the numeric index explicitly.
+    const meta=SIDE_META[part.direction] || SIDE_META.north;
+    const i=meta.i;
+    const nextMeta=SIDE_META[SIDE_KEYS[(i+1)%4]];
+    const prevMeta=SIDE_META[SIDE_KEYS[(i+3)%4]];
+    const names=[meta.start,meta.end,'Q','P'];
     const sideLabels=[
-      `${SIDE_META[part.direction].label} • ${names[0]}${names[1]} (ভাগকৃত অংশ)`,
-      `${SIDE_META[(SIDE_META[part.direction].i+1)%4].label} • ${names[1]}Q (ভাগকৃত অংশ)`,
+      `${meta.label} • ${names[0]}${names[1]} (ভাগকৃত অংশ)`,
+      `${nextMeta.label} • ${names[1]}Q (ভাগকৃত অংশ)`,
       `ভাগরেখা • QP`,
-      `${SIDE_META[(SIDE_META[part.direction].i+3)%4].label} • PA (ভাগকৃত অংশ)`
+      `${prevMeta.label} • P${names[0]} (ভাগকৃত অংশ)`
     ];
     const vals=[dist(part.targetPoly[0],part.targetPoly[1]),dist(part.targetPoly[1],part.targetPoly[2]),dist(part.targetPoly[2],part.targetPoly[3]),dist(part.targetPoly[3],part.targetPoly[0])];
     return `<div class="qp-cut-editor"><div class="qp-cut-editor-title">✂️ কর্তন/ভাগকৃত জমির ৪ দিকের ফুট–ইঞ্চি — সরাসরি এডিটযোগ্য</div><div class="qp-cut-editor-note">যেকোনো মাপ পরিবর্তন করলে বর্তমান ভাগকৃত অংশের ক্ষেত্রফল সঙ্গে সঙ্গে পুনঃহিসাব হবে। জ্যামিতি নির্ধারণে ভাগকৃত অংশের কর্ণ AQ স্থির রাখা হয়েছে।</div><div class="qp-cut-grid">${vals.map((v,i)=>{const ft=Math.floor(v), inch=Number(((v-ft)*12).toFixed(2)); return `<div class="qp-cut-field"><label>${esc(sideLabels[i])}</label><div class="fi-row"><input id="qpCut${i}ft" type="number" min="0" step="any" value="${ft}" placeholder="ফুট"><input id="qpCut${i}in" type="number" min="0" max="11.999" step="0.01" value="${inch || ''}" placeholder="ইঞ্চি"></div></div>`}).join('')}</div><div id="qpCutLive" class="qp-cut-live"></div></div>`;
