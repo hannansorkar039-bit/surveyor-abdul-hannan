@@ -528,19 +528,25 @@
     // Dimension text inside the Drawing contains only direction/segment names
     // and the actual feet/inches. No "অবশিষ্ট" wording is placed on the lines.
     // All four sides of the selected parcel are explicitly dimensioned.
-    addSeg(t[0],t[1],`${meta.label} ${meta.key}`,dist(part.targetPoly[0],part.targetPoly[1]),24,-1);
-    addSeg(t[1],t[2],`${nextMeta.label} ${n1}Q`,dist(part.targetPoly[1],part.targetPoly[2]),22,-1);
-    addSeg(t[2],t[3],`ভাগরেখা PQ`,part.cutLength,24,1);
-    addSeg(t[3],t[0],`${prevMeta.label} P${n0}`,dist(part.targetPoly[3],part.targetPoly[0]),22,1);
+    // The edited four lengths are the authoritative dimensions for the
+    // selected parcel. Otherwise use the original calculated geometry.
+    const targetSideValues=editedTarget?.sides || [
+      dist(part.targetPoly[0],part.targetPoly[1]),
+      dist(part.targetPoly[1],part.targetPoly[2]),
+      part.cutLength,
+      dist(part.targetPoly[3],part.targetPoly[0])
+    ];
+    addSeg(t[0],t[1],`${meta.label} ${meta.key}`,targetSideValues[0],24,-1);
+    addSeg(t[1],t[2],`${nextMeta.label} ${n1}Q`,targetSideValues[1],22,-1);
+    addSeg(t[2],t[3],`ভাগরেখা PQ`,targetSideValues[2],24,1);
+    addSeg(t[3],t[0],`${prevMeta.label} P${n0}`,targetSideValues[3],22,1);
 
-    // The remaining three outer sides are also dimensioned, without the word
-    // "অবশিষ্ট" so the Drawing stays clean and readable.
-    addSeg(r[0],r[1],`${nextMeta.label} Q${nOppEnd}`,dist(part.remainPoly[0],part.remainPoly[1]),22,-1);
-    addSeg(r[1],r[2],`${oppositeMeta.label} ${nOppStart}${nOppEnd}`,dist(part.remainPoly[1],part.remainPoly[2]),24,1);
-    // This is the remaining parcel's western segment. Use the actual western
-    // side endpoint name (D/A) rather than the opposite-side endpoint (C/B),
-    // so the western dimension is always rendered on the western line.
-    addSeg(r[2],r[3],`${prevMeta.label} ${prevMeta.start}P`,dist(part.remainPoly[2],part.remainPoly[3]),22,1);
+    // Remaining parcel boundary order is P-Q-R-L: PQ is the cut,
+    // Q-R is on the next side, R-L is the opposite full side, and
+    // L-P is on the previous side. Draw each actual outer segment once.
+    addSeg(r[1],r[2],`${nextMeta.label} Q${nOppStart}`,dist(part.remainPoly[1],part.remainPoly[2]),22,-1);
+    addSeg(r[2],r[3],`${oppositeMeta.label} ${nOppStart}${nOppEnd}`,dist(part.remainPoly[2],part.remainPoly[3]),24,1);
+    addSeg(r[3],r[0],`${prevMeta.label} ${prevMeta.start}P`,dist(part.remainPoly[3],part.remainPoly[0]),22,1);
 
     // Original measured diagonals are reference lines; every diagonal is dotted
     // and carries a conventional feet/inches label aligned to that diagonal.
