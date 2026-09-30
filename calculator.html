@@ -294,12 +294,25 @@
 .qp-derived-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .qp-live-area{margin-top:10px;padding:10px 12px;border-radius:11px;font-size:13px;line-height:1.6;font-weight:750}
 .qp-live-area.is-match{background:#eaf8f0;border:1px solid #bfe3cd;color:#175d3a}
-.qp-live-area.is-different{background:#fff7e8;border:1px solid #ecd39a;color:#77500c}
-.qp-parcel-editor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0}.qp-parcel-edit-card{background:#fffdf5;border-color:#e8d8a5}.qp-parcel-edit-note{font-size:12px;line-height:1.65;color:#52656f;margin:6px 0 10px}.qp-parcel-edit-card input{font-weight:800}
-.qp-drawing .qp-svg{height:650px;min-width:760px}
+
+.qp-drawing .qp-svg{height:500px;min-width:560px}
 .qp-dim-line text{letter-spacing:.1px}
 .qp-drawing-legend{align-items:center}
-@media(max-width:620px){.qp-derived-grid{grid-template-columns:1fr}.qp-drawing .qp-svg{height:620px;min-width:760px}.qp-parcel-editor{grid-template-columns:1fr !important}}
+@media(max-width:620px){.qp-derived-grid{grid-template-columns:1fr}.qp-drawing .qp-svg{height:480px;min-width:560px}}
+
+<style id="qp-cut-edit-and-zoom-v7">
+.qp-cut-editor{margin-top:14px;padding:14px;border:1px solid #cfe4e7;border-radius:16px;background:#f4fbfb}
+.qp-cut-editor-title{font-weight:950;color:#082336;margin-bottom:7px}
+.qp-cut-editor-note{font-size:12px;line-height:1.55;color:#52656f;margin-bottom:10px}
+.qp-cut-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.qp-cut-field{border:1px solid #dbe7ea;border-radius:12px;background:#fff;padding:10px}
+.qp-cut-field label{display:block;font-weight:850;color:#082336;margin-bottom:7px;font-size:13px}
+.qp-cut-live{margin-top:10px;padding:10px 12px;border-radius:11px;background:#eaf8f0;border:1px solid #bfe3cd;color:#175d3a;font-size:13px;line-height:1.55;font-weight:800}
+.qp-cut-live span{margin-left:6px}
+.qp-cut-error{color:#8a341f}
+.qp-drawing .qp-svg{height:720px;min-width:900px}
+@media(max-width:620px){.qp-cut-grid{grid-template-columns:1fr}.qp-drawing .qp-svg{height:680px;min-width:900px}}
+</style>
 </style>
 </head>
 <body id="top">
