@@ -399,15 +399,88 @@
       sides:[s0,s1,s2,s3]
     };
   }
+  // Rebuild the partition from the actual outer boundary when an editable
+  // cut-side is changed.  In a divided parcel, the two side pieces B–Q and
+  // A–P lie on the original BC/DA boundary; therefore changing either one
+  // must move that point along the real boundary.  The old implementation
+  // rebuilt a free-standing quadrilateral and then combined it with the old
+  // P/Q partition.  That produced a geometrically inconsistent Drawing
+  // (target polygon and remaining polygon no longer shared the same P/Q).
+  function rebuildBoundaryAttachedPartition(q, part, vals) {
+    const meta=SIDE_META[part.direction] || SIDE_META.north;
+    const i=meta.i, n=(i+1)%4, prev=(i+3)%4, opposite=(i+2)%4;
+    const A=q.pts[i], B=q.pts[n], R=q.pts[opposite], L=q.pts[prev];
+    const base=part.targetPoly;
+    const oldVals=[dist(base[0],base[1]),dist(base[1],base[2]),dist(base[2],base[3]),dist(base[3],base[0])];
+    const changed=[];
+    for(let k=0;k<4;k++) if(Math.abs(vals[k]-oldVals[k])>1e-7) changed.push(k);
+
+    // This exact boundary-attached path is intentionally used for the common
+    // edit cases.  A single side edit can be represented without inventing a
+    // new position for the whole parcel.
+    if(changed.length!==1 || (changed[0]!==1 && changed[0]!==3)) return null;
+
+    const sidePoint=(start,end,length)=>{
+      const full=dist(start,end);
+      if(!(length>EPS) || length>full+1e-7) return null;
+      return interpolate(start,end,length/full);
+    };
+
+    let P=base[3], Q=base[2];
+    if(changed[0]===1){
+      Q=sidePoint(B,R,vals[1]);
+      if(!Q) return null;
+    } else {
+      P=sidePoint(A,L,vals[3]);
+      if(!P) return null;
+    }
+
+    const targetPoly=[A,B,Q,P];
+    const remainPoly=[P,Q,R,L];
+    if(!isSimpleQuad(targetPoly) || !isSimpleQuad(remainPoly)) return null;
+    if(!polygonIsInside(targetPoly,q.pts) || !polygonEdgesInside(targetPoly,q.pts)) return null;
+    if(!polygonIsInside(remainPoly,q.pts) || !polygonEdgesInside(remainPoly,q.pts)) return null;
+    if(!segmentInsidePolygon(P,Q,q.pts)) return null;
+
+    const targetArea=polygonArea(targetPoly), remainArea=polygonArea(remainPoly);
+    if(!(targetArea>EPS) || Math.abs(targetArea+remainArea-q.area)>Math.max(1e-5,q.area*1e-10)) return null;
+
+    const names=['A','B','C','D'];
+    const sideNames=['উত্তর','পূর্ব','দক্ষিণ','পশ্চিম'];
+    const sideKeys=['AB','BC','CD','DA'];
+    const aName=names[i], bName=names[n], pSideName=names[prev], rName=names[opposite];
+    const makeSeg=(name,label,value,extra={})=>({name,label,value,...extra});
+    const targetSegments=[
+      makeSeg(`${aName}–${bName}`,`${meta.label} ${meta.key} (পূর্ণ বাহু)`,dist(A,B)),
+      makeSeg(`${bName}–Q`,`${sideNames[n]} ${sideKeys[n]} (ভাগ অংশ)`,dist(B,Q)),
+      makeSeg('Q–P','নতুন ভাগরেখা PQ',dist(Q,P),{cut:true}),
+      makeSeg(`P–${aName}`,`${sideNames[prev]} ${sideKeys[prev]} (ভাগ অংশ)`,dist(P,A)),
+      makeSeg(`${aName}–Q`,`ভাগের কর্ণ ${aName}Q`,dist(A,Q),{diagonal:true}),
+      makeSeg(`${bName}–P`,`ভাগের কর্ণ ${bName}P`,dist(B,P),{diagonal:true})
+    ];
+    const remainSegments=[
+      makeSeg(`Q–${rName}`,`${sideNames[n]} ${sideKeys[n]} (অবশিষ্ট অংশ)`,dist(Q,R)),
+      makeSeg(`${rName}–${pSideName}`,`${sideNames[opposite]} ${sideKeys[opposite]} (পূর্ণ বাহু)`,dist(R,L)),
+      makeSeg(`${pSideName}–P`,`${sideNames[prev]} ${sideKeys[prev]} (অবশিষ্ট অংশ)`,dist(L,P)),
+      makeSeg('P–Q','নতুন ভাগরেখা PQ',dist(P,Q),{cut:true}),
+      makeSeg(`P–${rName}`,`অবশিষ্ট অংশের কর্ণ P${rName}`,dist(P,R),{diagonal:true}),
+      makeSeg(`Q–${pSideName}`,`অবশিষ্ট অংশের কর্ণ Q${pSideName}`,dist(Q,L),{diagonal:true})
+    ];
+    return {
+      ...part,
+      P,Q,targetPoly,remainPoly,partArea:targetArea,cutLength:dist(P,Q),
+      targetSegments,remainSegments,
+      editedTarget:null,editedTargetSides:[dist(A,B),dist(B,Q),dist(Q,P),dist(P,A)],
+      editedTargetArea:targetArea,editedTargetDiagonal:dist(A,Q)
+    };
+  }
+
   function bindCutEditor(part,q){
     const ids=[0,1,2,3];
     const live=$('qpCutLive');
     const button=$('qpCutRecalc');
     if(!button) return;
 
-    // The cut editor is injected with result.innerHTML, so bind the button
-    // directly each time the editor is rendered. Use onclick so a re-render
-    // can never leave a stale handler behind.
     button.onclick=()=>{
       try{
         const vals=ids.map(i=>readFI(`qpCut${i}ft`,`qpCut${i}in`));
@@ -416,53 +489,67 @@
           return;
         }
 
-        // The old AQ is NOT a fixed constraint. Rebuild the edited parcel with
-        // a newly computed diagonal, then use its exact area for the new cut.
-        const rebuilt=reconstructTargetFromEditedSides(part,vals);
-        if(!rebuilt){
-          if(live) live.innerHTML='<span class="qp-cut-error">এই ৪টি নতুন মাপ দিয়ে বৈধ চতুর্ভূজ তৈরি করা যাচ্ছে না। চার বাহুর মাপ যাচাই করুন।</span>';
-          return;
-        }
+        // For the requested boundary edit (e.g. B–Q: 18′1″ → 20′1″),
+        // keep A/B/P/Q attached to the real parcel boundary and recompute
+        // the dependent cut line, area and AQ from that actual geometry.
+        let recalculated=rebuildBoundaryAttachedPartition(q,part,vals);
 
-        const area=rebuilt.area, decimal=area/SQFT_PER_DECIMAL;
-        const recalculated=partitionForDirection(q,area,part.direction);
         if(!recalculated){
-          const meta=SIDE_META[part.direction] || SIDE_META.north;
-          const max=trianglePointsArea(q.pts[meta.i],q.pts[(meta.i+1)%4],q.pts[(meta.i+2)%4]);
-          if(live) live.innerHTML=`<span class="qp-cut-error">নতুন ক্ষেত্রফল ${bn(decimal)} শতাংশ (${bn(area)} বর্গফুট) ${meta.label} দিক থেকে বৈধভাবে ভাগ করা যাচ্ছে না। সর্বোচ্চ প্রায় ${bn(max/SQFT_PER_DECIMAL)} শতাংশ পর্যন্ত নেওয়া যায়।</span>`;
+          // If more than one cut-side is changed at once, use the mathematically
+          // valid four-side reconstruction only as a fallback.  It is never mixed
+          // with the old P/Q geometry; the Drawing will use one consistent target.
+          const rebuilt=reconstructTargetFromEditedSides(part,vals);
+          if(!rebuilt){
+            if(live) live.innerHTML='<span class="qp-cut-error">এই মাপ দিয়ে বৈধ চতুর্ভূজ তৈরি করা যাচ্ছে না। বিশেষ করে একই সঙ্গে একাধিক বাহু পরিবর্তন করলে চার বাহুর জ্যামিতিক সামঞ্জস্য যাচাই করুন।</span>';
+            return;
+          }
+          // A free-standing four-side edit cannot be claimed to be a boundary
+          // attached partition. Refuse it rather than drawing a misleading or
+          // overlapping result.
+          if(live) live.innerHTML='<span class="qp-cut-error">একসঙ্গে একাধিক দিক পরিবর্তন করলে নতুন ৪-বাহুর চতুর্ভূজটি মূল জমির BC/DA সীমানায় একই সঙ্গে বসানো সম্ভব নয়। প্রথমে একটি দিক (যেমন পূর্বের B–Q) পরিবর্তন করে “নতুন ক্ষেত্রফল” চাপুন।</span>';
           return;
         }
 
-        // Store the edited calculation. The original AQ is not reused as a fixed
-        // value; rebuilt.diagonal is the NEW AQ produced by the edited sides.
-        part.editedTarget=rebuilt;
-        part.editedTargetSides=vals.slice();
+        const area=recalculated.partArea, decimal=area/SQFT_PER_DECIMAL;
+        const actualVals=recalculated.editedTargetSides;
+
+        // Store ONE coherent geometry object. Never mix a rebuilt target with
+        // the previous partition's P/Q points.
+        part.P=recalculated.P;
+        part.Q=recalculated.Q;
+        part.targetPoly=recalculated.targetPoly;
+        part.remainPoly=recalculated.remainPoly;
+        part.partArea=recalculated.partArea;
+        part.cutLength=recalculated.cutLength;
+        part.targetSegments=recalculated.targetSegments;
+        part.remainSegments=recalculated.remainSegments;
+        part.editedTargetSides=actualVals.slice();
         part.editedTargetArea=area;
-        part.editedTargetDiagonal=rebuilt.diagonal;
-        part.recalculatedPart=recalculated;
+        part.editedTargetDiagonal=recalculated.editedTargetDiagonal;
+        part.recalculatedPart=part;
 
-        // Keep the visible result synchronized with the exact recalculated area.
+        // The dependent PQ value is written back to the editor. This prevents
+        // the UI from displaying a length that no longer matches the Drawing.
+        for(let k=0;k<4;k++) setFI(`qpCut${k}ft`,`qpCut${k}in`,actualVals[k]);
+
         const liveArea=document.querySelector('.qp-live-area');
-        if(liveArea) liveArea.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ<br><strong>নতুন কর্ণ AQ:</strong> ${ftIn(rebuilt.diagonal)}`;
-        if(live) live.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ &nbsp;•&nbsp; <strong>নতুন কর্ণ AQ:</strong> ${ftIn(rebuilt.diagonal)}`;
+        if(liveArea) liveArea.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ<br><strong>নতুন কর্ণ AQ:</strong> ${ftIn(recalculated.editedTargetDiagonal)}`;
+        if(live) live.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ &nbsp;•&nbsp; <strong>নতুন কর্ণ AQ:</strong> ${ftIn(recalculated.editedTargetDiagonal)}<br><span>জ্যামিতিকভাবে নির্ভুল রাখতে নির্ভরশীল PQ মাপও স্বয়ংক্রিয়ভাবে সংশোধন করা হয়েছে।</span>`;
 
-        // Refresh both dimension tables so the numbers and Drawing stay in sync
-        // with the newly calculated area. The four edit fields remain untouched.
         const cards=document.querySelectorAll('.qp-dimensions .qp-dimension-card');
-        const remainingDecimal=(q.area-recalculated.partArea)/SQFT_PER_DECIMAL;
-        if(cards[0]) cards[0].outerHTML=dimensionTable(`নতুন নির্ধারিত ভাগ (${bn(recalculated.partArea/SQFT_PER_DECIMAL)} শতাংশ)`,recalculated.targetSegments);
+        const remainingDecimal=(q.area-area)/SQFT_PER_DECIMAL;
+        if(cards[0]) cards[0].outerHTML=dimensionTable(`নতুন নির্ধারিত ভাগ (${bn(area/SQFT_PER_DECIMAL)} শতাংশ)`,recalculated.targetSegments);
         if(cards[1]) cards[1].outerHTML=dimensionTable(`অবশিষ্ট জমি (${bn(remainingDecimal)} শতাংশ)`,recalculated.remainSegments);
 
-        // Rebuild the visible Drawing. The original parcel boundary remains the
-        // survey reference, while the new cut and the NEW AQ are shown.
         const oldDrawing=document.querySelector('.qp-drawing');
-        if(oldDrawing) oldDrawing.outerHTML=makeDrawing(q,recalculated,rebuilt);
+        if(oldDrawing) oldDrawing.outerHTML=makeDrawing(q,recalculated);
       }catch(err){
         console.error('qpCutRecalc error:',err);
         if(live) live.innerHTML='<span class="qp-cut-error">নতুন ক্ষেত্রফল হিসাব করতে একটি সমস্যা হয়েছে। ফুট–ইঞ্চির মানগুলো আবার যাচাই করুন।</span>';
       }
     };
   }
+
   function makeDrawing(q, part, editedTarget=null) {
     // The calculation geometry is kept untouched. For Drawing only, reflect
     // mathematical Y so AB (North) is at the top, BC (East) is on the right,
