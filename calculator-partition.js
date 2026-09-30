@@ -30,10 +30,11 @@
   // Calculations retain full precision; only the visual dimension label is rounded to
   // the nearest inch so values such as 29' 1.09" are shown clearly as 29' 1".
   function ftIn(v) {
-    let x = Math.max(0, Number(v) || 0);
+    const x = Math.max(0, Number(v) || 0);
     let totalIn = Math.round(x * 12);
-    let ft = Math.floor(totalIn / 12);
-    let inch = totalIn % 12;
+    if (!Number.isFinite(totalIn)) totalIn = 0;
+    const ft = Math.floor(totalIn / 12);
+    const inch = totalIn % 12;
     return `${bn(ft)}′ ${bn(inch)}″`;
   }
   function sideValues() {
@@ -130,10 +131,33 @@
     return u === 'sqft' ? x : u === 'sqm' ? x * 10.763910416709722 : x * SQFT_PER_DECIMAL;
   }
   function warning(msg) { result.innerHTML = `<div class="qp-warning">${esc(msg)}</div>`; }
-  function editor(v) {
+  function editor(v, part, q) {
     const items = [['AB','উত্তর • AB'],['BC','পূর্ব • BC'],['CD','দক্ষিণ • CD'],['DA','পশ্চিম • DA'],['AC','কর্ণ • AC']];
-    return `<div class="qp-edit-card"><strong>ড্রয়িংয়ের মাপ সংশোধন করুন</strong><div class="qp-note">নিচের ফুট/ইঞ্চি পরিবর্তন করলেই হিসাব ও চিত্র সঙ্গে সঙ্গে নতুন মাপে আপডেট হবে।</div></div>
-      <div class="qp-editor">${items.map(([k,label])=>`<div class="qp-edit-card"><label>${label}</label><div class="fi-row"><input id="qpEdit${k}ft" type="number" min="0" step="any" placeholder="ফুট" value="${Math.floor(v[k])}"><input id="qpEdit${k}in" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" value="${Number(((v[k]-Math.floor(v[k]))*12).toFixed(2)) || ''}"></div></div>`).join('')}</div>`;
+    const targetSq = part ? part.partArea : null;
+    const targetDec = targetSq == null ? null : targetSq / SQFT_PER_DECIMAL;
+    const totalDec = q ? q.area / SQFT_PER_DECIMAL : null;
+    const actualPct = (targetSq != null && q && q.area > 0) ? (targetSq / q.area * 100) : null;
+    const requestedPct = targetDec;
+    const deltaPctPoints = (actualPct != null && requestedPct != null) ? actualPct - requestedPct : 0;
+    const deltaText = deltaPctPoints > 0.0005
+      ? `বর্তমান অনুপাত ${bn(actualPct)}% — নির্ধারিত ${bn(requestedPct)}%-এর চেয়ে ${bn(deltaPctPoints)} শতাংশ-পয়েন্ট বেশি`
+      : deltaPctPoints < -0.0005
+        ? `বর্তমান অনুপাত ${bn(actualPct)}% — নির্ধারিত ${bn(requestedPct)}%-এর চেয়ে ${bn(Math.abs(deltaPctPoints))} শতাংশ-পয়েন্ট কম`
+        : `বর্তমান অনুপাত ${bn(actualPct || requestedPct || 0)}% — নির্ধারিত ভাগের সঙ্গে মিল আছে`;
+    const derived = part ? `
+      <div class="qp-derived-card">
+        <div class="qp-derived-title">✂️ ভাগকৃত জমির বর্তমান মাপ — এডিট করলে সঙ্গে সঙ্গে পুনঃহিসাব হবে</div>
+        <div class="qp-derived-grid">
+          ${dimensionTable(`নির্ধারিত ভাগ (${bn(targetDec)} শতাংশ)`, part.targetSegments)}
+          ${dimensionTable(`অবশিষ্ট জমি (${bn((q.area-targetSq)/SQFT_PER_DECIMAL)} শতাংশ)`, part.remainSegments)}
+        </div>
+        <div class="qp-live-area ${Math.abs(deltaPctPoints)>0.0005?'is-different':'is-match'}">
+          <strong>লাইভ শতাংশ যাচাই:</strong> মোট বর্তমান জমি ${bn(totalDec)} শতাংশ • নির্ধারিত অংশ ${bn(targetDec)} শতাংশ • ${esc(deltaText)}
+        </div>
+      </div>` : '';
+    return `<div class="qp-edit-card"><strong>ড্রয়িংয়ের মাপ সংশোধন করুন</strong><div class="qp-note">মূল জমির ফুট/ইঞ্চি পরিবর্তন করলে নিচের ভাগকৃত অংশ, অবশিষ্ট অংশ, কর্ণ, ভাগরেখা এবং শতাংশের তুলনা স্বয়ংক্রিয়ভাবে আপডেট হবে।</div></div>
+      <div class="qp-editor">${items.map(([k,label])=>`<div class="qp-edit-card"><label>${label}</label><div class="fi-row"><input id="qpEdit${k}ft" type="number" min="0" step="any" placeholder="ফুট" value="${Math.floor(v[k])}"><input id="qpEdit${k}in" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" value="${Number(((v[k]-Math.floor(v[k]))*12).toFixed(2)) || ''}"></div></div>`).join('')}</div>
+      ${derived}`;
   }
   function syncEditor(v) {
     if (!$('qpEditABft')) return;
@@ -340,44 +364,41 @@
     const sideLine=(a,b,label,value,offsetPx,sideSign=1)=>dimLine(a,b,`${label}: ${ftIn(value)}`,offsetPx,{sideSign,color:'#506d76'});
     const diagonalLine=(a,b,label,value,offsetPx,sideSign=1)=>dimLine(a,b,`${label}: ${ftIn(value)}`,offsetPx,{sideSign,dotted:true,color:'#7b6b9a',width:2});
 
-    // Original parcel boundary.  All visual dimensions are parallel to their measured line.
+    // Original parcel boundary and the two created parcels.
     const boundary=`<polygon points="${poly}" fill="#eef8f8" stroke="#08747b" stroke-width="3" stroke-linejoin="round"/>`;
     const targetFill=`<polygon points="${ts}" fill="#fff0bf" opacity="0.92" stroke="#d59b28" stroke-width="2" stroke-linejoin="round"/>`;
     const remainFill=`<polygon points="${rs}" fill="#eaf7f7" opacity="0.55" stroke="#08747b" stroke-width="1.5"/>`;
     const cut=`<line x1="${PP[0]}" y1="${PP[1]}" x2="${QQ[0]}" y2="${QQ[1]}" stroke="#c44f2b" stroke-width="4"/>`;
 
-    // Dimension labels for every line of the two created parcels.
+    // Draw ONLY the actual parcel boundary segments once. This prevents the
+    // full BC/DA labels from sitting on top of their split segments.
     const dimParts=[];
     const addSeg=(a,b,label,value,off,sign=1)=>dimParts.push(sideLine(a,b,label,value,off,sign));
-    // Full north/south/east/west boundary dimensions remain visible and aligned.
-    addSeg(pA,pB,'উত্তর AB',q.v.AB,28,-1);
-    addSeg(pB,pC,'পূর্ব BC',q.v.BC,28,-1);
-    addSeg(pC,pD,'দক্ষিণ CD',q.v.CD,28,1);
-    addSeg(pD,pA,'পশ্চিম DA',q.v.DA,28,1);
-    // Partition line, also aligned with itself.
-    addSeg(PP,QQ,'ভাগরেখা PQ',part.cutLength,24,-1);
-
-    // Every segment of the selected parcel and remaining parcel gets an aligned dimension.
     const t=part.targetPoly.map(p=>[tx(p[0]),ty(p[1])]);
     const r=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]);
-    // Offsets are deliberately on opposite sides to avoid overlap.
-    addSeg(t[0],t[1],'৩% উত্তর AB',dist(part.targetPoly[0],part.targetPoly[1]),18,1);
-    addSeg(t[1],t[2],'৩% পূর্ব',dist(part.targetPoly[1],part.targetPoly[2]),18,-1);
-    addSeg(t[3],t[0],'৩% পশ্চিম',dist(part.targetPoly[3],part.targetPoly[0]),18,1);
-    addSeg(r[1],r[2],'অবশিষ্ট দক্ষিণ',dist(part.remainPoly[1],part.remainPoly[2]),18,1);
-    addSeg(r[2],r[3],'অবশিষ্ট পশ্চিম',dist(part.remainPoly[2],part.remainPoly[3]),18,-1);
-    addSeg(r[0],r[1],'অবশিষ্ট পূর্ব',dist(part.remainPoly[0],part.remainPoly[1]),18,-1);
 
-    // Corner/diagonal lines are dotted and carry their own dimensions.
+    // Selected parcel: AB, BQ, PQ, PA.
+    addSeg(t[0],t[1],`৩% ${SIDE_META[part.direction].label} AB`,dist(part.targetPoly[0],part.targetPoly[1]),24,-1);
+    addSeg(t[1],t[2],`৩% পূর্ব`,dist(part.targetPoly[1],part.targetPoly[2]),22,-1);
+    addSeg(t[2],t[3],`৩% ভাগরেখা PQ`,part.cutLength,24,1);
+    addSeg(t[3],t[0],`৩% পশ্চিম`,dist(part.targetPoly[3],part.targetPoly[0]),22,1);
+
+    // Remaining parcel: QC, CD, DP (plus PQ as the common boundary is shown once above).
+    addSeg(r[0],r[1],`অবশিষ্ট পূর্ব`,dist(part.remainPoly[0],part.remainPoly[1]),22,-1);
+    addSeg(r[1],r[2],`অবশিষ্ট দক্ষিণ`,dist(part.remainPoly[1],part.remainPoly[2]),24,1);
+    addSeg(r[2],r[3],`অবশিষ্ট পশ্চিম`,dist(part.remainPoly[2],part.remainPoly[3]),22,1);
+
+    // Original measured diagonals are reference lines; every diagonal is dotted
+    // and carries a conventional feet/inches label aligned to that diagonal.
     const diagLines=[];
-    diagLines.push(diagonalLine(pA,pC,'কর্ণ AC',q.v.AC,30,-1));
-    diagLines.push(diagonalLine(pB,pD,'কর্ণ BD',dist(q.B,q.D),30,1));
+    diagLines.push(diagonalLine(pA,pC,'মূল কর্ণ AC',q.v.AC,28,-1));
+    diagLines.push(diagonalLine(pB,pD,'মূল কর্ণ BD',dist(q.B,q.D),28,1));
     const A0=t[0], B0=t[1], Q0=t[2], P0=t[3];
-    diagLines.push(diagonalLine(A0,Q0,'৩% কর্ণ AQ',dist(part.targetPoly[0],part.targetPoly[2]),24,-1));
-    diagLines.push(diagonalLine(B0,P0,'৩% কর্ণ BP',dist(part.targetPoly[1],part.targetPoly[3]),24,1));
+    diagLines.push(diagonalLine(A0,Q0,'৩% কর্ণ AQ',dist(part.targetPoly[0],part.targetPoly[2]),20,-1));
+    diagLines.push(diagonalLine(B0,P0,'৩% কর্ণ BP',dist(part.targetPoly[1],part.targetPoly[3]),20,1));
     const P1=r[0], Q1=r[1], R1=r[2], L1=r[3];
-    diagLines.push(diagonalLine(P1,R1,'অবশিষ্ট কর্ণ PR',dist(part.remainPoly[0],part.remainPoly[2]),24,1));
-    diagLines.push(diagonalLine(Q1,L1,'অবশিষ্ট কর্ণ QL',dist(part.remainPoly[1],part.remainPoly[3]),24,-1));
+    diagLines.push(diagonalLine(P1,R1,'অবশিষ্ট কর্ণ PC',dist(part.remainPoly[0],part.remainPoly[2]),20,1));
+    diagLines.push(diagonalLine(Q1,L1,'অবশিষ্ট কর্ণ QD',dist(part.remainPoly[1],part.remainPoly[3]),20,-1));
 
     const verts=[['A',pA],['B',pB],['C',pC],['D',pD],['P',PP],['Q',QQ]].map(([n,p])=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#08747b"/><text x="${p[0]+9}" y="${p[1]-9}" font-size="15" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4">${n}</text>`).join('');
     const northArrow=`<g transform="translate(52 48)"><line x1="0" y1="30" x2="0" y2="0" stroke="#082336" stroke-width="3"/><path d="M0 0 L-7 11 L7 11 Z" fill="#082336"/><text x="0" y="48" text-anchor="middle" font-size="14" font-weight="900" fill="#082336">উত্তর</text></g>`;
@@ -407,7 +428,7 @@
     result.innerHTML=`<div class="qp-ok">হিসাব সফল হয়েছে। এটি <strong>অনিয়মিত ${typeBn} চতুর্ভূজ</strong> হিসেবে তৈরি করা হয়েছে। মোট জমি ≈ ${bn(q.area)} বর্গফুট (${bn(q.area/SQFT_PER_DECIMAL)} শতাংশ)। <strong>${esc(SIDE_META[direction].label)} দিক</strong> থেকে ${bn(targetDecimal)} শতাংশ আলাদা করা হয়েছে।</div>
       <div class="result-list"><div class="result-item result-item-primary"><strong>${bn(target)} বর্গফুট</strong><span>নির্ধারিত ভাগ = ${bn(targetDecimal)} শতাংশ</span></div><div class="result-item"><strong>${bn(remainingDecimal)} শতাংশ</strong><span>অবশিষ্ট জমি</span></div><div class="result-item"><strong>${ftIn(part.cutLength)}</strong><span>নতুন ভাগরেখা ${esc(part.cutName)}</span></div><div class="result-item"><strong>${esc(part.side)} বাহু</strong><span>P–Q নতুন ভাগরেখা দিয়ে সীমা নির্ধারিত হয়েছে</span></div></div>
       <div class="qp-dimensions"><div class="qp-dimensions-title">৩ শতাংশ/নির্ধারিত ভাগের আলাদা ফুট-ইঞ্চি মাপ — কর্ণ ও ভাগরেখাসহ</div>${dimensionTable(`নির্ধারিত ভাগ (${bn(targetDecimal)} শতাংশ)`,part.targetSegments)}${dimensionTable(`অবশিষ্ট জমি (${bn(remainingDecimal)} শতাংশ)`,part.remainSegments)}</div>
-      ${editor(v)}${makeDrawing(q,part)}<p class="qp-note">⚠️ নির্বাচিত দিকের উপর P বিন্দু নির্ধারণ করে তার সংলগ্ন বিপরীত কোণে নতুন ভাগরেখা তৈরি করে নির্ধারিত ক্ষেত্রফল বের করা হয়েছে। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে এবং পশ্চিম বামে রাখা হয়েছে। নির্ধারিত ভাগ ও অবশিষ্ট জমির প্রতিটি অংশের আলাদা ফুট-ইঞ্চি মাপ এবং প্রযোজ্য কর্ণ দেখানো হয়েছে। মাঠে দাগ কাটার আগে বাস্তব সীমানা ও জরিপ মাপ যাচাই করুন।</p>`;
+      ${editor(v,part,q)}${makeDrawing(q,part)}<p class="qp-note">⚠️ নির্বাচিত দিকের উপর P বিন্দু নির্ধারণ করে তার সংলগ্ন বিপরীত কোণে নতুন ভাগরেখা তৈরি করে নির্ধারিত ক্ষেত্রফল বের করা হয়েছে। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে এবং পশ্চিম বামে রাখা হয়েছে। নির্ধারিত ভাগ ও অবশিষ্ট জমির প্রতিটি অংশের আলাদা ফুট-ইঞ্চি মাপ এবং প্রযোজ্য কর্ণ দেখানো হয়েছে। মাঠে দাগ কাটার আগে বাস্তব সীমানা ও জরিপ মাপ যাচাই করুন।</p>`;
     bindEditor();
   }
   let editorTimer=null;
