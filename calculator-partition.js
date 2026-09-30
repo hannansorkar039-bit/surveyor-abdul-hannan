@@ -18,10 +18,13 @@
   }
   function setFI(ftId, inId, value) {
     const v = Math.max(0, Number(value) || 0);
-    const ft = Math.floor(v + 1e-9);
-    const inch = Number(((v - ft) * 12).toFixed(2));
+    let ft = Math.floor(v + 1e-9);
+    let inch = Number(((v - ft) * 12).toFixed(2));
+    // Normalize rounding such as 69' 11.999" to 70' 0" rather than
+    // accidentally writing 69' 0".
+    if (inch >= 11.995) { ft += 1; inch = 0; }
     $(ftId).value = ft;
-    $(inId).value = inch >= 11.995 ? 0 : inch;
+    $(inId).value = inch === 0 ? '' : inch;
   }
   function ftIn(v) {
     let x = Math.max(0, Number(v) || 0), ft = Math.floor(x + 1e-9), inch = Math.round((x - ft) * 12 * 100) / 100;
@@ -197,55 +200,72 @@
     const meta=SIDE_META[direction] || SIDE_META.north;
     const pts=q.pts;
     const i=meta.i;
-    const start=pts[i];
-    const end=pts[(i+1)%4];
-    // To isolate a portion FROM the selected side, the cut must connect
-    // a point P on that side to the adjacent opposite corner (i+3), not
-    // to the diagonal-opposite corner (i+2). This produces two pieces:
-    // target triangle [start,P,cutOpposite] and remaining quadrilateral
-    // [P,end,i+2,cutOpposite].
-    const cutOppositeIndex=(i+3)%4;
-    const vertexNames=['A','B','C','D'];
-    const cutOppositeLabel=vertexNames[cutOppositeIndex];
-    const cutOpposite=pts[cutOppositeIndex];
-    const middleOpposite=pts[(i+2)%4];
-    const maxArea=trianglePointsArea(start,end,cutOpposite);
-    if(!(target>EPS && target<=maxArea+1e-6)) return null;
-    const sol=solveOnSegment(P=>trianglePointsArea(start,P,cutOpposite),start,end,target);
-    if(!sol) return null;
-    const P=sol.P;
-    const targetPoly=[start,P,cutOpposite];
-    const remainPoly=[P,end,middleOpposite,cutOpposite];
+    const n=(i+1)%4;              // next vertex along the selected side
+    const prev=(i+3)%4;           // adjacent vertex before the selected side
+    const opposite=(i+2)%4;       // far-side opposite vertex
+    const A=pts[i], B=pts[n], L=pts[prev], R=pts[opposite];
 
-    // Validate the new cut and both resulting polygons, including their
-    // edges. Vertex-only checks are not sufficient for concave boundaries.
+    // Professional, deterministic quadrilateral partition:
+    // the selected side remains a full boundary of the separated plot;
+    // P and Q are placed at the same proportional distance on the two
+    // adjacent sides.  The cut P-Q therefore divides the original
+    // quadrilateral into TWO quadrilaterals (never a triangle).
+    // This construction works for convex and concave inputs when the
+    // resulting polygons remain inside the original parcel.
+    const areaAt=t=>{
+      const P=interpolate(A,L,t);
+      const Q=interpolate(B,R,t);
+      return polygonArea([A,B,Q,P]);
+    };
+    const f0=areaAt(0), f1=areaAt(1);
+    const minA=Math.min(f0,f1), maxA=Math.max(f0,f1);
+    if(target < minA-EPS || target > maxA+1e-6) return null;
+    let lo=0,hi=1;
+    const increasing=f1>=f0;
+    for(let k=0;k<100;k++){
+      const m=(lo+hi)/2, val=areaAt(m);
+      if((increasing && val<target)||(!increasing && val>target)) lo=m; else hi=m;
+    }
+    const t=(lo+hi)/2;
+    const P=interpolate(A,L,t);
+    const Q=interpolate(B,R,t);
+    const targetPoly=[A,B,Q,P];
+    const remainPoly=[P,Q,R,L];
+
     if(!polygonIsInside(targetPoly,pts) || !polygonIsInside(remainPoly,pts)) return null;
     if(!polygonEdgesInside(targetPoly,pts) || !polygonEdgesInside(remainPoly,pts)) return null;
-    if(!segmentInsidePolygon(P,cutOpposite,pts)) return null;
+    if(!segmentInsidePolygon(P,Q,pts)) return null;
     const targetArea=polygonArea(targetPoly);
     const remainArea=polygonArea(remainPoly);
     if(Math.abs(targetArea-target)>1e-4 || Math.abs((targetArea+remainArea)-q.area)>1e-4) return null;
 
-    const cutName=`${cutOppositeLabel}P`;
+    const names=['A','B','C','D'];
+    const aName=names[i], bName=names[n], pSideName=names[prev], rName=names[opposite];
+    const sideNames=['উত্তর','পূর্ব','দক্ষিণ','পশ্চিম'];
+    const sideKeys=['AB','BC','CD','DA'];
+    const cutName=`P–Q`;
+    const makeSeg=(name,label,value,extra={})=>({name,label,value,...extra});
+    const targetSegments=[
+      makeSeg(`${aName}–${bName}`,`${meta.label} ${meta.key} (পূর্ণ বাহু)`,dist(A,B)),
+      makeSeg(`${bName}–Q`,`${sideNames[n]} ${sideKeys[n]} (ভাগ অংশ)`,dist(B,Q)),
+      makeSeg('Q–P','নতুন ভাগরেখা PQ',dist(Q,P),{cut:true}),
+      makeSeg(`P–${aName}`,`${sideNames[prev]} ${sideKeys[prev]} (ভাগ অংশ)`,dist(P,A)),
+      makeSeg(`${aName}–Q`,`ভাগের কর্ণ ${aName}Q`,dist(A,Q),{diagonal:true}),
+      makeSeg(`${bName}–P`,`ভাগের কর্ণ ${bName}P`,dist(B,P),{diagonal:true})
+    ];
+    const remainSegments=[
+      makeSeg(`Q–${rName}`,`${sideNames[n]} ${sideKeys[n]} (অবশিষ্ট অংশ)`,dist(Q,R)),
+      makeSeg(`${rName}–${pSideName}`,`${sideNames[opposite]} ${sideKeys[opposite]} (পূর্ণ বাহু)`,dist(R,L)),
+      makeSeg(`${pSideName}–P`,`${sideNames[prev]} ${sideKeys[prev]} (অবশিষ্ট অংশ)`,dist(L,P)),
+      makeSeg('P–Q','নতুন ভাগরেখা PQ',dist(P,Q),{cut:true}),
+      makeSeg(`P–${rName}`,`অবশিষ্ট অংশের কর্ণ P${rName}`,dist(P,R),{diagonal:true}),
+      makeSeg(`Q–${pSideName}`,`অবশিষ্ট অংশের কর্ণ Q${pSideName}`,dist(Q,L),{diagonal:true})
+    ];
     return {
-      P, direction, side:meta.key, sideLabel:meta.label, startLabel:meta.start, endLabel:meta.end,
-      oppositeLabel:cutOppositeLabel, fraction:sol.t, partArea:target, AP:dist(start,P),
-      cutName, cutOppositeIndex, targetPoly, remainPoly,
-      targetSegments:[
-        {name:`${meta.start}–P`, label:`${meta.label} ${meta.key} (ভাগ অংশ)`, value:dist(start,P)},
-        {name:`P–${cutOppositeLabel}`, label:`ভাগরেখা ${cutOppositeLabel}P`, value:dist(P,cutOpposite), cut:true},
-        {name:`${cutOppositeLabel}–${meta.start}`, label:`${['পশ্চিম','উত্তর','পূর্ব','দক্ষিণ'][i]} ${['DA','AB','BC','CD'][i]}`, value:dist(cutOpposite,start)},
-        {name:'AC', label:'মূল জমির কর্ণ AC (রেফারেন্স)', value:dist(pts[0],pts[2]), diagonal:true},
-        {name:'BD', label:'মূল জমির কর্ণ BD (রেফারেন্স)', value:dist(pts[1],pts[3]), diagonal:true}
-      ],
-      remainSegments:[
-        {name:`P–${meta.end}`, label:`${meta.label} ${meta.key} (অবশিষ্ট)`, value:dist(P,end)},
-        {name:`${meta.end}–${['A','B','C','D'][(i+2)%4]}`, label:`${['পূর্ব','দক্ষিণ','পশ্চিম','উত্তর'][i]} ${['BC','CD','DA','AB'][i]}`, value:dist(end,middleOpposite)},
-        {name:`${['A','B','C','D'][(i+2)%4]}–${cutOppositeLabel}`, label:`${['দক্ষিণ','পশ্চিম','উত্তর','পূর্ব'][i]} ${['CD','DA','AB','BC'][i]}`, value:dist(middleOpposite,cutOpposite)},
-        {name:`${cutOppositeLabel}–P`, label:`ভাগরেখা ${cutOppositeLabel}P`, value:dist(cutOpposite,P), cut:true},
-        {name:'AC', label:'মূল জমির কর্ণ AC (রেফারেন্স)', value:dist(pts[0],pts[2]), diagonal:true},
-        {name:'BD', label:'মূল জমির কর্ণ BD (রেফারেন্স)', value:dist(pts[1],pts[3]), diagonal:true}
-      ]
+      P,Q,t,direction,side:meta.key,sideLabel:meta.label,startLabel:meta.start,endLabel:meta.end,
+      fraction:t,partArea:target,cutName,cutLength:dist(P,Q),
+      pSideIndex:prev,qSideIndex:n,oppositeIndex:opposite,targetPoly,remainPoly,
+      targetSegments,remainSegments
     };
   }
   function findPartition(q,target,direction){
@@ -256,30 +276,27 @@
     return `<div class="qp-dimension-card"><h4>${esc(title)}</h4><div class="qp-dimension-list">${segments.map(s=>`<div class="qp-dimension-row"><span>${esc(s.label)}</span><strong>${ftIn(s.value)}</strong></div>`).join('')}</div></div>`;
   }
   function makeDrawing(q, part) {
-    const all=[...q.pts, part.P];
+    const all=[...q.pts, part.P, part.Q];
     let minX=Math.min(...all.map(p=>p[0])), maxX=Math.max(...all.map(p=>p[0])), minY=Math.min(...all.map(p=>p[1])), maxY=Math.max(...all.map(p=>p[1]));
-    const padX=Math.max((maxX-minX)*0.20, 45), padY=Math.max((maxY-minY)*0.24, 55);
+    const padX=Math.max((maxX-minX)*0.20,45), padY=Math.max((maxY-minY)*0.24,55);
     minX-=padX; maxX+=padX; minY-=padY; maxY+=padY;
     const W=800,H=500, scale=Math.min((W-40)/(maxX-minX),(H-40)/(maxY-minY));
-    // Drawing orientation: north is UP, east RIGHT, south DOWN, west LEFT.
+    // Coordinate convention: north is UP, east RIGHT, south DOWN, west LEFT.
     const tx=x=>20+(x-minX)*scale, ty=y=>20+(y-minY)*scale;
-    const P=q.pts.map(p=>[tx(p[0]),ty(p[1])]); const PP=[tx(part.P[0]),ty(part.P[1])];
+    const P=q.pts.map(p=>[tx(p[0]),ty(p[1])]);
+    const PP=[tx(part.P[0]),ty(part.P[1])], QQ=[tx(part.Q[0]),ty(part.Q[1])];
     const poly=P.map(p=>p.join(',')).join(' ');
     const mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
     const offset=(a,b,dx,dy)=>{const m=mid(a,b);return [m[0]+dx,m[1]+dy]};
     const [pA,pB,pC,pD]=P;
     const sAB=offset(pA,pB,0,-22), sBC=offset(pB,pC,24,0), sCD=offset(pC,pD,0,25), sDA=offset(pD,pA,-25,0);
     const sAC=offset(pA,pC,20,0), sBD=offset(pB,pD,-20,0);
-    const cutOppositePx=P[part.cutOppositeIndex];
-    const sCut=offset(cutOppositePx,PP,22,0);
-    const sideLabels=`<g>${svgLabel(sAB[0],sAB[1],`উত্তর AB: ${ftIn(q.v.AB)}`)}${svgLabel(sBC[0],sBC[1],`পূর্ব BC: ${ftIn(q.v.BC)}`,'start')}${svgLabel(sCD[0],sCD[1],`দক্ষিণ CD: ${ftIn(q.v.CD)}`)}${svgLabel(sDA[0],sDA[1],`পশ্চিম DA: ${ftIn(q.v.DA)}`,'end')}${svgLabel(sAC[0],sAC[1],`কর্ণ AC: ${ftIn(q.v.AC)}`,'start')}${svgLabel(sBD[0],sBD[1],`কর্ণ BD: ${ftIn(dist(q.B,q.D))}`,'end')}${svgLabel(sCut[0],sCut[1],`ভাগরেখা ${part.cutName}: ${ftIn(part.cutLength)}`,'start')}</g>`;
-    const verts=[['A',pA],['B',pB],['C',pC],['D',pD],['P',PP]].map(([n,p])=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#08747b"/><text x="${p[0]+9}" y="${p[1]-9}" font-size="15" font-weight="900" fill="#082336">${n}</text>`).join('');
+    const sPQ=offset(PP,QQ,0,-18);
+    const sideLabels=`<g>${svgLabel(sAB[0],sAB[1],`উত্তর AB: ${ftIn(q.v.AB)}`)}${svgLabel(sBC[0],sBC[1],`পূর্ব BC: ${ftIn(q.v.BC)}`,'start')}${svgLabel(sCD[0],sCD[1],`দক্ষিণ CD: ${ftIn(q.v.CD)}`)}${svgLabel(sDA[0],sDA[1],`পশ্চিম DA: ${ftIn(q.v.DA)}`,'end')}${svgLabel(sAC[0],sAC[1],`কর্ণ AC: ${ftIn(q.v.AC)}`,'start')}${svgLabel(sBD[0],sBD[1],`কর্ণ BD: ${ftIn(dist(q.B,q.D))}`,'end')}${svgLabel(sPQ[0],sPQ[1],`ভাগরেখা PQ: ${ftIn(part.cutLength)}`,'middle')}</g>`;
     const ts=part.targetPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
     const rs=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
-    const cutStartLabel=SIDE_META[part.direction].start;
-    const cutOppositeLabel=['A','B','C','D'][part.cutOppositeIndex];
-    const targetColor='#fff4d6';
-    return `<div class="qp-drawing"><div class="qp-drawing-head">📐 ${q.type==='convex'?'উত্তল (Convex)':'অবতল (Concave)'} চতুর্ভূজ — ${esc(SIDE_META[part.direction].label)} দিক থেকে ${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ ভাগের Drawing</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • P = ভাগের শেষ বিন্দু • ${esc(cutOppositeLabel)}P = নতুন ভাগরেখা</div><div class="qp-svg-wrap"><svg class="qp-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="দিক নির্ধারণসহ অনিয়মিত চতুর্ভুজ ভাগ-বণ্টনের চিত্র"><polygon points="${poly}" fill="#eaf5f6" stroke="#08747b" stroke-width="3"/><polygon points="${ts}" fill="${targetColor}" opacity="0.92" stroke="#d9a441" stroke-width="2"/><polygon points="${rs}" fill="#eef8f8" opacity="0.35"/><line x1="${cutOppositePx[0]}" y1="${cutOppositePx[1]}" x2="${PP[0]}" y2="${PP[1]}" stroke="#b84b2a" stroke-width="4"/><circle cx="${PP[0]}" cy="${PP[1]}" r="6" fill="#b84b2a"/>${sideLabels}${verts}</svg></div><div class="qp-drawing-legend"><span>🟨 নির্ধারিত ভাগ (${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ)</span><span>⬜ অবশিষ্ট জমি (${bn((q.area-part.partArea)/SQFT_PER_DECIMAL)} শতাংশ)</span></div></div>`;
+    const verts=[['A',pA],['B',pB],['C',pC],['D',pD],['P',PP],['Q',QQ]].map(([n,p])=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#08747b"/><text x="${p[0]+9}" y="${p[1]-9}" font-size="15" font-weight="900" fill="#082336">${n}</text>`).join('');
+    return `<div class="qp-drawing"><div class="qp-drawing-head">📐 ${q.type==='convex'?'উত্তল (Convex)':'অবতল (Concave)'} চতুর্ভূজ — ${esc(SIDE_META[part.direction].label)} দিক থেকে ${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ ভাগের Drawing</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • P ও Q = ভাগরেখার দুই প্রান্ত • PQ = নতুন ভাগরেখা</div><div class="qp-svg-wrap"><svg class="qp-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="দিক নির্ধারণসহ দুইটি চতুর্ভূজে জমি ভাগের চিত্র"><polygon points="${poly}" fill="#eaf5f6" stroke="#08747b" stroke-width="3"/><polygon points="${ts}" fill="#fff4d6" opacity="0.95" stroke="#d9a441" stroke-width="2"/><polygon points="${rs}" fill="#eef8f8" opacity="0.35" stroke="#08747b" stroke-width="1"/><line x1="${PP[0]}" y1="${PP[1]}" x2="${QQ[0]}" y2="${QQ[1]}" stroke="#b84b2a" stroke-width="4"/><circle cx="${PP[0]}" cy="${PP[1]}" r="6" fill="#b84b2a"/><circle cx="${QQ[0]}" cy="${QQ[1]}" r="6" fill="#b84b2a"/>${sideLabels}${verts}</svg></div><div class="qp-drawing-legend"><span>🟨 নির্ধারিত ভাগ (${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ)</span><span>⬜ অবশিষ্ট জমি (${bn((q.area-part.partArea)/SQFT_PER_DECIMAL)} শতাংশ)</span></div></div>`;
   }
   function calculate() {
     let v=sideValues();
@@ -300,26 +317,34 @@
       return warning(`${m.label} দিক থেকে নির্বাচিত পরিমাণ ভাগ করা যাচ্ছে না। ${m.label} দিকের এই ভাগ-পদ্ধতিতে সর্বোচ্চ প্রায় ${bn(max)} বর্গফুট (${bn(max/SQFT_PER_DECIMAL)} শতাংশ) পর্যন্ত নেওয়া যায়। প্রয়োজন হলে অন্য দিক নির্বাচন করুন বা মাঠের মাপ যাচাই করুন।`);
     }
     q.v=v;
-    part.cutLength=dist(q.pts[part.cutOppositeIndex],part.P);
-    part.cutStartPx=q.pts[SIDE_META[direction].i];
     const targetDecimal=target/SQFT_PER_DECIMAL, remainingDecimal=(q.area-target)/SQFT_PER_DECIMAL;
     const typeBn=q.type==='convex'?'উত্তল (Convex)':'অবতল (Concave)';
     result.innerHTML=`<div class="qp-ok">হিসাব সফল হয়েছে। এটি <strong>অনিয়মিত ${typeBn} চতুর্ভূজ</strong> হিসেবে তৈরি করা হয়েছে। মোট জমি ≈ ${bn(q.area)} বর্গফুট (${bn(q.area/SQFT_PER_DECIMAL)} শতাংশ)। <strong>${esc(SIDE_META[direction].label)} দিক</strong> থেকে ${bn(targetDecimal)} শতাংশ আলাদা করা হয়েছে।</div>
-      <div class="result-list"><div class="result-item result-item-primary"><strong>${bn(target)} বর্গফুট</strong><span>নির্ধারিত ভাগ = ${bn(targetDecimal)} শতাংশ</span></div><div class="result-item"><strong>${bn(remainingDecimal)} শতাংশ</strong><span>অবশিষ্ট জমি</span></div><div class="result-item"><strong>${ftIn(part.cutLength)}</strong><span>নতুন ভাগরেখা ${esc(part.cutName)}</span></div><div class="result-item"><strong>${esc(part.side)} বাহু</strong><span>P বিন্দুতে ভাগের সীমারেখা শেষ হয়েছে</span></div></div>
+      <div class="result-list"><div class="result-item result-item-primary"><strong>${bn(target)} বর্গফুট</strong><span>নির্ধারিত ভাগ = ${bn(targetDecimal)} শতাংশ</span></div><div class="result-item"><strong>${bn(remainingDecimal)} শতাংশ</strong><span>অবশিষ্ট জমি</span></div><div class="result-item"><strong>${ftIn(part.cutLength)}</strong><span>নতুন ভাগরেখা ${esc(part.cutName)}</span></div><div class="result-item"><strong>${esc(part.side)} বাহু</strong><span>P–Q নতুন ভাগরেখা দিয়ে সীমা নির্ধারিত হয়েছে</span></div></div>
       <div class="qp-dimensions"><div class="qp-dimensions-title">৩ শতাংশ/নির্ধারিত ভাগের আলাদা ফুট-ইঞ্চি মাপ — কর্ণ ও ভাগরেখাসহ</div>${dimensionTable(`নির্ধারিত ভাগ (${bn(targetDecimal)} শতাংশ)`,part.targetSegments)}${dimensionTable(`অবশিষ্ট জমি (${bn(remainingDecimal)} শতাংশ)`,part.remainSegments)}</div>
       ${editor(v)}${makeDrawing(q,part)}<p class="qp-note">⚠️ নির্বাচিত দিকের উপর P বিন্দু নির্ধারণ করে তার সংলগ্ন বিপরীত কোণে নতুন ভাগরেখা তৈরি করে নির্ধারিত ক্ষেত্রফল বের করা হয়েছে। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে এবং পশ্চিম বামে রাখা হয়েছে। নির্ধারিত ভাগ ও অবশিষ্ট জমির প্রতিটি অংশের আলাদা ফুট-ইঞ্চি মাপ এবং প্রযোজ্য কর্ণ দেখানো হয়েছে। মাঠে দাগ কাটার আগে বাস্তব সীমানা ও জরিপ মাপ যাচাই করুন।</p>`;
     bindEditor();
   }
+  let editorTimer=null;
   function bindEditor(){
     for (const k of ['AB','BC','CD','DA','AC']) {
       [`qpEdit${k}ft`,`qpEdit${k}in`].forEach(id=>$(id)?.addEventListener('input',e=>{
-        const activeId=e.currentTarget.id;
-        const pos=typeof e.currentTarget.selectionStart==='number'?e.currentTarget.selectionStart:null;
-        const v=readEditor(); if(!v) return;
-        for(const x of ['AB','BC','CD','DA','AC']) setFI(`qp${x}ft`,`qp${x}in`,v[x]);
-        calculate();
-        const next=$(activeId);
-        if(next){ next.focus(); if(pos!==null && next.setSelectionRange){ const p=Math.min(pos,String(next.value).length); next.setSelectionRange(p,p); } }
+        // Never redraw while the user is in the middle of typing. In particular,
+        // 70 -> 7 -> 71 must not destroy the current drawing at the transient 7.
+        clearTimeout(editorTimer);
+        const active=e.currentTarget;
+        const activeId=active.id;
+        editorTimer=setTimeout(()=>{
+          const v=readEditor();
+          // Empty/temporary input keeps the existing drawing intact. The next
+          // keystroke restarts the debounce timer.
+          if(!v || Object.values(v).some(x=>x===null || !(x>0))) return;
+          const selStart=active.selectionStart, selEnd=active.selectionEnd;
+          for(const x of ['AB','BC','CD','DA','AC']) setFI(`qp${x}ft`,`qp${x}in`,v[x]);
+          calculate();
+          const next=$(activeId);
+          if(next){ next.focus({preventScroll:true}); try{ next.setSelectionRange(selStart,selEnd); }catch(_){} }
+        },700);
       }));
     }
   }
