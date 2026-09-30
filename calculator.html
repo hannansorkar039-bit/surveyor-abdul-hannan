@@ -271,8 +271,8 @@
 <meta name="twitter:image" content="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/profile-abdul-hannan.webp"/>
 <script type="application/ld+json" id="v7-webpage-schema">{"@context":"https://schema.org","@type":"WebPage","url":"https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/calculator.html","name":"Professional ভূমি ক্যালকুলেটর | Surveyor Abdul Hannan","description":"কর্ণসহ ও কর্ণ ছাড়া অনিয়মিত চতুর্ভুজ, ত্রিভুজ, ভূমি একক রূপান্তর, ভাগ-বণ্টন এবং সাধারণ মুসলিম উত্তরাধিকার হিসাবের জন্য অনলাইন ক্যালকুলেটর।","inLanguage":"bn-BD","isPartOf":{"@type":"WebSite","name":"সার্ভেয়ার আবদুল হান্নান","url":"https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/"}}</script>
 <!-- V7 SEO END -->
-<style id="qp-partition-style">
-.fi-input{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fi-input input{min-width:0}.qp-drawing-wrap{margin-top:18px;border:1px solid #d7dee8;border-radius:14px;padding:12px;background:#fff;overflow:hidden}.qp-drawing{display:block;width:100%;height:auto;min-height:320px}.qp-edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:14px}.qp-edit-card{border:1px solid #d7dee8;border-radius:10px;padding:10px;background:#f8fafc}.qp-edit-card label{font-weight:700;display:block;margin-bottom:6px}.qp-edit-card .fi-input{grid-template-columns:1fr 1fr}.qp-status{margin-top:10px;padding:10px;border-radius:9px}.qp-ok{background:#ecfdf5;color:#065f46}.qp-error{background:#fef2f2;color:#991b1b}.qp-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:12px}.qp-meta div{padding:9px;border-radius:9px;background:#f1f5f9}.qp-meta strong{display:block}.qp-label{font:700 12px Arial,sans-serif;fill:#172033}.qp-dim{font:700 12px Arial,sans-serif;fill:#0f172a}.qp-edit-hint{font-size:.9rem;margin-top:8px;color:#475569}
+<style>
+.fi-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fi-row input{width:100%;box-sizing:border-box}.qp-editor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.qp-edit-card{border:1px solid #dbe5e9;border-radius:12px;padding:10px;background:#fff}.qp-edit-card label{display:block;font-weight:800;margin-bottom:6px}.qp-edit-card .fi-row{grid-template-columns:1fr 1fr}.qp-drawing{margin-top:16px;border:1px solid #dbe5e9;border-radius:16px;background:#f7fafb;overflow:hidden}.qp-drawing-head{padding:12px 14px;font-weight:900;color:#082336;background:#eef6f7;border-bottom:1px solid #dbe5e9}.qp-svg-wrap{padding:8px;overflow:auto}.qp-svg{display:block;width:100%;min-width:520px;height:430px;background:#fff}.qp-note{font-size:12px;line-height:1.65;color:#52656f;margin:10px 2px}.qp-warning{padding:12px;border-radius:12px;background:#fff5f0;border:1px solid #f0c9b6;color:#7a351c;font-weight:700}.qp-ok{padding:12px;border-radius:12px;background:#eff9f4;border:1px solid #c6e8d4;color:#175d3a;font-weight:700}@media(max-width:620px){.qp-editor{grid-template-columns:1fr}.qp-svg{min-width:460px;height:380px}}
 </style>
 </head>
 <body id="top">
@@ -363,21 +363,18 @@
 </section>
 
 <section class="calc-panel" id="panel-quad-partition" role="tabpanel">
-<h3>🧭 অনিয়মিত চতুর্ভুজের ভাগ-বণ্টন — ফুট-ইঞ্চি ও ড্রয়িং</h3>
-<div class="formula"><code>AB = উত্তর • BC = পূর্ব • CD = দক্ষিণ • DA = পশ্চিম • AC = কর্ণ</code></div>
-<p class="calc-help">চার বাহু ও কর্ণের মাপ ফুট-ইঞ্চিতে দিন। “ভাগের সীমারেখা হিসাব করুন” চাপলে নির্দিষ্ট ভাগের জন্য A থেকে CD-এর উপর একটি সীমারেখা তৈরি হবে এবং ড্রয়িংয়ে সব মাপ ফুট-ইঞ্চিসহ দেখাবে। ফলাফলের মাপগুলো পরে এডিট করলে ড্রয়িং ও হিসাব সঙ্গে সঙ্গে আপডেট হবে।</p>
-<div class="calc-grid">
-<div class="calc-field"><label><span class="direction-badge north">উত্তর</span> বাহু AB</label><div class="fi-input"><input id="qpABft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpABin" type="number" min="0" max="11.999999" step="0.01" placeholder="ইঞ্চি"></div></div>
-<div class="calc-field"><label><span class="direction-badge east">পূর্ব</span> বাহু BC</label><div class="fi-input"><input id="qpBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpBCin" type="number" min="0" max="11.999999" step="0.01" placeholder="ইঞ্চি"></div></div>
-<div class="calc-field"><label><span class="direction-badge south">দক্ষিণ</span> বাহু CD</label><div class="fi-input"><input id="qpCDft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpCDin" type="number" min="0" max="11.999999" step="0.01" placeholder="ইঞ্চি"></div></div>
-<div class="calc-field"><label><span class="direction-badge west">পশ্চিম</span> বাহু DA</label><div class="fi-input"><input id="qpDAft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpDAin" type="number" min="0" max="11.999999" step="0.01" placeholder="ইঞ্চি"></div></div>
-<div class="calc-field"><label><span class="diagonal-badge">কর্ণ</span> AC (A–C)</label><div class="fi-input"><input id="qpACft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpACin" type="number" min="0" max="11.999999" step="0.01" placeholder="ইঞ্চি"></div></div>
-<div class="calc-field"><label for="qpTarget">যে পরিমাণ জমি দিতে চান</label><input id="qpTarget" type="number" min="0" step="any" placeholder="যেমন 2"></div>
-<div class="calc-field"><label for="qpTargetUnit">ভাগের একক</label><select id="qpTargetUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div>
-</div>
-<p class="calc-help"><strong>ফুট-ইঞ্চি ঘরে:</strong> প্রথম ঘরে ফুট এবং দ্বিতীয় ঘরে ০–১১.৯৯ ইঞ্চি লিখুন। যেমন ২৫ ফুট ৬ ইঞ্চি।</p>
-<div class="calc-actions"><button class="calc-btn calc-primary" id="qpCalc">ভাগের সীমারেখা হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="quad-partition">পরিষ্কার</button></div>
-<div class="calc-result" id="qpResult" aria-live="polite"></div>
+  <div class="formula"><code>চার বাহু + কর্ণ → মোট ক্ষেত্রফল → নির্ধারিত ভাগ → ভাগের সীমারেখা ও মাপসহ Drawing</code></div>
+  <div class="calc-grid">
+    <div class="calc-field"><label><span class="direction-badge north">উত্তর</span> AB</label><div class="fi-row"><input id="qpABft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpABin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+    <div class="calc-field"><label><span class="direction-badge east">পূর্ব</span> BC</label><div class="fi-row"><input id="qpBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpBCin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+    <div class="calc-field"><label><span class="direction-badge south">দক্ষিণ</span> CD</label><div class="fi-row"><input id="qpCDft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpCDin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+    <div class="calc-field"><label><span class="direction-badge west">পশ্চিম</span> DA</label><div class="fi-row"><input id="qpDAft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpDAin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+    <div class="calc-field"><label><span class="diagonal-badge">কর্ণ</span> AC</label><div class="fi-row"><input id="qpACft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpACin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+    <div class="calc-field"><label for="qpTarget">যে পরিমাণ জমি ভাগ করবেন</label><input id="qpTarget" type="number" min="0" step="any" placeholder="যেমন 2"></div>
+    <div class="calc-field"><label for="qpTargetUnit">ভাগের একক</label><select id="qpTargetUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div>
+  </div>
+  <div class="calc-actions"><button class="calc-btn calc-primary" id="qpCalc" type="button">ভাগের সীমারেখা হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="quad-partition" type="button">পরিষ্কার</button></div>
+  <div class="calc-result" id="qpResult" aria-live="polite"></div>
 </section>
 
 <section class="calc-panel" id="panel-heron" role="tabpanel">
@@ -725,6 +722,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" defer></script>
 <script src="calculator-pdf.js" defer></script>
 <script src="calculator-core.js" defer></script>
+<script src="calculator-partition.js" defer></script>
 <script src="calculator-featured.js" defer></script>
 <script src="calculator-registry.js" defer></script>
 <script src="calculator-land-suite.js" defer></script>
