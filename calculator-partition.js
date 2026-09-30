@@ -324,11 +324,6 @@
   }
   const SIDE_KEYS=['north','east','south','west'];
   function cutEditor(part){
-    // SIDE_META is keyed by direction name, not by numeric index. The previous
-    // version accidentally indexed SIDE_META with 0/1/2/3 here, which threw a
-    // TypeError while building the result HTML and made the Calculate button
-    // appear to do nothing. Keep the selected direction authoritative and derive
-    // the adjacent side names from the numeric index explicitly.
     const meta=SIDE_META[part.direction] || SIDE_META.north;
     const i=meta.i;
     const nextMeta=SIDE_META[SIDE_KEYS[(i+1)%4]];
@@ -341,7 +336,7 @@
       `${prevMeta.label} • P${names[0]} (ভাগকৃত অংশ)`
     ];
     const vals=[dist(part.targetPoly[0],part.targetPoly[1]),dist(part.targetPoly[1],part.targetPoly[2]),dist(part.targetPoly[2],part.targetPoly[3]),dist(part.targetPoly[3],part.targetPoly[0])];
-    return `<div class="qp-cut-editor"><div class="qp-cut-editor-title">✂️ কর্তন/ভাগকৃত জমির ৪ দিকের ফুট–ইঞ্চি — সরাসরি এডিটযোগ্য</div><div class="qp-cut-editor-note">যেকোনো মাপ পরিবর্তন করলে বর্তমান ভাগকৃত অংশের ক্ষেত্রফল সঙ্গে সঙ্গে পুনঃহিসাব হবে। জ্যামিতি নির্ধারণে ভাগকৃত অংশের কর্ণ AQ স্থির রাখা হয়েছে।</div><div class="qp-cut-grid">${vals.map((v,i)=>{const ft=Math.floor(v), inch=Number(((v-ft)*12).toFixed(2)); return `<div class="qp-cut-field"><label>${esc(sideLabels[i])}</label><div class="fi-row"><input id="qpCut${i}ft" type="number" min="0" step="any" value="${ft}" placeholder="ফুট"><input id="qpCut${i}in" type="number" min="0" max="11.999" step="0.01" value="${inch || ''}" placeholder="ইঞ্চি"></div></div>`}).join('')}</div><div id="qpCutLive" class="qp-cut-live"></div></div>`;
+    return `<div class="qp-cut-editor"><div class="qp-cut-editor-title">✂️ কর্তন/ভাগকৃত জমির ৪ দিকের ফুট–ইঞ্চি — সরাসরি এডিটযোগ্য</div><div class="qp-cut-editor-note">ফুট–ইঞ্চির মাপগুলো এডিট করার পর <strong>নতুন ক্ষেত্রফল</strong> চাপুন। স্থির কর্ণ AQ-এর ভিত্তিতে নতুন ক্ষেত্রফল নির্ভুলভাবে বের হবে এবং সেই অনুযায়ী বৈধ ভাগরেখা ও Drawing পুনরায় তৈরি হবে।</div><div class="qp-cut-grid">${vals.map((v,i)=>{const ft=Math.floor(v), inch=Number(((v-ft)*12).toFixed(2)); return `<div class="qp-cut-field"><label>${esc(sideLabels[i])}</label><div class="fi-row"><input id="qpCut${i}ft" type="number" min="0" step="any" value="${ft}" placeholder="ফুট"><input id="qpCut${i}in" type="number" min="0" max="11.999" step="0.01" value="${inch || ''}" placeholder="ইঞ্চি"></div></div>`}).join('')}</div><div class="qp-cut-actions"><button id="qpCutRecalc" type="button" class="calc-btn calc-primary">নতুন ক্ষেত্রফল</button></div><div id="qpCutLive" class="qp-cut-live"><span>মাপ পরিবর্তন করে “নতুন ক্ষেত্রফল” চাপুন।</span></div></div>`;
   }
   function reconstructTargetFromEditedSides(part, vals){
     const [s0,s1,s2,s3]=vals;
@@ -367,31 +362,52 @@
   }
   function bindCutEditor(part,q){
     const ids=[0,1,2,3];
-    const update=()=>{
+    const live=$('qpCutLive');
+    const button=$('qpCutRecalc');
+    if(!button) return;
+    button.addEventListener('click',()=>{
       const vals=ids.map(i=>readFI(`qpCut${i}ft`,`qpCut${i}in`));
-      const live=$('qpCutLive');
-      if(vals.some(v=>v===null||!(v>0))){ if(live) live.innerHTML='<span>ফুট ও ইঞ্চির সব মান পূর্ণভাবে দিন।</span>'; return; }
+      if(vals.some(v=>v===null||!(v>0))){
+        if(live) live.innerHTML='<span class="qp-cut-error">চার দিকের ফুট ও ইঞ্চির সব মান সঠিকভাবে দিন।</span>';
+        return;
+      }
       const rebuilt=reconstructTargetFromEditedSides(part,vals);
-      if(!rebuilt){ if(live) live.innerHTML='<span class="qp-cut-error">এই ৪টি মাপ ও স্থির কর্ণ AQ দিয়ে বৈধ চতুর্ভূজ তৈরি হচ্ছে না। মাপগুলো যাচাই করুন।</span>'; return; }
+      if(!rebuilt){
+        if(live) live.innerHTML='<span class="qp-cut-error">এই ৪টি মাপ ও স্থির কর্ণ AQ দিয়ে বৈধ চতুর্ভূজ তৈরি হচ্ছে না। মাপগুলো যাচাই করুন।</span>';
+        return;
+      }
       const area=rebuilt.area, decimal=area/SQFT_PER_DECIMAL;
-      if(live) live.innerHTML=`<strong>বর্তমান ভাগকৃত ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ`;
-      // Keep the edited parcel measurement as the live source for the displayed area.
-      part.editedTarget=rebuilt; part.editedTargetSides=vals; part.editedTargetArea=area;
-      const resultText=$('qpCutAreaSummary');
-      if(resultText) resultText.textContent=`${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ`;
-    };
-    ids.forEach(i=>[`qpCut${i}ft`,`qpCut${i}in`].forEach(id=>$(id)?.addEventListener('input',update)));
-    update();
+      const recalculated=partitionForDirection(q,area,part.direction);
+      if(!recalculated){
+        const meta=SIDE_META[part.direction] || SIDE_META.north;
+        const max=trianglePointsArea(q.pts[meta.i],q.pts[(meta.i+1)%4],q.pts[(meta.i+2)%4]);
+        if(live) live.innerHTML=`<span class="qp-cut-error">নতুন ক্ষেত্রফল ${bn(decimal)} শতাংশ (${bn(area)} বর্গফুট) ${meta.label} দিক থেকে বৈধভাবে ভাগ করা যাচ্ছে না। সর্বোচ্চ প্রায় ${bn(max/SQFT_PER_DECIMAL)} শতাংশ পর্যন্ত নেওয়া যায়।</span>`;
+        return;
+      }
+      part.editedTarget=rebuilt;
+      part.editedTargetSides=vals;
+      part.editedTargetArea=area;
+      part.recalculatedPart=recalculated;
+      if(live) live.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ`;
+
+      // Keep the original parcel fixed and rebuild a valid partition from the
+      // newly calculated area. This keeps the red cut line on the real parcel
+      // boundary instead of drawing an unattached quadrilateral.
+      const oldDrawing=document.querySelector('.qp-drawing');
+      if(oldDrawing) oldDrawing.outerHTML=makeDrawing(q,recalculated);
+    });
   }
   function makeDrawing(q, part) {
-    const all=[...q.pts, part.P, part.Q];
+    // The calculation geometry is kept untouched. For Drawing only, reflect
+    // mathematical Y so AB (North) is at the top, BC (East) is on the right,
+    // CD (South) is at the bottom, and DA (West) is on the left.
+    const all=[...q.pts, part.P, part.Q].map(p=>[p[0],-p[1]]);
     let minX=Math.min(...all.map(p=>p[0])), maxX=Math.max(...all.map(p=>p[0])), minY=Math.min(...all.map(p=>p[1])), maxY=Math.max(...all.map(p=>p[1]));
     const padX=Math.max((maxX-minX)*0.045,18), padY=Math.max((maxY-minY)*0.055,18);
     minX-=padX; maxX+=padX; minY-=padY; maxY+=padY;
     const W=1200,H=820, scale=Math.min((W-90)/(maxX-minX),(H-90)/(maxY-minY));
-    // Mathematical y is upward; SVG y is downward. Negate y so NORTH stays at the top.
     const tx=x=>35+(x-minX)*scale;
-    const ty=y=>H-35-(y-minY)*scale;
+    const ty=y=>H-35-((-y)-minY)*scale;
     const P=q.pts.map(p=>[tx(p[0]),ty(p[1])]);
     const PP=[tx(part.P[0]),ty(part.P[1])], QQ=[tx(part.Q[0]),ty(part.Q[1])];
     const poly=P.map(p=>p.join(',')).join(' ');
@@ -429,16 +445,27 @@
     const t=part.targetPoly.map(p=>[tx(p[0]),ty(p[1])]);
     const r=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]);
 
-    // Selected parcel: AB, BQ, PQ, PA.
-    addSeg(t[0],t[1],`৩% ${SIDE_META[part.direction].label} AB`,dist(part.targetPoly[0],part.targetPoly[1]),24,-1);
-    addSeg(t[1],t[2],`৩% পূর্ব`,dist(part.targetPoly[1],part.targetPoly[2]),22,-1);
-    addSeg(t[2],t[3],`৩% ভাগরেখা PQ`,part.cutLength,24,1);
-    addSeg(t[3],t[0],`৩% পশ্চিম`,dist(part.targetPoly[3],part.targetPoly[0]),22,1);
+    const meta=SIDE_META[part.direction] || SIDE_META.north;
+    const i=meta.i;
+    const nextMeta=SIDE_META[SIDE_KEYS[(i+1)%4]];
+    const prevMeta=SIDE_META[SIDE_KEYS[(i+3)%4]];
+    const oppositeMeta=SIDE_META[SIDE_KEYS[(i+2)%4]];
+    const n0=meta.start, n1=meta.end;
+    const nOppStart=oppositeMeta.start, nOppEnd=oppositeMeta.end;
 
-    // Remaining parcel: QC, CD, DP (plus PQ as the common boundary is shown once above).
-    addSeg(r[0],r[1],`অবশিষ্ট পূর্ব`,dist(part.remainPoly[0],part.remainPoly[1]),22,-1);
-    addSeg(r[1],r[2],`অবশিষ্ট দক্ষিণ`,dist(part.remainPoly[1],part.remainPoly[2]),24,1);
-    addSeg(r[2],r[3],`অবশিষ্ট পশ্চিম`,dist(part.remainPoly[2],part.remainPoly[3]),22,1);
+    // Dimension text inside the Drawing contains only direction/segment names
+    // and the actual feet/inches. No "অবশিষ্ট" wording is placed on the lines.
+    // All four sides of the selected parcel are explicitly dimensioned.
+    addSeg(t[0],t[1],`${meta.label} ${meta.key}`,dist(part.targetPoly[0],part.targetPoly[1]),24,-1);
+    addSeg(t[1],t[2],`${nextMeta.label} ${n1}Q`,dist(part.targetPoly[1],part.targetPoly[2]),22,-1);
+    addSeg(t[2],t[3],`ভাগরেখা PQ`,part.cutLength,24,1);
+    addSeg(t[3],t[0],`${prevMeta.label} P${n0}`,dist(part.targetPoly[3],part.targetPoly[0]),22,1);
+
+    // The remaining three outer sides are also dimensioned, without the word
+    // "অবশিষ্ট" so the Drawing stays clean and readable.
+    addSeg(r[0],r[1],`${nextMeta.label} Q${nOppEnd}`,dist(part.remainPoly[0],part.remainPoly[1]),22,-1);
+    addSeg(r[1],r[2],`${oppositeMeta.label} ${nOppStart}${nOppEnd}`,dist(part.remainPoly[1],part.remainPoly[2]),24,1);
+    addSeg(r[2],r[3],`${prevMeta.label} ${nOppStart}P`,dist(part.remainPoly[2],part.remainPoly[3]),22,1);
 
     // Original measured diagonals are reference lines; every diagonal is dotted
     // and carries a conventional feet/inches label aligned to that diagonal.
@@ -449,8 +476,8 @@
     diagLines.push(diagonalLine(A0,Q0,'৩% কর্ণ AQ',dist(part.targetPoly[0],part.targetPoly[2]),20,-1));
     diagLines.push(diagonalLine(B0,P0,'৩% কর্ণ BP',dist(part.targetPoly[1],part.targetPoly[3]),20,1));
     const P1=r[0], Q1=r[1], R1=r[2], L1=r[3];
-    diagLines.push(diagonalLine(P1,R1,'অবশিষ্ট কর্ণ PC',dist(part.remainPoly[0],part.remainPoly[2]),20,1));
-    diagLines.push(diagonalLine(Q1,L1,'অবশিষ্ট কর্ণ QD',dist(part.remainPoly[1],part.remainPoly[3]),20,-1));
+    diagLines.push(diagonalLine(P1,R1,'কর্ণ PC',dist(part.remainPoly[0],part.remainPoly[2]),20,1));
+    diagLines.push(diagonalLine(Q1,L1,'কর্ণ QD',dist(part.remainPoly[1],part.remainPoly[3]),20,-1));
 
     const verts=[['A',pA],['B',pB],['C',pC],['D',pD],['P',PP],['Q',QQ]].map(([n,p])=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#08747b"/><text x="${p[0]+9}" y="${p[1]-9}" font-size="24" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4">${n}</text>`).join('');
     const northArrow=`<g transform="translate(70 62)"><line x1="0" y1="30" x2="0" y2="0" stroke="#082336" stroke-width="3"/><path d="M0 0 L-7 11 L7 11 Z" fill="#082336"/><text x="0" y="48" text-anchor="middle" font-size="22" font-weight="900" fill="#082336">উত্তর</text></g>`;
