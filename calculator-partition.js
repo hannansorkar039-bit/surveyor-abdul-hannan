@@ -415,10 +415,19 @@
     const changed=[];
     for(let k=0;k<4;k++) if(Math.abs(vals[k]-oldVals[k])>1e-7) changed.push(k);
 
-    // This exact boundary-attached path is intentionally used for the common
-    // edit cases.  A single side edit can be represented without inventing a
-    // new position for the whole parcel.
-    if(changed.length!==1 || (changed[0]!==1 && changed[0]!==3)) return null;
+    // B–Q and P–A are the two boundary-attached degrees of freedom.
+    // They may be edited independently OR together.  When both are changed
+    // together, Q is placed on the real B–C boundary and P on the real D–A
+    // boundary; the connecting cut P–Q is then derived from those two points.
+    // This is the important fix for the previous "one direction at a time"
+    // restriction.
+    //
+    // AB is the complete original boundary and therefore cannot be changed
+    // without changing the source parcel itself.  PQ is the cut line between
+    // P and Q, so it is also a dependent length and is recalculated exactly.
+    // The input fields remain editable, but the geometry never uses an
+    // impossible four-independent-length constraint on a fixed outer parcel.
+    if(changed.some(k=>k!==1 && k!==3)) return null;
 
     const sidePoint=(start,end,length)=>{
       const full=dist(start,end);
@@ -427,10 +436,11 @@
     };
 
     let P=base[3], Q=base[2];
-    if(changed[0]===1){
+    if(changed.includes(1)){
       Q=sidePoint(B,R,vals[1]);
       if(!Q) return null;
-    } else {
+    }
+    if(changed.includes(3)){
       P=sidePoint(A,L,vals[3]);
       if(!P) return null;
     }
@@ -495,18 +505,20 @@
         let recalculated=rebuildBoundaryAttachedPartition(q,part,vals);
 
         if(!recalculated){
-          // If more than one cut-side is changed at once, use the mathematically
-          // valid four-side reconstruction only as a fallback.  It is never mixed
-          // with the old P/Q geometry; the Drawing will use one consistent target.
-          const rebuilt=reconstructTargetFromEditedSides(part,vals);
-          if(!rebuilt){
-            if(live) live.innerHTML='<span class="qp-cut-error">এই মাপ দিয়ে বৈধ চতুর্ভূজ তৈরি করা যাচ্ছে না। বিশেষ করে একই সঙ্গে একাধিক বাহু পরিবর্তন করলে চার বাহুর জ্যামিতিক সামঞ্জস্য যাচাই করুন।</span>';
-            return;
+          const meta=SIDE_META[part.direction] || SIDE_META.north;
+          const oldVals=[
+            dist(part.targetPoly[0],part.targetPoly[1]),
+            dist(part.targetPoly[1],part.targetPoly[2]),
+            dist(part.targetPoly[2],part.targetPoly[3]),
+            dist(part.targetPoly[3],part.targetPoly[0])
+          ];
+          const changed=ids.filter(i=>Math.abs(vals[i]-oldVals[i])>1e-7);
+          const invalid=changed.filter(i=>i!==1 && i!==3);
+          if(invalid.length){
+            if(live) live.innerHTML='<span class="qp-cut-error">পূর্ব/পশ্চিমের B–Q ও P–A একসঙ্গে পরিবর্তন করা যাবে। কিন্তু পূর্ণ AB এবং ভাগরেখা PQ মূল জমির সীমানা ধরে স্বয়ংক্রিয়ভাবে নির্ধারিত হয়—এ দুটির মান আলাদাভাবে বসালে জ্যামিতি অসামঞ্জস্য হবে। B–Q/P–A-এর নতুন মাপ দিয়ে আবার “নতুন ক্ষেত্রফল” চাপুন।</span>';
+          }else{
+            if(live) live.innerHTML=`<span class="qp-cut-error">${esc(meta.label)} দিকের নতুন মাপটি মূল জমির সীমানার মধ্যে বসানো যাচ্ছে না। ${esc(meta.key)}-এর সংলগ্ন সীমানার সর্বোচ্চ দৈর্ঘ্য যাচাই করুন।</span>`;
           }
-          // A free-standing four-side edit cannot be claimed to be a boundary
-          // attached partition. Refuse it rather than drawing a misleading or
-          // overlapping result.
-          if(live) live.innerHTML='<span class="qp-cut-error">একসঙ্গে একাধিক দিক পরিবর্তন করলে নতুন ৪-বাহুর চতুর্ভূজটি মূল জমির BC/DA সীমানায় একই সঙ্গে বসানো সম্ভব নয়। প্রথমে একটি দিক (যেমন পূর্বের B–Q) পরিবর্তন করে “নতুন ক্ষেত্রফল” চাপুন।</span>';
           return;
         }
 
