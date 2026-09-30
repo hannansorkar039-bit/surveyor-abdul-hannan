@@ -336,29 +336,68 @@
       `${prevMeta.label} • P${names[0]} (ভাগকৃত অংশ)`
     ];
     const vals=[dist(part.targetPoly[0],part.targetPoly[1]),dist(part.targetPoly[1],part.targetPoly[2]),dist(part.targetPoly[2],part.targetPoly[3]),dist(part.targetPoly[3],part.targetPoly[0])];
-    return `<div class="qp-cut-editor"><div class="qp-cut-editor-title">✂️ কর্তন/ভাগকৃত জমির ৪ দিকের ফুট–ইঞ্চি — সরাসরি এডিটযোগ্য</div><div class="qp-cut-editor-note">ফুট–ইঞ্চির মাপগুলো এডিট করার পর <strong>নতুন ক্ষেত্রফল</strong> চাপুন। স্থির কর্ণ AQ-এর ভিত্তিতে নতুন ক্ষেত্রফল নির্ভুলভাবে বের হবে এবং সেই অনুযায়ী বৈধ ভাগরেখা ও Drawing পুনরায় তৈরি হবে।</div><div class="qp-cut-grid">${vals.map((v,i)=>{const ft=Math.floor(v), inch=Number(((v-ft)*12).toFixed(2)); return `<div class="qp-cut-field"><label>${esc(sideLabels[i])}</label><div class="fi-row"><input id="qpCut${i}ft" type="number" min="0" step="any" value="${ft}" placeholder="ফুট"><input id="qpCut${i}in" type="number" min="0" max="11.999" step="0.01" value="${inch || ''}" placeholder="ইঞ্চি"></div></div>`}).join('')}</div><div class="qp-cut-actions"><button id="qpCutRecalc" type="button" class="calc-btn calc-primary">নতুন ক্ষেত্রফল</button></div><div id="qpCutLive" class="qp-cut-live"><span>মাপ পরিবর্তন করে “নতুন ক্ষেত্রফল” চাপুন।</span></div></div>`;
+    return `<div class="qp-cut-editor"><div class="qp-cut-editor-title">✂️ কর্তন/ভাগকৃত জমির ৪ দিকের ফুট–ইঞ্চি — সরাসরি এডিটযোগ্য</div><div class="qp-cut-editor-note">ফুট–ইঞ্চির মাপগুলো এডিট করার পর <strong>নতুন ক্ষেত্রফল</strong> চাপুন। পুরোনো AQ স্থির রাখা হবে না। ৪ দিকের নতুন মাপ থেকে নতুন AQ স্বয়ংক্রিয়ভাবে নির্ধারিত হবে এবং সেই নতুন ক্ষেত্রফল ও Drawing পুনরায় তৈরি হবে।</div><div class="qp-cut-grid">${vals.map((v,i)=>{const ft=Math.floor(v), inch=Number(((v-ft)*12).toFixed(2)); return `<div class="qp-cut-field"><label>${esc(sideLabels[i])}</label><div class="fi-row"><input id="qpCut${i}ft" type="number" min="0" step="any" value="${ft}" placeholder="ফুট"><input id="qpCut${i}in" type="number" min="0" max="11.999" step="0.01" value="${inch || ''}" placeholder="ইঞ্চি"></div></div>`}).join('')}</div><div class="qp-cut-actions"><button id="qpCutRecalc" type="button" class="calc-btn calc-primary">নতুন ক্ষেত্রফল</button></div><div id="qpCutLive" class="qp-cut-live"><span>মাপ পরিবর্তন করে “নতুন ক্ষেত্রফল” চাপুন।</span></div></div>`;
   }
+  // Rebuild the edited 4-sided parcel WITHOUT treating the old AQ as fixed.
+  // Four side lengths alone do not uniquely determine an arbitrary quadrilateral,
+  // so we preserve the original parcel's normalized diagonal position (shape
+  // factor) and recompute a NEW AQ for the edited side lengths.  The resulting
+  // diagonal is then used only as the geometry produced by the edited sides;
+  // it is never locked to the old AQ value.
   function reconstructTargetFromEditedSides(part, vals){
     const [s0,s1,s2,s3]=vals;
-    const diagonal=dist(part.targetPoly[0],part.targetPoly[2]);
-    if(!(s0>0&&s1>0&&s2>0&&s3>0&&diagonal>0)) return null;
+    if(!(s0>0&&s1>0&&s2>0&&s3>0)) return null;
+
+    const oldDiagonal=dist(part.targetPoly[0],part.targetPoly[2]);
+    const oldPerimeter=dist(part.targetPoly[0],part.targetPoly[1])+
+      dist(part.targetPoly[1],part.targetPoly[2])+
+      dist(part.targetPoly[2],part.targetPoly[3])+
+      dist(part.targetPoly[3],part.targetPoly[0]);
+    if(!(oldDiagonal>EPS&&oldPerimeter>EPS)) return null;
+
+    // Normalized diagonal ratio. Clamp it to the mathematically feasible
+    // interval for the new four sides so the new diagonal always exists.
+    const newPerimeter=s0+s1+s2+s3;
+    const minD=Math.max(Math.abs(s0-s1)+EPS, Math.abs(s2-s3)+EPS);
+    const maxD=Math.min(s0+s1-EPS, s2+s3-EPS);
+    if(!(minD<maxD)) return null;
+
+    let ratio=oldDiagonal/oldPerimeter;
+    let diagonal=ratio*newPerimeter;
+    if(!Number.isFinite(diagonal)) diagonal=(minD+maxD)/2;
+    // Keep a small margin from degenerate triangle limits.
+    const margin=Math.max(1e-7,(maxD-minD)*1e-7);
+    diagonal=Math.min(maxD-margin,Math.max(minD+margin,diagonal));
+
     const h1=triangle(s0,s1,diagonal), h2=triangle(s3,s2,diagonal);
     if(h1===null||h2===null) return null;
+
     const A=[0,0], Q=[diagonal,0];
     const xB=(s0*s0+diagonal*diagonal-s1*s1)/(2*diagonal);
     const yB2=s0*s0-xB*xB;
     const xP=(s3*s3+diagonal*diagonal-s2*s2)/(2*diagonal);
     const yP2=s3*s3-xP*xP;
-    if(yB2<EPS||yP2<EPS) return null;
+    if(yB2<=EPS||yP2<=EPS) return null;
+
+    // Preserve the original target's side orientation: B and P are placed on
+    // the same side of AQ as in the original drawing.
     const oldB=part.targetPoly[1], oldP=part.targetPoly[3];
-    const oldCross=cross(part.targetPoly[0],part.targetPoly[1],part.targetPoly[2]);
-    const signB=oldB[1]>=0?1:-1;
-    const signP=oldP[1]>=0?1:-1;
+    const signB=cross(part.targetPoly[0],part.targetPoly[2],oldB)>=0?1:-1;
+    const signP=cross(part.targetPoly[0],part.targetPoly[2],oldP)>=0?1:-1;
     const B=[xB,Math.sqrt(yB2)*signB];
     const P=[xP,Math.sqrt(yP2)*signP];
     const poly=[A,B,Q,P];
-    if(Math.abs(polygonArea(poly)-(h1+h2))>1e-6) return null;
-    return {poly,area:h1+h2,diagonal};
+    const area=polygonArea(poly);
+    if(!(area>EPS)||Math.abs(area-(h1+h2))>Math.max(1e-5,area*1e-10)) return null;
+
+    return {
+      poly,
+      area,
+      diagonal,
+      diagonalChanged:Math.abs(diagonal-oldDiagonal)>1e-8,
+      shapeRatio:ratio,
+      sides:[s0,s1,s2,s3]
+    };
   }
   function bindCutEditor(part,q){
     const ids=[0,1,2,3];
@@ -377,11 +416,11 @@
           return;
         }
 
-        // AQ remains the fixed reference diagonal from the original partition.
-        // The four edited sides determine the new area.
+        // The old AQ is NOT a fixed constraint. Rebuild the edited parcel with
+        // a newly computed diagonal, then use its exact area for the new cut.
         const rebuilt=reconstructTargetFromEditedSides(part,vals);
         if(!rebuilt){
-          if(live) live.innerHTML='<span class="qp-cut-error">এই ৪টি মাপ ও স্থির কর্ণ AQ দিয়ে বৈধ চতুর্ভূজ তৈরি হচ্ছে না। মাপগুলো যাচাই করুন।</span>';
+          if(live) live.innerHTML='<span class="qp-cut-error">এই ৪টি নতুন মাপ দিয়ে বৈধ চতুর্ভূজ তৈরি করা যাচ্ছে না। চার বাহুর মাপ যাচাই করুন।</span>';
           return;
         }
 
@@ -394,36 +433,37 @@
           return;
         }
 
-        // Store the edited calculation without changing the original parcel
-        // geometry. Subsequent edits continue to use the original fixed AQ.
+        // Store the edited calculation. The original AQ is not reused as a fixed
+        // value; rebuilt.diagonal is the NEW AQ produced by the edited sides.
         part.editedTarget=rebuilt;
         part.editedTargetSides=vals.slice();
         part.editedTargetArea=area;
+        part.editedTargetDiagonal=rebuilt.diagonal;
         part.recalculatedPart=recalculated;
 
-        // Show the new area immediately in the visible result card.
+        // Keep the visible result synchronized with the exact recalculated area.
         const liveArea=document.querySelector('.qp-live-area');
-        if(liveArea) liveArea.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ`;
-        if(live) live.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ`;
+        if(liveArea) liveArea.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ<br><strong>নতুন কর্ণ AQ:</strong> ${ftIn(rebuilt.diagonal)}`;
+        if(live) live.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(area)} বর্গফুট = ${bn(decimal)} শতাংশ &nbsp;•&nbsp; <strong>নতুন কর্ণ AQ:</strong> ${ftIn(rebuilt.diagonal)}`;
 
         // Refresh both dimension tables so the numbers and Drawing stay in sync
         // with the newly calculated area. The four edit fields remain untouched.
         const cards=document.querySelectorAll('.qp-dimensions .qp-dimension-card');
         const remainingDecimal=(q.area-recalculated.partArea)/SQFT_PER_DECIMAL;
-        if(cards[0]) cards[0].outerHTML=dimensionTable(`নির্ধারিত ভাগ (${bn(recalculated.partArea/SQFT_PER_DECIMAL)} শতাংশ)`,recalculated.targetSegments);
+        if(cards[0]) cards[0].outerHTML=dimensionTable(`নতুন নির্ধারিত ভাগ (${bn(recalculated.partArea/SQFT_PER_DECIMAL)} শতাংশ)`,recalculated.targetSegments);
         if(cards[1]) cards[1].outerHTML=dimensionTable(`অবশিষ্ট জমি (${bn(remainingDecimal)} শতাংশ)`,recalculated.remainSegments);
 
-        // Keep the original parcel fixed and rebuild the visible Drawing from
-        // the newly calculated area. The red P-Q line remains attached to it.
+        // Rebuild the visible Drawing. The original parcel boundary remains the
+        // survey reference, while the new cut and the NEW AQ are shown.
         const oldDrawing=document.querySelector('.qp-drawing');
-        if(oldDrawing) oldDrawing.outerHTML=makeDrawing(q,recalculated);
+        if(oldDrawing) oldDrawing.outerHTML=makeDrawing(q,recalculated,rebuilt);
       }catch(err){
         console.error('qpCutRecalc error:',err);
         if(live) live.innerHTML='<span class="qp-cut-error">নতুন ক্ষেত্রফল হিসাব করতে একটি সমস্যা হয়েছে। ফুট–ইঞ্চির মানগুলো আবার যাচাই করুন।</span>';
       }
     };
   }
-  function makeDrawing(q, part) {
+  function makeDrawing(q, part, editedTarget=null) {
     // The calculation geometry is kept untouched. For Drawing only, reflect
     // mathematical Y so AB (North) is at the top, BC (East) is on the right,
     // CD (South) is at the bottom, and DA (West) is on the left.
@@ -499,7 +539,8 @@
     diagLines.push(diagonalLine(pA,pC,'মূল কর্ণ AC',q.v.AC,28,-1));
     diagLines.push(diagonalLine(pB,pD,'মূল কর্ণ BD',dist(q.B,q.D),28,1));
     const A0=t[0], B0=t[1], Q0=t[2], P0=t[3];
-    diagLines.push(diagonalLine(A0,Q0,'৩% কর্ণ AQ',dist(part.targetPoly[0],part.targetPoly[2]),20,-1));
+    const aqValue=dist(part.targetPoly[0],part.targetPoly[2]);
+    diagLines.push(diagonalLine(A0,Q0,editedTarget?'নতুন কর্ণ AQ':'৩% কর্ণ AQ',aqValue,20,-1));
     diagLines.push(diagonalLine(B0,P0,'৩% কর্ণ BP',dist(part.targetPoly[1],part.targetPoly[3]),20,1));
     const P1=r[0], Q1=r[1], R1=r[2], L1=r[3];
     diagLines.push(diagonalLine(P1,R1,'কর্ণ PC',dist(part.remainPoly[0],part.remainPoly[2]),20,1));
