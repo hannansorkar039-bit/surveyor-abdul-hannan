@@ -274,6 +274,19 @@
 <style>
 .fi-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fi-row input{width:100%;box-sizing:border-box}.qp-editor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.qp-edit-card{border:1px solid #dbe5e9;border-radius:12px;padding:10px;background:#fff}.qp-edit-card label{display:block;font-weight:800;margin-bottom:6px}.qp-edit-card .fi-row{grid-template-columns:1fr 1fr}.qp-drawing{margin-top:16px;border:1px solid #dbe5e9;border-radius:16px;background:#f7fafb;overflow:hidden}.qp-drawing-head{padding:12px 14px;font-weight:900;color:#082336;background:#eef6f7;border-bottom:1px solid #dbe5e9}.qp-drawing-meta{padding:8px 14px;font-size:12px;font-weight:700;color:#52656f;background:#fbfdfd;border-bottom:1px solid #e6eef0}.qp-svg-wrap{padding:8px;overflow:auto}.qp-svg{display:block;width:100%;min-width:520px;height:430px;background:#fff}.qp-note{font-size:12px;line-height:1.65;color:#52656f;margin:10px 2px}.qp-warning{padding:12px;border-radius:12px;background:#fff5f0;border:1px solid #f0c9b6;color:#7a351c;font-weight:700}.qp-ok{padding:12px;border-radius:12px;background:#eff9f4;border:1px solid #c6e8d4;color:#175d3a;font-weight:700}@media(max-width:620px){.qp-editor{grid-template-columns:1fr}.qp-svg{min-width:460px;height:380px}}
 </style>
+
+<style id="qp-professional-partition-fix">
+.qp-direction-field{grid-column:1/-1}
+.qp-dimensions{margin-top:16px;padding:14px;border:1px solid #d7e5e8;border-radius:16px;background:#f4fbfb}
+.qp-dimensions-title{font-weight:950;color:#082336;margin-bottom:12px}
+.qp-dimension-card{border:1px solid #dbe7ea;border-radius:13px;background:#fff;padding:12px;margin-top:10px}
+.qp-dimension-card h4{margin:0 0 9px;color:#08747b;font-size:15px}
+.qp-dimension-list{display:grid;gap:6px}
+.qp-dimension-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 10px;border-radius:9px;background:#f8fbfc;border:1px solid #e5eef0}
+.qp-dimension-row span{color:#52656f;font-size:13px;font-weight:700}.qp-dimension-row strong{color:#082336;white-space:nowrap}
+.qp-drawing-legend{display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px 14px;color:#52656f;font-size:12px;font-weight:800}
+@media(max-width:620px){.qp-direction-field{grid-column:auto}.qp-dimension-row{align-items:flex-start;flex-direction:column;gap:3px}.qp-dimension-row strong{font-size:14px}}
+</style>
 </head>
 <body id="top">
 <a class="skip" href="#main">মূল কনটেন্টে যান</a>
@@ -373,9 +386,10 @@
     <div class="calc-field"><label for="qpTarget">যে পরিমাণ জমি ভাগ করবেন</label><input id="qpTarget" type="number" min="0" step="any" placeholder="যেমন 2"></div>
     <div class="calc-field"><label for="qpTargetUnit">ভাগের একক</label><select id="qpTargetUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div>
     <div class="calc-field"><label for="qpShapeType">চতুর্ভূজের ধরন</label><select id="qpShapeType"><option value="auto">স্বয়ংক্রিয় — বৈধ ধরন গ্রহণ</option><option value="convex">উত্তল (Convex)</option><option value="concave">অবতল (Concave)</option></select></div>
+    <div class="calc-field qp-direction-field"><label for="qpPartitionDirection">৩ শতাংশ/নির্ধারিত ভাগ কোন দিক থেকে আলাদা হবে</label><select id="qpPartitionDirection"><option value="north">উত্তর দিক — AB</option><option value="east">পূর্ব দিক — BC</option><option value="south">দক্ষিণ দিক — CD</option><option value="west">পশ্চিম দিক — DA</option></select></div>
   </div>
   <div class="calc-actions"><button class="calc-btn calc-primary" id="qpCalc" type="button">ভাগের সীমারেখা হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="quad-partition" type="button">পরিষ্কার</button></div>
-  <p class="calc-help"><strong>অবতল চতুর্ভুজের নিয়ম:</strong> এই অংশে ইচ্ছাকৃতভাবে উত্তল (convex) চতুর্ভুজ গ্রহণ করা হবে না। প্রদত্ত চার বাহু ও AC কর্ণ দিয়ে যদি সত্যিকারের অবতল চতুর্ভুজ তৈরি করা সম্ভব না হয়, ক্যালকুলেটর ফল জোর করে তৈরি না করে সতর্কবার্তা দেখাবে।</p>
+  <p class="calc-help"><strong>ভাগের দিক:</strong> উত্তর/পূর্ব/দক্ষিণ/পশ্চিম থেকে যেদিক নির্বাচন করবেন, সেই দিকের প্রথম কোণ থেকে বিপরীত কোণের দিকে নতুন ভাগরেখা তৈরি করে নির্ধারিত ক্ষেত্রফল আলাদা করা হবে। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে এবং পশ্চিম বামে থাকবে। ভাগকৃত অংশ ও অবশিষ্ট অংশের আলাদা ফুট-ইঞ্চি মাপ এবং প্রযোজ্য কর্ণ দেখানো হবে।</p>
   <div class="calc-result" id="qpResult" aria-live="polite"></div>
 </section>
 
