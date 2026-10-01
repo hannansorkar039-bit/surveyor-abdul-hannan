@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v20-home-action-polish";
+const CACHE_NAME = "sah-pwa-v22-seo-offline-articles";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 const CORE_ASSETS = [
   "./", "./index.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
@@ -6,12 +6,18 @@ const CORE_ASSETS = [
   "./videos.html", "./photos.html", "./posts.html", "./important-topics.html", "./social.html",
   "./process.html", "./faq.html", "./question.html", "./feedback.html", "./order.html", "./contact.html",
   "./land-solution-bd.html", "./disclaimer.html", "./calculator.html",
-  "./calculator-pdf.js", "./calculator-core.js", "./calculator-featured.js", "./calculator-registry.js",
+  "./article-land-survey-preparation.html", "./article-dag-khatian-mouza.html", "./article-cs-sa-rs-bs-khatian.html", "./article-boundary-demarcation.html", "./article-land-partition-survey.html", "./article-land-unit-conversion.html", "./article-quadrilateral-area-measurement.html", "./article-diagonal-check.html", "./article-land-survey-common-mistakes.html", "./article-land-record-verification.html", "./article-mutation-khatian-update.html", "./article-field-survey-report.html",
+  "./calculator-pdf.js", "./calculator-core.js", "./calculator-partition.js", "./calculator-featured.js", "./calculator-registry.js",
   "./calculator-land-suite.js", "./calculator-bootstrap.js", "./fonts/Lohit-Bengali.ttf",
   "./icons/icon-192.png", "./icons/icon-512.png"
 ];
+const EXTERNAL_CORE_ASSETS = [
+  "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+];
+const EXTERNAL_CACHE_FIRST = new Set(EXTERNAL_CORE_ASSETS);
 const CACHE_FIRST = new Set([
-  "./styles.css", "./app.js", "./content.js", "./calculator-pdf.js", "./calculator-core.js",
+  "./styles.css", "./app.js", "./content.js", "./calculator-pdf.js", "./calculator-core.js", "./calculator-partition.js",
   "./calculator-featured.js", "./calculator-registry.js", "./calculator-land-suite.js",
   "./calculator-bootstrap.js", "./fonts/Lohit-Bengali.ttf", "./icons/icon-192.png", "./icons/icon-512.png"
 ]);
@@ -26,6 +32,7 @@ self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await Promise.allSettled(CORE_ASSETS.map(asset => cache.add(asset)));
+    await Promise.allSettled(EXTERNAL_CORE_ASSETS.map(asset => cache.add(asset)));
     await self.skipWaiting();
   })());
 });
@@ -80,6 +87,11 @@ self.addEventListener("fetch", event => {
 
   if (request.mode === "navigate") {
     event.respondWith(networkFirst(request));
+    return;
+  }
+
+  if (EXTERNAL_CACHE_FIRST.has(request.url)) {
+    event.respondWith(cacheFirst(request).catch(() => caches.match(request)));
     return;
   }
 
