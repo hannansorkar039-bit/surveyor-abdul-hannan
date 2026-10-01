@@ -234,9 +234,8 @@
       }
       // For quadrilateral fields, quadPoints() uses A→B→C→D order.
       // In the screen orientation: AB=north, BC=east, CD=south, DA=west.
-      // The NEW field must use the opposite-facing edge:
-      // north→south(CD), east→west(DA), south→north(AB), west→east(BC).
-      // This makes the two fields share the same boundary line.
+      // The new field uses the opposite-facing edge so its shared boundary
+      // is exactly collinear with the selected base-field boundary.
       return {baseEdge,newEdge};
     }
     function attachmentMeta(side,base=null){
@@ -930,6 +929,18 @@
     });
     multi.addEventListener('pointercancel',e=>{if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2)pinch=null;}dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;});
     
+    // v11 alignment repair: old saved fields may have been attached using the
+    // incorrect east/west edge mapping. Re-align dependent fields once using
+    // their saved baseId/side metadata. No dimensions or calculation formulas change.
+    const ALIGNMENT_FIX_VERSION='v11-shared-boundary-edge';
+    try{
+      if(localStorage.getItem(STORAGE+'_alignmentFix')!==ALIGNMENT_FIX_VERSION && saved.length){
+        saved.filter(f=>f.baseId==null).forEach(root=>reflowDependents(root.id));
+        saved.forEach(f=>{f.area=area(f.pts);});
+        persist();
+        localStorage.setItem(STORAGE+'_alignmentFix',ALIGNMENT_FIX_VERSION);
+      }
+    }catch(e){}
     setInputs(saved[0]?.v||[50,80,55,85]); if(saved[0]){selectedId=saved[0].id;current=null}else{selectedId=null;current=null} updateBaseOptions(); updateAttachUI(); renderMain(); renderList();
   })();
 
