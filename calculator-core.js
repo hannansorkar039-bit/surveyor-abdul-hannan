@@ -1,4 +1,4 @@
-// Surveyor Abdul Hannan — modular calculator component
+
 
 (() => {
   const $ = id => document.getElementById(id);
