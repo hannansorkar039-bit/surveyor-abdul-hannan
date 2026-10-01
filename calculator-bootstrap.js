@@ -30,6 +30,10 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
   document.querySelectorAll('.calc-tab[data-tab="quad-partition"]').forEach(btn=>btn.addEventListener('click',loadPartition,{once:true}));
   whenVisible(document.querySelector('.featured-calcs'),()=>loadScript('calculator-featured.js','featured').catch(()=>{}));
   whenVisible(document.querySelector('#professional-land-suite'),()=>loadScript('calculator-land-suite.js','land-suite').catch(()=>{}));
+  // The multi-field Drawing & Alignment section lives before the registry calculator.
+  // Load its engine when that section becomes visible so its inputs are live immediately.
+  const shapeSketch=document.querySelector('#featured-shape-sketch');
+  whenVisible(shapeSketch,()=>loadScript('calculator-registry.js','registry').catch(()=>{}));
   const registry=document.querySelector('#registry-calculator');
   whenVisible(registry,async()=>{
     await loadCss('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css','leaflet-css');
