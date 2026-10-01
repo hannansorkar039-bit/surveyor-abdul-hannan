@@ -215,31 +215,14 @@
         if(d<bestScore){bestScore=d;best=i;}
       }); return best;
     }
-    function physicalEdgeForSide(pts,side){
-      if(!pts||pts.length<3)return 0;
-      if(/^tri[0-2]$/.test(String(side)))return Number(String(side).slice(3));
-      const c=centroid(pts);
-      const want={north:[0,1],east:[1,0],south:[0,-1],west:[-1,0]}[side]||[1,0];
-      let best=0,bestScore=-Infinity;
-      for(let i=0;i<pts.length;i++){
-        const m=edgeMid(pts,i),dx=m[0]-c[0],dy=m[1]-c[1],L=Math.hypot(dx,dy)||1;
-        const score=(dx/L)*want[0]+(dy/L)*want[1];
-        if(score>bestScore){bestScore=score;best=i;}
-      }
-      return best;
-    }
-    function oppositeSide(side){return ({north:'south',east:'west',south:'north',west:'east'})[side]||'south';}
     function sideEdges(side,base,shape,triAttachEdge=0,quadAttachEdge=0){
       const baseType=shapeTypeOf(base), shapeType=shapeTypeOf(shape);
       let baseEdge;
       if(baseType==='tri'){
         if(/^tri[0-2]$/.test(String(side))) baseEdge=Number(String(side).slice(3));
-        else baseEdge=physicalEdgeForSide(base?.pts,side);
+        else baseEdge=nearestEdgeForSide(base?.pts,side);
       }else{
-        // IMPORTANT: use the edge's actual geometric cardinal direction,
-        // not its A/B/C/D index. Older saved drawings may have AB/CD
-        // vertically reversed, which previously made North select South.
-        baseEdge=physicalEdgeForSide(base?.pts,side);
+        baseEdge={north:0,east:1,south:2,west:3}[side];
       }
       let newEdge;
       if(shapeType==='tri'){
@@ -247,10 +230,12 @@
       }else if(/^tri[0-2]$/.test(String(side))){
         newEdge=Math.max(0,Math.min(3,Number(quadAttachEdge)||0));
       }else{
-        // The new field's edge touching a selected side is the opposite
-        // cardinal edge: North→new South, South→new North, etc.
-        newEdge=physicalEdgeForSide(shape,oppositeSide(side));
+        newEdge={north:2,east:3,south:0,west:1}[side];
       }
+      // For quadrilateral fields, quadPoints() uses A→B→C→D order.
+      // In the screen orientation: AB=north, BC=east, CD=south, DA=west.
+      // The new field uses the opposite-facing edge so its shared boundary
+      // is exactly collinear with the selected base-field boundary.
       return {baseEdge,newEdge};
     }
     function attachmentMeta(side,base=null){
@@ -294,171 +279,89 @@
       });
     }
     function alignToBase(shape,base,side,attach,triAttachEdge=0,quadAttachEdge=0){
-      
-      
-      
-      
-      
-      
+      if(!shape||!base||!shape.length||!base.length)return shape?.map(p=>[...p])||[];
+      const cardinal=['north','east','south','west'].includes(side);
       const {baseEdge,newEdge}=sideEdges(side,base,shape,triAttachEdge,quadAttachEdge);
       const bp=base[baseEdge], bq=base[(baseEdge+1)%base.length];
-      const bv=edgeVec(base,baseEdge), lv=edgeVec(shape,newEdge);
-      const bl=Math.hypot(bv[0],bv[1]), ll=Math.hypot(lv[0],lv[1]);
+      const bv=[bq[0]-bp[0],bq[1]-bp[1]], bl=Math.hypot(bv[0],bv[1]);
+      const lv=edgeVec(shape,newEdge), ll=Math.hypot(lv[0],lv[1]);
       if(!(bl>1e-9&&ll>1e-9))return shape.map(p=>[...p]);
 
       const a=attach||{mode:'center',offset:0,ref:'start'};
-      const maxGap=Math.max(0,bl-ll);
-      let startOffset=maxGap/2;
-      if(a.mode==='north'||a.mode==='start')startOffset=0;
-      else if(a.mode==='south'||a.mode==='end')startOffset=maxGap;
+      const gap=Math.max(0,bl-ll);
+      let startOffset=gap/2;
+      if(a.mode==='start'||a.mode==='north')startOffset=0;
+      else if(a.mode==='end'||a.mode==='south')startOffset=gap;
       else if(a.mode==='custom'){
         const off=Math.max(0,Number(a.offset)||0);
-        startOffset=a.ref==='end'?maxGap-off:off;
+        startOffset=a.ref==='end'?gap-off:off;
       }
-      if(ll<=bl) startOffset=Math.max(0,Math.min(maxGap,startOffset));
-      else startOffset=a.ref==='end'
-        ? (bl-ll-Math.max(0,Number(a.offset)||0))
-        : Math.max(0,Number(a.offset)||0);
+      if(ll<=bl)startOffset=Math.max(0,Math.min(gap,startOffset));
+      else startOffset=a.ref==='end' ? bl-ll-Math.max(0,Number(a.offset)||0) : Math.max(0,Number(a.offset)||0);
 
-      
-      
-      const ux=bv[0]/bl, uy=bv[1]/bl;
+      const ux=bv[0]/bl,uy=bv[1]/bl;
       const e1=[bp[0]+ux*startOffset,bp[1]+uy*startOffset];
       const e2=[bp[0]+ux*(startOffset+ll),bp[1]+uy*(startOffset+ll)];
-      const targetAng=Math.atan2(e2[1]-e1[1],e2[0]-e1[0]);
-      const localAng=Math.atan2(lv[1],lv[0]);
+      const baseC=centroid(base);
 
-      
-      let r=rotatePts(shape,targetAng-localAng);
-      const ra0=r[newEdge];
-      r=translate(r,e1[0]-ra0[0],e1[1]-ra0[1]);
+      // Build two rigid candidates: the new attached edge can run in either
+      // direction along the selected base boundary. Pick the candidate whose
+      // field lies OUTSIDE the selected boundary. This avoids the old
+      // north/south/west/east index assumptions and never changes dimensions.
+      const makeCandidate=(reverse)=>{
+        const targetAng=reverse
+          ? Math.atan2(e1[1]-e2[1],e1[0]-e2[0])
+          : Math.atan2(e2[1]-e1[1],e2[0]-e1[0]);
+        const localAng=reverse
+          ? Math.atan2(-lv[1],-lv[0])
+          : Math.atan2(lv[1],lv[0]);
+        let r=rotatePts(shape,targetAng-localAng);
+        const anchor=reverse?r[(newEdge+1)%r.length]:r[newEdge];
+        const target=reverse?e2:e1;
+        r=translate(r,target[0]-anchor[0],target[1]-anchor[1]);
+        return r;
+      };
 
-      
-      
-      const rb=r[(newEdge+1)%r.length];
-      const errForward=Math.hypot(rb[0]-e2[0],rb[1]-e2[1]);
-      const targetAngRev=Math.atan2(e1[1]-e2[1],e1[0]-e2[0]);
-      let rr=rotatePts(shape,targetAngRev-localAng);
-      const rr0=rr[newEdge];
-      rr=translate(rr,e2[0]-rr0[0],e2[1]-rr0[1]);
-      const rr1=rr[(newEdge+1)%rr.length];
-      const errReverse=Math.hypot(rr1[0]-e1[0],rr1[1]-e1[1]);
-      if(errReverse<errForward) r=rr;
-
-      
-      
-      
-      
-      
-      
-      const edgeA=r[newEdge], edgeB=r[(newEdge+1)%r.length];
-      const edgeMidPt=[(edgeA[0]+edgeB[0])/2,(edgeA[1]+edgeB[1])/2];
-
-      if(side==='north'||side==='east'||side==='south'||side==='west'){
-        // Keep the new field on the OUTSIDE of the selected boundary.
-        // The previous version used a global north/east/south/west vector here;
-        // that could put a rotated/skewed field back over the base field.
-        // Determine the correct side from the base field's centroid instead.
-        const centroidOf=pts=>{
-          let sx=0,sy=0;
-          pts.forEach(p=>{sx+=p[0];sy+=p[1]});
-          return [sx/pts.length,sy/pts.length];
-        };
-        const baseC=centroidOf(base);
-        const baseSide=cross2(edgeB[0]-edgeA[0],edgeB[1]-edgeA[1],baseC[0]-edgeA[0],baseC[1]-edgeA[1]);
-        const fieldC=centroidOf(r);
-        const fieldSide=cross2(edgeB[0]-edgeA[0],edgeB[1]-edgeA[1],fieldC[0]-edgeA[0],fieldC[1]-edgeA[1]);
-
-        // If the new field is on the same side of the shared boundary as the
-        // base field, reflect it across that boundary so it sits outside.
-        if(Math.abs(baseSide)>1e-9 && Math.abs(fieldSide)>1e-9 && Math.sign(baseSide)===Math.sign(fieldSide)){
-          r=reflectAcrossLine(r,edgeA,edgeB);
+      let r=makeCandidate(false);
+      let rr=makeCandidate(true);
+      const lineSide=(pts)=>{
+        const m=edgeMid(pts,newEdge);
+        return cross2(bq[0]-bp[0],bq[1]-bp[1],m[0]-bp[0],m[1]-bp[1]);
+      };
+      const baseSide=cross2(bq[0]-bp[0],bq[1]-bp[1],baseC[0]-bp[0],baseC[1]-bp[1]);
+      const rs=lineSide(r), rrs=lineSide(rr);
+      if(Math.abs(baseSide)>1e-9){
+        const want=-Math.sign(baseSide);
+        const rOK=Math.sign(rs)===want;
+        const rrOK=Math.sign(rrs)===want;
+        if(rrOK&&!rOK)r=rr;
+        else if(!rOK&&!rrOK){
+          r=Math.abs(rrs-baseSide)>Math.abs(rs-baseSide)?rr:r;
         }
       }else{
-        
-        
-        
-        const baseSigns=[];
-        base.forEach((p,i)=>{
-          if(i===baseEdge || i===(baseEdge+1)%base.length)return;
-          const c=(edgeB[0]-edgeA[0])*(p[1]-edgeA[1])-
-                  (edgeB[1]-edgeA[1])*(p[0]-edgeA[0]);
-          if(Math.abs(c)>1e-8)baseSigns.push(Math.sign(c));
-        });
-        const newSigns=[];
-        r.forEach((p,i)=>{
-          if(i===newEdge || i===(newEdge+1)%r.length)return;
-          const c=(edgeB[0]-edgeA[0])*(p[1]-edgeA[1])-
-                  (edgeB[1]-edgeA[1])*(p[0]-edgeA[0]);
-          if(Math.abs(c)>1e-8)newSigns.push(Math.sign(c));
-        });
-        const baseSide=baseSigns.reduce((sum,v)=>sum+v,0)>=0?1:-1;
-        const newSide=newSigns.reduce((sum,v)=>sum+v,0)>=0?1:-1;
-        if(newSigns.length && baseSigns.length && newSide===baseSide){
-          r=reflectAcrossLine(r,edgeA,edgeB);
-        }
+        // Degenerate/collinear centroid fallback: prefer the candidate farther
+        // from the base centroid, still without scaling or reflection.
+        const rc=centroid(r),rrc=centroid(rr);
+        const dr=Math.hypot(rc[0]-baseC[0],rc[1]-baseC[1]);
+        const drr=Math.hypot(rrc[0]-baseC[0],rrc[1]-baseC[1]);
+        if(drr>dr)r=rr;
       }
 
-      
-      
-      
-      
-      
-      if(r.length===4 && (attach?.mode||'center')==='center' && (side==='north'||side==='east'||side==='south'||side==='west')){
-        const sa=r[newEdge], sb=r[(newEdge+1)%r.length];
-        const mx=(sa[0]+sb[0])/2, my=(sa[1]+sb[1])/2;
-        const vx=sb[0]-sa[0], vy=sb[1]-sa[1], L=Math.hypot(vx,vy);
-        if(L>1e-9){
-          
-          
-          const ux=vx/L, uy=vy/L;
-          const px=-uy, py=ux;
-          const mirrored=r.map(p=>{
-            const dx=p[0]-mx, dy=p[1]-my;
-            const along=dx*ux+dy*uy;
-            const across=dx*px+dy*py;
-            return [mx+along*ux-across*px, my+along*uy-across*py];
-          });
-          
-          
-          
-          
-          const wants=[[0,1],[1,0],[0,-1],[-1,0]];
-          const cardinalScore=pts=>{
-            const cx=pts.reduce((sum,p)=>sum+p[0],0)/pts.length;
-            const cy=pts.reduce((sum,p)=>sum+p[1],0)/pts.length;
-            let score=0;
-            for(let i=0;i<4;i++){
-              const e=pts[i], q=pts[(i+1)%4];
-              const emx=(e[0]+q[0])/2, emy=(e[1]+q[1])/2;
-              score+=(emx-cx)*wants[i][0]+(emy-cy)*wants[i][1];
-            }
-            return score;
-          };
-          if(cardinalScore(mirrored)>cardinalScore(r))r=mirrored;
-        }
-      }
-
-      
-      
-      
-      
-      const p0=r[newEdge], p1=r[(newEdge+1)%r.length];
-      const vx=p1[0]-p0[0], vy=p1[1]-p0[1], vlen=Math.hypot(vx,vy);
-      if(vlen>1e-9){
-        const tx=(e2[0]-e1[0])/vlen, ty=(e2[1]-e1[1])/vlen;
-        
-        const dF=Math.hypot(p0[0]-e1[0],p0[1]-e1[1])+Math.hypot(p1[0]-e2[0],p1[1]-e2[1]);
-        const dR=Math.hypot(p0[0]-e2[0],p0[1]-e2[1])+Math.hypot(p1[0]-e1[0],p1[1]-e1[1]);
-        if(dF<=dR){r[newEdge]=[...e1];r[(newEdge+1)%r.length]=[...e2];}
-        else{r[newEdge]=[...e2];r[(newEdge+1)%r.length]=[...e1];}
+      // Lock the attached edge exactly onto the selected base edge. This is
+      // translation/rotation only; user-entered side lengths remain intact.
+      const p0=r[newEdge],p1=r[(newEdge+1)%r.length];
+      const dF=Math.hypot(p0[0]-e1[0],p0[1]-e1[1])+Math.hypot(p1[0]-e2[0],p1[1]-e2[1]);
+      const dR=Math.hypot(p0[0]-e2[0],p0[1]-e2[1])+Math.hypot(p1[0]-e1[0],p1[1]-e1[1]);
+      if(dR<dF){
+        const dx=e2[0]-p0[0],dy=e2[1]-p0[1];
+        r=translate(r,dx,dy);
+      }else{
+        const dx=e1[0]-p0[0],dy=e1[1]-p0[1];
+        r=translate(r,dx,dy);
       }
       return r;
     }
-    
-    
-    
-    
+
     function affineFitAtCorner(shape,base,baseEdge,newEdge,attach){
       const mode=attach?.mode||'center';
       if(mode!=='start'&&mode!=='end') return null;
@@ -700,7 +603,7 @@
       const local=localFromDims(dims(),$('mfShapeType')?.value||'quad');
       if($('mfAttachInfo'))$('mfAttachInfo').textContent=base&&local?placementInfo(base,local,side,attachSettings(),Number($('mfTriAttachEdge')?.value||0),Number($('mfQuadAttachEdge')?.value||0)):'মাঝখানে যুক্ত হলে নির্বাচিত বাহুর দুই প্রান্তে সমান ফাঁক থাকবে। নতুন ক্ষেত্রের মাপ দেওয়ার পর দুই প্রান্ত থেকে সঠিক দূরত্ব দেখানো হবে।';
     }
-    function placeNext(local,base,side,attach,triAttachEdge=0,quadAttachEdge=0){const fitted=twoLineAssigned(base,local,side,attach,triAttachEdge,quadAttachEdge);return fitted||alignToBase(local,base,side,attach,triAttachEdge,quadAttachEdge);}
+    function placeNext(local,base,side,attach,triAttachEdge=0,quadAttachEdge=0){return alignToBase(local,base,side,attach,triAttachEdge,quadAttachEdge);}
     function reflowDependents(baseId){
       
       const walk=(parentId)=>{
@@ -778,7 +681,7 @@
     }
     function localFromDims(v,type){const t=type||((v.filter(x=>x>0).length===3)?'tri':'quad');return t==='tri'?triPoints(v.slice(0,3)):quadPoints(v)}
     function renderMain(){const v=dims(),type=$('mfShapeType')?.value||((v.filter(x=>x>0).length===3)?'tri':'quad'),pts=localFromDims(v,type);syncHidden(v);grid(mctx,main.width,main.height);if(pts){const tr=fitAll([{pts}],main.width,main.height);drawField(mctx,pts,v,type==='tri'?'৩ বাহুর বর্তমান ত্রিভুজ':'৪ বাহুর বর্তমান ক্ষেত্র',tr,0,.18,true,{shapeType:type,side:$('mfSide')?.value||null});const sf=area(pts);$('shapeStatus').textContent='SNAP ON: সব ক্ষেত্র একই ফুট–ইঞ্চি একক ও একই স্কেলে তৈরি হচ্ছে।';$('shapeResult').innerHTML='<div class="multi-field-kpis"><div class="multi-field-kpi"><strong>'+bn(sf)+' বর্গফুট</strong><span>আনুমানিক ক্ষেত্রফল</span></div><div class="multi-field-kpi"><strong>'+bn(sf/435.6)+' শতাংশ</strong><span>ডেসিমেল</span></div><div class="multi-field-kpi"><strong>'+bn(sf/10.7639104167)+' বর্গমিটার</strong><span>বর্গমিটার</span></div></div>'}else{$('shapeStatus').textContent=v.filter(x=>x>0).length<3?'কমপক্ষে ৩টি বাহুর মাপ দিন।':'এই মাপ দিয়ে বৈধ আনুমানিক ক্ষেত্র তৈরি করা যাচ্ছে না।';$('shapeResult').innerHTML=''}}
-    function ensureCurrentFromInputs(){const v=dims(),type=$('mfShapeType')?.value||((v.filter(x=>x>0).length===3)?'tri':'quad'),local=localFromDims(v,type);if(!local)return null;if(selectedId){const f=saved.find(x=>x.id===selectedId);if(f){const oldC=centroid(f.pts),newC=centroid(local);current={...f,pts:translate(local,oldC[0]-newC[0],oldC[1]-newC[1]),v,area:area(local)};return current}}let base=null,side=$('mfSide')?.value||'east';const attach=attachSettings();const triAttachEdge=Number($('mfTriAttachEdge')?.value||0);const quadAttachEdge=Number($('mfQuadAttachEdge')?.value||0);const baseVal=$('mfBaseField')?.value||'__first__';if(baseVal!=='__first__')base=saved.find(f=>String(f.id)===String(baseVal));if(base){const {baseEdge,newEdge}=sideEdges(side,base,local,triAttachEdge,quadAttachEdge),baseLen=Math.hypot(...edgeVec(base.pts,baseEdge)),newLen=Math.hypot(...edgeVec(local,newEdge));if(newLen>baseLen+1e-7){$('shapeStatus').textContent='সতর্কতা: নতুন ক্ষেত্রের যুক্ত বাহু '+ftInText(newLen)+' এবং ভিত্তি বাহু '+ftInText(baseLen)+'. সংযোগ করা হয়েছে; অতিরিক্ত '+ftInText(newLen-baseLen)+' অংশ ভিত্তি বাহুর বাইরে থাকবে।';}}const pts=base?placeNext(local,base.pts,side,attach,triAttachEdge,quadAttachEdge):translate(local,-centroid(local)[0],-centroid(local)[1]);const fitted=!!base&&((attach.mode==='start'||attach.mode==='end')&&twoLineAssigned(base.pts,local,side,attach,triAttachEdge,quadAttachEdge));const actualV=v;if(base&&fitted)$('shapeStatus').textContent='🧲 দুই-পাশের boundary assignment সম্পন্ন — যুক্ত কোণ ও দুইটি সীমারেখা একসাথে ফিট করা হয়েছে।';current={id:null,name:type==='tri'?'নতুন ত্রিভুজ ক্ষেত্র':'নতুন ক্ষেত্র',v:actualV,pts,area:area(pts),shapeType:type,baseId:base?.id||null,side,attachMode:attach.mode,attachOffset:attach.offset,attachRef:attach.ref,triAttachEdge,quadAttachEdge};return current}
+    function ensureCurrentFromInputs(){const v=dims(),type=$('mfShapeType')?.value||((v.filter(x=>x>0).length===3)?'tri':'quad'),local=localFromDims(v,type);if(!local)return null;if(selectedId){const f=saved.find(x=>x.id===selectedId);if(f){const oldC=centroid(f.pts),newC=centroid(local);current={...f,pts:translate(local,oldC[0]-newC[0],oldC[1]-newC[1]),v,area:area(local)};return current}}let base=null,side=$('mfSide')?.value||'east';const attach=attachSettings();const triAttachEdge=Number($('mfTriAttachEdge')?.value||0);const quadAttachEdge=Number($('mfQuadAttachEdge')?.value||0);const baseVal=$('mfBaseField')?.value||'__first__';if(baseVal!=='__first__')base=saved.find(f=>String(f.id)===String(baseVal));if(base){const {baseEdge,newEdge}=sideEdges(side,base,local,triAttachEdge,quadAttachEdge),baseLen=Math.hypot(...edgeVec(base.pts,baseEdge)),newLen=Math.hypot(...edgeVec(local,newEdge));if(newLen>baseLen+1e-7){$('shapeStatus').textContent='সতর্কতা: নতুন ক্ষেত্রের যুক্ত বাহু '+ftInText(newLen)+' এবং ভিত্তি বাহু '+ftInText(baseLen)+'. সংযোগ করা হয়েছে; অতিরিক্ত '+ftInText(newLen-baseLen)+' অংশ ভিত্তি বাহুর বাইরে থাকবে।';}}const pts=base?placeNext(local,base.pts,side,attach,triAttachEdge,quadAttachEdge):translate(local,-centroid(local)[0],-centroid(local)[1]);const actualV=v;current={id:null,name:type==='tri'?'নতুন ত্রিভুজ ক্ষেত্র':'নতুন ক্ষেত্র',v:actualV,pts,area:area(pts),shapeType:type,baseId:base?.id||null,side,attachMode:attach.mode,attachOffset:attach.offset,attachRef:attach.ref,triAttachEdge,quadAttachEdge};return current}
     function drawAll(){grid(ctx,multi.width,multi.height);const all=saved.map((f,i)=>({...f,_i:i}));if(current&&!selectedId)all.push(current);let tr=lockedTr;
       if(!tr){tr=fitAll(all,multi.width,multi.height);}
       saved.forEach((f,i)=>drawField(ctx,f.pts,f.v,f.name||('ক্ষেত্র '+(i+1)),tr,i+1,.09,String(f.id)===String(selectedId)));
@@ -951,9 +854,6 @@
       if(!editMode)return;
       const [sx,sy]=canvasXY(e),all=saved.map(f=>f),target=activeTarget();if(!target)return;
       const tr=fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
-      // Freeze the scene transform for the entire drag. Re-fitting on every
-      // pointermove makes the drawing jump/scale under the user's finger.
-      lockedTr={...tr};
       let best=-1,bd=(e.pointerType==='touch'?42:28);target.pts.forEach((p,i)=>{const q=screenPoint(p,tr,multi.height,multi.width),d=Math.hypot(q[0]-sx,q[1]-sy);if(d<bd){bd=d;best=i}});
       if(best>=0){dragMode='vertex';dragIndex=best;dragPointerId=e.pointerId;multi.setPointerCapture(e.pointerId);return;}
       if(targetUnderScreen(sx,sy,tr)){dragMode='field';dragIndex=-1;dragPointerId=e.pointerId;dragStartWorld=worldPoint(sx,sy,tr,multi.height);dragOriginalPts=target.pts.map(p=>[...p]);multi.setPointerCapture(e.pointerId);}
@@ -961,7 +861,7 @@
     multi.addEventListener('pointermove',e=>{
       if(e.pointerType==='touch'&&pinch&&pinch.ids[e.pointerId]){pinch.ids[e.pointerId]=e;const ids=Object.keys(pinch.ids);if(ids.length===2){const a=pinch.ids[ids[0]],b=pinch.ids[ids[1]],r=multi.getBoundingClientRect(),d=Math.max(20,dist(a,b)),ratio=d/pinch.startDist;view.zoom=Math.min(3,Math.max(.55,pinch.startZoom*ratio));const c=canvasXY({clientX:(a.clientX+b.clientX)/2,clientY:(a.clientY+b.clientY)/2});view.panX=pinch.startPanX+(c[0]-pinch.startCenter[0]);view.panY=pinch.startPanY+(c[1]-pinch.startCenter[1]);drawAll();return;}if(ids.length===1&&dragMode==='vertex'){} }
       if(dragPointerId!==e.pointerId||!dragMode)return;
-      const [sx,sy]=canvasXY(e),all=saved.map(f=>f),target=activeTarget();if(!target)return;const tr=lockedTr||fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
+      const [sx,sy]=canvasXY(e),all=saved.map(f=>f),target=activeTarget();if(!target)return;const tr=fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
       if(dragMode==='vertex'){
         target.pts[dragIndex]=worldPoint(sx,sy,tr,multi.height);
         const others=all.filter(f=>String(f.id)!==String(target.id));
@@ -1009,14 +909,14 @@
         if(selectedId){const f=saved.find(x=>String(x.id)===String(selectedId));if(f){f.v=target.v.slice();f.area=target.area;f.pts=target.pts.map(p=>[...p]);persist();renderList();}}
         renderMain();drawAll();
       }
-      dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;lockedTr=null;
+      dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;
     });
-    multi.addEventListener('pointercancel',e=>{if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2)pinch=null;}dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;lockedTr=null;});
+    multi.addEventListener('pointercancel',e=>{if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2)pinch=null;}dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;});
     
     // v11 alignment repair: old saved fields may have been attached using the
     // incorrect east/west edge mapping. Re-align dependent fields once using
     // their saved baseId/side metadata. No dimensions or calculation formulas change.
-    const ALIGNMENT_FIX_VERSION='v11-shared-boundary-edge';
+    const ALIGNMENT_FIX_VERSION='v13-deterministic-cardinal-placement';
     try{
       if(localStorage.getItem(STORAGE+'_alignmentFix')!==ALIGNMENT_FIX_VERSION && saved.length){
         saved.filter(f=>f.baseId==null).forEach(root=>reflowDependents(root.id));
