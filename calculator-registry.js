@@ -314,21 +314,14 @@
       const localAng=Math.atan2(lv[1],lv[0]);
 
       
-      let r=rotatePts(shape,targetAng-localAng);
-      const ra0=r[newEdge];
-      r=translate(r,e1[0]-ra0[0],e1[1]-ra0[1]);
-
-      
-      
-      const rb=r[(newEdge+1)%r.length];
-      const errForward=Math.hypot(rb[0]-e2[0],rb[1]-e2[1]);
+      // Adjacent cadastral fields share a boundary in the opposite traversal
+      // direction. Always map the new field's shared edge in reverse endpoint
+      // order. This prevents the north/south placement case from horizontally
+      // mirroring the field (BC/east on the left and DA/west on the right).
       const targetAngRev=Math.atan2(e1[1]-e2[1],e1[0]-e2[0]);
-      let rr=rotatePts(shape,targetAngRev-localAng);
-      const rr0=rr[newEdge];
-      rr=translate(rr,e2[0]-rr0[0],e2[1]-rr0[1]);
-      const rr1=rr[(newEdge+1)%rr.length];
-      const errReverse=Math.hypot(rr1[0]-e1[0],rr1[1]-e1[1]);
-      if(errReverse<errForward) r=rr;
+      let r=rotatePts(shape,targetAngRev-localAng);
+      const rr0=r[newEdge];
+      r=translate(r,e2[0]-rr0[0],e2[1]-rr0[1]);
 
       
       
@@ -390,34 +383,44 @@
       
       
       if(r.length===4 && (attach?.mode||'center')==='center' && (side==='north'||side==='east'||side==='south'||side==='west')){
-        // Keep the newly attached quadrilateral's east/west sides in the
-        // correct screen positions.  The old correction reflected the whole
-        // field across the shared boundary, which reverses left/right labels.
-        // Reflecting across the perpendicular bisector of that shared edge
-        // swaps the two side positions while keeping the shared edge itself
-        // fixed and preserving every entered side length.
-        const quadDirectionScore=pts=>{
-          const cx=pts.reduce((sum,p)=>sum+p[0],0)/pts.length;
-          const bcMid=[(pts[1][0]+pts[2][0])/2,(pts[1][1]+pts[2][1])/2];
-          const daMid=[(pts[3][0]+pts[0][0])/2,(pts[3][1]+pts[0][1])/2];
-          return (bcMid[0]-cx)-(daMid[0]-cx);
-        };
         const sa=r[newEdge], sb=r[(newEdge+1)%r.length];
         const mx=(sa[0]+sb[0])/2, my=(sa[1]+sb[1])/2;
         const vx=sb[0]-sa[0], vy=sb[1]-sa[1], L=Math.hypot(vx,vy);
         if(L>1e-9){
+          
+          
           const ux=vx/L, uy=vy/L;
           const px=-uy, py=ux;
-          const corrected=r.map(p=>{
+          const mirrored=r.map(p=>{
             const dx=p[0]-mx, dy=p[1]-my;
-            const along=dx*px+dy*py;
-            const across=dx*ux+dy*uy;
-            return [mx+along*px-across*ux, my+along*py-across*uy];
+            const along=dx*ux+dy*uy;
+            const across=dx*px+dy*py;
+            return [mx+along*ux-across*px, my+along*uy-across*py];
           });
-          if(quadDirectionScore(corrected)>quadDirectionScore(r))r=corrected;
+          
+          
+          
+          
+          const wants=[[0,1],[1,0],[0,-1],[-1,0]];
+          const cardinalScore=pts=>{
+            const cx=pts.reduce((sum,p)=>sum+p[0],0)/pts.length;
+            const cy=pts.reduce((sum,p)=>sum+p[1],0)/pts.length;
+            let score=0;
+            for(let i=0;i<4;i++){
+              const e=pts[i], q=pts[(i+1)%4];
+              const emx=(e[0]+q[0])/2, emy=(e[1]+q[1])/2;
+              score+=(emx-cx)*wants[i][0]+(emy-cy)*wants[i][1];
+            }
+            return score;
+          };
+          if(cardinalScore(mirrored)>cardinalScore(r))r=mirrored;
         }
       }
 
+      
+      
+      
+      
       const p0=r[newEdge], p1=r[(newEdge+1)%r.length];
       const vx=p1[0]-p0[0], vy=p1[1]-p0[1], vlen=Math.hypot(vx,vy);
       if(vlen>1e-9){
@@ -991,7 +994,7 @@
     // v11 alignment repair: old saved fields may have been attached using the
     // incorrect east/west edge mapping. Re-align dependent fields once using
     // their saved baseId/side metadata. No dimensions or calculation formulas change.
-    const ALIGNMENT_FIX_VERSION='v12-east-west-direction-lock';
+    const ALIGNMENT_FIX_VERSION='v11-shared-boundary-edge';
     try{
       if(localStorage.getItem(STORAGE+'_alignmentFix')!==ALIGNMENT_FIX_VERSION && saved.length){
         saved.filter(f=>f.baseId==null).forEach(root=>reflowDependents(root.id));
