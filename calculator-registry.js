@@ -180,16 +180,11 @@
       if(lens.some((z,i)=>Math.abs(z-v[i])>1e-4))return null;
 
       // Keep the user's side naming consistent for a fresh field.
-      // A→B is NORTH, B→C is EAST, C→D is SOUTH, D→A is WEST.
-      // Canvas Y is inverted (negative world-Y is visually NORTH), so
-      // mirror the generated geometry vertically before returning it.
       const cx=pts.reduce((s,p)=>s+p[0],0)/4;
       const bcMid=(pts[1][0]+pts[2][0])/2;
       if(bcMid<cx){
         pts=pts.map(p=>[-p[0],p[1]]);
       }
-      const cy=pts.reduce((s,p)=>s+p[1],0)/4;
-      pts=pts.map(p=>[p[0],2*cy-p[1]]);
       return pts;
     }
     function triPoints(v){const [a,b,c]=v;if(!(a>0&&b>0&&c>0)||a+b<=c||a+c<=b||b+c<=a)return null;const x=(a*a+c*c-b*b)/(2*a),y=Math.sqrt(Math.max(0,c*c-x*x));return [[0,0],[a,0],[x,-y]]}
@@ -937,9 +932,11 @@
       }
       if(!editMode)return;
       const [sx,sy]=canvasXY(e),all=saved.map(f=>f),target=activeTarget();if(!target)return;
-      // Freeze the scene transform for the whole drag so the point does not jump under a finger.
-      lockedTr=fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
-      const tr=lockedTr;
+      const tr=fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
+      // Lock the scene transform for the complete drag gesture. Re-fitting the
+      // canvas on every pointermove makes the target appear to jump under a
+      // finger when the edited point changes the bounding box.
+      lockedTr=tr;
       let best=-1,bd=(e.pointerType==='touch'?42:28);target.pts.forEach((p,i)=>{const q=screenPoint(p,tr,multi.height,multi.width),d=Math.hypot(q[0]-sx,q[1]-sy);if(d<bd){bd=d;best=i}});
       if(best>=0){dragMode='vertex';dragIndex=best;dragPointerId=e.pointerId;multi.setPointerCapture(e.pointerId);return;}
       if(targetUnderScreen(sx,sy,tr)){dragMode='field';dragIndex=-1;dragPointerId=e.pointerId;dragStartWorld=worldPoint(sx,sy,tr,multi.height);dragOriginalPts=target.pts.map(p=>[...p]);multi.setPointerCapture(e.pointerId);}
@@ -995,27 +992,31 @@
         if(selectedId){const f=saved.find(x=>String(x.id)===String(selectedId));if(f){f.v=target.v.slice();f.area=target.area;f.pts=target.pts.map(p=>[...p]);persist();renderList();}}
         renderMain();drawAll();
       }
+      lockedTr=null;
       dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;
     });
-    multi.addEventListener('pointercancel',e=>{if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2)pinch=null;}dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;});
+    multi.addEventListener('pointercancel',e=>{if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2)pinch=null;}lockedTr=null;dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;});
     
     // v11 alignment repair: old saved fields may have been attached using the
     // incorrect east/west edge mapping. Re-align dependent fields once using
     // their saved baseId/side metadata. No dimensions or calculation formulas change.
-    const ALIGNMENT_FIX_VERSION='v12-north-south-edge-orientation';
+    // v12 orientation repair: the old quadrilateral generator placed AB/CD
+    // vertically reversed on screen, so selecting উত্তর could place a new
+    // field on the দক্ষিণ side (and vice versa).  Flip only the stored drawing
+    // geometry once; side lengths and area are invariant under reflection.
+    const ALIGNMENT_FIX_VERSION='v12-cardinal-quadrilateral-orientation';
     try{
       if(localStorage.getItem(STORAGE+'_alignmentFix')!==ALIGNMENT_FIX_VERSION && saved.length){
-        // Older saved quadrilaterals were generated with AB visually SOUTH
-        // and CD visually NORTH. Reflect each quadrilateral around its own
-        // horizontal centroid line so AB=NORTH and CD=SOUTH without changing
-        // any side length or area value.
         saved.forEach(f=>{
-          if(shapeTypeOf(f)==='quad' && Array.isArray(f.pts) && f.pts.length===4){
-            const cy=f.pts.reduce((s,p)=>s+p[1],0)/f.pts.length;
-            f.pts=f.pts.map(p=>[p[0],2*cy-p[1]]);
+          if(shapeTypeOf(f)==='quad' && Array.isArray(f.pts) && f.pts.length===4) {
+            const cy=f.pts.reduce((sum,p)=>sum+p[1],0)/4;
+            const abMidY=(f.pts[0][1]+f.pts[1][1])/2;
+            const cdMidY=(f.pts[2][1]+f.pts[3][1])/2;
+            // Canonical world orientation is AB above the centroid and CD below
+            // it. Only legacy drawings with those two sides reversed are flipped.
+            if(abMidY<cy && cdMidY>cy) f.pts=f.pts.map(p=>[p[0],2*cy-p[1]]);
           }
         });
-        // Rebuild dependent placements using the corrected cardinal edge map.
         saved.filter(f=>f.baseId==null).forEach(root=>reflowDependents(root.id));
         saved.forEach(f=>{f.area=area(f.pts);});
         persist();
