@@ -489,9 +489,75 @@
       return best;
     }
     function twoLineAssigned(base,shape,side,attach,triAttachEdge=0,quadAttachEdge=0){
-      
-      
-      return null;
+      // Rigid two-boundary placement for end/start attachments.
+      // The previous implementation was a stub, so changing a new field's
+      // feet/inch values could leave the attached field drifting into the
+      // neighbouring field.  This routine deliberately uses only rotation +
+      // translation (no scaling), so the entered dimensions and all area
+      // calculations remain unchanged.
+      const mode=attach?.mode||'center';
+      if((mode!=='start'&&mode!=='end')||!base||!shape)return null;
+      const {baseEdge,newEdge}=sideEdges(side,base,shape,triAttachEdge,quadAttachEdge);
+      const bn=base.length,sn=shape.length;
+      const baseA=base[baseEdge],baseB=base[(baseEdge+1)%bn];
+      const newA=shape[newEdge],newB=shape[(newEdge+1)%sn];
+      const baseVec=[baseB[0]-baseA[0],baseB[1]-baseA[1]];
+      const newVec=[newB[0]-newA[0],newB[1]-newA[1]];
+      const bl=Math.hypot(baseVec[0],baseVec[1]),ll=Math.hypot(newVec[0],newVec[1]);
+      if(!(bl>1e-9&&ll>1e-9))return null;
+
+      // At the selected end, keep the corresponding corner exactly on the
+      // base corner.  The shared boundary remains a single straight line.
+      const baseAnchor=mode==='start'?baseA:baseB;
+      const newAnchor=mode==='start'?newA:newB;
+      const targetAng=mode==='start'
+        ? Math.atan2(baseVec[1],baseVec[0])
+        : Math.atan2(-baseVec[1],-baseVec[0]);
+      const localAng=mode==='start'
+        ? Math.atan2(newVec[1],newVec[0])
+        : Math.atan2(-newVec[1],-newVec[0]);
+
+      let r=rotatePts(shape,targetAng-localAng);
+      const ra=mode==='start'?r[newEdge]:r[(newEdge+1)%sn];
+      r=translate(r,baseAnchor[0]-ra[0],baseAnchor[1]-ra[1]);
+
+      // Put the new field on the outside of the selected base boundary.
+      const edgeA=r[newEdge],edgeB=r[(newEdge+1)%r.length];
+      const baseC=centroid(base);
+      const fieldC=centroid(r);
+      const lineVec=[edgeB[0]-edgeA[0],edgeB[1]-edgeA[1]];
+      const baseSide=cross2(lineVec[0],lineVec[1],baseC[0]-edgeA[0],baseC[1]-edgeA[1]);
+      const fieldSide=cross2(lineVec[0],lineVec[1],fieldC[0]-edgeA[0],fieldC[1]-edgeA[1]);
+      if(Math.abs(baseSide)>1e-9&&Math.abs(fieldSide)>1e-9&&Math.sign(baseSide)===Math.sign(fieldSide)){
+        r=reflectAcrossLine(r,edgeA,edgeB);
+        // Reflection reverses the edge direction; restore the selected corner
+        // exactly at the requested base corner.
+        const ra2=mode==='start'?r[newEdge]:r[(newEdge+1)%sn];
+        r=translate(r,baseAnchor[0]-ra2[0],baseAnchor[1]-ra2[1]);
+      }
+
+      // Final shared-edge lock: force only the two attached vertices onto the
+      // exact base line.  No other vertex is altered, so side lengths remain
+      // exactly those produced from the user's feet/inch input.
+      const finalA=r[newEdge],finalB=r[(newEdge+1)%r.length];
+      const desiredA=mode==='start'?baseA:baseB;
+      const desiredB=mode==='start'
+        ? [baseA[0]+baseVec[0]*Math.min(1,ll/bl),baseA[1]+baseVec[1]*Math.min(1,ll/bl)]
+        : [baseB[0]-baseVec[0]*Math.min(1,ll/bl),baseB[1]-baseVec[1]*Math.min(1,ll/bl)];
+      const d0=Math.hypot(finalA[0]-desiredA[0],finalA[1]-desiredA[1])+Math.hypot(finalB[0]-desiredB[0],finalB[1]-desiredB[1]);
+      const altA=mode==='start'?baseA:baseB;
+      const altB=mode==='start'
+        ? [baseA[0]-baseVec[0]*Math.min(1,ll/bl),baseA[1]-baseVec[1]*Math.min(1,ll/bl)]
+        : [baseB[0]+baseVec[0]*Math.min(1,ll/bl),baseB[1]+baseVec[1]*Math.min(1,ll/bl)];
+      const d1=Math.hypot(finalA[0]-altA[0],finalA[1]-altA[1])+Math.hypot(finalB[0]-altB[0],finalB[1]-altB[1]);
+      // Do not scale the shape.  If the new boundary is longer than the base
+      // boundary it is allowed to extend beyond the base corner, exactly as
+      // the existing single-edge placement does.
+      if(d1<d0){
+        const shift=translate(r,altA[0]-finalA[0],altA[1]-finalA[1]);
+        return shift;
+      }
+      return r;
     }
     function pointInPoly(pt,pts){let inside=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){
       const xi=pts[i][0],yi=pts[i][1],xj=pts[j][0],yj=pts[j][1];
