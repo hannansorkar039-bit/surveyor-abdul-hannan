@@ -1,6 +1,6 @@
 
 :root{
-  --font-bn:"Hind Siliguri","Lohit Bengali",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-bn:"Lohit Bengali",system-ui,-apple-system,"Segoe UI",sans-serif;
   --text-size:17px;
   --body-leading:1.78;
   --radius-sm:10px;--radius-md:16px;--radius-lg:22px;
@@ -672,7 +672,7 @@ h1{letter-spacing:-1.4px;text-shadow:0 8px 25px rgba(0,0,0,.14)}
   --focus:0 0 0 4px rgba(20,89,199,.18);
 }
 html{scroll-padding-top:82px}
-body{font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;background:
+body{font-family:"Lohit Bengali","Noto Sans Bengali",system-ui,sans-serif;background:
   radial-gradient(circle at 10% 0%,rgba(20,89,199,.045),transparent 28rem),
   linear-gradient(180deg,#f8fbfd 0%,var(--surface) 100%);
   color:var(--ink);line-height:1.72}
@@ -872,7 +872,7 @@ button,.btn,a,.filter-btn,.v6-mobile-bar a{touch-action:manipulation}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.card,.service,.info-card,.post-card,.video-card,.contact-card,.order-card,.gallery-item,.social,.showcase-card,.trust-card,.btn-large{transition:none}.lightbox.open img{animation:none}}
 
 /* Professional accessibility/performance baseline */
-:root{--font-bn:"Hind Siliguri","Noto Sans Bengali","Lohit Bengali",system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--font-bn:"Lohit Bengali","Noto Sans Bengali",system-ui,-apple-system,"Segoe UI",sans-serif}
 html{scroll-behavior:smooth}
 body{font-family:var(--font-bn)}
 :where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #f5b85b;outline-offset:3px}
@@ -905,7 +905,7 @@ html{
 body{
   font-size:19px !important;
   line-height:1.85 !important;
-  font-family:"Lohit Bengali","Hind Siliguri","Noto Sans Bengali",system-ui,-apple-system,"Segoe UI",sans-serif !important;
+  font-family:"Lohit Bengali","Noto Sans Bengali",system-ui,-apple-system,"Segoe UI",sans-serif !important;
   color:#15242e;
   text-rendering:optimizeLegibility;
   -webkit-font-smoothing:antialiased;
@@ -1405,3 +1405,19 @@ small{
 .actions .btn-light:hover,.hero .actions .btn-light:hover{color:#082336!important;background:#f7fbfc!important;}
 .actions .btn-primary{color:#fff!important;}
 .actions .btn-whatsapp{color:#fff!important;}
+
+
+/* SEO navigation: breadcrumb + contextual internal links */
+.breadcrumb{background:#fff;border-bottom:1px solid var(--line);font-size:14px;line-height:1.5}
+.breadcrumb .container{display:flex;align-items:center;gap:8px;min-height:44px;overflow:auto;white-space:nowrap}
+.breadcrumb a{color:var(--teal);font-weight:800}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span[aria-current="page"]{color:var(--muted);font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.related-links{margin-top:30px;padding:18px 20px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.related-links h2{margin:0 0 10px;color:var(--navy);font-size:20px}
+.related-links ul{margin:0;padding-left:22px;display:grid;gap:7px}
+.related-links a{color:var(--teal);font-weight:800}
+.related-links a:hover{text-decoration:underline}
+.article{max-width:900px;margin:0 auto}
+.article-section{margin-top:30px}
+.article-section h2{font-size:clamp(22px,3vw,30px);line-height:1.35;margin:0 0 10px;color:var(--navy)}
