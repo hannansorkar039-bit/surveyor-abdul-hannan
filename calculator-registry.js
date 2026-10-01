@@ -922,74 +922,103 @@
     function canvasXY(e){const r=multi.getBoundingClientRect();const sx=multi.width/Math.max(1,r.width),sy=multi.height/Math.max(1,r.height);return [(e.clientX-r.left)*sx,(e.clientY-r.top)*sy]}
     function activeTarget(){return selectedId?saved.find(f=>String(f.id)===String(selectedId)):current}
     function targetUnderScreen(sx,sy,tr){const t=activeTarget();if(!t)return false;const wp=worldPoint(sx,sy,tr,multi.height);return pointInPoly(wp,t.pts)}
-    let dragMode='';let dragStartWorld=null;let dragOriginalPts=null;let dragPointerId=null;
+    let dragMode='';let dragStartWorld=null;let dragOriginalPts=null;let dragPointerId=null;let dragTransform=null;
+    let dragRaf=0,dragQueuedEvent=null;
+    function cancelDragFrame(){if(dragRaf){cancelAnimationFrame(dragRaf);dragRaf=0;}dragQueuedEvent=null;}
+    function applyDragFrame(){
+      dragRaf=0;
+      const e=dragQueuedEvent;dragQueuedEvent=null;
+      if(!e||dragPointerId!==e.pointerId||!dragMode)return;
+      const [sx,sy]=canvasXY(e),target=activeTarget();if(!target||!dragTransform)return;
+      if(dragMode==='vertex'){
+        // Use the transform captured at pointer-down. Re-fitting the whole drawing
+        // on every move makes a dragged point appear to jump/lag as the viewport scale changes.
+        target.pts[dragIndex]=worldPoint(sx,sy,dragTransform,multi.height);
+        target.area=area(target.pts);
+        // Do not SNAP/reflow while the finger is moving. Those operations are
+        // intentionally deferred to pointer-up so the point follows the finger 1:1.
+        $('shapeStatus').textContent='পয়েন্ট এডিট: পয়েন্টটি আঙুল/মাউসের সাথে স্মুথলি সরানো হচ্ছে। ছেড়ে দিলে SNAP হবে।';
+        renderMain();drawAll();
+      }else if(dragMode==='field'){
+        const now=worldPoint(sx,sy,dragTransform,multi.height),dx=now[0]-dragStartWorld[0],dy=now[1]-dragStartWorld[1];
+        target.pts=dragOriginalPts.map(p=>[p[0]+dx,p[1]+dy]);
+        target.area=area(target.pts);
+        $('shapeStatus').textContent='✋ ক্ষেত্রটি স্মুথলি সরানো হচ্ছে — ছেড়ে দিলে SNAP হবে।';
+        renderMain();drawAll();
+      }
+    }
     multi.addEventListener('pointerdown',e=>{
       if(e.pointerType==='touch'){
         if(!pinch)pinch={ids:{},startDist:0,startZoom:view.zoom,startCenter:null,startPanX:view.panX,startPanY:view.panY,startSingle:null};
         pinch.ids[e.pointerId]=e;const ids=Object.keys(pinch.ids);
-        if(ids.length===2){const a=pinch.ids[ids[0]],b=pinch.ids[ids[1]],r=multi.getBoundingClientRect();pinch.startDist=dist(a,b);pinch.startZoom=view.zoom;pinch.startCenter=canvasXY({clientX:(a.clientX+b.clientX)/2,clientY:(a.clientY+b.clientY)/2});pinch.startPanX=view.panX;pinch.startPanY=view.panY;dragIndex=-1;dragMode='';return;}
+        if(ids.length===2){
+          cancelDragFrame();
+          const a=pinch.ids[ids[0]],b=pinch.ids[ids[1]],r=multi.getBoundingClientRect();
+          pinch.startDist=dist(a,b);pinch.startZoom=view.zoom;pinch.startCenter=canvasXY({clientX:(a.clientX+b.clientX)/2,clientY:(a.clientY+b.clientY)/2});
+          pinch.startPanX=view.panX;pinch.startPanY=view.panY;dragIndex=-1;dragMode='';dragPointerId=null;return;
+        }
       }
       if(!editMode)return;
       const [sx,sy]=canvasXY(e),all=saved.map(f=>f),target=activeTarget();if(!target)return;
-      const tr=fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
-      let best=-1,bd=(e.pointerType==='touch'?42:28);target.pts.forEach((p,i)=>{const q=screenPoint(p,tr,multi.height,multi.width),d=Math.hypot(q[0]-sx,q[1]-sy);if(d<bd){bd=d;best=i}});
-      if(best>=0){dragMode='vertex';dragIndex=best;dragPointerId=e.pointerId;multi.setPointerCapture(e.pointerId);return;}
-      if(targetUnderScreen(sx,sy,tr)){dragMode='field';dragIndex=-1;dragPointerId=e.pointerId;dragStartWorld=worldPoint(sx,sy,tr,multi.height);dragOriginalPts=target.pts.map(p=>[...p]);multi.setPointerCapture(e.pointerId);}
+      // Freeze the viewport transform for the entire drag gesture.
+      dragTransform=fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
+      let best=-1,bd=(e.pointerType==='touch'?52:34);
+      target.pts.forEach((p,i)=>{const q=screenPoint(p,dragTransform,multi.height,multi.width),d=Math.hypot(q[0]-sx,q[1]-sy);if(d<bd){bd=d;best=i}});
+      if(best>=0){dragMode='vertex';dragIndex=best;dragPointerId=e.pointerId;multi.setPointerCapture(e.pointerId);e.preventDefault();return;}
+      if(targetUnderScreen(sx,sy,dragTransform)){
+        dragMode='field';dragIndex=-1;dragPointerId=e.pointerId;dragStartWorld=worldPoint(sx,sy,dragTransform,multi.height);dragOriginalPts=target.pts.map(p=>[...p]);
+        multi.setPointerCapture(e.pointerId);e.preventDefault();
+      }
     });
     multi.addEventListener('pointermove',e=>{
-      if(e.pointerType==='touch'&&pinch&&pinch.ids[e.pointerId]){pinch.ids[e.pointerId]=e;const ids=Object.keys(pinch.ids);if(ids.length===2){const a=pinch.ids[ids[0]],b=pinch.ids[ids[1]],r=multi.getBoundingClientRect(),d=Math.max(20,dist(a,b)),ratio=d/pinch.startDist;view.zoom=Math.min(3,Math.max(.55,pinch.startZoom*ratio));const c=canvasXY({clientX:(a.clientX+b.clientX)/2,clientY:(a.clientY+b.clientY)/2});view.panX=pinch.startPanX+(c[0]-pinch.startCenter[0]);view.panY=pinch.startPanY+(c[1]-pinch.startCenter[1]);drawAll();return;}if(ids.length===1&&dragMode==='vertex'){} }
+      if(e.pointerType==='touch'&&pinch&&pinch.ids[e.pointerId]){
+        pinch.ids[e.pointerId]=e;const ids=Object.keys(pinch.ids);
+        if(ids.length===2){
+          const a=pinch.ids[ids[0]],b=pinch.ids[ids[1]],r=multi.getBoundingClientRect(),d=Math.max(20,dist(a,b)),ratio=d/pinch.startDist;
+          view.zoom=Math.min(3,Math.max(.55,pinch.startZoom*ratio));
+          const c=canvasXY({clientX:(a.clientX+b.clientX)/2,clientY:(a.clientY+b.clientY)/2});view.panX=pinch.startPanX+(c[0]-pinch.startCenter[0]);view.panY=pinch.startPanY+(c[1]-pinch.startCenter[1]);drawAll();return;
+        }
+      }
       if(dragPointerId!==e.pointerId||!dragMode)return;
-      const [sx,sy]=canvasXY(e),all=saved.map(f=>f),target=activeTarget();if(!target)return;const tr=fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
-      if(dragMode==='vertex'){
-        target.pts[dragIndex]=worldPoint(sx,sy,tr,multi.height);
-        const others=all.filter(f=>String(f.id)!==String(target.id));
-        const sn=snapVertexToNearbyGeometry(target,others,dragIndex,tr,32);
-        target.v=sideLengths(target.pts).map(x=>Math.round(x*12)/12);target.area=area(target.pts);
-        reflowDependents(target.id);setInputs(target.v);syncHidden(target.v);
-        $('shapeStatus').textContent=sn
-          ? (sn.type==='point'?'🧲 SNAP: কাছের পয়েন্টে সরাসরি যুক্ত হয়েছে।':'🧲 SNAP: কাছের boundary line-এর উপর পয়েন্টটি exact adjust হয়েছে—ফাঁকা রাখা হয়নি।')
-          : 'পয়েন্ট এডিট: আঙুল/মাউস দিয়ে পয়েন্ট সরান। কাছের point/line-এ এলে SNAP হবে।';
-        renderMain();drawAll();return;
-      }
-      if(dragMode==='field'){
-        const now=worldPoint(sx,sy,tr,multi.height),dx=now[0]-dragStartWorld[0],dy=now[1]-dragStartWorld[1];target.pts=dragOriginalPts.map(p=>[p[0]+dx,p[1]+dy]);target.v=sideLengths(target.pts).map(x=>Math.round(x*12)/12);target.area=area(target.pts);$('shapeStatus').textContent='✋ ক্ষেত্রটি টেনে সরানো হচ্ছে — কাছের boundary/পয়েন্টে ছেড়ে দিলে SNAP হবে।';renderMain();drawAll();
-      }
-    });
+      e.preventDefault();
+      dragQueuedEvent=e;
+      if(!dragRaf)dragRaf=requestAnimationFrame(applyDragFrame);
+    },{passive:false});
     multi.addEventListener('pointerup',e=>{
-      
-      
       let wasPinchPointer=false;
       if(pinch&&pinch.ids[e.pointerId]){
-        wasPinchPointer=Object.keys(pinch.ids).length>=2;
-        delete pinch.ids[e.pointerId];
-        const remaining=Object.keys(pinch.ids).length;
-        if(dragPointerId===e.pointerId && wasPinchPointer){dragPointerId=null;dragMode='';}
-        if(remaining===0) pinch=null;
-        else if(remaining===1 && wasPinchPointer) {
-          
-          const left=Object.keys(pinch.ids)[0];
-          if(String(left)!==String(dragPointerId)){ pinch=null; }
-        }
+        wasPinchPointer=Object.keys(pinch.ids).length>=2;delete pinch.ids[e.pointerId];const remaining=Object.keys(pinch.ids).length;
+        if(dragPointerId===e.pointerId&&wasPinchPointer){cancelDragFrame();dragPointerId=null;dragMode='';}
+        if(remaining===0)pinch=null;else if(remaining===1&&wasPinchPointer){const left=Object.keys(pinch.ids)[0];if(String(left)!==String(dragPointerId))pinch=null;}
         if(wasPinchPointer)return;
       }
       if(dragPointerId!==e.pointerId)return;
+      cancelDragFrame();
       const target=activeTarget();
-      if(target){const all=saved.filter(f=>String(f.id)!==String(target.id));const tr=fitAll(all.concat([target]),multi.width,multi.height);if(dragMode==='vertex'){
+      if(target){
+        const all=saved.filter(f=>String(f.id)!==String(target.id));
+        const tr=dragTransform||fitAll(all.concat([target]),multi.width,multi.height);
+        if(dragMode==='vertex'){
           const ti=dragIndex;
           const sn=snapVertexToNearbyGeometry(target,all,ti,tr,36);
-          if(sn)$('shapeStatus').textContent=sn.type==='point'
-            ? '🧲 SNAP: কাছের পয়েন্টে সঠিকভাবে যুক্ত হয়েছে।'
-            : '🧲 SNAP: boundary line-এর সাথে পয়েন্ট exact adjust হয়েছে—ফাঁকা নেই।';
+          if(sn)$('shapeStatus').textContent=sn.type==='point'?'🧲 SNAP: কাছের পয়েন্টে সঠিকভাবে যুক্ত হয়েছে।':'🧲 SNAP: boundary line-এর সাথে পয়েন্ট exact adjust হয়েছে—ফাঁকা নেই।';
         }else if(dragMode==='field'){
-          const sn=snapDraggedField(target,all,tr,34);target.pts=sn.pts;if(sn.message)$('shapeStatus').textContent=sn.message;else $('shapeStatus').textContent='ক্ষেত্রের নতুন অবস্থান রাখা হয়েছে।';
+          const sn=snapDraggedField(target,all,tr,34);target.pts=sn.pts;
+          $('shapeStatus').textContent=sn.message||'ক্ষেত্রের নতুন অবস্থান রাখা হয়েছে।';
         }
-        target.v=sideLengths(target.pts).map(x=>Math.round(x*12)/12);target.area=area(target.pts);reflowDependents(target.id);setInputs(target.v);syncHidden(target.v);
+        target.v=sideLengths(target.pts).map(x=>Math.round(x*12)/12);target.area=area(target.pts);
+        reflowDependents(target.id);setInputs(target.v);syncHidden(target.v);
         if(selectedId){const f=saved.find(x=>String(x.id)===String(selectedId));if(f){f.v=target.v.slice();f.area=target.area;f.pts=target.pts.map(p=>[...p]);persist();renderList();}}
         renderMain();drawAll();
       }
-      dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;
+      try{if(multi.hasPointerCapture(e.pointerId))multi.releasePointerCapture(e.pointerId)}catch(_){ }
+      dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;dragTransform=null;
     });
-    multi.addEventListener('pointercancel',e=>{if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2)pinch=null;}dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;});
+    multi.addEventListener('pointercancel',e=>{
+      cancelDragFrame();
+      if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2)pinch=null;}
+      dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;dragTransform=null;
+    });
     
     // v11 alignment repair: old saved fields may have been attached using the
     // incorrect east/west edge mapping. Re-align dependent fields once using
