@@ -1,9 +1,4 @@
-/* 
-  Surveyor Abdul Hannan — Content File
-  Future updates can be made here without changing the design.
-  Do not add unverified qualifications, government positions, awards,
-  licenses, addresses, or service claims.
-*/
+
 
 const SITE = {
   nameBn: "সার্ভেয়ার আবদুল হান্নান",
