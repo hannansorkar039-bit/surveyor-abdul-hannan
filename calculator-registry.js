@@ -179,15 +179,17 @@
       const lens=pts.map((p,i)=>{const z=pts[(i+1)%4];return Math.hypot(z[0]-p[0],z[1]-p[1])});
       if(lens.some((z,i)=>Math.abs(z-v[i])>1e-4))return null;
 
-      // Keep the user's side naming consistent for a fresh field:
-      
-      
-      
+      // Keep the user's side naming consistent for a fresh field.
+      // A→B is NORTH, B→C is EAST, C→D is SOUTH, D→A is WEST.
+      // Canvas Y is inverted (negative world-Y is visually NORTH), so
+      // mirror the generated geometry vertically before returning it.
       const cx=pts.reduce((s,p)=>s+p[0],0)/4;
       const bcMid=(pts[1][0]+pts[2][0])/2;
       if(bcMid<cx){
         pts=pts.map(p=>[-p[0],p[1]]);
       }
+      const cy=pts.reduce((s,p)=>s+p[1],0)/4;
+      pts=pts.map(p=>[p[0],2*cy-p[1]]);
       return pts;
     }
     function triPoints(v){const [a,b,c]=v;if(!(a>0&&b>0&&c>0)||a+b<=c||a+c<=b||b+c<=a)return null;const x=(a*a+c*c-b*b)/(2*a),y=Math.sqrt(Math.max(0,c*c-x*x));return [[0,0],[a,0],[x,-y]]}
@@ -935,7 +937,9 @@
       }
       if(!editMode)return;
       const [sx,sy]=canvasXY(e),all=saved.map(f=>f),target=activeTarget();if(!target)return;
-      const tr=fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
+      // Freeze the scene transform for the whole drag so the point does not jump under a finger.
+      lockedTr=fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
+      const tr=lockedTr;
       let best=-1,bd=(e.pointerType==='touch'?42:28);target.pts.forEach((p,i)=>{const q=screenPoint(p,tr,multi.height,multi.width),d=Math.hypot(q[0]-sx,q[1]-sy);if(d<bd){bd=d;best=i}});
       if(best>=0){dragMode='vertex';dragIndex=best;dragPointerId=e.pointerId;multi.setPointerCapture(e.pointerId);return;}
       if(targetUnderScreen(sx,sy,tr)){dragMode='field';dragIndex=-1;dragPointerId=e.pointerId;dragStartWorld=worldPoint(sx,sy,tr,multi.height);dragOriginalPts=target.pts.map(p=>[...p]);multi.setPointerCapture(e.pointerId);}
@@ -943,7 +947,7 @@
     multi.addEventListener('pointermove',e=>{
       if(e.pointerType==='touch'&&pinch&&pinch.ids[e.pointerId]){pinch.ids[e.pointerId]=e;const ids=Object.keys(pinch.ids);if(ids.length===2){const a=pinch.ids[ids[0]],b=pinch.ids[ids[1]],r=multi.getBoundingClientRect(),d=Math.max(20,dist(a,b)),ratio=d/pinch.startDist;view.zoom=Math.min(3,Math.max(.55,pinch.startZoom*ratio));const c=canvasXY({clientX:(a.clientX+b.clientX)/2,clientY:(a.clientY+b.clientY)/2});view.panX=pinch.startPanX+(c[0]-pinch.startCenter[0]);view.panY=pinch.startPanY+(c[1]-pinch.startCenter[1]);drawAll();return;}if(ids.length===1&&dragMode==='vertex'){} }
       if(dragPointerId!==e.pointerId||!dragMode)return;
-      const [sx,sy]=canvasXY(e),all=saved.map(f=>f),target=activeTarget();if(!target)return;const tr=fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
+      const [sx,sy]=canvasXY(e),all=saved.map(f=>f),target=activeTarget();if(!target)return;const tr=lockedTr||fitAll(all.concat(current&&!selectedId?[current]:[]),multi.width,multi.height);
       if(dragMode==='vertex'){
         target.pts[dragIndex]=worldPoint(sx,sy,tr,multi.height);
         const others=all.filter(f=>String(f.id)!==String(target.id));
@@ -978,7 +982,7 @@
       }
       if(dragPointerId!==e.pointerId)return;
       const target=activeTarget();
-      if(target){const all=saved.filter(f=>String(f.id)!==String(target.id));const tr=fitAll(all.concat([target]),multi.width,multi.height);if(dragMode==='vertex'){
+      if(target){const all=saved.filter(f=>String(f.id)!==String(target.id));const tr=lockedTr||fitAll(all.concat([target]),multi.width,multi.height);if(dragMode==='vertex'){
           const ti=dragIndex;
           const sn=snapVertexToNearbyGeometry(target,all,ti,tr,36);
           if(sn)$('shapeStatus').textContent=sn.type==='point'
@@ -998,9 +1002,20 @@
     // v11 alignment repair: old saved fields may have been attached using the
     // incorrect east/west edge mapping. Re-align dependent fields once using
     // their saved baseId/side metadata. No dimensions or calculation formulas change.
-    const ALIGNMENT_FIX_VERSION='v11-shared-boundary-edge';
+    const ALIGNMENT_FIX_VERSION='v12-north-south-edge-orientation';
     try{
       if(localStorage.getItem(STORAGE+'_alignmentFix')!==ALIGNMENT_FIX_VERSION && saved.length){
+        // Older saved quadrilaterals were generated with AB visually SOUTH
+        // and CD visually NORTH. Reflect each quadrilateral around its own
+        // horizontal centroid line so AB=NORTH and CD=SOUTH without changing
+        // any side length or area value.
+        saved.forEach(f=>{
+          if(shapeTypeOf(f)==='quad' && Array.isArray(f.pts) && f.pts.length===4){
+            const cy=f.pts.reduce((s,p)=>s+p[1],0)/f.pts.length;
+            f.pts=f.pts.map(p=>[p[0],2*cy-p[1]]);
+          }
+        });
+        // Rebuild dependent placements using the corrected cardinal edge map.
         saved.filter(f=>f.baseId==null).forEach(root=>reflowDependents(root.id));
         saved.forEach(f=>{f.area=area(f.pts);});
         persist();
