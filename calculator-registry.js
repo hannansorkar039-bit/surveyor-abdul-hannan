@@ -1,6 +1,6 @@
-// Surveyor Abdul Hannan — modular calculator component
 
-/* ===== Registry calculator logic — ES6+, additive only ===== */
+
+
 (() => {
   const $ = id => document.getElementById(id);
   const bn = n => Number(n || 0).toLocaleString('bn-BD', {maximumFractionDigits:2});
@@ -100,6 +100,7 @@
 
   async function pdfReport() {
     calcRegistry();
+    if (!(window.jspdf && window.jspdf.jsPDF) && window.SAH_LOAD_PDF) await window.SAH_LOAD_PDF();
     const r = window.__registryLast;
     const client = $('regClient').value.trim() || 'N/A';
     const khatian = $('regKhatian').value.trim() || 'N/A';
@@ -179,9 +180,9 @@
       if(lens.some((z,i)=>Math.abs(z-v[i])>1e-4))return null;
 
       // Keep the user's side naming consistent for a fresh field:
-      // AB = north, BC = east, CD = south, DA = west.
-      // The four entered lengths are preserved exactly; only a mirror of the
-      // sketch is used when the initial construction happens to face left.
+      
+      
+      
       const cx=pts.reduce((s,p)=>s+p[0],0)/4;
       const bcMid=(pts[1][0]+pts[2][0])/2;
       if(bcMid<cx){
@@ -209,7 +210,7 @@
       if(!pts||pts.length<3)return 0;
       const target=sideTargetAngle(side); let best=0,bestScore=Infinity;
       pts.forEach((p,i)=>{const q=pts[(i+1)%pts.length];let a=Math.atan2(q[1]-p[1],q[0]-p[0]);
-        // একটি রেখার দিক ১৮০° পরপর একই; তাই target-এর সঙ্গে ছোট angular distance নিই।
+        
         let d=Math.abs(Math.atan2(Math.sin(a-target),Math.cos(a-target))); d=Math.min(d,Math.PI-d);
         if(d<bestScore){bestScore=d;best=i;}
       }); return best;
@@ -234,7 +235,7 @@
       return {baseEdge,newEdge};
     }
     function attachmentMeta(side,base=null){
-      // ত্রিভুজের ক্ষেত্রে দিক নয়, নির্বাচিত প্রকৃত edge-এর দুই প্রান্তই reference হবে।
+      
       if(base && shapeTypeOf(base)==='tri' && /^tri[0-2]$/.test(String(side))){
         const i=Number(String(side).slice(3));
         const names=['A','B','C'];
@@ -274,12 +275,12 @@
       });
     }
     function alignToBase(shape,base,side,attach,triAttachEdge=0,quadAttachEdge=0){
-      // ROBUST PROFESSIONAL SNAP:
-      // 1) নতুন ক্ষেত্রের নির্বাচিত edge-কে ভিত্তি edge-এর একই line-এ বসাই।
-      // 2) base polygon-এর interior side নির্ণয় করি; নতুন polygon সবসময় তার বিপরীত পাশে থাকবে।
-      // 3) প্রয়োজন হলে পুরো polygon-কে edge line বরাবর reflect করি—কোনো vertex আলাদা করে টেনে
-      //    shape বিকৃত করি না।
-      // 4) shared edge-এর দুই endpoint কেবল rigid transform-এর মাধ্যমেই নির্ধারিত হয়।
+      
+      
+      
+      
+      
+      
       const {baseEdge,newEdge}=sideEdges(side,base,shape,triAttachEdge,quadAttachEdge);
       const bp=base[baseEdge], bq=base[(baseEdge+1)%base.length];
       const bv=edgeVec(base,baseEdge), lv=edgeVec(shape,newEdge);
@@ -300,21 +301,21 @@
         ? (bl-ll-Math.max(0,Number(a.offset)||0))
         : Math.max(0,Number(a.offset)||0);
 
-      // Target segment on the base edge. Its direction is initially opposite to the
-      // new edge direction so the new polygon is placed on the outside half-plane.
+      
+      
       const ux=bv[0]/bl, uy=bv[1]/bl;
       const e1=[bp[0]+ux*startOffset,bp[1]+uy*startOffset];
       const e2=[bp[0]+ux*(startOffset+ll),bp[1]+uy*(startOffset+ll)];
       const targetAng=Math.atan2(e2[1]-e1[1],e2[0]-e1[0]);
       const localAng=Math.atan2(lv[1],lv[0]);
 
-      // Candidate A: newEdge p0 -> p1 maps exactly to e1 -> e2.
+      
       let r=rotatePts(shape,targetAng-localAng);
       const ra0=r[newEdge];
       r=translate(r,e1[0]-ra0[0],e1[1]-ra0[1]);
 
-      // If the candidate's edge is reversed relative to target, use the second rigid
-      // candidate. This avoids depending on the polygon's winding convention.
+      
+      
       const rb=r[(newEdge+1)%r.length];
       const errForward=Math.hypot(rb[0]-e2[0],rb[1]-e2[1]);
       const targetAngRev=Math.atan2(e1[1]-e2[1],e1[0]-e2[0]);
@@ -325,12 +326,12 @@
       const errReverse=Math.hypot(rr1[0]-e1[0],rr1[1]-e1[1]);
       if(errReverse<errForward) r=rr;
 
-      // Direction is a GLOBAL cardinal instruction (উত্তর/পূর্ব/দক্ষিণ/পশ্চিম).
-      // Do not infer it from the base polygon's interior: an irregular/concave
-      // sketch can have vertices on both sides of the selected edge, which makes
-      // a sign/centroid vote ambiguous and can flip a requested NORTH placement
-      // to SOUTH. Instead, choose the rigid candidate whose centroid lies on the
-      // requested cardinal side of the shared boundary.
+      
+      
+      
+      
+      
+      
       const edgeA=r[newEdge], edgeB=r[(newEdge+1)%r.length];
       const edgeMidPt=[(edgeA[0]+edgeB[0])/2,(edgeA[1]+edgeB[1])/2];
 
@@ -351,16 +352,16 @@
                  (c[1]-edgeMidPt[1])*desired[1];
         };
 
-        // Reflection preserves every side length and keeps the selected edge
-        // exactly on the same line. Pick the candidate on the requested side.
+        
+        
         const reflected=reflectAcrossLine(r,edgeA,edgeB);
         if(sideScore(reflected)>sideScore(r)){
           r=reflected;
         }
       }else{
-        // Explicit triangle-edge attachment keeps the previous geometric
-        // outside-half-plane behaviour; only cardinal placement uses the
-        // corrected global-direction rule above.
+        
+        
+        
         const baseSigns=[];
         base.forEach((p,i)=>{
           if(i===baseEdge || i===(baseEdge+1)%base.length)return;
@@ -382,18 +383,18 @@
         }
       }
 
-      // For a four-sided field, keep BC/DA on their expected global east/west
-      // sides after alignment. The selected shared edge is already exact; the two
-      // endpoint-order candidates are mirror images across the perpendicular
-      // bisector of that shared edge. Choose the one that keeps the conventional
-      // A-B-C-D direction consistent with the selected north/east/south/west side.
+      
+      
+      
+      
+      
       if(r.length===4 && (attach?.mode||'center')==='center' && (side==='north'||side==='east'||side==='south'||side==='west')){
         const sa=r[newEdge], sb=r[(newEdge+1)%r.length];
         const mx=(sa[0]+sb[0])/2, my=(sa[1]+sb[1])/2;
         const vx=sb[0]-sa[0], vy=sb[1]-sa[1], L=Math.hypot(vx,vy);
         if(L>1e-9){
-          // Reflect in the perpendicular bisector: this preserves the exact shared
-          // segment as a set, all side lengths, and the polygon area.
+          
+          
           const ux=vx/L, uy=vy/L;
           const px=-uy, py=ux;
           const mirrored=r.map(p=>{
@@ -402,10 +403,10 @@
             const across=dx*px+dy*py;
             return [mx+along*ux-across*px, my+along*uy-across*py];
           });
-          // Score all four named edges against their fixed compass meaning:
-          // AB=north, BC=east, CD=south, DA=west. This makes the entered
-          // east/west values stay on the corresponding physical side after a
-          // center attachment, without changing any side length.
+          
+          
+          
+          
           const wants=[[0,1],[1,0],[0,-1],[-1,0]];
           const cardinalScore=pts=>{
             const cx=pts.reduce((sum,p)=>sum+p[0],0)/pts.length;
@@ -422,15 +423,15 @@
         }
       }
 
-      // Recompute the edge endpoints after reflection because its orientation may
-      // have reversed. We still keep the exact selected shared edge.
-      // Hard numerical cleanup: project only the selected shared edge onto the exact
-      // target line. We do NOT move any other vertex, so the polygon remains rigid.
+      
+      
+      
+      
       const p0=r[newEdge], p1=r[(newEdge+1)%r.length];
       const vx=p1[0]-p0[0], vy=p1[1]-p0[1], vlen=Math.hypot(vx,vy);
       if(vlen>1e-9){
         const tx=(e2[0]-e1[0])/vlen, ty=(e2[1]-e1[1])/vlen;
-        // Pick the endpoint ordering closest to the target.
+        
         const dF=Math.hypot(p0[0]-e1[0],p0[1]-e1[1])+Math.hypot(p1[0]-e2[0],p1[1]-e2[1]);
         const dR=Math.hypot(p0[0]-e2[0],p0[1]-e2[1])+Math.hypot(p1[0]-e1[0],p1[1]-e1[1]);
         if(dF<=dR){r[newEdge]=[...e1];r[(newEdge+1)%r.length]=[...e2];}
@@ -438,10 +439,10 @@
       }
       return r;
     }
-    // দুই-পাশের Boundary Assignment (FIT MODE)
-    // endpoint-এ যুক্ত করলে নতুন ক্ষেত্রের selected edge + তার লাগোয়া edge
-    // একই সঙ্গে base-এর দুইটি boundary line-এ বসে। এই মোডে প্রয়োজন হলে
-    // affine adjustment হয়—অর্থাৎ আঁকা geometry input-কে প্রাথমিক মাপ হিসেবে নেয়।
+    
+    
+    
+    
     function affineFitAtCorner(shape,base,baseEdge,newEdge,attach){
       const mode=attach?.mode||'center';
       if(mode!=='start'&&mode!=='end') return null;
@@ -464,7 +465,7 @@
       for(const sign of [1,-1]){
         const tv=[(tAdj0[0]-t0[0])*sign,(tAdj0[1]-t0[1])*sign];
         const tu=[tSel[0]-t0[0],tSel[1]-t0[1]];
-        // Matrix columns are source [selected, adjacent] -> target [selected, adjacent].
+        
         const detS=su[0]*sv[1]-su[1]*sv[0];
         const a11=(tu[0]*sv[1]-tv[0]*su[1])/detS;
         const a12=(-tu[0]*sv[0]+tv[0]*su[0])/detS;
@@ -477,18 +478,18 @@
         const signs=[]; cand.forEach((p,i)=>{if(i===newEdge||i===(newEdge+1)%sn)return;const c=(tSel[0]-t0[0])*(p[1]-t0[1])-(tSel[1]-t0[1])*(p[0]-t0[0]);if(Math.abs(c)>1e-8)signs.push(Math.sign(c));});
         const outside=signs.length?signs.reduce((a,b)=>a+b,0):-baseSide;
         const sideOK=!signs.length||Math.sign(outside)!==baseSide;
-        // Convex/usable candidate gets priority; otherwise still keep the best fit.
+        
         const score=(sideOK?100000:0)-Math.abs(Math.abs(area(cand))-area(shape))*0.0001;
         if(score>bestScore){bestScore=score;best=cand;}
       }
       if(!best)return null;
-      // Numerical cleanup: force the selected edge to the exact base segment.
+      
       best[newAnchor]=[...t0]; best[newOther]=[...tSel];
       return best;
     }
     function twoLineAssigned(base,shape,side,attach,triAttachEdge=0,quadAttachEdge=0){
-      // A two-line boundary assignment must be rigid. Never use an affine fit:
-      // affine scaling/shearing can change BC/DA (east/west) feet-inches.
+      
+      
       return null;
     }
     function pointInPoly(pt,pts){let inside=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){
@@ -506,8 +507,8 @@
       const p=target.pts[best.ti],q=best.base.pts[best.qi],dx=q[0]-p[0],dy=q[1]-p[1];
       return {pts:translate(target.pts,dx,dy),message:'🧲 SNAP: কাছের পয়েন্টে অ্যালাইন করা হয়েছে।'};
     }
-    // Point SNAP: কাছের অন্য ক্ষেত্রের point বা boundary segment-এর উপর
-    // আঙুলের পয়েন্টকে সরাসরি বসিয়ে দেয়। Segment-এর মাঝখানেও exact projection হয়।
+    
+    
     function snapVertexToNearbyGeometry(target,others,vertexIndex,tr,thresholdPx=32){
       if(!target||!others.length||vertexIndex<0)return null;
       const p=target.pts[vertexIndex],ps=screenPoint(p,tr,multi.height,multi.width);
@@ -548,7 +549,7 @@
       const i=best.i,base=best.base,j=best.j;
       const ev=edgeVec(target.pts,i),bv=edgeVec(base.pts,j);const ea=Math.atan2(ev[1],ev[0]),ba=Math.atan2(bv[1],bv[0]);
       let r=rotatePts(target.pts,ba-ea);const m=edgeMid(r,i),bm=edgeMid(base.pts,j);r=translate(r,bm[0]-m[0],bm[1]-m[1]);
-      // Snap the nearest endpoint too when the edge is close to an endpoint.
+      
       const endpoints=[r[i],r[(i+1)%r.length]], bp=[base.pts[j],base.pts[(j+1)%base.pts.length]];let bestEP=null,ed=thresholdPx;
       endpoints.forEach((p,pi)=>bp.forEach((q,qi)=>{const ps=screenPoint(p,tr,multi.height,multi.width),qs=screenPoint(q,tr,multi.height,multi.width),d=Math.hypot(ps[0]-qs[0],ps[1]-qs[1]);if(d<ed){ed=d;bestEP={p,q}}}));
       if(bestEP)r=translate(r,bestEP.q[0]-bestEP.p[0],bestEP.q[1]-bestEP.p[1]);
@@ -619,7 +620,7 @@
     }
     function placeNext(local,base,side,attach,triAttachEdge=0,quadAttachEdge=0){const fitted=twoLineAssigned(base,local,side,attach,triAttachEdge,quadAttachEdge);return fitted||alignToBase(local,base,side,attach,triAttachEdge,quadAttachEdge);}
     function reflowDependents(baseId){
-      // যে ক্ষেত্রগুলো এই ক্ষেত্রের ওপর SNAP হয়ে আছে, তাদের সংরক্ষিত attachment অবস্থান অনুযায়ী ধারাবাহিকভাবে বসাই।
+      
       const walk=(parentId)=>{
         saved.forEach(f=>{
           if(String(f.baseId)!==String(parentId))return;
@@ -640,8 +641,8 @@
     function worldPoint(sx,sy,tr,h){const q=invertView([sx,sy],multi.width,h);return [(q[0]-tr.ox)/tr.scale,(h-q[1]-tr.oy)/tr.scale]}
     function grid(c,w,h){c.clearRect(0,0,w,h);c.fillStyle='#fbfefe';c.fillRect(0,0,w,h);c.strokeStyle='#e5eff1';c.lineWidth=1;for(let x=0;x<w;x+=25){c.beginPath();c.moveTo(x,0);c.lineTo(x,h);c.stroke()}for(let y=0;y<h;y+=25){c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke()}c.fillStyle='#155b9d';c.font='bold 16px Arial';c.textAlign='center';c.fillText('↑ উত্তর',w/2,24);c.fillStyle='#176b49';c.textAlign='right';c.fillText('পূর্ব →',w-14,h/2);c.fillStyle='#a64a2b';c.textAlign='center';c.fillText('↓ দক্ষিণ',w/2,h-10);c.fillStyle='#60459b';c.textAlign='left';c.fillText('← পশ্চিম',14,h/2)}
     function edgeCardinalLabel(mp,i){
-      // উত্তর/দক্ষিণ/পূর্ব/পশ্চিম নির্ধারণ হবে edge-এর প্রকৃত অবস্থান
-      // (centroid-এর তুলনায় midpoint) থেকে—শুধু A/B/C/D ক্রম দেখে নয়।
+      
+      
       const j=(i+1)%mp.length;
       const mx=(mp[i][0]+mp[j][0])/2,my=(mp[i][1]+mp[j][1])/2;
       const cx=mp.reduce((s,p)=>s+p[0],0)/mp.length,cy=mp.reduce((s,p)=>s+p[1],0)/mp.length;
@@ -660,17 +661,17 @@
       for(let i=0;i<mp.length;i++){
         const j=(i+1)%mp.length,ax=mp[i][0],ay=mp[i][1],bx=mp[j][0],by=mp[j][1];
         const mx=(ax+bx)/2,my=(ay+by)/2;
-        // মাপের লেখা সবসময় ক্ষেত্রের ভেতরে, সংশ্লিষ্ট লাইনের পাশে থাকবে এবং লাইনের দিকেই সোজা থাকবে।
+        
         let ix=cx-mx,iy=cy-my,ilen=Math.hypot(ix,iy)||1; const gap=22;
         let lx=mx+ix/ilen*gap,ly=my+iy/ilen*gap;
         let ang=Math.atan2(by-ay,bx-ax);
-        // লেখা উল্টো/মাথা নিচে না দেখিয়ে পাঠযোগ্য রাখি।
+        
         if(ang>Math.PI/2)ang-=Math.PI;
         if(ang<-Math.PI/2)ang+=Math.PI;
         let dimLabel=labels[i];
         if(pts.length===4){
-          // ৪ বাহুর ক্ষেত্রের label এখন প্রকৃত drawing position অনুযায়ী।
-          // ফলে AB সবসময় উত্তর নয়; যে edge বাস্তবে উত্তর দিকে আছে সেটিই উত্তর হিসেবে দেখাবে।
+          
+          
           dimLabel=edgeCardinalLabel(mp,i)+' • '+['AB','BC','CD','DA'][i];
         }else if((meta&&shapeTypeOf(meta)==='tri')||pts.length===3){
           const triNames=['AB','BC','CA'];
@@ -721,6 +722,7 @@
 
     async function downloadMultiFieldPDF(){
       const list=saved.slice();
+      if (!(window.jspdf && window.jspdf.jsPDF) && window.SAH_LOAD_PDF) await window.SAH_LOAD_PDF();
       if(!list.length && !current){
         $('shapeStatus').textContent='PDF তৈরি করতে অন্তত একটি ক্ষেত্র আঁকুন বা সেভ করুন।';
         return;
@@ -729,7 +731,7 @@
         printMultiFieldReport();
         return;
       }
-      // PDF-তে যে দৃশ্যটি দেখা যাচ্ছে সেটিই নেওয়া হবে—অর্থাৎ saved + unsaved current field দুটিই থাকবে।
+      
       drawAll();
       const doc=await window.SAH_PDF?.create({unit:'mm',format:'a4',orientation:'portrait',compress:true});
       if(!doc){ printMultiFieldReport(); return; }
@@ -769,7 +771,7 @@
     function load(id){
       const f=saved.find(x=>String(x.id)===String(id));
       if(!f)return;
-      // এডিট শুরু হওয়ার আগের পুরো দৃশ্যের স্কেল/অফসেট ধরে রাখি।
+      
       lockedTr=fitAll(saved,multi.width,multi.height);
       selectedId=f.id;
       current={...f,pts:f.pts.map(p=>[...p]),v:f.v.map(Number)};
@@ -807,12 +809,12 @@
           f.shapeType=type;
           f.pts=translate(local,c[0]-lc[0],c[1]-lc[1]);
           f.area=area(f.pts);
-          // এই ক্ষেত্রটি অন্য কোনো ক্ষেত্রের সঙ্গে যুক্ত থাকলে তার নিজের ALIGNMENT অক্ষুণ্ণ রাখি।
+          
           if(f.baseId!=null){
             const base=saved.find(x=>String(x.id)===String(f.baseId));
             if(base) f.pts=placeNext(f.pts,base.pts,f.side||'east',normalizedAttach(f),Number(f.triAttachEdge)||0,Number(f.quadAttachEdge)||0);
           }
-          // বর্তমান ক্ষেত্র বড়/ছোট হলে এর সঙ্গে যুক্ত পরের ক্ষেত্রগুলোও নতুন edge-এ সঙ্গে সঙ্গে বসবে।
+          
           reflowDependents(f.id);
           current={...f,pts:f.pts.map(p=>[...p]),v:f.v.slice()};
           persist();
@@ -883,8 +885,8 @@
       }
     });
     multi.addEventListener('pointerup',e=>{
-      // একটি আঙুলে drag শেষ হলে আগের কোড pinch-state দেখে এখানে return করত,
-      // ফলে touch device-এ SNAP/commit অংশ কখনও চলত না। দুই-আঙুলের pinch-এ শুধু return করব।
+      
+      
       let wasPinchPointer=false;
       if(pinch&&pinch.ids[e.pointerId]){
         wasPinchPointer=Object.keys(pinch.ids).length>=2;
@@ -893,7 +895,7 @@
         if(dragPointerId===e.pointerId && wasPinchPointer){dragPointerId=null;dragMode='';}
         if(remaining===0) pinch=null;
         else if(remaining===1 && wasPinchPointer) {
-          // দ্বিতীয় আঙুল উঠে গেছে; অবশিষ্ট আঙুলকে নতুন drag শুরু না করিয়ে বর্তমান gesture শেষ করি।
+          
           const left=Object.keys(pinch.ids)[0];
           if(String(left)!==String(dragPointerId)){ pinch=null; }
         }
@@ -917,11 +919,11 @@
       dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;
     });
     multi.addEventListener('pointercancel',e=>{if(pinch&&pinch.ids[e.pointerId]){delete pinch.ids[e.pointerId];if(Object.keys(pinch.ids).length<2)pinch=null;}dragPointerId=null;dragMode='';dragIndex=-1;dragStartWorld=null;dragOriginalPts=null;});
-    // SNAP ON: প্রথম ক্ষেত্র দেখাবে, কিন্তু দ্বিতীয়/তৃতীয় ক্ষেত্র তৈরি করার আগে পাশ নির্বাচন বাধ্যতামূলক।
+    
     setInputs(saved[0]?.v||[50,80,55,85]); if(saved[0]){selectedId=saved[0].id;current=null}else{selectedId=null;current=null} updateBaseOptions(); updateAttachUI(); renderMain(); renderList();
   })();
 
-  // -------- Leaflet map + polygon area --------
+  
   let map, poly, markers=[];
   const mapAreaEl=$('mapArea');
   const mapOfflineNote=$('mapOfflineNote');
