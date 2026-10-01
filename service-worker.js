@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v27-multi-field-east-west-orientation";
+const CACHE_NAME = "sah-pwa-v28-multi-field-smooth-point-edit";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 const CORE_ASSETS = [
   "./", "./index.html", "./404.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
