@@ -825,8 +825,8 @@
       }
       renderMain();drawAll();
     }
-    // Mobile/IME-safe dimension updates: input, change and blur all commit the
-    // entered feet/inch value so the multi-field drawing is always refreshed.
+    // Mobile/IME-safe dimension updates: commit the entered feet/inch value on
+    // input, change and blur without changing any calculation formula.
     ['A','B','C','D'].forEach(x=>['ft','in'].forEach(u=>{
       const el=$('shape'+x+u); if(!el)return;
       const refresh=()=>{if(!silentInputs)updateCurrent()};
