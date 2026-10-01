@@ -1,4 +1,4 @@
-/* Bengali-capable PDF helper. Local TTF + in-memory cache. */
+
 (function(){
   const FONT_URL='fonts/Lohit-Bengali.ttf';
   let fontBase64=null, readyPromise=null;
