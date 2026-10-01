@@ -119,14 +119,18 @@ const SITE = {
   ],
 
   posts: [
-    // Example:
-    // {
-    //   title: "লেখার শিরোনাম",
-    //   category: "ভূমি জরিপ",
-    //   excerpt: "সংক্ষিপ্ত পরিচিতি",
-    //   url: "https://surveyorabdulhannan.blogspot.com/p/example.html",
-    //   date: "2026-09-19"
-    // }
+    {"title": "জমি মাপার আগে যে ১০টি বিষয় যাচাই করবেন", "category": "ভূমি জরিপ", "excerpt": "জমি মাপ শুরু করার আগে দলিল, খতিয়ান, দাগ, মৌজা ও সীমানা সম্পর্কিত কোন তথ্যগুলো হাতে রাখা উচিত—একটি ব্যবহারিক checklist।", "url": "article-land-survey-preparation.html"},
+    {"title": "দাগ নম্বর, খতিয়ান ও মৌজা—সহজ ভাষায় পার্থক্য", "category": "ভূমি তথ্য", "excerpt": "দাগ, খতিয়ান ও মৌজা একে অপরের সঙ্গে কীভাবে সম্পর্কিত এবং জমি শনাক্ত করার সময় কেন তিনটি তথ্যই গুরুত্বপূর্ণ।", "url": "article-dag-khatian-mouza.html"},
+    {"title": "CS, SA, RS ও BS খতিয়ান: কীভাবে তথ্য মিলিয়ে দেখবেন", "category": "খতিয়ান ও জরিপ", "excerpt": "বিভিন্ন জরিপের রেকর্ড দেখার সময় কোন তথ্যগুলো পাশাপাশি মিলিয়ে দেখা উচিত এবং কেন একটি রেকর্ড দেখে সিদ্ধান্ত নেওয়া ঠিক নয়।", "url": "article-cs-sa-rs-bs-khatian.html"},
+    {"title": "জমির সীমানা নির্ধারণে মাঠ জরিপের সঠিক প্রস্তুতি", "category": "সীমানা নির্ধারণ", "excerpt": "সীমানা বিরোধ এড়াতে মাঠে যাওয়ার আগে কী প্রস্তুতি, কোন reference point ও কোন নথি দরকার—ধাপে ধাপে আলোচনা।", "url": "article-boundary-demarcation.html"},
+    {"title": "জমি ভাগ-বাটোয়ারার সময় মাপজোক ও নকশার গুরুত্ব", "category": "জমি ভাগ-বাটোয়ারা", "excerpt": "যৌথ জমি ভাগ করার সময় হিস্যা, বাস্তব দখল, মাপজোক, প্রবেশপথ ও নকশা একসঙ্গে বিবেচনার ব্যবহারিক দিক।", "url": "article-land-partition-survey.html"},
+    {"title": "শতাংশ, কাঠা, বিঘা ও বর্গফুট: জমির একক রূপান্তর", "category": "জমির হিসাব", "excerpt": "বাংলাদেশে প্রচলিত জমির এককগুলোর হিসাব করার সময় কেন স্থানীয় প্রচলন যাচাই করা জরুরি এবং calculator কীভাবে সহায়তা করতে পারে।", "url": "article-land-unit-conversion.html"},
+    {"title": "অনিয়মিত চতুর্ভুজের ক্ষেত্রফল: কর্ণ দিয়ে মাপ যাচাই", "category": "ভূমি পরিমাপ", "excerpt": "চার বাহু ও কর্ণ ব্যবহার করে অনিয়মিত চতুর্ভুজকে ত্রিভুজে ভাগ করে ক্ষেত্রফল যাচাইয়ের ধারণা ও সতর্কতা।", "url": "article-quadrilateral-area-measurement.html"},
+    {"title": "ডায়াগোনাল বা কর্ণ চেক কেন জরুরি", "category": "জরিপ যাচাই", "excerpt": "একটি নকশা বা চতুর্ভুজের মাপ ঠিক আছে কি না যাচাই করতে কর্ণের মাপ কীভাবে cross-check হিসেবে কাজে লাগে।", "url": "article-diagonal-check.html"},
+    {"title": "ভূমি জরিপে সাধারণ ১২টি ভুল এবং কীভাবে এড়াবেন", "category": "জরিপ সতর্কতা", "excerpt": "একক ভুল, reference point ভুল, দাগ-খতিয়ান না মেলানো ও অসম্পূর্ণ field note—প্রচলিত ভুলগুলো নিয়ে বিস্তারিত সতর্কতা।", "url": "article-land-survey-common-mistakes.html"},
+    {"title": "জমির রেকর্ড যাচাই: দলিল, খতিয়ান ও মাঠের তথ্য মিলিয়ে দেখা", "category": "রেকর্ড যাচাই", "excerpt": "জমি সংক্রান্ত সিদ্ধান্ত নেওয়ার আগে দলিল, খতিয়ান, দাগ, নকশা ও মাঠের বাস্তব অবস্থার মধ্যে সামঞ্জস্য কীভাবে যাচাই করবেন।", "url": "article-land-record-verification.html"},
+    {"title": "নামজারি ও খতিয়ান হালনাগাদ সম্পর্কে প্রাথমিক ধারণা", "category": "নামজারি", "excerpt": "মালিকানা পরিবর্তনের পর রেকর্ড হালনাগাদের প্রয়োজনীয়তা এবং সরকারি তথ্য কোথা থেকে যাচাই করা যায়—সহজ ভাষায়।", "url": "article-mutation-khatian-update.html"},
+    {"title": "মাঠ জরিপ শেষে একটি ভালো survey report-এ কী থাকা উচিত", "category": "জরিপ প্রতিবেদন", "excerpt": "মাঠপর্যায়ের পরিমাপ, reference, sketch, area calculation, observations ও verification note—একটি professional survey report-এর কাঠামো।", "url": "article-field-survey-report.html"}
   ],
 
   officialSources: [
