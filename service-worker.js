@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v22-seo-offline-articles";
+const CACHE_NAME = "sah-pwa-v23-seo-offline-articles";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 const CORE_ASSETS = [
   "./", "./index.html", "./404.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
