@@ -33,12 +33,12 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
   // The multi-field Drawing & Alignment section lives before the registry calculator.
   // Load its engine when that section becomes visible so its inputs are live immediately.
   const shapeSketch=document.querySelector('#featured-shape-sketch');
-  whenVisible(shapeSketch,()=>loadScript('calculator-registry.js?v=v12-direction-label-fix','registry').catch(()=>{}));
+  whenVisible(shapeSketch,()=>loadScript('calculator-registry.js?v=v13-east-west-direction-fix','registry').catch(()=>{}));
   const registry=document.querySelector('#registry-calculator');
   whenVisible(registry,async()=>{
     await loadCss('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css','leaflet-css');
     await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js','leaflet').catch(()=>{});
-    await loadScript('calculator-registry.js?v=v12-direction-label-fix','registry').catch(()=>{});
+    await loadScript('calculator-registry.js?v=v13-east-west-direction-fix','registry').catch(()=>{});
   });
   document.querySelectorAll('.calculator-launch-card').forEach(btn=>btn.addEventListener('click',async()=>{
     await window.SAH_CALC_READY;
