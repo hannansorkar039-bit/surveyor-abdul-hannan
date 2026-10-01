@@ -303,11 +303,11 @@
   <div class="featured-panel-head"><h3 id="featured-quad-title">📐 অনিয়মিত জমির ক্ষেত্রফল ও কোণের মান</h3><p>AB = উত্তর, BC = পূর্ব, CD = দক্ষিণ, DA = পশ্চিম এবং কর্ণ AC-এর মাপ দিলে দুটি বৈধ ত্রিভুজে ভাগ করে ক্ষেত্রফল ও চার কোণ নির্ণয় করা হবে।</p></div>
   <div class="featured-panel-body">
     <div class="calc-grid">
-      <div class="calc-field"><label for="fqAB"><span class="direction-badge north">উত্তর</span> বাহু AB (a)</label><input id="fqAB" type="number" min="0" step="any" placeholder="ফুট"></div>
-      <div class="calc-field"><label for="fqBC"><span class="direction-badge east">পূর্ব</span> বাহু BC (b)</label><input id="fqBC" type="number" min="0" step="any" placeholder="ফুট"></div>
-      <div class="calc-field"><label for="fqCD"><span class="direction-badge south">দক্ষিণ</span> বাহু CD (d)</label><input id="fqCD" type="number" min="0" step="any" placeholder="ফুট"></div>
-      <div class="calc-field"><label for="fqDA"><span class="direction-badge west">পশ্চিম</span> বাহু DA (c)</label><input id="fqDA" type="number" min="0" step="any" placeholder="ফুট"></div>
-      <div class="calc-field"><label for="fqAC"><span class="diagonal-badge">কর্ণ</span> AC (A–C)</label><input id="fqAC" type="number" min="0" step="any" placeholder="ফুট"></div>
+      <div class="calc-field"><label><span class="direction-badge north">উত্তর</span> বাহু AB (a)</label><div class="feet-inch"><input id="fqABft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqABin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু AB: ইঞ্চি"></div></div>
+      <div class="calc-field"><label><span class="direction-badge east">পূর্ব</span> বাহু BC (b)</label><div class="feet-inch"><input id="fqBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqBCin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু BC: ইঞ্চি"></div></div>
+      <div class="calc-field"><label><span class="direction-badge south">দক্ষিণ</span> বাহু CD (d)</label><div class="feet-inch"><input id="fqCDft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqCDin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু CD: ইঞ্চি"></div></div>
+      <div class="calc-field"><label><span class="direction-badge west">পশ্চিম</span> বাহু DA (c)</label><div class="feet-inch"><input id="fqDAft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqDAin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু DA: ইঞ্চি"></div></div>
+      <div class="calc-field"><label><span class="diagonal-badge">কর্ণ</span> AC (A–C)</label><div class="feet-inch"><input id="fqACft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqACin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="কর্ণ AC: ইঞ্চি"></div></div>
       <div class="calc-field"><label for="fqUnit">একক</label><select id="fqUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
     </div>
     <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fqCalc">ক্ষেত্রফল ও কোণ হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fqReset">রিসেট</button></div>
