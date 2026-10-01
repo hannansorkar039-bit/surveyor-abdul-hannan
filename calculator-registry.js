@@ -737,9 +737,12 @@
         if(ang<-Math.PI/2)ang+=Math.PI;
         let dimLabel=labels[i];
         if(pts.length===4){
-          
-          
-          dimLabel=edgeCardinalLabel(mp,i)+' • '+['AB','BC','CD','DA'][i];
+          // A/B/C/D input fields are the authoritative side assignments:
+          // AB = উত্তর, BC = পূর্ব, CD = দক্ষিণ, DA = পশ্চিম.
+          // Do NOT infer the direction again from the screen position after
+          // a new field has been rotated/aligned to another field. That was
+          // swapping the displayed directions (e.g. BC showing as দক্ষিণ).
+          dimLabel=labels[i];
         }else if((meta&&shapeTypeOf(meta)==='tri')||pts.length===3){
           const triNames=['AB','BC','CA'];
           const attachedSide=meta?.side||null;
