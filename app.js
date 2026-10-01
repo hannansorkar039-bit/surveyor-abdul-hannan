@@ -209,6 +209,23 @@ ${details ? "বিস্তারিত: " + details : ""}`;
     const btn = document.createElement('button');
     btn.className='nav-toggle'; btn.type='button'; btn.setAttribute('aria-label','মেনু খুলুন'); btn.setAttribute('aria-expanded','false'); btn.innerHTML='☰';
     nav.querySelector('.nav-inner')?.appendChild(btn);
+    // Group the existing links on mobile without changing desktop navigation order/content.
+    if(!navLinks.dataset.grouped){
+      const groups=[
+        ['প্রধান', ['index.html','about.html','services.html','calculator.html']],
+        ['ভূমি তথ্য', ['knowledge.html','documents.html','mistakes.html','videos.html','photos.html','posts.html']],
+        ['সহায়তা ও সেবা', ['question.html','feedback.html','order.html']],
+        ['যোগাযোগ ও সংযোগ', ['land-solution-bd.html','contact.html']]
+      ];
+      const links=[...navLinks.children].filter(el=>el.tagName==='A');
+      groups.forEach(([title,hrefs])=>{
+        const g=document.createElement('div'); g.className='nav-group';
+        const h=document.createElement('div'); h.className='nav-group-title'; h.textContent=title; g.appendChild(h);
+        hrefs.forEach(href=>{ const a=links.find(x=>(x.getAttribute('href')||'').split('#')[0].split('?')[0]===href); if(a) g.appendChild(a); });
+        if(g.children.length>1) navLinks.appendChild(g);
+      });
+      navLinks.dataset.grouped='1';
+    }
     const close=()=>{navLinks.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label','মেনু খুলুন');btn.innerHTML='☰';};
     btn.addEventListener('click',()=>{const open=navLinks.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));btn.setAttribute('aria-label',open?'মেনু বন্ধ করুন':'মেনু খুলুন');btn.innerHTML=open?'✕':'☰';});
     navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
