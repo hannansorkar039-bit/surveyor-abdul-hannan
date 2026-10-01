@@ -1,5 +1,5 @@
-// Surveyor Abdul Hannan — Quadrilateral partition calculator
-// চার বাহু + কর্ণ ভিত্তিক ভাগ-বণ্টন, editable dimensions এবং live SVG drawing.
+
+
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
