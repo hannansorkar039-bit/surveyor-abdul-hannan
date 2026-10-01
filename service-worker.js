@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v26-multi-field-direction-fix";
+const CACHE_NAME = "sah-pwa-v27-east-west-direction-fix";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 const CORE_ASSETS = [
   "./", "./index.html", "./404.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
