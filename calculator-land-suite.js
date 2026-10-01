@@ -1,4 +1,4 @@
-// Surveyor Abdul Hannan — modular calculator component
+
 
 (()=>{
  const $=id=>document.getElementById(id); const toast=(msg)=>{const t=$('suiteToast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__suiteToastTimer);window.__suiteToastTimer=setTimeout(()=>t.classList.remove('show'),2200)};
