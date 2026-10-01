@@ -259,13 +259,13 @@
       };
     }
     function attachSettings(){
-      const side=$('mfSide')?.value||'east', mode=$('mfAttachMode')?.value||'center';
+      const side=$('mfSide')?.value||'east', mode=$('mfAttachMode')?.value||'start';
       const ft=Number($('mfAttachOffsetFt')?.value||0), inch=Number($('mfAttachOffsetIn')?.value||0);
       const ref=$('mfAttachRef')?.value||'start';
       return {mode,offset:Math.max(0,ft+inch/12),ref};
     }
     function normalizedAttach(f){
-      return {mode:f?.attachMode||'center',offset:Math.max(0,Number(f?.attachOffset)||0),ref:f?.attachRef||'start'};
+      return {mode:f?.attachMode||'start',offset:Math.max(0,Number(f?.attachOffset)||0),ref:f?.attachRef||'start'};
     }
     function cross2(ax,ay,bx,by){return ax*by-ay*bx;}
     function reflectAcrossLine(pts,a,b){
@@ -291,7 +291,7 @@
       const bl=Math.hypot(bv[0],bv[1]), ll=Math.hypot(lv[0],lv[1]);
       if(!(bl>1e-9&&ll>1e-9))return shape.map(p=>[...p]);
 
-      const a=attach||{mode:'center',offset:0,ref:'start'};
+      const a=attach||{mode:'start',offset:0,ref:'start'};
       const maxGap=Math.max(0,bl-ll);
       let startOffset=maxGap/2;
       if(a.mode==='north'||a.mode==='start')startOffset=0;
@@ -438,6 +438,35 @@
         if(dF<=dR){r[newEdge]=[...e1];r[(newEdge+1)%r.length]=[...e2];}
         else{r[newEdge]=[...e2];r[(newEdge+1)%r.length]=[...e1];}
       }
+      // Final deterministic shared-boundary snap: keep the new edge exactly
+      // collinear with the selected base edge and make its selected endpoint
+      // coincide with the requested base endpoint. No side length is changed.
+      const finalA=r[newEdge], finalB=r[(newEdge+1)%r.length];
+      const finalL=Math.hypot(finalB[0]-finalA[0],finalB[1]-finalA[1]);
+      if(finalL>1e-9){
+        const useEnd=(a.mode==='south'||a.mode==='end'||(a.mode==='custom'&&a.ref==='end'));
+        const anchorBase=useEnd?bq:bp;
+        const dir=useEnd?[-bv[0]/bl,-bv[1]/bl]:[bv[0]/bl,bv[1]/bl];
+        const anchorNew=useEnd?r[(newEdge+1)%r.length]:r[newEdge];
+        const dx=anchorBase[0]-anchorNew[0], dy=anchorBase[1]-anchorNew[1];
+        r=translate(r,dx,dy);
+        const a0=r[newEdge], a1=r[(newEdge+1)%r.length];
+        const target0=useEnd?[anchorBase[0]-dir[0]*finalL,anchorBase[1]-dir[1]*finalL]:[anchorBase[0],anchorBase[1]];
+        const target1=useEnd?anchorBase:[anchorBase[0]+dir[0]*finalL,anchorBase[1]+dir[1]*finalL];
+        const err0=Math.hypot(a0[0]-target0[0],a0[1]-target0[1]);
+        const err1=Math.hypot(a1[0]-target1[0],a1[1]-target1[1]);
+        if(err0+err1>1e-7){
+          const da=Math.atan2(target1[1]-target0[1],target1[0]-target0[0]);
+          const aa=Math.atan2(a1[1]-a0[1],a1[0]-a0[0]);
+          r=rotatePts(r,da-aa);
+          const moved=r[newEdge];
+          r=translate(r,target0[0]-moved[0],target0[1]-moved[1]);
+        }
+        // Force only the two boundary endpoints onto the exact target line;
+        // the polygon's other vertices and all dimensions remain untouched.
+        r[newEdge]=target0;
+        r[(newEdge+1)%r.length]=target1;
+      }
       return r;
     }
     
@@ -489,75 +518,9 @@
       return best;
     }
     function twoLineAssigned(base,shape,side,attach,triAttachEdge=0,quadAttachEdge=0){
-      // Rigid two-boundary placement for end/start attachments.
-      // The previous implementation was a stub, so changing a new field's
-      // feet/inch values could leave the attached field drifting into the
-      // neighbouring field.  This routine deliberately uses only rotation +
-      // translation (no scaling), so the entered dimensions and all area
-      // calculations remain unchanged.
-      const mode=attach?.mode||'center';
-      if((mode!=='start'&&mode!=='end')||!base||!shape)return null;
-      const {baseEdge,newEdge}=sideEdges(side,base,shape,triAttachEdge,quadAttachEdge);
-      const bn=base.length,sn=shape.length;
-      const baseA=base[baseEdge],baseB=base[(baseEdge+1)%bn];
-      const newA=shape[newEdge],newB=shape[(newEdge+1)%sn];
-      const baseVec=[baseB[0]-baseA[0],baseB[1]-baseA[1]];
-      const newVec=[newB[0]-newA[0],newB[1]-newA[1]];
-      const bl=Math.hypot(baseVec[0],baseVec[1]),ll=Math.hypot(newVec[0],newVec[1]);
-      if(!(bl>1e-9&&ll>1e-9))return null;
-
-      // At the selected end, keep the corresponding corner exactly on the
-      // base corner.  The shared boundary remains a single straight line.
-      const baseAnchor=mode==='start'?baseA:baseB;
-      const newAnchor=mode==='start'?newA:newB;
-      const targetAng=mode==='start'
-        ? Math.atan2(baseVec[1],baseVec[0])
-        : Math.atan2(-baseVec[1],-baseVec[0]);
-      const localAng=mode==='start'
-        ? Math.atan2(newVec[1],newVec[0])
-        : Math.atan2(-newVec[1],-newVec[0]);
-
-      let r=rotatePts(shape,targetAng-localAng);
-      const ra=mode==='start'?r[newEdge]:r[(newEdge+1)%sn];
-      r=translate(r,baseAnchor[0]-ra[0],baseAnchor[1]-ra[1]);
-
-      // Put the new field on the outside of the selected base boundary.
-      const edgeA=r[newEdge],edgeB=r[(newEdge+1)%r.length];
-      const baseC=centroid(base);
-      const fieldC=centroid(r);
-      const lineVec=[edgeB[0]-edgeA[0],edgeB[1]-edgeA[1]];
-      const baseSide=cross2(lineVec[0],lineVec[1],baseC[0]-edgeA[0],baseC[1]-edgeA[1]);
-      const fieldSide=cross2(lineVec[0],lineVec[1],fieldC[0]-edgeA[0],fieldC[1]-edgeA[1]);
-      if(Math.abs(baseSide)>1e-9&&Math.abs(fieldSide)>1e-9&&Math.sign(baseSide)===Math.sign(fieldSide)){
-        r=reflectAcrossLine(r,edgeA,edgeB);
-        // Reflection reverses the edge direction; restore the selected corner
-        // exactly at the requested base corner.
-        const ra2=mode==='start'?r[newEdge]:r[(newEdge+1)%sn];
-        r=translate(r,baseAnchor[0]-ra2[0],baseAnchor[1]-ra2[1]);
-      }
-
-      // Final shared-edge lock: force only the two attached vertices onto the
-      // exact base line.  No other vertex is altered, so side lengths remain
-      // exactly those produced from the user's feet/inch input.
-      const finalA=r[newEdge],finalB=r[(newEdge+1)%r.length];
-      const desiredA=mode==='start'?baseA:baseB;
-      const desiredB=mode==='start'
-        ? [baseA[0]+baseVec[0]*Math.min(1,ll/bl),baseA[1]+baseVec[1]*Math.min(1,ll/bl)]
-        : [baseB[0]-baseVec[0]*Math.min(1,ll/bl),baseB[1]-baseVec[1]*Math.min(1,ll/bl)];
-      const d0=Math.hypot(finalA[0]-desiredA[0],finalA[1]-desiredA[1])+Math.hypot(finalB[0]-desiredB[0],finalB[1]-desiredB[1]);
-      const altA=mode==='start'?baseA:baseB;
-      const altB=mode==='start'
-        ? [baseA[0]-baseVec[0]*Math.min(1,ll/bl),baseA[1]-baseVec[1]*Math.min(1,ll/bl)]
-        : [baseB[0]+baseVec[0]*Math.min(1,ll/bl),baseB[1]+baseVec[1]*Math.min(1,ll/bl)];
-      const d1=Math.hypot(finalA[0]-altA[0],finalA[1]-altA[1])+Math.hypot(finalB[0]-altB[0],finalB[1]-altB[1]);
-      // Do not scale the shape.  If the new boundary is longer than the base
-      // boundary it is allowed to extend beyond the base corner, exactly as
-      // the existing single-edge placement does.
-      if(d1<d0){
-        const shift=translate(r,altA[0]-finalA[0],altA[1]-finalA[1]);
-        return shift;
-      }
-      return r;
+      
+      
+      return null;
     }
     function pointInPoly(pt,pts){let inside=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){
       const xi=pts[i][0],yi=pts[i][1],xj=pts[j][0],yj=pts[j][1];
@@ -625,7 +588,7 @@
     function placementInfo(base,shape,side,attach,triAttachEdge=0,quadAttachEdge=0){
       if(!base||!shape)return 'প্রথমে ক্ষেত্রের মাপ দিন।';
       const {baseEdge,newEdge}=sideEdges(side,base,shape,triAttachEdge,quadAttachEdge), bl=Math.hypot(...edgeVec(base,baseEdge)), ll=Math.hypot(...edgeVec(shape,newEdge));
-      const meta=attachmentMeta(side,base), gap=bl-ll, a=attach||{mode:'center',offset:0};
+      const meta=attachmentMeta(side,base), gap=bl-ll, a=attach||{mode:'start',offset:0,ref:'start'};
       if(gap<-1e-7){
         const over=ll-bl;
         const modeText=a.mode==='center'?'মাঝখানে':(a.mode==='start'||a.mode==='north')?meta.start+' প্রান্তে':(a.mode==='end'||a.mode==='south')?meta.end+' প্রান্তে':('নির্দিষ্ট দূরত্বে • '+(a.ref==='end'?meta.end:meta.start)+' থেকে '+ftInText(Math.max(0,Number(a.offset)||0)));
@@ -827,7 +790,7 @@
       if(!r){$('shapeStatus').textContent='বৈধ ৩/৪ বাহুর মাপ দিন।';return}
       const name=prompt('এই ক্ষেত্রের নাম লিখুন:',r.name&&r.name!=='নতুন ক্ষেত্র'?r.name:'ক্ষেত্র '+(saved.length+1));
       if(name===null)return;
-      const item={id:selectedId||Date.now(),name:name.trim()||('ক্ষেত্র '+(saved.length+1)),v:r.v.map(Number),pts:r.pts.map(p=>[...p]),area:area(r.pts),shapeType:r.shapeType||shapeTypeOf(r),baseId:r.baseId||null,side:r.side||null,attachMode:r.attachMode||'center',attachOffset:Number(r.attachOffset)||0,attachRef:r.attachRef||'start',triAttachEdge:Number(r.triAttachEdge)||0,quadAttachEdge:Number(r.quadAttachEdge)||0};
+      const item={id:selectedId||Date.now(),name:name.trim()||('ক্ষেত্র '+(saved.length+1)),v:r.v.map(Number),pts:r.pts.map(p=>[...p]),area:area(r.pts),shapeType:r.shapeType||shapeTypeOf(r),baseId:r.baseId||null,side:r.side||null,attachMode:r.attachMode||'north',attachOffset:Number(r.attachOffset)||0,attachRef:r.attachRef||'start',triAttachEdge:Number(r.triAttachEdge)||0,quadAttachEdge:Number(r.quadAttachEdge)||0};
       const idx=saved.findIndex(x=>String(x.id)===String(item.id));
       if(idx>=0)saved[idx]=item;else saved.push(item);
       selectedId=item.id;current=null;editMode=true;persist();
@@ -852,7 +815,7 @@
       $('mfBaseField').value=(f.baseId!=null && saved.some(x=>String(x.id)===String(f.baseId)))?String(f.baseId):'__first__';
       updateBaseSideUI();
       $('mfSide').value=f.side||$('mfSide').value;
-      $('mfAttachMode').value=f.attachMode||'center';
+      $('mfAttachMode').value=f.attachMode||'north';
       $('mfAttachRef').value=f.attachRef||'start';
       $('mfAttachOffsetFt').value=f.attachOffset?Math.floor(Number(f.attachOffset)) : '';
       $('mfAttachOffsetIn').value=f.attachOffset?((Number(f.attachOffset)-Math.floor(Number(f.attachOffset)))*12).toFixed(3) : '';
@@ -862,7 +825,7 @@
       renderMain();drawAll();
     }
     function del(id){saved=saved.filter(x=>String(x.id)!==String(id));if(String(selectedId)===String(id)){selectedId=null;current=null;lockedTr=null;setInputs([0,0,0,0])}persist();renderList();renderMain()}
-    function newField(){view={zoom:1,panX:0,panY:0};pinch=null;lockedTr=null;selectedId=null;current=null;editMode=false;$('shapePointEdit').textContent='✋ পয়েন্ট এডিট: OFF';$('mfAttachMode').value='center';$('mfAttachRef').value='start';$('mfShapeType').value='quad';$('mfTriAttachEdge').value='0';$('mfQuadAttachEdge').value='0';$('mfTriAttachWrap').style.display='none';$('mfQuadAttachWrap').style.display='none';$('shapeDWrap').style.display='';$('mfAttachOffsetFt').value='';$('mfAttachOffsetIn').value='';updateAttachUI();setInputs([0,0,0,0]);$('shapeResult').innerHTML='';const n=saved.length+1;$('shapeStatus').textContent=n===1?'প্রথম ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন।':'আগে নির্বাচন করুন: কোন ক্ষেত্রের উত্তর/দক্ষিণ/পূর্ব/পশ্চিম পাশে নতুন ক্ষেত্রটি হবে।';$('mfPlacementStatus').textContent=n===1?'প্রথম ক্ষেত্র তৈরি হবে।':'নতুন ক্ষেত্রের আগে “কোন ক্ষেত্রের পাশে” এবং “কোন পাশে” নির্বাচন করুন।';drawAll()}
+    function newField(){view={zoom:1,panX:0,panY:0};pinch=null;lockedTr=null;selectedId=null;current=null;editMode=false;$('shapePointEdit').textContent='✋ পয়েন্ট এডিট: OFF';$('mfAttachMode').value='north';$('mfAttachRef').value='start';$('mfShapeType').value='quad';$('mfTriAttachEdge').value='0';$('mfQuadAttachEdge').value='0';$('mfTriAttachWrap').style.display='none';$('mfQuadAttachWrap').style.display='none';$('shapeDWrap').style.display='';$('mfAttachOffsetFt').value='';$('mfAttachOffsetIn').value='';updateAttachUI();setInputs([0,0,0,0]);$('shapeResult').innerHTML='';const n=saved.length+1;$('shapeStatus').textContent=n===1?'প্রথম ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন।':'আগে নির্বাচন করুন: কোন ক্ষেত্রের উত্তর/দক্ষিণ/পূর্ব/পশ্চিম পাশে নতুন ক্ষেত্রটি হবে।';$('mfPlacementStatus').textContent=n===1?'প্রথম ক্ষেত্র তৈরি হবে।':'নতুন ক্ষেত্রের আগে “কোন ক্ষেত্রের পাশে” এবং “কোন পাশে” নির্বাচন করুন।';drawAll()}
     function clear(){view={zoom:1,panX:0,panY:0};pinch=null;lockedTr=null;selectedId=null;current=null;editMode=false;$('shapePointEdit').textContent='✋ পয়েন্ট এডিট: OFF';setInputs([0,0,0,0]);$('shapeResult').innerHTML='';$('shapeStatus').textContent='মাপ পরিষ্কার করা হয়েছে।';drawAll()}
     function updateCurrent(){
       const v=dims();
