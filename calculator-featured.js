@@ -66,18 +66,33 @@
   // Irregular quadrilateral: area + all four interior angles.
   const tri=(a,b,c)=>{const s=(a+b+c)/2,z=s*(s-a)*(s-b)*(s-c);return z>1e-12?Math.sqrt(z):null};
   const angle=(x,y,z)=>{const den=2*x*y;if(!(den>0))return null;let c=(x*x+y*y-z*z)/den;c=Math.max(-1,Math.min(1,c));return Math.acos(c)*180/Math.PI};
+  const readFeetInches=(ftId,inId)=>{
+    const ft=Number($(ftId).value),inch=Number($(inId).value||0);
+    if(!Number.isFinite(ft)||!Number.isFinite(inch)||ft<0||inch<0||inch>=12)return null;
+    return ft+inch/12;
+  };
   $('fqCalc').onclick=()=>{
-    const a=Number($('fqAB').value),b=Number($('fqBC').value),c=Number($('fqCD').value),d=Number($('fqDA').value),diag=Number($('fqAC').value),u=$('fqUnit').value,r=$('fqResult');
-    if(![a,b,c,d,diag].every(v=>v>0))return err(r,'চারটি বাহু ও কর্ণ AC—সবগুলোর সঠিক মান দিন।');
-    const t1=tri(a,b,diag),t2=tri(c,d,diag);if(t1===null||t2===null)return err(r,'এই মাপগুলো দিয়ে দুটি বৈধ ত্রিভুজ তৈরি হচ্ছে না। কর্ণ AC অবশ্যই উভয় ত্রিভুজের triangle inequality পূরণ করবে।');
-    const A1=angle(a,diag,b),A2=angle(d,diag,c),A=A1+A2,B=angle(a,b,diag),C=angle(b,c,diag),D=angle(c,d,diag);const sum=A+B+C+D;
-    if(![A,B,C,D].every(Number.isFinite)||Math.abs(sum-360)>0.01)return err(r,'কোণ নির্ণয়ে জ্যামিতিক অসামঞ্জস্য পাওয়া গেছে। মাঠের মাপ/কর্ণ পুনরায় যাচাই করুন।');
-    const area=t1+t2, sqft=u==='ft'?area:area*10.763910416709722, dec=sqft/435.6;
+    const aFt=readFeetInches('fqABft','fqABin'),bFt=readFeetInches('fqBCft','fqBCin'),cFt=readFeetInches('fqCDft','fqCDin'),dFt=readFeetInches('fqDAft','fqDAin'),diagFt=readFeetInches('fqACft','fqACin'),u=$('fqUnit').value,r=$('fqResult');
+    if([aFt,bFt,cFt,dFt,diagFt].some(v=>v===null||!(v>0)))return err(r,'চারটি বাহু ও কর্ণ AC—সবগুলোর সঠিক ফুট ও ইঞ্চির মান দিন। ইঞ্চি ১২-এর কম হতে হবে।');
+    const scale=u==='m'?0.3048:1;
+    const a=aFt*scale,b=bFt*scale,c=cFt*scale,d=dFt*scale,diag=diagFt*scale;
+    const t1=tri(a,b,diag),t2=tri(c,d,diag);
+    if(t1===null||t2===null)return err(r,'এই মাপগুলো দিয়ে দুটি বৈধ ত্রিভুজ তৈরি হচ্ছে না। কর্ণ AC অবশ্যই উভয় ত্রিভুজের triangle inequality পূরণ করবে।');
+    // Triangle ABC: A1 + B + C1 = 180°. Triangle ACD: A2 + C2 + D = 180°.
+    // The diagonal AC is shared, so the quadrilateral interior angles are:
+    // A=A1+A2, B=B, C=C1+C2, D=D. This removes the previous incorrect C-angle formula.
+    const A1=angle(a,diag,b),A2=angle(d,diag,c),A=A1+A2;
+    const B=angle(a,b,diag);
+    const C1=angle(b,diag,a),C2=angle(c,diag,d),C=C1+C2;
+    const D=angle(c,d,diag);
+    const sum=A+B+C+D;
+    if(![A,B,C,D].every(Number.isFinite)||Math.abs(sum-360)>1e-8)return err(r,'কোণ নির্ণয়ে জ্যামিতিক অসামঞ্জস্য পাওয়া গেছে। মাঠের মাপ/কর্ণ পুনরায় যাচাই করুন।');
+    const area=t1+t2, sqft=(u==='ft'?area:area*10.763910416709722), dec=sqft/435.6;
     r.innerHTML='<div class="result-main">মোট ক্ষেত্রফল = '+fmt(area)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</div><div class="result-list">'+
-      '<div class="result-item result-item-primary"><strong>'+fmt(sqft,4)+' বর্গফুট</strong><span>মোট ক্ষেত্রফল</span></div><div class="result-item"><strong>'+fmt(dec,6)+' শতাংশ</strong><span>ডেসিমেল</span></div><div class="result-item"><strong>'+fmt(t1)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>△ABC</span></div><div class="result-item"><strong>'+fmt(t2)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>△ACD</span></div></div>'+
+      '<div class="result-item result-item-primary"><strong>'+fmt(sqft,4)+' বর্গফুট</strong><span>মোট ক্ষেত্রফল</span></div><div class="result-item"><strong>'+fmt(dec,6)+' শতাংশ</strong><span>ডেসিমেল</span></div><div class="result-item"><strong>'+fmt(t1)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>△ABC</span></div><div class="result-item"><strong>'+fmt(t2)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>△ACD</span></div></div>'+ 
       '<div class="angle-grid"><div class="angle-box"><strong>'+fmt(A,6)+'°</strong><span>∠A</span></div><div class="angle-box"><strong>'+fmt(B,6)+'°</strong><span>∠B</span></div><div class="angle-box"><strong>'+fmt(C,6)+'°</strong><span>∠C</span></div><div class="angle-box"><strong>'+fmt(D,6)+'°</strong><span>∠D</span></div></div><p class="conversion-note">যাচাই: চার কোণের যোগফল ≈ ৩৬০°। এই হিসাব একটি সরল, উত্তল চতুর্ভুজ এবং সঠিক A–C কর্ণের মাপ ধরে করা হয়েছে।</p>';
   };
-  $('fqReset').onclick=()=>{['fqAB','fqBC','fqCD','fqDA','fqAC'].forEach(id=>$(id).value='');$('fqResult').innerHTML='';};
+  $('fqReset').onclick=()=>{['fqABft','fqABin','fqBCft','fqBCin','fqCDft','fqCDin','fqDAft','fqDAin','fqACft','fqACin'].forEach(id=>$(id).value='');$('fqResult').innerHTML='';};
   // Exact rectangular separation.
   $('fsepCalc').onclick=()=>{
     const L=Number($('fsepLength').value),W=Number($('fsepWidth').value),p=Number($('fsepPercent').value),u=$('fsepUnit').value,r=$('fsepResult');
