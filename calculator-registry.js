@@ -222,7 +222,7 @@
         if(/^tri[0-2]$/.test(String(side))) baseEdge=Number(String(side).slice(3));
         else baseEdge=nearestEdgeForSide(base?.pts,side);
       }else{
-        baseEdge={north:0,east:1,south:2,west:3}[side];
+        baseEdge={north:0,east:3,south:2,west:1}[side];
       }
       let newEdge;
       if(shapeType==='tri'){
@@ -230,8 +230,12 @@
       }else if(/^tri[0-2]$/.test(String(side))){
         newEdge=Math.max(0,Math.min(3,Number(quadAttachEdge)||0));
       }else{
-        newEdge={north:2,east:3,south:0,west:1}[side];
+        newEdge={north:2,east:1,south:0,west:3}[side];
       }
+      // For quadrilateral fields, quadPoints() uses A→B→C→D order.
+      // In the screen orientation, AB=north, BC=west, CD=south, DA=east.
+      // The new field must use the opposite-facing edge so its shared boundary
+      // is exactly collinear with the selected base-field boundary.
       return {baseEdge,newEdge};
     }
     function attachmentMeta(side,base=null){
