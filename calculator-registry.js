@@ -160,7 +160,7 @@
     let lockedTr=null;
     let pinch=null;
     const bn=n=>Number(n||0).toLocaleString('bn-BD',{maximumFractionDigits:2});
-    function ftInText(value){const n=Math.max(0,Number(value)||0);const ft=Math.floor(n+1e-9);let inch=(n-ft)*12;if(inch<0.005)inch=0;if(inch>=11.995){return (ft+1)+'′';}const inchText=Number(inch.toFixed(2)).toLocaleString('bn-BD',{maximumFractionDigits:2});return ft+'′ '+inchText+'″';}
+    function ftInText(value){const n=Math.max(0,Number(value)||0);const ft=Math.floor(n+1e-9);let inch=(n-ft)*12;if(inch<0.005)inch=0;if(inch>=11.995){return (ft+1)+'′';}const inchText=Number(inch.toFixed(2)).toLocaleString('en-US',{maximumFractionDigits:2});return ft+'′ '+inchText+'″';}
     const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     function inp(ftId,inId){const f=Number($(ftId)?.value||0),i=Number($(inId)?.value||0);return Math.max(0,f+i/12)}
     function dims(){return [inp('shapeAft','shapeAin'),inp('shapeBft','shapeBin'),inp('shapeCft','shapeCin'),inp('shapeDft','shapeDin')]}
