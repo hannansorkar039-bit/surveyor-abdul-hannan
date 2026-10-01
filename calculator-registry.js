@@ -390,44 +390,34 @@
       
       
       if(r.length===4 && (attach?.mode||'center')==='center' && (side==='north'||side==='east'||side==='south'||side==='west')){
+        // Keep the newly attached quadrilateral's east/west sides in the
+        // correct screen positions.  The old correction reflected the whole
+        // field across the shared boundary, which reverses left/right labels.
+        // Reflecting across the perpendicular bisector of that shared edge
+        // swaps the two side positions while keeping the shared edge itself
+        // fixed and preserving every entered side length.
+        const quadDirectionScore=pts=>{
+          const cx=pts.reduce((sum,p)=>sum+p[0],0)/pts.length;
+          const bcMid=[(pts[1][0]+pts[2][0])/2,(pts[1][1]+pts[2][1])/2];
+          const daMid=[(pts[3][0]+pts[0][0])/2,(pts[3][1]+pts[0][1])/2];
+          return (bcMid[0]-cx)-(daMid[0]-cx);
+        };
         const sa=r[newEdge], sb=r[(newEdge+1)%r.length];
         const mx=(sa[0]+sb[0])/2, my=(sa[1]+sb[1])/2;
         const vx=sb[0]-sa[0], vy=sb[1]-sa[1], L=Math.hypot(vx,vy);
         if(L>1e-9){
-          
-          
           const ux=vx/L, uy=vy/L;
           const px=-uy, py=ux;
-          const mirrored=r.map(p=>{
+          const corrected=r.map(p=>{
             const dx=p[0]-mx, dy=p[1]-my;
-            const along=dx*ux+dy*uy;
-            const across=dx*px+dy*py;
-            return [mx+along*ux-across*px, my+along*uy-across*py];
+            const along=dx*px+dy*py;
+            const across=dx*ux+dy*uy;
+            return [mx+along*px-across*ux, my+along*py-across*uy];
           });
-          
-          
-          
-          
-          const wants=[[0,1],[1,0],[0,-1],[-1,0]];
-          const cardinalScore=pts=>{
-            const cx=pts.reduce((sum,p)=>sum+p[0],0)/pts.length;
-            const cy=pts.reduce((sum,p)=>sum+p[1],0)/pts.length;
-            let score=0;
-            for(let i=0;i<4;i++){
-              const e=pts[i], q=pts[(i+1)%4];
-              const emx=(e[0]+q[0])/2, emy=(e[1]+q[1])/2;
-              score+=(emx-cx)*wants[i][0]+(emy-cy)*wants[i][1];
-            }
-            return score;
-          };
-          if(cardinalScore(mirrored)>cardinalScore(r))r=mirrored;
+          if(quadDirectionScore(corrected)>quadDirectionScore(r))r=corrected;
         }
       }
 
-      
-      
-      
-      
       const p0=r[newEdge], p1=r[(newEdge+1)%r.length];
       const vx=p1[0]-p0[0], vy=p1[1]-p0[1], vlen=Math.hypot(vx,vy);
       if(vlen>1e-9){
@@ -1001,7 +991,7 @@
     // v11 alignment repair: old saved fields may have been attached using the
     // incorrect east/west edge mapping. Re-align dependent fields once using
     // their saved baseId/side metadata. No dimensions or calculation formulas change.
-    const ALIGNMENT_FIX_VERSION='v11-shared-boundary-edge';
+    const ALIGNMENT_FIX_VERSION='v12-east-west-direction-lock';
     try{
       if(localStorage.getItem(STORAGE+'_alignmentFix')!==ALIGNMENT_FIX_VERSION && saved.length){
         saved.filter(f=>f.baseId==null).forEach(root=>reflowDependents(root.id));
