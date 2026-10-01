@@ -703,6 +703,22 @@
     function persist(){localStorage.setItem(STORAGE,JSON.stringify(saved))}
     function renderList(){const listEl=$('mfSavedList');$('mfSavedCount').textContent=bn(saved.length)+'টি';const total=saved.reduce((s,f)=>s+Number(f.area||0),0);$('mfSavedTotal').innerHTML=saved.length?'মোট সেভ করা ক্ষেত্র: <strong>'+bn(total)+' বর্গফুট</strong> • <strong>'+bn(total/435.6)+' শতাংশ</strong>':'';listEl.innerHTML=saved.length?saved.map((f,i)=>'<div class="multi-field-item"><div class="multi-field-item-main"><strong>'+esc(f.name||('ক্ষেত্র '+(i+1)))+'</strong><span>'+f.v.slice(0,shapeTypeOf(f)==='tri'?3:4).map((x,j)=>(shapeTypeOf(f)==='tri'?['AB','BC','CA'][j]:labels[j])+': '+bn(x)+' ft').join(' • ')+' • '+bn(f.area)+' বর্গফুট</span></div><div class="multi-field-item-actions"><button type="button" data-load="'+f.id+'">লোড / এডিট</button><button type="button" class="danger" data-del="'+f.id+'">মুছুন</button></div></div>').join(''):'<div class="small-note">এখনও কোনো ক্ষেত্র সেভ করা হয়নি।</div>';listEl.querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>load(Number(b.dataset.load)));listEl.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(Number(b.dataset.del)));updateBaseOptions();drawAll()}
     function updateBaseOptions(){const sel=$('mfBaseField'),old=sel.value;sel.innerHTML='<option value="__first__">প্রথম ক্ষেত্র / নতুন শুরু</option>'+saved.map((f,i)=>'<option value="'+f.id+'">'+esc(f.name||('ক্ষেত্র '+(i+1)))+'</option>').join('');if([...sel.options].some(o=>o.value===old))sel.value=old;}
+    function printMultiFieldReport(){
+      drawAll();
+      const items=saved.slice();
+      const count=items.length+(current&&!selectedId?1:0);
+      const total=items.reduce((sum,f)=>sum+Number(f.area||0),0)+(current&&!selectedId?Number(current.area||area(current.pts)||0):0);
+      const image=multi.toDataURL('image/png');
+      const rows=items.map((f,i)=>`<tr><td>${escapeHtml(f.name||('ক্ষেত্র '+(i+1)))}</td><td>${Number(f.area||0).toFixed(2)}</td></tr>`).join('');
+      const currentRow=current&&!selectedId?`<tr><td>${escapeHtml(current.name||'নতুন ক্ষেত্র')}</td><td>${Number(current.area||area(current.pts)||0).toFixed(2)}</td></tr>`:'';
+      const report=`<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>বহু ক্ষেত্রের Drawing & Alignment Report</title><style>body{font-family:Arial,"Noto Sans Bengali",sans-serif;margin:28px;color:#15242e}h1{font-size:22px;margin:0 0 8px}p{line-height:1.6}img{max-width:100%;border:1px solid #d8e3e7;border-radius:10px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{border:1px solid #d8e3e7;padding:8px;text-align:left}th{background:#f4f7f9}.note{margin-top:18px;font-size:12px;color:#5e6f79}@media print{body{margin:12mm}}</style></head><body><h1>বহু ক্ষেত্রের Drawing & Alignment Report</h1><p>ক্ষেত্র সংখ্যা: ${count}<br>মোট ক্ষেত্রফল: ${total.toFixed(2)} বর্গফুট</p><img src="${image}" alt="Drawing"><table><thead><tr><th>ক্ষেত্র</th><th>ক্ষেত্রফল (sq ft)</th></tr></thead><tbody>${rows}${currentRow}</tbody></table><p class="note">নোট: এটি নকশা ও হিসাবের রেকর্ড। মাঠপর্যায়ের প্রকৃত পরিমাপ ও প্রযোজ্য সরকারি/আইনগত তথ্য অবশ্যই যাচাই করতে হবে।</p></body></html>`;
+      const w=window.open('','_blank');
+      if(!w){$('shapeStatus').textContent='পপ-আপ ব্লক হয়েছে। ব্রাউজারের পপ-আপ অনুমতি দিয়ে আবার চেষ্টা করুন।';return;}
+      w.document.open();w.document.write(report);w.document.close();w.focus();
+      setTimeout(()=>w.print(),300);
+      $('shapeStatus').textContent='🖨️ অফলাইন PDF fallback প্রস্তুত হয়েছে। Print থেকে Save as PDF নির্বাচন করুন।';
+    }
+
     async function downloadMultiFieldPDF(){
       const list=saved.slice();
       if(!list.length && !current){
@@ -710,13 +726,13 @@
         return;
       }
       if(!(window.jspdf&&window.jspdf.jsPDF)){
-        $('shapeStatus').textContent='PDF লাইব্রেরি লোড হয়নি। ইন্টারনেট সংযোগ চালু করে আবার চেষ্টা করুন।';
+        printMultiFieldReport();
         return;
       }
       // PDF-তে যে দৃশ্যটি দেখা যাচ্ছে সেটিই নেওয়া হবে—অর্থাৎ saved + unsaved current field দুটিই থাকবে।
       drawAll();
       const doc=await window.SAH_PDF?.create({unit:'mm',format:'a4',orientation:'portrait',compress:true});
-      if(!doc){ $('shapeStatus').textContent='PDF লাইব্রেরি বা বাংলা ফন্ট লোড হয়নি। অনলাইনে সংযোগ দিয়ে আবার চেষ্টা করুন।'; return; }
+      if(!doc){ printMultiFieldReport(); return; }
       const pageW=210,pageH=297,margin=10;
       const title='ভূমি নকশা ও Alignment রিপোর্ট';
       const now=new Date();
