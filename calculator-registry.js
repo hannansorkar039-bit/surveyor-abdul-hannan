@@ -336,27 +336,24 @@
       const edgeMidPt=[(edgeA[0]+edgeB[0])/2,(edgeA[1]+edgeB[1])/2];
 
       if(side==='north'||side==='east'||side==='south'||side==='west'){
-        const desired =
-          side==='north' ? [0,1] :
-          side==='east'  ? [1,0] :
-          side==='south' ? [0,-1] : [-1,0];
-
+        // Keep the new field on the OUTSIDE of the selected boundary.
+        // The previous version used a global north/east/south/west vector here;
+        // that could put a rotated/skewed field back over the base field.
+        // Determine the correct side from the base field's centroid instead.
         const centroidOf=pts=>{
           let sx=0,sy=0;
           pts.forEach(p=>{sx+=p[0];sy+=p[1]});
           return [sx/pts.length,sy/pts.length];
         };
-        const sideScore=pts=>{
-          const c=centroidOf(pts);
-          return (c[0]-edgeMidPt[0])*desired[0] +
-                 (c[1]-edgeMidPt[1])*desired[1];
-        };
+        const baseC=centroidOf(base);
+        const baseSide=cross2(edgeB[0]-edgeA[0],edgeB[1]-edgeA[1],baseC[0]-edgeA[0],baseC[1]-edgeA[1]);
+        const fieldC=centroidOf(r);
+        const fieldSide=cross2(edgeB[0]-edgeA[0],edgeB[1]-edgeA[1],fieldC[0]-edgeA[0],fieldC[1]-edgeA[1]);
 
-        
-        
-        const reflected=reflectAcrossLine(r,edgeA,edgeB);
-        if(sideScore(reflected)>sideScore(r)){
-          r=reflected;
+        // If the new field is on the same side of the shared boundary as the
+        // base field, reflect it across that boundary so it sits outside.
+        if(Math.abs(baseSide)>1e-9 && Math.abs(fieldSide)>1e-9 && Math.sign(baseSide)===Math.sign(fieldSide)){
+          r=reflectAcrossLine(r,edgeA,edgeB);
         }
       }else{
         
