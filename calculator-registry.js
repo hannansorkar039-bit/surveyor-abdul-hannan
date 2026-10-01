@@ -222,7 +222,7 @@
         if(/^tri[0-2]$/.test(String(side))) baseEdge=Number(String(side).slice(3));
         else baseEdge=nearestEdgeForSide(base?.pts,side);
       }else{
-        baseEdge={north:0,east:3,south:2,west:1}[side];
+        baseEdge={north:0,east:1,south:2,west:3}[side];
       }
       let newEdge;
       if(shapeType==='tri'){
@@ -233,8 +233,8 @@
         newEdge={north:2,east:1,south:0,west:3}[side];
       }
       // For quadrilateral fields, quadPoints() uses A→B→C→D order.
-      // In the screen orientation, AB=north, BC=west, CD=south, DA=east.
-      // The new field must use the opposite-facing edge so its shared boundary
+      // In the screen orientation: AB=north, BC=east, CD=south, DA=west.
+      // The new field uses the opposite-facing edge so its shared boundary
       // is exactly collinear with the selected base-field boundary.
       return {baseEdge,newEdge};
     }
