@@ -825,7 +825,15 @@
       }
       renderMain();drawAll();
     }
-    ['A','B','C','D'].forEach(x=>['ft','in'].forEach(u=>$( 'shape'+x+u)?.addEventListener('input',()=>{if(!silentInputs)updateCurrent()})));
+    // Mobile/IME-safe dimension updates: input, change and blur all commit the
+    // entered feet/inch value so the multi-field drawing is always refreshed.
+    ['A','B','C','D'].forEach(x=>['ft','in'].forEach(u=>{
+      const el=$('shape'+x+u); if(!el)return;
+      const refresh=()=>{if(!silentInputs)updateCurrent()};
+      el.addEventListener('input',refresh);
+      el.addEventListener('change',refresh);
+      el.addEventListener('blur',refresh);
+    }));
     $('mfShapeType')?.addEventListener('change',()=>{const t=$('mfShapeType').value;$('shapeDWrap').style.display=t==='tri'?'none':'';$('mfTriAttachWrap').style.display=t==='tri'?'':'none';updateBaseSideUI();if(t==='tri'){$('shapeDft').value='';$('shapeDin').value='';}if(!selectedId)updateCurrent();else{const f=saved.find(x=>String(x.id)===String(selectedId));if(f){f.shapeType=t;f.v=dims();const local=localFromDims(f.v,t);if(local){const c=centroid(f.pts),lc=centroid(local);f.pts=translate(local,c[0]-lc[0],c[1]-lc[1]);if(f.baseId!=null){const base=saved.find(x=>String(x.id)===String(f.baseId));if(base)f.pts=alignToBase(f.pts,base.pts,f.side||'east',normalizedAttach(f),Number(f.triAttachEdge)||0,Number(f.quadAttachEdge)||0);}f.area=area(f.pts);reflowDependents(f.id);current={...f,pts:f.pts.map(p=>[...p]),v:f.v.slice()};persist();renderList();}}}});
     $('mfTriAttachEdge')?.addEventListener('change',()=>{if(selectedId){const f=saved.find(x=>String(x.id)===String(selectedId));if(f&&shapeTypeOf(f)==='tri'){f.triAttachEdge=Number($('mfTriAttachEdge').value)||0;if(f.baseId!=null){const base=saved.find(x=>String(x.id)===String(f.baseId));if(base)f.pts=alignToBase(f.pts,base.pts,f.side||'east',normalizedAttach(f),f.triAttachEdge);}f.area=area(f.pts);reflowDependents(f.id);current={...f,pts:f.pts.map(p=>[...p]),v:f.v.slice()};persist();renderList();}}else updateCurrent();});
     $('mfQuadAttachEdge')?.addEventListener('change',()=>{if(selectedId){const f=saved.find(x=>String(x.id)===String(selectedId));if(f&&shapeTypeOf(f)!=='tri'){f.quadAttachEdge=Number($('mfQuadAttachEdge').value)||0;if(f.baseId!=null){const base=saved.find(x=>String(x.id)===String(f.baseId));if(base)f.pts=placeNext(f.pts,base.pts,f.side||'east',normalizedAttach(f),Number(f.triAttachEdge)||0,f.quadAttachEdge);}f.area=area(f.pts);reflowDependents(f.id);current={...f,pts:f.pts.map(p=>[...p]),v:f.v.slice()};persist();renderList();}}else updateCurrent();});
