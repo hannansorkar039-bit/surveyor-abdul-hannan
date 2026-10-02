@@ -46,31 +46,53 @@
     return `${sign}${f} ফুট ${inText} ইঞ্চি`;
   };
   const fmtAreaResult=(area,u,title,extra='')=>`<div class="result-main">${title} = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div>${extra}${landLines(area,u)}`;
-  function readQuad(prefix){
-    return ['AB','BC','CD','DA'].map(k=>+$(prefix+k).value);
+  const readLength=(id,unit)=>{
+    const main=+$(`${id}`).value;
+    if(unit!=='ft') return main;
+    const inchEl=$(`${id}In`);
+    const inches=inchEl?+(inchEl.value||0):0;
+    if(!Number.isFinite(main)||!Number.isFinite(inches)||inches<0||inches>=12) return NaN;
+    return main+inches/12;
+  };
+  const syncLengthInches=(unitId)=>{
+    const unit=$(unitId);
+    if(!unit) return;
+    const panel=unit.closest('.calc-panel');
+    panel.querySelectorAll('.length-inch').forEach(i=>{
+      const disabled=unit.value!=='ft';
+      i.disabled=disabled;
+      i.setAttribute('aria-disabled',disabled?'true':'false');
+    });
+  };
+  document.querySelectorAll('#qdUnit,#qaUnit,#heronUnit,#braUnit').forEach(s=>{
+    s.addEventListener('change',()=>syncLengthInches(s.id));
+    syncLengthInches(s.id);
+  });
+  function readQuad(prefix,unit){
+    return ['AB','BC','CD','DA'].map(k=>readLength(prefix+k,unit));
   }
   function quadDiagonalArea(ab,bc,cd,da,diag){
     const t1=triangleArea(ab,bc,diag), t2=triangleArea(cd,da,diag);
     return t1&&t2?{t1,t2,area:t1+t2}:null;
   }
   $('qdCalc').onclick=()=>{
-    const [ab,bc,cd,da]=readQuad('qd'), diag=+$('qdAC').value, u=$('qdUnit').value, r=$('qdResult');
+    const u=$('qdUnit').value, [ab,bc,cd,da]=readQuad('qd',u), diag=readLength('qdAC',u), r=$('qdResult');
     if(![ab,bc,cd,da,diag].every(v=>v>0)) return err(r,'চারটি বাহু ও কর্ণ AC—সবগুলোই শূন্যের চেয়ে বেশি দিন।');
     const q=quadDiagonalArea(ab,bc,cd,da,diag);
     if(!q) return err(r,'এই মাপগুলো দিয়ে দুটি বৈধ ত্রিভুজ গঠন হচ্ছে না। AC কর্ণটি AB–BC এবং AD–CD—উভয় ত্রিভুজের triangle inequality পূরণ করতে হবে।');
     const sq= sqrAreaForDisplay(q.area,u);
-    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',`<p>△ABC = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △ACD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ AC = ${fmt(diag)} ${u==='ft'?'ফুট':'মিটার'}</p>`);
+    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',`<p>△ABC = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △ACD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ AC = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`);
   };
   function sqrAreaForDisplay(area,u){return u==='ft'?area:area;}
   $('qaCalc').onclick=()=>{
-    const [ab,bc,cd,da]=readQuad('qa'), angle=+$('qaAngle').value, u=$('qaUnit').value, r=$('qaResult');
+    const u=$('qaUnit').value, [ab,bc,cd,da]=readQuad('qa',u), angle=+$('qaAngle').value, r=$('qaResult');
     if(![ab,bc,cd,da,angle].every(v=>v>0)) return err(r,'চারটি বাহু ও A কোণের সঠিক মান দিন।');
     if(!(angle>0&&angle<180)) return err(r,'A কোণ ০°-এর বেশি এবং ১৮০°-এর কম হতে হবে।');
     const rad=angle*Math.PI/180;
     const diag=Math.sqrt(ab*ab+da*da-2*ab*da*Math.cos(rad));
     const q=quadDiagonalArea(ab,bc,cd,da,diag);
     if(!q) return err(r,'দেওয়া বাহু ও কোণের সমন্বয়ে বৈধ চতুর্ভুজ গঠন হচ্ছে না। অনুগ্রহ করে মাঠের মাপগুলো পুনরায় যাচাই করুন।');
-    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',`<p>গাণিতিকভাবে নির্ণীত কর্ণ AC = ${fmt(diag)} ${u==='ft'?'ফুট':'মিটার'}</p><p>A কোণ = ${fmt(angle,6)}°</p>`);
+    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',`<p>গাণিতিকভাবে নির্ণীত কর্ণ AC = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p><p>A কোণ = ${fmt(angle,6)}°</p>`);
   };
   $('qpCalc').onclick=()=>{
     const [ab,bc,cd,da]=readQuad('qp'), diag=+$('qpAC').value, totalUnit=$('qpTotalUnit').value, target=+$('qpTarget').value, targetUnit=$('qpTargetUnit').value, r=$('qpResult');
@@ -111,14 +133,14 @@
       <p class="conversion-note"><strong>${sideName}</strong>-কে নির্ধারিত ভাগ হিসেবে নেওয়া হয়েছে। P বিন্দু CD বাহুর উপর বসবে এবং A–P হবে ভাগরেখা। ফলাফল জ্যামিতিকভাবে মাপ-ভিত্তিক; মাঠে দাগ টানার আগে বাস্তব সীমানা/দিক যাচাই করুন।</p>`;
   };
   $('heronCalc').onclick=()=>{
-    const a=+$('heronA').value,b=+$('heronB').value,c=+$('heronC').value,u=$('heronUnit').value,r=$('heronResult');
+    const u=$('heronUnit').value, a=readLength('heronA',u), b=readLength('heronB',u), c=readLength('heronC',u), r=$('heronResult');
     if(!(a>0&&b>0&&c>0)) return err(r,'তিনটি বাহুর মানই শূন্যের চেয়ে বেশি দিন।');
     if(a+b<=c||a+c<=b||b+c<=a) return err(r,'এই তিন বাহু দিয়ে বৈধ ত্রিভুজ তৈরি হয় না। যেকোনো দুই বাহুর যোগফল তৃতীয় বাহুর চেয়ে বেশি হতে হবে।');
     const s=(a+b+c)/2, area=Math.sqrt(s*(s-a)*(s-b)*(s-c));
     r.innerHTML=`<div class="result-main">ক্ষেত্রফল = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div><p>অর্ধপরিসীমা (s) = ${fmt(s)} ${u}</p>${landLines(area,u)}`;
   };
   $('braCalc').onclick=()=>{
-    const a=+$('braA').value,b=+$('braB').value,c=+$('braC').value,d=+$('braD').value,u=$('braUnit').value,r=$('braResult');
+    const u=$('braUnit').value, a=readLength('braA',u), b=readLength('braB',u), c=readLength('braC',u), d=readLength('braD',u), r=$('braResult');
     if(!(a>0&&b>0&&c>0&&d>0)) return err(r,'চারটি বাহুর মানই শূন্যের চেয়ে বেশি দিন।');
     const s=(a+b+c+d)/2, inside=(s-a)*(s-b)*(s-c)*(s-d);
     if(inside<0) return err(r,'দেওয়া চার বাহু দিয়ে এমন চতুর্ভুজ গঠন সম্ভব নয়।');
