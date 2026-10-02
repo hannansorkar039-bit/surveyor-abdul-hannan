@@ -104,6 +104,7 @@
 <button class="calc-tab" data-tab="quad-partition" role="tab" aria-selected="false">চতুর্ভুজ ভাগ-বণ্টন</button>
 <button class="calc-tab" data-tab="heron" role="tab" aria-selected="false">হেরনের সূত্র</button>
 <button class="calc-tab" data-tab="brahmagupta" role="tab" aria-selected="false">ব্রহ্মগুপ্তের সূত্র</button>
+<button class="calc-tab" data-tab="four-side-sqrt" role="tab" aria-selected="false">চার পাশের মাপ</button>
 <button class="calc-tab" data-tab="inheritance" role="tab" aria-selected="false">মুসলিম উত্তরাধিকার</button>
 </div>
 <section class="calc-panel active" id="panel-quad-diagonal" role="tabpanel">
@@ -181,6 +182,20 @@
 <p class="calc-help">ব্রহ্মগুপ্তের সূত্র নির্ভুলভাবে প্রযোজ্য হতে চতুর্ভুজটি cyclic (বৃত্তীয়) হতে হবে। সাধারণ যেকোনো চতুর্ভুজে শুধু চার বাহু জানলে প্রকৃত ক্ষেত্রফল নির্দিষ্ট হয় না।</p>
 <div class="calc-actions"><button class="calc-btn calc-primary" id="braCalc">হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="brahmagupta">পরিষ্কার</button></div>
 <div class="calc-result" id="braResult" aria-live="polite"></div>
+</section>
+<section class="calc-panel" id="panel-four-side-sqrt" role="tabpanel">
+<h3>চার পাশের মাপের বর্গমূল সূত্রে আনুমানিক ক্ষেত্রফল</h3>
+<div class="formula"><code>ক্ষেত্রফল = √(উত্তর × দক্ষিণ × পূর্ব × পশ্চিম)</code></div>
+<div class="calc-grid">
+<div class="calc-field"><label for="fourNorth">উত্তর</label><div class="length-input-pair"><div><input id="fourNorth" type="number" min="0" step="any" placeholder="ফুট" inputmode="decimal"></div><div><input id="fourNorthIn" class="length-inch" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" inputmode="decimal" aria-label="উত্তর — ইঞ্চি"></div></div><small class="length-input-note">ফুট + ইঞ্চি</small></div>
+<div class="calc-field"><label for="fourSouth">দক্ষিণ</label><div class="length-input-pair"><div><input id="fourSouth" type="number" min="0" step="any" placeholder="ফুট" inputmode="decimal"></div><div><input id="fourSouthIn" class="length-inch" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" inputmode="decimal" aria-label="দক্ষিণ — ইঞ্চি"></div></div><small class="length-input-note">ফুট + ইঞ্চি</small></div>
+<div class="calc-field"><label for="fourEast">পূর্ব</label><div class="length-input-pair"><div><input id="fourEast" type="number" min="0" step="any" placeholder="ফুট" inputmode="decimal"></div><div><input id="fourEastIn" class="length-inch" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" inputmode="decimal" aria-label="পূর্ব — ইঞ্চি"></div></div><small class="length-input-note">ফুট + ইঞ্চি</small></div>
+<div class="calc-field"><label for="fourWest">পশ্চিম</label><div class="length-input-pair"><div><input id="fourWest" type="number" min="0" step="any" placeholder="ফুট" inputmode="decimal"></div><div><input id="fourWestIn" class="length-inch" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" inputmode="decimal" aria-label="পশ্চিম — ইঞ্চি"></div></div><small class="length-input-note">ফুট + ইঞ্চি</small></div>
+</div>
+<div class="length-mode-note">প্রতিটি পাশের মাপ ফুট ও ইঞ্চিতে দিন। ১২ ইঞ্চি = ১ ফুট।</div>
+<p class="calc-help">চার পাশের দৈর্ঘ্য থেকে এই সূত্রে পাওয়া ফলটি আনুমানিক ক্ষেত্রফল। সাধারণ অনিয়মিত চতুর্ভুজের প্রকৃত ক্ষেত্রফল নির্ণয়ে কোণ/কর্ণের অতিরিক্ত তথ্য প্রয়োজন হতে পারে।</p>
+<div class="calc-actions"><button class="calc-btn calc-primary" id="fourSideCalc">হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="four-side-sqrt">পরিষ্কার</button></div>
+<div class="calc-result" id="fourSideResult" aria-live="polite"></div>
 </section>
 <section class="calc-panel" id="panel-inheritance" role="tabpanel">
 <div class="inherit-hero">
