@@ -137,7 +137,7 @@
 <div class="calc-result" id="qaResult" aria-live="polite"></div>
 </section>
 <section class="calc-panel" id="panel-quad-partition" role="tabpanel">
-  <div class="formula"><code>চার বাহু + AC কর্ণ → অনিয়মিত অবতল চতুর্ভুজ → মোট ক্ষেত্রফল → নির্ধারিত ভাগ → ফুট/ইঞ্চিসহ ভাগের সীমারেখার Drawing</code></div>
+  <div class="formula"><code>চার বাহু + AC কর্ণ → অনিয়মিত চতুর্ভূজ → একাধিক প্লট/ভাগ → ফুট/ইঞ্চিসহ যৌথ Drawing</code></div>
   <div class="calc-grid">
     <div class="calc-field"><label><span class="direction-badge north">উত্তর</span> AB</label><div class="fi-row"><input id="qpABft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpABin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
     <div class="calc-field"><label><span class="direction-badge east">পূর্ব</span> BC</label><div class="fi-row"><input id="qpBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="qpBCin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
@@ -150,7 +150,7 @@
     <div class="calc-field qp-direction-field"><label for="qpPartitionDirection">নির্ধারিত ভাগ কোন দিক থেকে আলাদা হবে</label><select id="qpPartitionDirection"><option value="north">উত্তর দিক — AB</option><option value="east">পূর্ব দিক — BC</option><option value="south">দক্ষিণ দিক — CD</option><option value="west">পশ্চিম দিক — DA</option></select></div>
   </div>
   <div class="calc-actions"><button class="calc-btn calc-primary" id="qpCalc" type="button">ভাগের সীমারেখা হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="quad-partition" type="button">পরিষ্কার</button></div>
-  <p class="calc-help"><strong>ভাগের দিক:</strong> উত্তর/পূর্ব/দক্ষিণ/পশ্চিম থেকে যেদিক নির্বাচন করবেন, সেই দিকটি সম্পূর্ণ রেখে P–Q নতুন ভাগরেখার মাধ্যমে জমিকে দুইটি চতুর্ভূজ অংশে ভাগ করা হবে—ত্রিভুজ করা হবে না। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে এবং পশ্চিম বামে থাকবে। ভাগকৃত অংশ ও অবশিষ্ট অংশের আলাদা ফুট-ইঞ্চি মাপ, নতুন ভাগরেখা এবং প্রতিটি অংশের কর্ণ দেখানো হবে। কর্তন/ভাগকৃত ৪ দিক এডিট করে “নতুন ক্ষেত্রফল” চাপলে পুরোনো AQ স্থির থাকবে না; নতুন AQ ও Drawing পুনরায় হিসাব হবে।</p>
+  <p class="calc-help"><strong>ভাগের দিক:</strong> উত্তর/পূর্ব/দক্ষিণ/পশ্চিম থেকে যেদিক নির্বাচন করবেন, সেই দিকটি সম্পূর্ণ রেখে P–Q নতুন ভাগরেখার মাধ্যমে জমি ভাগ করা হবে। প্রথম ভাগের পর অবশিষ্ট জমি থেকে “আরেকটি ভাগ যোগ করুন” দিয়ে একাধিক প্লট তৈরি করা যাবে। প্রতিটি প্লটের ফুট-ইঞ্চি মাপ সরাসরি এডিটযোগ্য; আগের কোনো প্লটের মাপ বদলালে তার পরের প্লটগুলো স্বয়ংক্রিয়ভাবে পুনর্গণনা হবে এবং সব প্লট একই বড় Drawing-এ দেখা যাবে। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে ও পশ্চিম বামে থাকবে। “নতুন ক্ষেত্রফল”, “সেভ করুন” এবং “PDF করুন” অপশন থাকবে।</p>
   <div class="calc-result" id="qpResult" aria-live="polite"></div>
 </section>
 <section class="calc-panel" id="panel-heron" role="tabpanel">
