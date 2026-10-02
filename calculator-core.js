@@ -179,6 +179,14 @@
     r.innerHTML=`<div class="result-main">ব্রহ্মগুপ্ত ক্ষেত্রফল = ${fmt(area)} ${u==='ft'?'sq ft':'sq m'}</div><p>অর্ধপরিসীমা (s) = ${fmt(s)} ${u}</p><div class="warning">এই ফলটি ব্রহ্মগুপ্তের সূত্রের শর্ত অনুযায়ী <strong>cyclic quadrilateral</strong>-এর জন্য প্রযোজ্য। সাধারণ চতুর্ভুজে শুধু চার বাহু থেকে প্রকৃত ক্ষেত্রফল নিশ্চিত করা যায় না।</div>${landLines(area,u)}`;
   };
 
+  $('fourSideCalc').onclick=()=>{
+    const n=readLength('fourNorth','ft'), s=readLength('fourSouth','ft'), e=readLength('fourEast','ft'), w=readLength('fourWest','ft'), r=$('fourSideResult');
+    if(!(n>0&&s>0&&e>0&&w>0)) return err(r,'উত্তর, দক্ষিণ, পূর্ব ও পশ্চিম—চারটি মাপই শূন্যের চেয়ে বেশি দিন।');
+    const area=Math.sqrt(n*s*e*w);
+    const percent=area/435.6;
+    r.innerHTML=`<div class="result-main">আনুমানিক ক্ষেত্রফল = ${fmt(area)} বর্গফুট</div><div class="result-grid"><div class="result-item"><strong>${fmt(percent)} শতাংশ</strong><span>১ শতাংশ = ৪৩৫.৬ বর্গফুট</span></div></div><p>সূত্র: √(${fmt(n)} × ${fmt(s)} × ${fmt(e)} × ${fmt(w)})</p><div class="warning">এটি চার পাশের মাপের বর্গমূল সূত্রভিত্তিক আনুমানিক ক্ষেত্রফল। সাধারণ চতুর্ভুজের প্রকৃত ক্ষেত্রফল যাচাইয়ের জন্য কর্ণ/কোণের তথ্য প্রয়োজন হতে পারে।</div>`;
+  };
+
   const money=n=>'৳ '+Number(n||0).toLocaleString('bn-BD',{minimumFractionDigits:2,maximumFractionDigits:2});
   const frac=n=>{const k=[[1,2,'১/২'],[1,3,'১/৩'],[1,4,'১/৪'],[1,6,'১/৬'],[1,8,'১/৮'],[2,3,'২/৩'],[1,12,'১/১২'],[1,24,'১/২৪']];for(const [a,b,t] of k)if(Math.abs(n-a/b)<1e-8)return t;return (n*100).toFixed(2)+'%';};
   const F=[
