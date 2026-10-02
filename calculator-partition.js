@@ -185,6 +185,28 @@
     south:{key:'CD',i:2,label:'দক্ষিণ',start:'C',end:'D',opposite:'A'},
     west:{key:'DA',i:3,label:'পশ্চিম',start:'D',end:'A',opposite:'B'}
   };
+  // Keep the cardinal identity of every boundary edge on every remaining parcel.
+  // After a split, array indexes rotate, so direction must never be inferred from
+  // the vertex index alone.
+  const CARDINAL_SIDES=['north','east','south','west'];
+  function sideEdgeIndex(q,direction){
+    const meta=q.edgeMeta || CARDINAL_SIDES;
+    let idx=meta.indexOf(direction);
+    if(idx<0) idx=meta.indexOf('cut:'+direction);
+    return idx>=0 ? idx : (SIDE_META[direction]||SIDE_META.north).i;
+  }
+  function remainderForCutWithMeta(P,Q,R,L,sideIndex,edgeMeta){
+    const next=(sideIndex+1)%4, prev=(sideIndex+3)%4, opposite=(sideIndex+2)%4;
+    return {
+      pts:[P,Q,R,L],
+      edgeMeta:[
+        String(edgeMeta[sideIndex]).replace(/^cut:/,''),
+        String(edgeMeta[next]).replace(/^cut:/,''),
+        String(edgeMeta[opposite]).replace(/^cut:/,''),
+        String(edgeMeta[prev]).replace(/^cut:/,'')
+      ]
+    };
+  }
   function remainderForCut(pts,P,Q,R,L,sideIndex){
     // Preserve the original clockwise vertex order and the correct surviving
     // boundary sequence for each selected side.
@@ -199,7 +221,8 @@
   function partitionForDirection(q,target,direction){
     const meta=SIDE_META[direction] || SIDE_META.north;
     const pts=q.pts;
-    const i=meta.i;
+    const edgeMeta=q.edgeMeta || CARDINAL_SIDES;
+    const i=sideEdgeIndex(q,direction);
     const n=(i+1)%4;
     const prev=(i+3)%4;
     const opposite=(i+2)%4;
@@ -221,7 +244,8 @@
       const P=interpolate(A,L,t);
       const Q=interpolate(B,R,t);
       const targetPoly=[A,B,Q,P];
-      const remainPoly=remainderForCut(pts,P,Q,R,L,i);
+      const remainInfo=remainderForCutWithMeta(P,Q,R,L,i,edgeMeta);
+      const remainPoly=remainInfo.pts;
       if (!polygonIsInside(targetPoly,pts) || !polygonIsInside(remainPoly,pts)) return null;
       if (!polygonEdgesInside(targetPoly,pts) || !polygonEdgesInside(remainPoly,pts)) return null;
       if (!segmentInsidePolygon(P,Q,pts)) return null;
@@ -266,6 +290,7 @@
     if(!solved) return null;
 
     const {t,P,Q,targetPoly,remainPoly,targetArea,remainArea}=solved;
+    const remainInfo=remainderForCutWithMeta(P,Q,R,L,i,edgeMeta);
     const names=['A','B','C','D'];
     const aName=names[i], bName=names[n], pSideName=names[prev], rName=names[opposite];
     const sideNames=['উত্তর','পূর্ব','দক্ষিণ','পশ্চিম'];
@@ -292,6 +317,8 @@
       P,Q,t,direction,side:meta.key,sideLabel:meta.label,startLabel:meta.start,endLabel:meta.end,
       fraction:t,partArea:targetArea,cutName,cutLength:dist(P,Q),
       pSideIndex:prev,qSideIndex:n,oppositeIndex:opposite,targetPoly,remainPoly,
+      targetEdgeMeta:[direction,edgeMeta[n],'cut:'+direction,edgeMeta[prev]],
+      remainEdgeMeta:remainInfo.edgeMeta,
       targetSegments,remainSegments
     };
   }
@@ -330,14 +357,17 @@
   // are directly editable. This is also used by every later split.
   function partitionFromEditedBoundary(q, part, vals){
     const meta=SIDE_META[part.direction] || SIDE_META.north;
-    const i=meta.i, n=(i+1)%4, prev=(i+3)%4;
+    const edgeMeta=q.edgeMeta || CARDINAL_SIDES;
+    const i=sideEdgeIndex(q,part.direction), n=(i+1)%4, prev=(i+3)%4;
     const A=q.pts[i], B=q.pts[n], L=q.pts[prev], R=q.pts[(i+2)%4];
     const fullNext=dist(B,R), fullPrev=dist(A,L), fullSelected=dist(A,B);
     const wantedNext=Number(vals[1]), wantedPrev=Number(vals[3]);
     if(!(fullNext>EPS&&fullPrev>EPS&&fullSelected>EPS&&wantedNext>0&&wantedPrev>0)) return null;
     if(wantedNext>fullNext+1e-7 || wantedPrev>fullPrev+1e-7) return null;
     const Q=interpolate(B,R,wantedNext/fullNext), P=interpolate(A,L,wantedPrev/fullPrev);
-    const targetPoly=[A,B,Q,P], remainPoly=[P,Q,R,L];
+    const targetPoly=[A,B,Q,P];
+    const remainInfo=remainderForCutWithMeta(P,Q,R,L,i,edgeMeta);
+    const remainPoly=remainInfo.pts;
     if(!isSimpleQuad(targetPoly) || !isSimpleQuad(remainPoly)) return null;
     if(!polygonIsInside(targetPoly,q.pts) || !polygonIsInside(remainPoly,q.pts)) return null;
     if(!polygonEdgesInside(targetPoly,q.pts) || !polygonEdgesInside(remainPoly,q.pts) || !segmentInsidePolygon(P,Q,q.pts)) return null;
@@ -364,7 +394,9 @@
     ];
     return {...part,P,Q,targetPoly,remainPoly,partArea:targetArea,cutLength:dist(P,Q),targetSegments,remainSegments,
       editedTarget:{poly:targetPoly,area:targetArea,diagonal:dist(A,Q),sides:[dist(A,B),dist(B,Q),dist(Q,P),dist(P,A)]},
-      editedTargetDiagonal:dist(A,Q),editedTargetSides:[dist(A,B),dist(B,Q),dist(Q,P),dist(P,A)],editedBoundary:true};
+      editedTargetDiagonal:dist(A,Q),editedTargetSides:[dist(A,B),dist(B,Q),dist(Q,P),dist(P,A)],
+      targetEdgeMeta:[part.direction,edgeMeta[n],'cut:'+part.direction,edgeMeta[prev]],
+      remainEdgeMeta:remainInfo.edgeMeta,editedBoundary:true};
   }
 
   function dimensionTable(title,segments){
@@ -487,7 +519,7 @@
 
   function recalcSplit(id){
     const idx=qpState.splits.findIndex(r=>r.id===id); if(idx<0) return;
-    const rec=qpState.splits[idx], parent=idx===0?qpState.q:qpState.splits[idx-1].part?{pts:qpState.splits[idx-1].part.remainPoly,area:polygonArea(qpState.splits[idx-1].part.remainPoly),type:'convex'}:null;
+    const rec=qpState.splits[idx], parent=idx===0?qpState.q:qpState.splits[idx-1].part?{pts:qpState.splits[idx-1].part.remainPoly,edgeMeta:qpState.splits[idx-1].part.remainEdgeMeta||CARDINAL_SIDES.slice(),area:polygonArea(qpState.splits[idx-1].part.remainPoly),type:'convex'}:null;
     if(!parent){renderMultiResult('আগের ভাগের জ্যামিতি সঠিক নেই, তাই এই ভাগ আপডেট করা যায়নি।');return;}
     const next=readFI(`qpSplit${id}_1ft`,`qpSplit${id}_1in`), prev=readFI(`qpSplit${id}_3ft`,`qpSplit${id}_3in`);
     if(next===null||prev===null||!(next>0)||!(prev>0)){renderMultiResult('এডিটযোগ্য দুই পাশের ফুট ও ইঞ্চির মান সঠিকভাবে দিন।');return;}
@@ -500,7 +532,7 @@
     // Every later split is recalculated from the newly changed remaining parcel.
     let warningMsg='';
     for(let j=idx+1;j<qpState.splits.length;j++){
-      const child=qpState.splits[j], p=qpState.splits[j-1].part?{pts:qpState.splits[j-1].part.remainPoly,area:polygonArea(qpState.splits[j-1].part.remainPoly),type:'convex'}:null;
+      const child=qpState.splits[j], p=qpState.splits[j-1].part?{pts:qpState.splits[j-1].part.remainPoly,edgeMeta:qpState.splits[j-1].part.remainEdgeMeta||CARDINAL_SIDES.slice(),area:polygonArea(qpState.splits[j-1].part.remainPoly),type:'convex'}:null;
       if(!p){child.part=null;warningMsg=`${j+1} নং ভাগের জন্য আগের অবশিষ্ট জমি পাওয়া যায়নি।`;break;}
       let np=null;
       if(child.editNext&&child.editPrev){const baseChild=findPartition(p,child.targetArea,child.direction);if(baseChild) np=partitionFromEditedBoundary(p,baseChild,[partSideValues(baseChild)[0],child.editNext,partSideValues(baseChild)[2],child.editPrev]);}
@@ -519,7 +551,8 @@
     if(!remain){renderMultiResult('বর্তমান অবশিষ্ট জমির Drawing সঠিক নয়।');return;}
     const area=polygonArea(remain), u=unit?.value||'decimal', target=u==='sqft'?x:u==='sqm'?x*10.763910416709722:x*SQFT_PER_DECIMAL;
     if(!(target>0) || target>=area-EPS){renderMultiResult(`পরবর্তী ভাগের পরিমাণ অবশিষ্ট জমির চেয়ে কম হতে হবে। অবশিষ্ট ≈ ${bn(area/SQFT_PER_DECIMAL)} শতাংশ।`);return;}
-    const parent={pts:remain,area,type:'convex'}, direction=dir?.value||'north';
+    const lastPart=qpState.splits[qpState.splits.length-1].part;
+    const parent={pts:remain,edgeMeta:lastPart?.remainEdgeMeta||CARDINAL_SIDES.slice(),area,type:'convex'}, direction=dir?.value||'north';
     const part=findPartition(parent,target,direction);
     if(!part){renderMultiResult('নির্বাচিত দিক থেকে এই পরিমাণ নতুন প্লট তৈরি করা যাচ্ছে না। অন্য দিক বা কম ক্ষেত্রফল দিন।');return;}
     const rec={id:++splitSeq,parentId:qpState.splits[qpState.splits.length-1].id,direction,targetArea:target,part,editNext:null,editPrev:null};
@@ -681,6 +714,7 @@
     if(target>=q.area-EPS) return warning(`ভাগের পরিমাণ মোট জমির চেয়ে কম হতে হবে। মোট জমি ≈ ${bn(q.area)} বর্গফুট।`);
     const direction=$('qpPartitionDirection')?.value||'north', part=findPartition(q,target,direction);
     if(!part){const m=SIDE_META[direction];return warning(`${m.label} দিক থেকে নির্বাচিত পরিমাণ ভাগ করা যাচ্ছে না। কম ক্ষেত্রফল বা অন্য দিক নির্বাচন করুন।`);}
+    q.edgeMeta=CARDINAL_SIDES.slice();
     qpState.q=q; qpState.splits=[]; splitSeq=0;
     qpState.splits.push({id:++splitSeq,parentId:null,direction,targetArea:target,part,editNext:null,editPrev:null,notice:''});
     renderMultiResult();
