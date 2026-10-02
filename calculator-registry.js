@@ -278,10 +278,69 @@
         return [2*qx-p[0],2*qy-p[1]];
       });
     }
+    // Quadrilateral shared-boundary alignment (AB=north, BC=east, CD=south, DA=west).
+    // This only controls Drawing/Alignment placement; no land-area calculation is changed.
+    function quadBoundaryEndpoints(pts,side){
+      const e={north:0,east:1,south:2,west:3}[side];
+      if(e==null||!pts||pts.length!==4)return null;
+      if(side==='north') return {start:pts[e],end:pts[(e+1)%4]}; // A -> B
+      if(side==='east')  return {start:pts[e],end:pts[(e+1)%4]}; // B -> C
+      if(side==='south') return {start:pts[(e+1)%4],end:pts[e]}; // D -> C
+      return {start:pts[(e+1)%4],end:pts[e]};                   // A -> D
+    }
+    function quadBoundaryAlign(shape,base,side,attach){
+      if(!shape||!base||shape.length!==4||base.length!==4||!['north','east','south','west'].includes(side))return null;
+      const bp=quadBoundaryEndpoints(base,side), sp=quadBoundaryEndpoints(shape,side);
+      if(!bp||!sp)return null;
+      const bv=[bp.end[0]-bp.start[0],bp.end[1]-bp.start[1]], sv=[sp.end[0]-sp.start[0],sp.end[1]-sp.start[1]];
+      const bl=Math.hypot(bv[0],bv[1]), ll=Math.hypot(sv[0],sv[1]);
+      if(!(bl>1e-9&&ll>1e-9))return null;
+      const ux=bv[0]/bl, uy=bv[1]/bl;
+      const a=attach||{mode:'center',offset:0,ref:'start'};
+      let startOffset=(bl-ll)/2;
+      if(a.mode==='start'||a.mode==='north') startOffset=0;
+      else if(a.mode==='end'||a.mode==='south') startOffset=bl-ll;
+      else if(a.mode==='custom'){
+        const off=Math.max(0,Number(a.offset)||0);
+        startOffset=a.ref==='end' ? bl-ll-off : off;
+      }
+      const targetStart=[bp.start[0]+ux*startOffset,bp.start[1]+uy*startOffset];
+      const targetEnd=[targetStart[0]+ux*ll,targetStart[1]+uy*ll];
+      const targetAng=Math.atan2(targetEnd[1]-targetStart[1],targetEnd[0]-targetStart[0]);
+      const localAng=Math.atan2(sv[1],sv[0]);
+      let r=rotatePts(shape,targetAng-localAng);
+      const rs=quadBoundaryEndpoints(r,side).start;
+      r=translate(r,targetStart[0]-rs[0],targetStart[1]-rs[1]);
+
+      // Put the new field on the opposite side of the selected base boundary.
+      const baseC=centroid(base), fieldC=centroid(r);
+      const lv=[targetEnd[0]-targetStart[0],targetEnd[1]-targetStart[1]];
+      const baseSide=cross2(lv[0],lv[1],baseC[0]-targetStart[0],baseC[1]-targetStart[1]);
+      const fieldSide=cross2(lv[0],lv[1],fieldC[0]-targetStart[0],fieldC[1]-targetStart[1]);
+      if(Math.abs(baseSide)>1e-9&&Math.abs(fieldSide)>1e-9&&Math.sign(baseSide)===Math.sign(fieldSide)){
+        r=reflectAcrossLine(r,targetStart,targetEnd);
+      }
+
+      // Lock only the selected boundary endpoints to eliminate floating-point drift.
+      const e={north:0,east:1,south:2,west:3}[side];
+      if(side==='north'||side==='east'){
+        r[e]=[...targetStart]; r[(e+1)%4]=[...targetEnd];
+      }else{
+        r[(e+1)%4]=[...targetStart]; r[e]=[...targetEnd];
+      }
+      return r;
+    }
     function alignToBase(shape,base,side,attach,triAttachEdge=0,quadAttachEdge=0){
-      // Place the new field against the selected boundary using only a rigid
-      // rotation + translation.  The entered feet/inch dimensions are never
-      // scaled or changed.
+      if(shapeTypeOf(base)==='quad' && shapeTypeOf(shape)==='quad' && ['north','east','south','west'].includes(side)){
+        const fixed=quadBoundaryAlign(shape,base,side,attach);
+        if(fixed)return fixed;
+      }
+      
+      
+      
+      
+      
+      
       const {baseEdge,newEdge}=sideEdges(side,base,shape,triAttachEdge,quadAttachEdge);
       const bp=base[baseEdge], bq=base[(baseEdge+1)%base.length];
       const bv=edgeVec(base,baseEdge), lv=edgeVec(shape,newEdge);
@@ -289,50 +348,151 @@
       if(!(bl>1e-9&&ll>1e-9))return shape.map(p=>[...p]);
 
       const a=attach||{mode:'center',offset:0,ref:'start'};
-
-      // IMPORTANT: do not clamp the gap to zero.  If the new attached side is
-      // longer than the base side, a negative offset is required so that the
-      // selected attachment (especially CENTER) remains geometrically exact.
-      let startOffset=(bl-ll)/2;
+      const maxGap=Math.max(0,bl-ll);
+      let startOffset=maxGap/2;
       if(a.mode==='north'||a.mode==='start')startOffset=0;
-      else if(a.mode==='south'||a.mode==='end')startOffset=bl-ll;
+      else if(a.mode==='south'||a.mode==='end')startOffset=maxGap;
       else if(a.mode==='custom'){
         const off=Math.max(0,Number(a.offset)||0);
-        startOffset=a.ref==='end' ? (bl-ll-off) : off;
+        startOffset=a.ref==='end'?maxGap-off:off;
       }
+      if(ll<=bl) startOffset=Math.max(0,Math.min(maxGap,startOffset));
+      else startOffset=a.ref==='end'
+        ? (bl-ll-Math.max(0,Number(a.offset)||0))
+        : Math.max(0,Number(a.offset)||0);
 
+      
+      
       const ux=bv[0]/bl, uy=bv[1]/bl;
       const e1=[bp[0]+ux*startOffset,bp[1]+uy*startOffset];
       const e2=[bp[0]+ux*(startOffset+ll),bp[1]+uy*(startOffset+ll)];
-
-      // Adjacent fields traverse their common boundary in opposite directions.
-      // Map the new field's attached edge to e2 -> e1 so the two boundaries are
-      // exactly collinear and the field remains on the outside of the base.
-      const targetAng=Math.atan2(e1[1]-e2[1],e1[0]-e2[0]);
+      const targetAng=Math.atan2(e2[1]-e1[1],e2[0]-e1[0]);
       const localAng=Math.atan2(lv[1],lv[0]);
-      let r=rotatePts(shape,targetAng-localAng);
+
+      
+      // Adjacent cadastral fields share a boundary in the opposite traversal
+      // direction. Always map the new field's shared edge in reverse endpoint
+      // order. This prevents the north/south placement case from horizontally
+      // mirroring the field (BC/east on the left and DA/west on the right).
+      const targetAngRev=Math.atan2(e1[1]-e2[1],e1[0]-e2[0]);
+      let r=rotatePts(shape,targetAngRev-localAng);
       const rr0=r[newEdge];
       r=translate(r,e2[0]-rr0[0],e2[1]-rr0[1]);
 
-      // Decide the outside side from the actual base polygon, not from global
-      // north/east/south/west vectors.  This also works for rotated/irregular
-      // fields and for a longer new boundary.
+      
+      
+      
+      
+      
+      
       const edgeA=r[newEdge], edgeB=r[(newEdge+1)%r.length];
-      const baseC=centroid(base), fieldC=centroid(r);
-      const baseSide=cross2(edgeB[0]-edgeA[0],edgeB[1]-edgeA[1],
-                            baseC[0]-edgeA[0],baseC[1]-edgeA[1]);
-      const fieldSide=cross2(edgeB[0]-edgeA[0],edgeB[1]-edgeA[1],
-                             fieldC[0]-edgeA[0],fieldC[1]-edgeA[1]);
-      if(Math.abs(baseSide)>1e-9&&Math.abs(fieldSide)>1e-9&&Math.sign(baseSide)===Math.sign(fieldSide)){
-        r=reflectAcrossLine(r,edgeA,edgeB);
+      const edgeMidPt=[(edgeA[0]+edgeB[0])/2,(edgeA[1]+edgeB[1])/2];
+
+      if(side==='north'||side==='east'||side==='south'||side==='west'){
+        // Keep the new field on the OUTSIDE of the selected boundary.
+        // The previous version used a global north/east/south/west vector here;
+        // that could put a rotated/skewed field back over the base field.
+        // Determine the correct side from the base field's centroid instead.
+        const centroidOf=pts=>{
+          let sx=0,sy=0;
+          pts.forEach(p=>{sx+=p[0];sy+=p[1]});
+          return [sx/pts.length,sy/pts.length];
+        };
+        const baseC=centroidOf(base);
+        const baseSide=cross2(edgeB[0]-edgeA[0],edgeB[1]-edgeA[1],baseC[0]-edgeA[0],baseC[1]-edgeA[1]);
+        const fieldC=centroidOf(r);
+        const fieldSide=cross2(edgeB[0]-edgeA[0],edgeB[1]-edgeA[1],fieldC[0]-edgeA[0],fieldC[1]-edgeA[1]);
+
+        // If the new field is on the same side of the shared boundary as the
+        // base field, reflect it across that boundary so it sits outside.
+        if(Math.abs(baseSide)>1e-9 && Math.abs(fieldSide)>1e-9 && Math.sign(baseSide)===Math.sign(fieldSide)){
+          r=reflectAcrossLine(r,edgeA,edgeB);
+        }
+      }else{
+        
+        
+        
+        const baseSigns=[];
+        base.forEach((p,i)=>{
+          if(i===baseEdge || i===(baseEdge+1)%base.length)return;
+          const c=(edgeB[0]-edgeA[0])*(p[1]-edgeA[1])-
+                  (edgeB[1]-edgeA[1])*(p[0]-edgeA[0]);
+          if(Math.abs(c)>1e-8)baseSigns.push(Math.sign(c));
+        });
+        const newSigns=[];
+        r.forEach((p,i)=>{
+          if(i===newEdge || i===(newEdge+1)%r.length)return;
+          const c=(edgeB[0]-edgeA[0])*(p[1]-edgeA[1])-
+                  (edgeB[1]-edgeA[1])*(p[0]-edgeA[0]);
+          if(Math.abs(c)>1e-8)newSigns.push(Math.sign(c));
+        });
+        const baseSide=baseSigns.reduce((sum,v)=>sum+v,0)>=0?1:-1;
+        const newSide=newSigns.reduce((sum,v)=>sum+v,0)>=0?1:-1;
+        if(newSigns.length && baseSigns.length && newSide===baseSide){
+          r=reflectAcrossLine(r,edgeA,edgeB);
+        }
       }
 
-      // Lock the shared endpoints exactly after the outside-side correction.
-      // Reflection preserves the line; this only removes floating-point drift.
-      r[newEdge]=[...e2];
-      r[(newEdge+1)%r.length]=[...e1];
+      
+      
+      
+      
+      
+      if(r.length===4 && (attach?.mode||'center')==='center' && (side==='north'||side==='east'||side==='south'||side==='west')){
+        const sa=r[newEdge], sb=r[(newEdge+1)%r.length];
+        const mx=(sa[0]+sb[0])/2, my=(sa[1]+sb[1])/2;
+        const vx=sb[0]-sa[0], vy=sb[1]-sa[1], L=Math.hypot(vx,vy);
+        if(L>1e-9){
+          
+          
+          const ux=vx/L, uy=vy/L;
+          const px=-uy, py=ux;
+          const mirrored=r.map(p=>{
+            const dx=p[0]-mx, dy=p[1]-my;
+            const along=dx*ux+dy*uy;
+            const across=dx*px+dy*py;
+            return [mx+along*ux-across*px, my+along*uy-across*py];
+          });
+          
+          
+          
+          
+          const wants=[[0,1],[1,0],[0,-1],[-1,0]];
+          const cardinalScore=pts=>{
+            const cx=pts.reduce((sum,p)=>sum+p[0],0)/pts.length;
+            const cy=pts.reduce((sum,p)=>sum+p[1],0)/pts.length;
+            let score=0;
+            for(let i=0;i<4;i++){
+              const e=pts[i], q=pts[(i+1)%4];
+              const emx=(e[0]+q[0])/2, emy=(e[1]+q[1])/2;
+              score+=(emx-cx)*wants[i][0]+(emy-cy)*wants[i][1];
+            }
+            return score;
+          };
+          if(cardinalScore(mirrored)>cardinalScore(r))r=mirrored;
+        }
+      }
+
+      
+      
+      
+      
+      const p0=r[newEdge], p1=r[(newEdge+1)%r.length];
+      const vx=p1[0]-p0[0], vy=p1[1]-p0[1], vlen=Math.hypot(vx,vy);
+      if(vlen>1e-9){
+        const tx=(e2[0]-e1[0])/vlen, ty=(e2[1]-e1[1])/vlen;
+        
+        const dF=Math.hypot(p0[0]-e1[0],p0[1]-e1[1])+Math.hypot(p1[0]-e2[0],p1[1]-e2[1]);
+        const dR=Math.hypot(p0[0]-e2[0],p0[1]-e2[1])+Math.hypot(p1[0]-e1[0],p1[1]-e1[1]);
+        if(dF<=dR){r[newEdge]=[...e1];r[(newEdge+1)%r.length]=[...e2];}
+        else{r[newEdge]=[...e2];r[(newEdge+1)%r.length]=[...e1];}
+      }
       return r;
     }
+    
+    
+    
+    
     function affineFitAtCorner(shape,base,baseEdge,newEdge,attach){
       const mode=attach?.mode||'center';
       if(mode!=='start'&&mode!=='end') return null;
@@ -378,12 +538,78 @@
       return best;
     }
     function twoLineAssigned(base,shape,side,attach,triAttachEdge=0,quadAttachEdge=0){
-      // Start/end attachment uses the same exact boundary solver as CENTER.
-      // This keeps the new field's entered dimensions unchanged while locking
-      // the selected edge to the chosen base-field boundary.
+      if(shapeTypeOf(base)==='quad' && shapeTypeOf(shape)==='quad' && ['north','east','south','west'].includes(side)){
+        return quadBoundaryAlign(shape,base,side,attach);
+      }
+      // Rigid two-boundary placement for end/start attachments.
+      // The previous implementation was a stub, so changing a new field's
+      // feet/inch values could leave the attached field drifting into the
+      // neighbouring field.  This routine deliberately uses only rotation +
+      // translation (no scaling), so the entered dimensions and all area
+      // calculations remain unchanged.
       const mode=attach?.mode||'center';
       if((mode!=='start'&&mode!=='end')||!base||!shape)return null;
-      return alignToBase(shape,base,side,attach,triAttachEdge,quadAttachEdge);
+      const {baseEdge,newEdge}=sideEdges(side,base,shape,triAttachEdge,quadAttachEdge);
+      const bn=base.length,sn=shape.length;
+      const baseA=base[baseEdge],baseB=base[(baseEdge+1)%bn];
+      const newA=shape[newEdge],newB=shape[(newEdge+1)%sn];
+      const baseVec=[baseB[0]-baseA[0],baseB[1]-baseA[1]];
+      const newVec=[newB[0]-newA[0],newB[1]-newA[1]];
+      const bl=Math.hypot(baseVec[0],baseVec[1]),ll=Math.hypot(newVec[0],newVec[1]);
+      if(!(bl>1e-9&&ll>1e-9))return null;
+
+      // At the selected end, keep the corresponding corner exactly on the
+      // base corner.  The shared boundary remains a single straight line.
+      const baseAnchor=mode==='start'?baseA:baseB;
+      const newAnchor=mode==='start'?newA:newB;
+      const targetAng=mode==='start'
+        ? Math.atan2(baseVec[1],baseVec[0])
+        : Math.atan2(-baseVec[1],-baseVec[0]);
+      const localAng=mode==='start'
+        ? Math.atan2(newVec[1],newVec[0])
+        : Math.atan2(-newVec[1],-newVec[0]);
+
+      let r=rotatePts(shape,targetAng-localAng);
+      const ra=mode==='start'?r[newEdge]:r[(newEdge+1)%sn];
+      r=translate(r,baseAnchor[0]-ra[0],baseAnchor[1]-ra[1]);
+
+      // Put the new field on the outside of the selected base boundary.
+      const edgeA=r[newEdge],edgeB=r[(newEdge+1)%r.length];
+      const baseC=centroid(base);
+      const fieldC=centroid(r);
+      const lineVec=[edgeB[0]-edgeA[0],edgeB[1]-edgeA[1]];
+      const baseSide=cross2(lineVec[0],lineVec[1],baseC[0]-edgeA[0],baseC[1]-edgeA[1]);
+      const fieldSide=cross2(lineVec[0],lineVec[1],fieldC[0]-edgeA[0],fieldC[1]-edgeA[1]);
+      if(Math.abs(baseSide)>1e-9&&Math.abs(fieldSide)>1e-9&&Math.sign(baseSide)===Math.sign(fieldSide)){
+        r=reflectAcrossLine(r,edgeA,edgeB);
+        // Reflection reverses the edge direction; restore the selected corner
+        // exactly at the requested base corner.
+        const ra2=mode==='start'?r[newEdge]:r[(newEdge+1)%sn];
+        r=translate(r,baseAnchor[0]-ra2[0],baseAnchor[1]-ra2[1]);
+      }
+
+      // Final shared-edge lock: force only the two attached vertices onto the
+      // exact base line.  No other vertex is altered, so side lengths remain
+      // exactly those produced from the user's feet/inch input.
+      const finalA=r[newEdge],finalB=r[(newEdge+1)%r.length];
+      const desiredA=mode==='start'?baseA:baseB;
+      const desiredB=mode==='start'
+        ? [baseA[0]+baseVec[0]*Math.min(1,ll/bl),baseA[1]+baseVec[1]*Math.min(1,ll/bl)]
+        : [baseB[0]-baseVec[0]*Math.min(1,ll/bl),baseB[1]-baseVec[1]*Math.min(1,ll/bl)];
+      const d0=Math.hypot(finalA[0]-desiredA[0],finalA[1]-desiredA[1])+Math.hypot(finalB[0]-desiredB[0],finalB[1]-desiredB[1]);
+      const altA=mode==='start'?baseA:baseB;
+      const altB=mode==='start'
+        ? [baseA[0]-baseVec[0]*Math.min(1,ll/bl),baseA[1]-baseVec[1]*Math.min(1,ll/bl)]
+        : [baseB[0]+baseVec[0]*Math.min(1,ll/bl),baseB[1]+baseVec[1]*Math.min(1,ll/bl)];
+      const d1=Math.hypot(finalA[0]-altA[0],finalA[1]-altA[1])+Math.hypot(finalB[0]-altB[0],finalB[1]-altB[1]);
+      // Do not scale the shape.  If the new boundary is longer than the base
+      // boundary it is allowed to extend beyond the base corner, exactly as
+      // the existing single-edge placement does.
+      if(d1<d0){
+        const shift=translate(r,altA[0]-finalA[0],altA[1]-finalA[1]);
+        return shift;
+      }
+      return r;
     }
     function pointInPoly(pt,pts){let inside=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){
       const xi=pts[i][0],yi=pts[i][1],xj=pts[j][0],yj=pts[j][1];
@@ -856,7 +1082,7 @@
     // v11 alignment repair: old saved fields may have been attached using the
     // incorrect east/west edge mapping. Re-align dependent fields once using
     // their saved baseId/side metadata. No dimensions or calculation formulas change.
-    const ALIGNMENT_FIX_VERSION='v11-shared-boundary-edge';
+    const ALIGNMENT_FIX_VERSION='v12-quad-cardinal-boundary';
     try{
       if(localStorage.getItem(STORAGE+'_alignmentFix')!==ALIGNMENT_FIX_VERSION && saved.length){
         saved.filter(f=>f.baseId==null).forEach(root=>reflowDependents(root.id));
