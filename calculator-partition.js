@@ -409,9 +409,9 @@
       const x1=a[0]+ox,y1=a[1]+oy,x2=b[0]+ox,y2=b[1]+oy,mx=(x1+x2)/2,my=(y1+y2)/2;
       const ang=clampAngle(Math.atan2(dy,dx)*180/Math.PI);
       const dash=dotted?' stroke-dasharray="12 10"':'';
-      return `<g class="qp-dim-line"><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="${dotted?3:2.8}"${dash}/><line x1="${(a[0]+ox).toFixed(1)}" y1="${(a[1]+oy).toFixed(1)}" x2="${a[0].toFixed(1)}" y2="${a[1].toFixed(1)}" stroke="${color}" stroke-width="1.6" opacity=".7"/><line x1="${(b[0]+ox).toFixed(1)}" y1="${(b[1]+oy).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${color}" stroke-width="1.6" opacity=".7"/><text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${mx.toFixed(1)} ${my.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="${font}" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="9" stroke-linejoin="round">${esc(text)}</text></g>`;
+      return `<g class="qp-dim-line"><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="${dotted?3:2.8}"${dash}/><line x1="${(a[0]+ox).toFixed(1)}" y1="${(a[1]+oy).toFixed(1)}" x2="${a[0].toFixed(1)}" y2="${a[1].toFixed(1)}" stroke="${color}" stroke-width="1.6" opacity=".7"/><line x1="${(b[0]+ox).toFixed(1)}" y1="${(b[1]+oy).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${color}" stroke-width="1.6" opacity=".7"/><text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${mx.toFixed(1)} ${my.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="${(font*0.5).toFixed(1)}" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4.5" stroke-linejoin="round">${esc(text)}</text></g>`;
     };
-    const northArrow=`<g transform="translate(120 115)"><line x1="0" y1="62" x2="0" y2="0" stroke="#082336" stroke-width="6"/><path d="M0 0 L-14 22 L14 22 Z" fill="#082336"/><text x="0" y="92" text-anchor="middle" font-size="36" font-weight="900" fill="#082336">উত্তর</text></g>`;
+    const northArrow=`<g transform="translate(120 115)"><line x1="0" y1="62" x2="0" y2="0" stroke="#082336" stroke-width="6"/><path d="M0 0 L-14 22 L14 22 Z" fill="#082336"/><text x="0" y="92" text-anchor="middle" font-size="18" font-weight="900" fill="#082336">উত্তর</text></g>`;
     const colors=['#fff0bf','#e8f6e8','#eaf1ff','#f7eafa','#ffe9e0','#e9f7f7','#f3f0d9'];
     const layers=[],labels=[],dims=[];
     layers.push(`<polygon points="${poly(q.pts)}" fill="#f7fbfc" stroke="#08747b" stroke-width="7" stroke-linejoin="round"/>`);
@@ -421,7 +421,7 @@
       const t=rec.part.targetPoly;
       layers.push(`<polygon points="${poly(t)}" fill="${colors[idx%colors.length]}" opacity=".92" stroke="#b27a1f" stroke-width="4" stroke-linejoin="round"/>`);
       const cx=t.reduce((s,p)=>s+p[0],0)/t.length, cy=t.reduce((s,p)=>s+p[1],0)/t.length;
-      labels.push(`<text x="${tx(cx).toFixed(1)}" y="${ty(cy).toFixed(1)}" text-anchor="middle" font-size="36" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="9">প্লট ${bn(idx+1)} — ${bn(rec.part.partArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
+      labels.push(`<text x="${tx(cx).toFixed(1)}" y="${ty(cy).toFixed(1)}" text-anchor="middle" font-size="18" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4.5">প্লট ${bn(idx+1)} — ${bn(rec.part.partArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
       const tp=t.map(p=>[tx(p[0]),ty(p[1])]);
       const sv=partSideValues(rec.part);
       const sideMeta=SIDE_META[rec.direction]||SIDE_META.north;
@@ -443,9 +443,9 @@
     dims.push(dimLine(rp[3],rp[0],`অবশিষ্ট জমি পশ্চিম: ${ftIn(dist(r[3],r[0]))}`,64,-1,false,'#08747b',40));
     dims.push(dimLine(rp[0],rp[2],`অবশিষ্ট জমি কর্ণ: ${ftIn(dist(r[0],r[2]))}`,54,1,true,'#75629b',38));
     dims.push(dimLine(rp[1],rp[3],`অবশিষ্ট জমি কর্ণ: ${ftIn(dist(r[1],r[3]))}`,54,-1,true,'#75629b',38));
-    labels.push(`<text x="${tx(r.reduce((s,p)=>s+p[0],0)/r.length).toFixed(1)}" y="${ty(r.reduce((s,p)=>s+p[1],0)/r.length).toFixed(1)}" text-anchor="middle" font-size="38" font-weight="950" fill="#08747b" paint-order="stroke" stroke="#fff" stroke-width="10">চূড়ান্ত অবশিষ্ট জমি — ${bn(finalArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
+    labels.push(`<text x="${tx(r.reduce((s,p)=>s+p[0],0)/r.length).toFixed(1)}" y="${ty(r.reduce((s,p)=>s+p[1],0)/r.length).toFixed(1)}" text-anchor="middle" font-size="19" font-weight="950" fill="#08747b" paint-order="stroke" stroke="#fff" stroke-width="5">চূড়ান্ত অবশিষ্ট জমি — ${bn(finalArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
 
-    const outerLabels=[['A',q.pts[0]],['B',q.pts[1]],['C',q.pts[2]],['D',q.pts[3]]].map(([n,p])=>`<circle cx="${tx(p[0]).toFixed(1)}" cy="${ty(p[1]).toFixed(1)}" r="9" fill="#08747b"/><text x="${(tx(p[0])+18).toFixed(1)}" y="${(ty(p[1])-18).toFixed(1)}" font-size="38" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="9">${n}</text>`).join('');
+    const outerLabels=[['A',q.pts[0]],['B',q.pts[1]],['C',q.pts[2]],['D',q.pts[3]]].map(([n,p])=>`<circle cx="${tx(p[0]).toFixed(1)}" cy="${ty(p[1]).toFixed(1)}" r="9" fill="#08747b"/><text x="${(tx(p[0])+18).toFixed(1)}" y="${(ty(p[1])-18).toFixed(1)}" font-size="19" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4.5">${n}</text>`).join('');
     return `<div class="qp-drawing qp-multi-drawing"><div class="qp-drawing-head">📐 সবগুলো প্লট / ভাগ — একই মূল জমির Drawing (${bn(valid.length)}টি ভাগ)</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • প্রত্যেক প্লটের Dimension আলাদা • চূড়ান্ত অবশিষ্ট জমির Dimension আলাদা • কর্ণ ডটেড</div><div class="qp-svg-wrap"><svg id="qpMultiSvg" class="qp-svg qp-svg-large" viewBox="0 0 ${W} ${H}" role="img" aria-label="একই Drawing-এ একাধিক জমি ভাগ">${layers.join('')}${dims.join('')}${labels.join('')}${outerLabels}${northArrow}</svg></div><div class="qp-drawing-legend"><span>🟨/🟩/🟦/🟪 আলাদা প্লট</span><span>🟥 লাল রেখা = ভাগরেখা</span><span>┄ কর্ণ = ডটেড</span></div></div>`;
   }
 
