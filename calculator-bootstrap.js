@@ -26,7 +26,7 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','jspdf').catch(()=>{});
     await loadScript('calculator-pdf.js','pdf').catch(()=>{});
   };
-  const loadPartition=()=>loadScript('calculator-partition.js','partition').catch(()=>{});
+  const loadPartition=()=>loadScript('calculator-partition.js?v=multi-v1','partition').catch(()=>{});
   document.querySelectorAll('.calc-tab[data-tab="quad-partition"]').forEach(btn=>btn.addEventListener('click',loadPartition,{once:true}));
   whenVisible(document.querySelector('.featured-calcs'),()=>loadScript('calculator-featured.js','featured').catch(()=>{}));
   whenVisible(document.querySelector('#professional-land-suite'),()=>loadScript('calculator-land-suite.js','land-suite').catch(()=>{}));
