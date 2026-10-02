@@ -609,12 +609,12 @@
       const style=document.createElement('style'); style.id='qpTemporaryPrintStyle';
       style.textContent=`
         @page{size:A4 portrait;margin:7mm}
-        .qp-print-sheet{position:absolute;left:0;top:0;width:210mm;background:#fff;color:#111;z-index:2147483647;opacity:0;pointer-events:none}
-        .qp-print-page{width:196mm;min-height:283mm;box-sizing:border-box;background:#fff;color:#111;overflow:hidden}
+        .qp-print-sheet{position:fixed;left:-100000px;top:0;width:210mm;background:#fff;color:#111;z-index:2147483647;opacity:1!important;visibility:visible!important;pointer-events:none}
+        .qp-print-page{width:196mm;height:283mm;box-sizing:border-box;background:#fff;color:#111;overflow:hidden}
         .qp-print-page+.qp-print-page{page-break-before:always;break-before:page}
         .qp-print-title{font-size:22px;font-weight:900;text-align:center;margin:0 0 3mm;color:#082336}
         .qp-print-subtitle{text-align:center;font-size:12px;margin-bottom:2mm;color:#526a73}
-        .qp-print-svg{width:196mm;height:258mm;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
+        .qp-print-svg{width:196mm;height:258mm;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;visibility:visible!important}
         .qp-print-svg svg{width:196mm!important;height:258mm!important;max-width:196mm!important;max-height:258mm!important;display:block!important;background:#fff}
         .qp-print-summary{font-size:13px;line-height:1.5;border:1px solid #999;padding:3mm;margin-bottom:3mm}
         .qp-print-parts-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;align-items:start}
@@ -638,7 +638,7 @@
           *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
         }`;
       document.head.appendChild(style);
-      const doPrint=()=>{try{window.print();}catch(e){console.error(e);alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।')}};
+      const doPrint=()=>{try{sheet.style.opacity='1';sheet.style.visibility='visible';void sheet.offsetHeight;window.print();}catch(e){console.error(e);alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।')}};
       if(document.fonts?.ready) document.fonts.ready.then(()=>setTimeout(doPrint,300)); else setTimeout(doPrint,500);
       window.addEventListener('afterprint',()=>{setTimeout(()=>{sheet.remove();style.remove()},800)},{once:true});
     }catch(e){console.error(e);alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।');}
