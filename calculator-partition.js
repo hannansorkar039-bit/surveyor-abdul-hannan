@@ -131,37 +131,6 @@
     return u === 'sqft' ? x : u === 'sqm' ? x * 10.763910416709722 : x * SQFT_PER_DECIMAL;
   }
   function warning(msg) { result.innerHTML = `<div class="qp-warning">${esc(msg)}</div>`; }
-  function editor(v, part, q) {
-    const items = [['AB','উত্তর • AB'],['BC','পূর্ব • BC'],['CD','দক্ষিণ • CD'],['DA','পশ্চিম • DA'],['AC','কর্ণ • AC']];
-    const targetSq = part ? part.partArea : null;
-    const targetDec = targetSq == null ? null : targetSq / SQFT_PER_DECIMAL;
-    const derived = part ? `
-      <div class="qp-derived-card">
-        <div class="qp-derived-title">✂️ ভাগকৃত জমির বর্তমান মাপ — এডিট করলে সঙ্গে সঙ্গে পুনঃহিসাব হবে</div>
-        <div class="qp-derived-grid">
-          ${dimensionTable(`নির্ধারিত ভাগ (${bn(targetDec)} শতাংশ)`, part.targetSegments)}
-          ${dimensionTable(`অবশিষ্ট জমি (${bn((q.area-targetSq)/SQFT_PER_DECIMAL)} শতাংশ)`, part.remainSegments)}
-        </div>
-        <div class="qp-live-area is-match">
-          <strong>বর্তমান ভাগকৃত ক্ষেত্রফল:</strong> ${bn(targetSq)} বর্গফুট = ${bn(targetDec)} শতাংশ
-        </div>
-      </div>` : '';
-    return `<div class="qp-edit-card"><strong>ড্রয়িংয়ের মাপ সংশোধন করুন</strong><div class="qp-note">মূল জমির ফুট/ইঞ্চি পরিবর্তন করলে নিচের ভাগকৃত অংশ, অবশিষ্ট অংশ, কর্ণ, ভাগরেখা এবং ভাগকৃত ক্ষেত্রফল স্বয়ংক্রিয়ভাবে আপডেট হবে।</div></div>
-      <div class="qp-editor">${items.map(([k,label])=>`<div class="qp-edit-card"><label>${label}</label><div class="fi-row"><input id="qpEdit${k}ft" type="number" min="0" step="any" placeholder="ফুট" value="${Math.floor(v[k])}"><input id="qpEdit${k}in" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" value="${Number(((v[k]-Math.floor(v[k]))*12).toFixed(2)) || ''}"></div></div>`).join('')}</div>
-      ${derived}`;
-  }
-  function syncEditor(v) {
-    if (!$('qpEditABft')) return;
-    for (const k of ['AB','BC','CD','DA','AC']) setFI(`qpEdit${k}ft`,`qpEdit${k}in`,v[k]);
-  }
-  function readEditor() {
-    const out={};
-    for (const k of ['AB','BC','CD','DA','AC']) {
-      out[k]=readFI(`qpEdit${k}ft`,`qpEdit${k}in`);
-      if (out[k] === null) return null;
-    }
-    return out;
-  }
   function svgLabel(x,y,text,anchor='middle') { return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anchor}" font-size="22" font-weight="800" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round">${esc(text)}</text>`; }
   function trianglePointsArea(a,b,c){return Math.abs(cross(a,b,c))/2;}
   function pointInPolygon(p, pts){
@@ -551,8 +520,8 @@
     diagLines.push(diagonalLine(pB,pD,'মূল কর্ণ BD',dist(q.B,q.D),28,1));
     const A0=t[0], B0=t[1], Q0=t[2], P0=t[3];
     const aqValue=dist(part.targetPoly[0],part.targetPoly[2]);
-    diagLines.push(diagonalLine(A0,Q0,editedTarget?'নতুন কর্ণ AQ':'৩% কর্ণ AQ',aqValue,20,-1));
-    diagLines.push(diagonalLine(B0,P0,'৩% কর্ণ BP',dist(part.targetPoly[1],part.targetPoly[3]),20,1));
+    diagLines.push(diagonalLine(A0,Q0,editedTarget?'নতুন কর্ণ AQ':`${bn(part.partArea/SQFT_PER_DECIMAL)}% কর্ণ AQ`,aqValue,20,-1));
+    diagLines.push(diagonalLine(B0,P0,`${bn(part.partArea/SQFT_PER_DECIMAL)}% কর্ণ BP`,dist(part.targetPoly[1],part.targetPoly[3]),20,1));
     const P1=r[0], Q1=r[1], R1=r[2], L1=r[3];
     diagLines.push(diagonalLine(P1,R1,'কর্ণ PC',dist(part.remainPoly[0],part.remainPoly[2]),20,1));
     diagLines.push(diagonalLine(Q1,L1,'কর্ণ QD',dist(part.remainPoly[1],part.remainPoly[3]),20,-1));
@@ -584,33 +553,9 @@
     const typeBn=q.type==='convex'?'উত্তল (Convex)':'অবতল (Concave)';
     result.innerHTML=`<div class="qp-ok">হিসাব সফল হয়েছে। এটি <strong>অনিয়মিত ${typeBn} চতুর্ভূজ</strong> হিসেবে তৈরি করা হয়েছে। মোট জমি ≈ ${bn(q.area)} বর্গফুট (${bn(q.area/SQFT_PER_DECIMAL)} শতাংশ)। <strong>${esc(SIDE_META[direction].label)} দিক</strong> থেকে ${bn(targetDecimal)} শতাংশ আলাদা করা হয়েছে।</div>
       <div class="result-list"><div class="result-item result-item-primary"><strong>${bn(target)} বর্গফুট</strong><span>নির্ধারিত ভাগ = ${bn(targetDecimal)} শতাংশ</span></div><div class="result-item"><strong>${bn(remainingDecimal)} শতাংশ</strong><span>অবশিষ্ট জমি</span></div><div class="result-item"><strong>${ftIn(part.cutLength)}</strong><span>নতুন ভাগরেখা ${esc(part.cutName)}</span></div><div class="result-item"><strong>${esc(part.side)} বাহু</strong><span>P–Q নতুন ভাগরেখা দিয়ে সীমা নির্ধারিত হয়েছে</span></div></div>
-      <div class="qp-dimensions"><div class="qp-dimensions-title">৩ শতাংশ/নির্ধারিত ভাগের আলাদা ফুট-ইঞ্চি মাপ — কর্ণ ও ভাগরেখাসহ</div>${dimensionTable(`নির্ধারিত ভাগ (${bn(targetDecimal)} শতাংশ)`,part.targetSegments)}${dimensionTable(`অবশিষ্ট জমি (${bn(remainingDecimal)} শতাংশ)`,part.remainSegments)}</div>
-      ${editor(v,part,q)}${cutEditor(part)}${makeDrawing(q,part)}<p class="qp-note">⚠️ নির্বাচিত দিকের উপর P বিন্দু নির্ধারণ করে তার সংলগ্ন বিপরীত কোণে নতুন ভাগরেখা তৈরি করে নির্ধারিত ক্ষেত্রফল বের করা হয়েছে। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে এবং পশ্চিম বামে রাখা হয়েছে। নির্ধারিত ভাগ ও অবশিষ্ট জমির প্রতিটি অংশের আলাদা ফুট-ইঞ্চি মাপ এবং প্রযোজ্য কর্ণ দেখানো হয়েছে। মাঠে দাগ কাটার আগে বাস্তব সীমানা ও জরিপ মাপ যাচাই করুন।</p>`;
-    bindEditor();
+      <div class="qp-dimensions"><div class="qp-dimensions-title">${bn(targetDecimal)} শতাংশের আলাদা ফুট-ইঞ্চি মাপ — কর্ণ ও ভাগরেখাসহ</div>${dimensionTable(`নির্ধারিত ভাগ (${bn(targetDecimal)} শতাংশ)`,part.targetSegments)}${dimensionTable(`অবশিষ্ট জমি (${bn(remainingDecimal)} শতাংশ)`,part.remainSegments)}</div>
+      ${cutEditor(part)}${makeDrawing(q,part)}<p class="qp-note">⚠️ নির্বাচিত দিকের উপর P বিন্দু নির্ধারণ করে তার সংলগ্ন বিপরীত কোণে নতুন ভাগরেখা তৈরি করে নির্ধারিত ক্ষেত্রফল বের করা হয়েছে। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে এবং পশ্চিম বামে রাখা হয়েছে। নির্ধারিত ভাগ ও অবশিষ্ট জমির প্রতিটি অংশের আলাদা ফুট-ইঞ্চি মাপ এবং প্রযোজ্য কর্ণ দেখানো হয়েছে। মাঠে দাগ কাটার আগে বাস্তব সীমানা ও জরিপ মাপ যাচাই করুন।</p>`;
     bindCutEditor(part,q);
-  }
-  let editorTimer=null;
-  function bindEditor(){
-    for (const k of ['AB','BC','CD','DA','AC']) {
-      [`qpEdit${k}ft`,`qpEdit${k}in`].forEach(id=>$(id)?.addEventListener('input',e=>{
-        // Never redraw while the user is in the middle of typing. In particular,
-        // 70 -> 7 -> 71 must not destroy the current drawing at the transient 7.
-        clearTimeout(editorTimer);
-        const active=e.currentTarget;
-        const activeId=active.id;
-        editorTimer=setTimeout(()=>{
-          const v=readEditor();
-          // Empty/temporary input keeps the existing drawing intact. The next
-          // keystroke restarts the debounce timer.
-          if(!v || Object.values(v).some(x=>x===null || !(x>0))) return;
-          const selStart=active.selectionStart, selEnd=active.selectionEnd;
-          for(const x of ['AB','BC','CD','DA','AC']) setFI(`qp${x}ft`,`qp${x}in`,v[x]);
-          calculate();
-          const next=$(activeId);
-          if(next){ next.focus({preventScroll:true}); try{ next.setSelectionRange(selStart,selEnd); }catch(_){} }
-        },700);
-      }));
-    }
   }
   function clear(){
     for(const k of ['AB','BC','CD','DA','AC']) { $(k==='AB'?'qpABft':`qp${k}ft`).value=''; $(k==='AB'?'qpABin':`qp${k}in`).value=''; }
