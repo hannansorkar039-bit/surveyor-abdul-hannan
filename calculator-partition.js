@@ -563,85 +563,102 @@
     try{
       const svg=$('qpMultiSvg');
       if(!svg){ alert('Drawing পাওয়া যায়নি। আগে ভাগের হিসাব করুন।'); return; }
-      document.querySelector('.qp-print-sheet')?.remove();
-      document.getElementById('qpTemporaryPrintStyle')?.remove();
 
-      const sheet=document.createElement('div');
-      sheet.className='qp-print-sheet';
-      const page1=document.createElement('section');
-      page1.className='qp-print-page qp-print-drawing-page';
-      page1.innerHTML=`<div class="qp-print-title">চতুর্ভূজ জমি ভাগ-বণ্টন — সম্পূর্ণ Drawing</div><div class="qp-print-subtitle">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে</div>`;
-      const holder=document.createElement('div'); holder.className='qp-print-svg';
-      const clone=svg.cloneNode(true);
-      clone.removeAttribute('id'); clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
-      clone.setAttribute('width','196mm'); clone.setAttribute('height','258mm'); clone.setAttribute('preserveAspectRatio','xMidYMid meet');
-      holder.appendChild(clone); page1.appendChild(holder);
+      // Android Chrome-এর print engine অনেক সময় off-screen/hidden SVG render করে না।
+      // তাই PDF-এর জন্য Drawing-টিকে একটি self-contained SVG data-image হিসেবে
+      // আলাদা print window-তে পাঠানো হচ্ছে। মূল ওয়েবসাইট/Drawing অপরিবর্তিত থাকে।
+      const svgClone=svg.cloneNode(true);
+      svgClone.removeAttribute('id');
+      svgClone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+      svgClone.setAttribute('xmlns:xlink','http://www.w3.org/1999/xlink');
+      svgClone.setAttribute('width','100%');
+      svgClone.setAttribute('height','100%');
+      svgClone.setAttribute('preserveAspectRatio','xMidYMid meet');
+      const svgText=new XMLSerializer().serializeToString(svgClone);
+      const svgData='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svgText);
 
-      const page2=document.createElement('section');
-      page2.className='qp-print-page qp-print-calculation-page';
-      const total=qpState.q?.area||0, valid=qpState.splits.filter(r=>r.part);
-      const used=valid.reduce((sum,r)=>sum+r.part.partArea,0), remain=Math.max(0,total-used);
-      let html=`<div class="qp-print-title">চতুর্ভূজ জমি ভাগ-বণ্টন — প্রত্যেক প্লটের আলাদা হিসাব</div>`;
-      html+=`<div class="qp-print-summary">মোট জমি: <strong>${bn(total)} বর্গফুট (${bn(total/SQFT_PER_DECIMAL)} শতাংশ)</strong> • মোট ভাগ: <strong>${bn(valid.length)}টি</strong> • ভাগকৃত: <strong>${bn(used/SQFT_PER_DECIMAL)} শতাংশ</strong> • চূড়ান্ত অবশিষ্ট: <strong>${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</strong></div>`;
-      html+=`<div class="qp-print-parts-grid">`;
+      const total=qpState.q?.area||0;
+      const valid=qpState.splits.filter(r=>r.part);
+      const used=valid.reduce((sum,r)=>sum+r.part.partArea,0);
+      const remain=Math.max(0,total-used);
+
+      let partsHtml='';
       valid.forEach((rec,idx)=>{
         const dec=rec.part.partArea/SQFT_PER_DECIMAL;
-        html+=`<div class="qp-print-part"><h3>প্লট / ভাগ ${bn(idx+1)} — ${bn(dec)} শতাংশ — ${esc((SIDE_META[rec.direction]||SIDE_META.north).label)} দিক থেকে</h3>`;
-        html+=`<div class="qp-print-result-grid"><div><b>ক্ষেত্রফল</b><span>${bn(rec.part.partArea)} বর্গফুট</span></div><div><b>ভাগরেখা PQ</b><span>${ftIn(rec.part.cutLength)}</span></div></div>`;
-        html+=`<div class="qp-print-dim-card"><h4>শুধু প্লট ${bn(idx+1)}-এর Dimension</h4>`;
-        rec.part.targetSegments.forEach(seg=>{html+=`<div class="qp-print-dim-row"><span>${esc(seg.label)}</span><strong>${ftIn(seg.value)}</strong></div>`;});
-        html+=`</div></div>`;
+        partsHtml+=`<section class="part"><h3>প্লট / ভাগ ${bn(idx+1)} — ${bn(dec)} শতাংশ — ${esc((SIDE_META[rec.direction]||SIDE_META.north).label)} দিক থেকে</h3>`;
+        partsHtml+=`<div class="result"><div><b>ক্ষেত্রফল</b><span>${bn(rec.part.partArea)} বর্গফুট</span></div><div><b>ভাগরেখা PQ</b><span>${ftIn(rec.part.cutLength)}</span></div></div>`;
+        partsHtml+=`<div class="dims"><h4>শুধু প্লট ${bn(idx+1)}-এর Dimension</h4>`;
+        rec.part.targetSegments.forEach(seg=>{partsHtml+=`<div class="row"><span>${esc(seg.label)}</span><strong>${ftIn(seg.value)}</strong></div>`;});
+        partsHtml+=`</div></section>`;
       });
-      html+=`</div>`;
+
       if(valid.length){
         const r=valid[valid.length-1].part.remainPoly;
+        // Final remaining parcel only — it must not reuse any previous plot's dimensions.
         const rs=[
-          ['অবশিষ্ট জমি উত্তর',dist(r[0],r[1])],['অবশিষ্ট জমি পূর্ব',dist(r[1],r[2])],
-          ['অবশিষ্ট জমি দক্ষিণ',dist(r[2],r[3])],['অবশিষ্ট জমি পশ্চিম',dist(r[3],r[0])],
-          ['অবশিষ্ট জমি কর্ণ',dist(r[0],r[2])],['অবশিষ্ট জমি কর্ণ',dist(r[1],r[3])]
+          ['উত্তর',dist(r[0],r[1])],['পূর্ব',dist(r[1],r[2])],
+          ['দক্ষিণ',dist(r[2],r[3])],['পশ্চিম',dist(r[3],r[0])],
+          ['কর্ণ ১',dist(r[0],r[2])],['কর্ণ ২',dist(r[1],r[3])]
         ];
-        html+=`<div class="qp-print-part"><h3>চূড়ান্ত অবশিষ্ট জমি — ${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</h3><div class="qp-print-dim-card"><h4>অবশিষ্ট জমির আলাদা Dimension</h4>`;
-        rs.forEach(([label,val])=>{html+=`<div class="qp-print-dim-row"><span>${esc(label)}</span><strong>${ftIn(val)}</strong></div>`;});
-        html+=`</div></div>`;
+        partsHtml+=`<section class="part remaining"><h3>চূড়ান্ত অবশিষ্ট জমি — ${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</h3><div class="dims"><h4>অবশিষ্ট জমির আলাদা Dimension</h4>`;
+        rs.forEach(([label,val])=>{partsHtml+=`<div class="row"><span>অবশিষ্ট জমি — ${esc(label)}</span><strong>${ftIn(val)}</strong></div>`;});
+        partsHtml+=`</div></section>`;
       }
-      page2.innerHTML=html; sheet.append(page1,page2); document.body.appendChild(sheet);
 
-      const style=document.createElement('style'); style.id='qpTemporaryPrintStyle';
-      style.textContent=`
+      const w=window.open('', '_blank');
+      if(!w){
+        alert('PDF পেজ খোলা যায়নি। ব্রাউজারের pop-up অনুমতি দিন এবং আবার PDF করুন চাপুন।');
+        return;
+      }
+
+      const doc=w.document;
+      doc.open();
+      doc.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>চতুর্ভূজ জমি ভাগ-বণ্টন</title><style>
         @page{size:A4 portrait;margin:7mm}
-        .qp-print-sheet{position:fixed;left:-100000px;top:0;width:210mm;background:#fff;color:#111;z-index:2147483647;opacity:1!important;visibility:visible!important;pointer-events:none}
-        .qp-print-page{width:196mm;height:283mm;box-sizing:border-box;background:#fff;color:#111;overflow:hidden}
-        .qp-print-page+.qp-print-page{page-break-before:always;break-before:page}
-        .qp-print-title{font-size:22px;font-weight:900;text-align:center;margin:0 0 3mm;color:#082336}
-        .qp-print-subtitle{text-align:center;font-size:12px;margin-bottom:2mm;color:#526a73}
-        .qp-print-svg{width:196mm;height:258mm;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;visibility:visible!important}
-        .qp-print-svg svg{width:196mm!important;height:258mm!important;max-width:196mm!important;max-height:258mm!important;display:block!important;background:#fff}
-        .qp-print-summary{font-size:13px;line-height:1.5;border:1px solid #999;padding:3mm;margin-bottom:3mm}
-        .qp-print-parts-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;align-items:start}
-        .qp-print-part{border:1px solid #999;padding:2.2mm;margin:0;break-inside:avoid;page-break-inside:avoid}
-        .qp-print-parts-grid .qp-print-part h3{font-size:13px}
-        .qp-print-parts-grid .qp-print-dim-row{font-size:9.5px;padding:0.9mm 0.8mm}
-        .qp-print-parts-grid .qp-print-dim-row strong{font-size:10px}
-        .qp-print-part h3{font-size:16px;margin:0 0 2mm}
-        .qp-print-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:2mm;margin-bottom:2mm}
-        .qp-print-result-grid>div{border:1px solid #ddd;padding:2mm;display:flex;justify-content:space-between;gap:4mm;font-size:12px}
-        .qp-print-dim-card{border:1px solid #ddd;padding:2mm;margin-top:2mm;break-inside:avoid}
-        .qp-print-dim-card h4{margin:0 0 1mm;font-size:13px}
-        .qp-print-dim-row{display:flex;justify-content:space-between;gap:5mm;padding:1.2mm 1mm;border-top:1px solid #eee;font-size:11px}
-        .qp-print-dim-row strong{white-space:nowrap;font-size:12px}
-        @media print{
-          html,body{margin:0!important;padding:0!important;background:#fff!important}
-          body>*:not(.qp-print-sheet){display:none!important}
-          .qp-print-sheet{position:static!important;left:auto!important;top:auto!important;width:100%!important;display:block!important;opacity:1!important;visibility:visible!important}
-          .qp-print-page{display:block!important}
-          .qp-print-page+.qp-print-page{page-break-before:always!important;break-before:page!important}
-          *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-        }`;
-      document.head.appendChild(style);
-      const doPrint=()=>{try{sheet.style.opacity='1';sheet.style.visibility='visible';void sheet.offsetHeight;window.print();}catch(e){console.error(e);alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।')}};
-      if(document.fonts?.ready) document.fonts.ready.then(()=>setTimeout(doPrint,300)); else setTimeout(doPrint,500);
-      window.addEventListener('afterprint',()=>{setTimeout(()=>{sheet.remove();style.remove()},800)},{once:true});
-    }catch(e){console.error(e);alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।');}
+        *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+        html,body{margin:0;padding:0;background:#fff;color:#111;font-family:Arial,'Noto Sans Bengali',sans-serif}
+        .page{width:196mm;height:283mm;overflow:hidden;background:#fff;break-after:page;page-break-after:always;position:relative}
+        .page:last-child{break-after:auto;page-break-after:auto}
+        .title{font-size:18px;font-weight:800;text-align:center;margin:0 0 2mm;color:#082336}
+        .sub{font-size:9px;text-align:center;margin-bottom:2mm;color:#526a73}
+        .drawing{width:196mm;height:270mm;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
+        .drawing img{display:block;width:196mm;height:270mm;object-fit:contain}
+        .summary{font-size:10px;line-height:1.35;border:1px solid #999;padding:2mm;margin-bottom:2mm}
+        .parts{display:grid;grid-template-columns:1fr 1fr;gap:2mm;align-items:start}
+        .part{border:1px solid #999;padding:1.7mm;margin:0;break-inside:avoid;page-break-inside:avoid}
+        .part h3{font-size:9.5px;line-height:1.25;margin:0 0 1.2mm}
+        .result{display:grid;grid-template-columns:1fr 1fr;gap:1mm;margin-bottom:1mm}
+        .result>div{border:1px solid #ddd;padding:1.2mm;display:flex;justify-content:space-between;gap:2mm;font-size:8px}
+        .dims{border:1px solid #ddd;padding:1mm;margin-top:1mm;break-inside:avoid;page-break-inside:avoid}
+        .dims h4{font-size:8.5px;margin:0 0 .5mm}
+        .row{display:flex;justify-content:space-between;gap:2mm;padding:.65mm .5mm;border-top:1px solid #eee;font-size:7.5px;line-height:1.15}
+        .row strong{white-space:nowrap;font-size:8px}
+        .remaining{grid-column:1/-1}
+        @media print{body{background:#fff}.page{height:283mm}}
+      </style></head><body>
+        <section class="page">
+          <div class="title">চতুর্ভূজ জমি ভাগ-বণ্টন — সম্পূর্ণ Drawing</div>
+          <div class="sub">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে</div>
+          <div class="drawing"><img id="printDrawing" src="${svgData}" alt="সম্পূর্ণ জমি ভাগের Drawing"></div>
+        </section>
+        <section class="page">
+          <div class="title">চতুর্ভূজ জমি ভাগ-বণ্টন — প্রত্যেক প্লটের আলাদা হিসাব</div>
+          <div class="summary">মোট জমি: <b>${bn(total)} বর্গফুট (${bn(total/SQFT_PER_DECIMAL)} শতাংশ)</b> • মোট ভাগ: <b>${bn(valid.length)}টি</b> • ভাগকৃত: <b>${bn(used/SQFT_PER_DECIMAL)} শতাংশ</b> • চূড়ান্ত অবশিষ্ট: <b>${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</b></div>
+          <div class="parts">${partsHtml}</div>
+        </section>
+      </body></html>`);
+      doc.close();
+
+      const printNow=()=>{try{w.focus();setTimeout(()=>{w.print();},250);}catch(e){console.error(e);alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।')}};
+      const img=doc.getElementById('printDrawing');
+      if(img){
+        if(img.complete) setTimeout(printNow,400);
+        else {img.onload=()=>setTimeout(printNow,250);img.onerror=()=>setTimeout(printNow,400);}
+      }else setTimeout(printNow,500);
+    }catch(e){
+      console.error(e);
+      alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।');
+    }
   }
 
   function calculate(){
