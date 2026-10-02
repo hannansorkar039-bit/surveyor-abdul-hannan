@@ -385,54 +385,68 @@
   function makeMultiDrawing(){
     if(!qpState.q || !qpState.splits.length) return '';
     const q=qpState.q;
+    const valid=qpState.splits.filter(r=>r.part);
+    if(!valid.length) return '';
     const allPts=[...q.pts];
-    qpState.splits.forEach(r=>{if(r.part){allPts.push(...r.part.targetPoly,...r.part.remainPoly);}});
+    valid.forEach(r=>{allPts.push(...r.part.targetPoly);});
+    // Only the FINAL remaining parcel is dimensioned once. Earlier remaining
+    // parcels are not separate plots and their dimensions must not overlap the
+    // dimensions of later plots.
+    const finalRemain=valid[valid.length-1].part.remainPoly;
+    allPts.push(...finalRemain);
+
     const drawPts=allPts.map(p=>[p[0],-p[1]]);
     let minX=Math.min(...drawPts.map(p=>p[0])),maxX=Math.max(...drawPts.map(p=>p[0])),minY=Math.min(...drawPts.map(p=>p[1])),maxY=Math.max(...drawPts.map(p=>p[1]));
-    const padX=Math.max((maxX-minX)*.07,40),padY=Math.max((maxY-minY)*.07,40);minX-=padX;maxX+=padX;minY-=padY;maxY+=padY;
-    const W=2400,H=1500,scale=Math.min((W-180)/(maxX-minX),(H-180)/(maxY-minY));
-    const tx=x=>90+(x-minX)*scale, ty=y=>H-90-((-y)-minY)*scale;
+    const padX=Math.max((maxX-minX)*.09,55),padY=Math.max((maxY-minY)*.09,55);
+    minX-=padX;maxX+=padX;minY-=padY;maxY+=padY;
+    const W=2600,H=1750,scale=Math.min((W-260)/(maxX-minX),(H-260)/(maxY-minY));
+    const tx=x=>130+(x-minX)*scale, ty=y=>H-130-((-y)-minY)*scale;
     const poly=pts=>pts.map(p=>`${tx(p[0]).toFixed(1)},${ty(p[1]).toFixed(1)}`).join(' ');
     const clampAngle=a=>a>90?a-180:(a<-90?a+180:a);
-    const dimLine=(a,b,text,offset=38,sign=1,dotted=false,color='#526a73')=>{const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len,ox=nx*offset*sign,oy=ny*offset*sign,x1=a[0]+ox,y1=a[1]+oy,x2=b[0]+ox,y2=b[1]+oy,mx=(x1+x2)/2,my=(y1+y2)/2,ang=clampAngle(Math.atan2(dy,dx)*180/Math.PI),dash=dotted?' stroke-dasharray="11 9"':'';return `<g class="qp-dim-line"><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="${dotted?3:2.5}"${dash}/><line x1="${(a[0]+ox).toFixed(1)}" y1="${(a[1]+oy).toFixed(1)}" x2="${a[0].toFixed(1)}" y2="${a[1].toFixed(1)}" stroke="${color}" stroke-width="1.5" opacity=".7"/><line x1="${(b[0]+ox).toFixed(1)}" y1="${(b[1]+oy).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${color}" stroke-width="1.5" opacity=".7"/><text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${mx.toFixed(1)} ${my.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="36" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8" stroke-linejoin="round">${esc(text)}</text></g>`;};
-    const northArrow=`<g transform="translate(95 95)"><line x1="0" y1="58" x2="0" y2="0" stroke="#082336" stroke-width="6"/><path d="M0 0 L-14 22 L14 22 Z" fill="#082336"/><text x="0" y="86" text-anchor="middle" font-size="34" font-weight="900" fill="#082336">উত্তর</text></g>`;
+    const dimLine=(a,b,text,offset=48,sign=1,dotted=false,color='#526a73',font=40)=>{
+      const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1;
+      const nx=-dy/len,ny=dx/len,ox=nx*offset*sign,oy=ny*offset*sign;
+      const x1=a[0]+ox,y1=a[1]+oy,x2=b[0]+ox,y2=b[1]+oy,mx=(x1+x2)/2,my=(y1+y2)/2;
+      const ang=clampAngle(Math.atan2(dy,dx)*180/Math.PI);
+      const dash=dotted?' stroke-dasharray="12 10"':'';
+      return `<g class="qp-dim-line"><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="${dotted?3:2.8}"${dash}/><line x1="${(a[0]+ox).toFixed(1)}" y1="${(a[1]+oy).toFixed(1)}" x2="${a[0].toFixed(1)}" y2="${a[1].toFixed(1)}" stroke="${color}" stroke-width="1.6" opacity=".7"/><line x1="${(b[0]+ox).toFixed(1)}" y1="${(b[1]+oy).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${color}" stroke-width="1.6" opacity=".7"/><text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${mx.toFixed(1)} ${my.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="${font}" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="9" stroke-linejoin="round">${esc(text)}</text></g>`;
+    };
+    const northArrow=`<g transform="translate(120 115)"><line x1="0" y1="62" x2="0" y2="0" stroke="#082336" stroke-width="6"/><path d="M0 0 L-14 22 L14 22 Z" fill="#082336"/><text x="0" y="92" text-anchor="middle" font-size="36" font-weight="900" fill="#082336">উত্তর</text></g>`;
     const colors=['#fff0bf','#e8f6e8','#eaf1ff','#f7eafa','#ffe9e0','#e9f7f7','#f3f0d9'];
-    const layers=[]; const labels=[]; const dims=[];
-    // Original boundary.
-    layers.push(`<polygon points="${poly(q.pts)}" fill="#f7fbfc" stroke="#08747b" stroke-width="6" stroke-linejoin="round"/>`);
-    qpState.splits.forEach((rec,idx)=>{
-      if(!rec.part) return;
-      const t=rec.part.targetPoly,r=rec.part.remainPoly;
+    const layers=[],labels=[],dims=[];
+    layers.push(`<polygon points="${poly(q.pts)}" fill="#f7fbfc" stroke="#08747b" stroke-width="7" stroke-linejoin="round"/>`);
+
+    // Each split plot gets ONLY its own dimensions.
+    valid.forEach((rec,idx)=>{
+      const t=rec.part.targetPoly;
       layers.push(`<polygon points="${poly(t)}" fill="${colors[idx%colors.length]}" opacity=".92" stroke="#b27a1f" stroke-width="4" stroke-linejoin="round"/>`);
-      labels.push(`<text x="${tx(t.reduce((s,p)=>s+p[0],0)/t.length).toFixed(1)}" y="${ty(t.reduce((s,p)=>s+p[1],0)/t.length).toFixed(1)}" text-anchor="middle" font-size="34" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8">প্লট ${bn(idx+1)} — ${bn(rec.part.partArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
-      const tp=t.map(p=>[tx(p[0]),ty(p[1])]), rp=r.map(p=>[tx(p[0]),ty(p[1])]);
+      const cx=t.reduce((s,p)=>s+p[0],0)/t.length, cy=t.reduce((s,p)=>s+p[1],0)/t.length;
+      labels.push(`<text x="${tx(cx).toFixed(1)}" y="${ty(cy).toFixed(1)}" text-anchor="middle" font-size="36" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="9">প্লট ${bn(idx+1)} — ${bn(rec.part.partArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
+      const tp=t.map(p=>[tx(p[0]),ty(p[1])]);
       const sv=partSideValues(rec.part);
-      dims.push(dimLine(tp[0],tp[1],`${SIDE_META[rec.direction].label} ${SIDE_META[rec.direction].key}: ${ftIn(sv[0])}`,48,-1));
-      dims.push(dimLine(tp[1],tp[2],`পূর্ব অংশ: ${ftIn(sv[1])}`,44,-1));
-      dims.push(dimLine(tp[2],tp[3],`ভাগরেখা: ${ftIn(sv[2])}`,46,1,true,'#c44f2b'));
-      dims.push(dimLine(tp[3],tp[0],`পশ্চিম অংশ: ${ftIn(sv[3])}`,44,1));
-      dims.push(dimLine(tp[0],tp[2],`কর্ণ: ${ftIn(dist(t[0],t[2]))}`,38,-1,true,'#75629b'));
-      dims.push(dimLine(tp[1],tp[3],`কর্ণ: ${ftIn(dist(t[1],t[3]))}`,38,1,true,'#75629b'));
-
-      // IMPORTANT: show the dimensions of the remaining parcel too.  These were
-      // previously calculated but never drawn on the combined SVG.
-      const rv=partSideValues(rec.part);
-      // r = [P,Q,R,L] for the remaining parcel.  Use the actual remaining
-      // vertices so every displayed value belongs to the visible remaining edge.
-      const rem=r.map(p=>[tx(p[0]),ty(p[1])]);
-      const remOffset=58 + idx*10;
-      dims.push(dimLine(rem[0],rem[1],`অবশিষ্ট উত্তর/ভাগরেখা: ${ftIn(dist(r[0],r[1]))}`,remOffset,1,true,'#7b6b4b'));
-      dims.push(dimLine(rem[1],rem[2],`অবশিষ্ট পূর্ব: ${ftIn(dist(r[1],r[2]))}`,remOffset,1,false,'#526a73'));
-      dims.push(dimLine(rem[2],rem[3],`অবশিষ্ট দক্ষিণ: ${ftIn(dist(r[2],r[3]))}`,remOffset,-1,false,'#526a73'));
-      dims.push(dimLine(rem[3],rem[0],`অবশিষ্ট পশ্চিম: ${ftIn(dist(r[3],r[0]))}`,remOffset,-1,false,'#526a73'));
-      dims.push(dimLine(rem[0],rem[2],`অবশিষ্ট কর্ণ: ${ftIn(dist(r[0],r[2]))}`,remOffset-8,1,true,'#75629b'));
-      dims.push(dimLine(rem[1],rem[3],`অবশিষ্ট কর্ণ: ${ftIn(dist(r[1],r[3]))}`,remOffset-8,-1,true,'#75629b'));
-
-      // Cut boundary is also highlighted on the remaining parcel.
+      const sideMeta=SIDE_META[rec.direction]||SIDE_META.north;
+      dims.push(dimLine(tp[0],tp[1],`প্লট ${bn(idx+1)} ${sideMeta.label}: ${ftIn(sv[0])}`,55,-1,false,'#7b6b4b',40));
+      dims.push(dimLine(tp[1],tp[2],`প্লট ${bn(idx+1)} পূর্ব: ${ftIn(sv[1])}`,48,-1,false,'#526a73',38));
+      dims.push(dimLine(tp[2],tp[3],`প্লট ${bn(idx+1)} ভাগরেখা: ${ftIn(sv[2])}`,50,1,true,'#c44f2b',39));
+      dims.push(dimLine(tp[3],tp[0],`প্লট ${bn(idx+1)} পশ্চিম: ${ftIn(sv[3])}`,48,1,false,'#526a73',38));
+      dims.push(dimLine(tp[0],tp[2],`প্লট ${bn(idx+1)} কর্ণ: ${ftIn(dist(t[0],t[2]))}`,42,-1,true,'#75629b',37));
+      dims.push(dimLine(tp[1],tp[3],`প্লট ${bn(idx+1)} কর্ণ: ${ftIn(dist(t[1],t[3]))}`,42,1,true,'#75629b',37));
       layers.push(`<line x1="${tp[2][0]}" y1="${tp[2][1]}" x2="${tp[3][0]}" y2="${tp[3][1]}" stroke="#c44f2b" stroke-width="7"/>`);
     });
-    const outerLabels=[['A',q.pts[0]],['B',q.pts[1]],['C',q.pts[2]],['D',q.pts[3]]].map(([n,p])=>`<circle cx="${tx(p[0]).toFixed(1)}" cy="${ty(p[1]).toFixed(1)}" r="8" fill="#08747b"/><text x="${(tx(p[0])+16).toFixed(1)}" y="${(ty(p[1])-16).toFixed(1)}" font-size="36" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8">${n}</text>`).join('');
-    return `<div class="qp-drawing qp-multi-drawing"><div class="qp-drawing-head">📐 সবগুলো প্লট / ভাগ — একই মূল জমির Drawing (${bn(qpState.splits.length)}টি ভাগ)</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • সব প্লট একই Drawing-এ • প্রতিটি মাপ তার রেখার সমান্তরাল • কর্ণ ডটেড • Drawing আগের চেয়ে ৩ গুণ বড়</div><div class="qp-svg-wrap"><svg id="qpMultiSvg" class="qp-svg qp-svg-large" viewBox="0 0 ${W} ${H}" role="img" aria-label="একই Drawing-এ একাধিক জমি ভাগ">${layers.join('')}${dims.join('')}${labels.join('')}${outerLabels}${northArrow}</svg></div><div class="qp-drawing-legend"><span>🟨/🟩/🟦/🟪 আলাদা প্লট</span><span>🟥 লাল রেখা = ভাগরেখা</span><span>┄ কর্ণ = ডটেড</span></div></div>`;
+
+    // Final remaining parcel gets its own separate dimension set, exactly once.
+    const r=finalRemain, rp=r.map(p=>[tx(p[0]),ty(p[1])]);
+    const finalArea=polygonArea(r);
+    dims.push(dimLine(rp[0],rp[1],`অবশিষ্ট জমি উত্তর: ${ftIn(dist(r[0],r[1]))}`,72,1,false,'#08747b',42));
+    dims.push(dimLine(rp[1],rp[2],`অবশিষ্ট জমি পূর্ব: ${ftIn(dist(r[1],r[2]))}`,64,1,false,'#08747b',40));
+    dims.push(dimLine(rp[2],rp[3],`অবশিষ্ট জমি দক্ষিণ: ${ftIn(dist(r[2],r[3]))}`,72,-1,false,'#08747b',42));
+    dims.push(dimLine(rp[3],rp[0],`অবশিষ্ট জমি পশ্চিম: ${ftIn(dist(r[3],r[0]))}`,64,-1,false,'#08747b',40));
+    dims.push(dimLine(rp[0],rp[2],`অবশিষ্ট জমি কর্ণ: ${ftIn(dist(r[0],r[2]))}`,54,1,true,'#75629b',38));
+    dims.push(dimLine(rp[1],rp[3],`অবশিষ্ট জমি কর্ণ: ${ftIn(dist(r[1],r[3]))}`,54,-1,true,'#75629b',38));
+    labels.push(`<text x="${tx(r.reduce((s,p)=>s+p[0],0)/r.length).toFixed(1)}" y="${ty(r.reduce((s,p)=>s+p[1],0)/r.length).toFixed(1)}" text-anchor="middle" font-size="38" font-weight="950" fill="#08747b" paint-order="stroke" stroke="#fff" stroke-width="10">চূড়ান্ত অবশিষ্ট জমি — ${bn(finalArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
+
+    const outerLabels=[['A',q.pts[0]],['B',q.pts[1]],['C',q.pts[2]],['D',q.pts[3]]].map(([n,p])=>`<circle cx="${tx(p[0]).toFixed(1)}" cy="${ty(p[1]).toFixed(1)}" r="9" fill="#08747b"/><text x="${(tx(p[0])+18).toFixed(1)}" y="${(ty(p[1])-18).toFixed(1)}" font-size="38" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="9">${n}</text>`).join('');
+    return `<div class="qp-drawing qp-multi-drawing"><div class="qp-drawing-head">📐 সবগুলো প্লট / ভাগ — একই মূল জমির Drawing (${bn(valid.length)}টি ভাগ)</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • প্রত্যেক প্লটের Dimension আলাদা • চূড়ান্ত অবশিষ্ট জমির Dimension আলাদা • কর্ণ ডটেড</div><div class="qp-svg-wrap"><svg id="qpMultiSvg" class="qp-svg qp-svg-large" viewBox="0 0 ${W} ${H}" role="img" aria-label="একই Drawing-এ একাধিক জমি ভাগ">${layers.join('')}${dims.join('')}${labels.join('')}${outerLabels}${northArrow}</svg></div><div class="qp-drawing-legend"><span>🟨/🟩/🟦/🟪 আলাদা প্লট</span><span>🟥 লাল রেখা = ভাগরেখা</span><span>┄ কর্ণ = ডটেড</span></div></div>`;
   }
 
   function renderMultiResult(message=''){
@@ -546,106 +560,88 @@
   }
 
   function pdfMulti(){
-    // Print exactly two pages.  Keep the temporary print sheet visible in the
-    // document during print preview; this avoids blank Chrome/Android previews.
     try{
       const svg=$('qpMultiSvg');
       if(!svg){ alert('Drawing পাওয়া যায়নি। আগে ভাগের হিসাব করুন।'); return; }
-
-      const old=document.querySelector('.qp-print-sheet');
-      if(old) old.remove();
-      const oldStyle=document.getElementById('qpTemporaryPrintStyle');
-      if(oldStyle) oldStyle.remove();
+      document.querySelector('.qp-print-sheet')?.remove();
+      document.getElementById('qpTemporaryPrintStyle')?.remove();
 
       const sheet=document.createElement('div');
       sheet.className='qp-print-sheet';
-      sheet.setAttribute('aria-hidden','true');
-
       const page1=document.createElement('section');
       page1.className='qp-print-page qp-print-drawing-page';
-      const svgClone=svg.cloneNode(true);
-      svgClone.removeAttribute('id');
-      svgClone.setAttribute('xmlns','http://www.w3.org/2000/svg');
-      svgClone.setAttribute('width','100%');
-      svgClone.setAttribute('height','100%');
-      svgClone.setAttribute('preserveAspectRatio','xMidYMid meet');
       page1.innerHTML=`<div class="qp-print-title">চতুর্ভূজ জমি ভাগ-বণ্টন — সম্পূর্ণ Drawing</div><div class="qp-print-subtitle">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে</div>`;
-      const svgHolder=document.createElement('div');
-      svgHolder.className='qp-print-svg';
-      svgHolder.appendChild(svgClone);
-      page1.appendChild(svgHolder);
+      const holder=document.createElement('div'); holder.className='qp-print-svg';
+      const clone=svg.cloneNode(true);
+      clone.removeAttribute('id'); clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+      clone.setAttribute('width','196mm'); clone.setAttribute('height','258mm'); clone.setAttribute('preserveAspectRatio','xMidYMid meet');
+      holder.appendChild(clone); page1.appendChild(holder);
 
       const page2=document.createElement('section');
       page2.className='qp-print-page qp-print-calculation-page';
-      const total=qpState.q?.area||0;
-      const valid=qpState.splits.filter(r=>r.part);
-      const used=valid.reduce((sum,r)=>sum+r.part.partArea,0);
-      const remain=Math.max(0,total-used);
-      let html=`<div class="qp-print-title">চতুর্ভূজ জমি ভাগ-বণ্টন — সম্পূর্ণ ভাগকৃত প্লটের হিসাব</div>`;
-      html+=`<div class="qp-print-summary">মোট জমি: <strong>${bn(total)} বর্গফুট (${bn(total/SQFT_PER_DECIMAL)} শতাংশ)</strong> • মোট ভাগ: <strong>${bn(valid.length)}টি</strong> • ভাগকৃত: <strong>${bn(used/SQFT_PER_DECIMAL)} শতাংশ</strong> • অবশিষ্ট: <strong>${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</strong></div>`;
+      const total=qpState.q?.area||0, valid=qpState.splits.filter(r=>r.part);
+      const used=valid.reduce((sum,r)=>sum+r.part.partArea,0), remain=Math.max(0,total-used);
+      let html=`<div class="qp-print-title">চতুর্ভূজ জমি ভাগ-বণ্টন — প্রত্যেক প্লটের আলাদা হিসাব</div>`;
+      html+=`<div class="qp-print-summary">মোট জমি: <strong>${bn(total)} বর্গফুট (${bn(total/SQFT_PER_DECIMAL)} শতাংশ)</strong> • মোট ভাগ: <strong>${bn(valid.length)}টি</strong> • ভাগকৃত: <strong>${bn(used/SQFT_PER_DECIMAL)} শতাংশ</strong> • চূড়ান্ত অবশিষ্ট: <strong>${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</strong></div>`;
+      html+=`<div class="qp-print-parts-grid">`;
       valid.forEach((rec,idx)=>{
         const dec=rec.part.partArea/SQFT_PER_DECIMAL;
-        html+=`<div class="qp-print-part"><h3>প্লট / ভাগ ${bn(idx+1)} — ${bn(dec)} শতাংশ — ${esc(SIDE_META[rec.direction].label)} দিক থেকে</h3>`;
+        html+=`<div class="qp-print-part"><h3>প্লট / ভাগ ${bn(idx+1)} — ${bn(dec)} শতাংশ — ${esc((SIDE_META[rec.direction]||SIDE_META.north).label)} দিক থেকে</h3>`;
         html+=`<div class="qp-print-result-grid"><div><b>ক্ষেত্রফল</b><span>${bn(rec.part.partArea)} বর্গফুট</span></div><div><b>ভাগরেখা PQ</b><span>${ftIn(rec.part.cutLength)}</span></div></div>`;
-        const groups=[['ভাগকৃত প্লটের মাপ',rec.part.targetSegments],['এই ভাগের পর অবশিষ্ট অংশের মাপ',rec.part.remainSegments]];
-        for(const [title,segments] of groups){
-          html+=`<div class="qp-print-dim-card"><h4>${esc(title)}</h4>`;
-          segments.forEach(seg=>{html+=`<div class="qp-print-dim-row"><span>${esc(seg.label)}</span><strong>${ftIn(seg.value)}</strong></div>`;});
-          html+=`</div>`;
-        }
-        html+=`</div>`;
+        html+=`<div class="qp-print-dim-card"><h4>শুধু প্লট ${bn(idx+1)}-এর Dimension</h4>`;
+        rec.part.targetSegments.forEach(seg=>{html+=`<div class="qp-print-dim-row"><span>${esc(seg.label)}</span><strong>${ftIn(seg.value)}</strong></div>`;});
+        html+=`</div></div>`;
       });
-      page2.innerHTML=html;
-      sheet.appendChild(page1);
-      sheet.appendChild(page2);
-      document.body.appendChild(sheet);
+      html+=`</div>`;
+      if(valid.length){
+        const r=valid[valid.length-1].part.remainPoly;
+        const rs=[
+          ['অবশিষ্ট জমি উত্তর',dist(r[0],r[1])],['অবশিষ্ট জমি পূর্ব',dist(r[1],r[2])],
+          ['অবশিষ্ট জমি দক্ষিণ',dist(r[2],r[3])],['অবশিষ্ট জমি পশ্চিম',dist(r[3],r[0])],
+          ['অবশিষ্ট জমি কর্ণ',dist(r[0],r[2])],['অবশিষ্ট জমি কর্ণ',dist(r[1],r[3])]
+        ];
+        html+=`<div class="qp-print-part"><h3>চূড়ান্ত অবশিষ্ট জমি — ${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</h3><div class="qp-print-dim-card"><h4>অবশিষ্ট জমির আলাদা Dimension</h4>`;
+        rs.forEach(([label,val])=>{html+=`<div class="qp-print-dim-row"><span>${esc(label)}</span><strong>${ftIn(val)}</strong></div>`;});
+        html+=`</div></div>`;
+      }
+      page2.innerHTML=html; sheet.append(page1,page2); document.body.appendChild(sheet);
 
-      const printStyle=document.createElement('style');
-      printStyle.id='qpTemporaryPrintStyle';
-      printStyle.textContent=`
-        @page { size: A4 portrait; margin: 7mm; }
-        .qp-print-sheet { display:block; position:fixed; left:-100000px; top:0; width:210mm; background:#fff; z-index:2147483647; }
-        .qp-print-page { width:196mm; min-height:283mm; box-sizing:border-box; background:#fff; color:#111; overflow:hidden; }
-        .qp-print-page + .qp-print-page { page-break-before:always; break-before:page; }
-        .qp-print-title { font-size:22px; font-weight:900; text-align:center; margin:0 0 3mm; color:#082336; }
-        .qp-print-subtitle { text-align:center; font-size:12px; margin-bottom:2mm; color:#526a73; }
-        .qp-print-svg { width:196mm; height:258mm; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#fff; }
-        .qp-print-svg svg { width:196mm !important; height:258mm !important; max-width:196mm !important; max-height:258mm !important; display:block !important; background:#fff; }
-        .qp-print-summary { font-size:13px; line-height:1.5; border:1px solid #999; padding:3mm; margin-bottom:3mm; }
-        .qp-print-part { border:1px solid #999; padding:3mm; margin-bottom:3mm; break-inside:avoid; }
-        .qp-print-part h3 { font-size:16px; margin:0 0 2mm; }
-        .qp-print-result-grid { display:grid; grid-template-columns:1fr 1fr; gap:2mm; margin-bottom:2mm; }
-        .qp-print-result-grid > div { border:1px solid #ddd; padding:2mm; display:flex; justify-content:space-between; gap:4mm; font-size:12px; }
-        .qp-print-dim-card { border:1px solid #ddd; padding:2mm; margin-top:2mm; break-inside:avoid; }
-        .qp-print-dim-card h4 { margin:0 0 1mm; font-size:13px; }
-        .qp-print-dim-row { display:flex; justify-content:space-between; gap:5mm; padding:1.2mm 1mm; border-top:1px solid #eee; font-size:11px; }
-        .qp-print-dim-row strong { white-space:nowrap; font-size:12px; }
-        @media print {
-          html, body { margin:0 !important; padding:0 !important; background:#fff !important; }
-          body > *:not(.qp-print-sheet) { display:none !important; }
-          .qp-print-sheet { position:static !important; left:auto !important; top:auto !important; width:100% !important; display:block !important; }
-          .qp-print-page { display:block !important; }
-          .qp-print-page + .qp-print-page { page-break-before:always !important; break-before:page !important; }
-          * { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
-        }
-      `;
-      document.head.appendChild(printStyle);
-
-      // Wait for the cloned SVG and fonts to layout before invoking Android print.
-      const doPrint=()=>{
-        try{ window.print(); }
-        catch(e){ console.error(e); alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।'); }
-      };
-      if(document.fonts && document.fonts.ready){
-        document.fonts.ready.then(()=>setTimeout(doPrint,250));
-      }else setTimeout(doPrint,400);
-
-      const cleanup=()=>setTimeout(()=>{sheet.remove();printStyle.remove();},1200);
-      window.addEventListener('afterprint',cleanup,{once:true});
-    }catch(e){
-      console.error(e);
-      alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।');
-    }
+      const style=document.createElement('style'); style.id='qpTemporaryPrintStyle';
+      style.textContent=`
+        @page{size:A4 portrait;margin:7mm}
+        .qp-print-sheet{position:absolute;left:0;top:0;width:210mm;background:#fff;color:#111;z-index:2147483647;opacity:0;pointer-events:none}
+        .qp-print-page{width:196mm;min-height:283mm;box-sizing:border-box;background:#fff;color:#111;overflow:hidden}
+        .qp-print-page+.qp-print-page{page-break-before:always;break-before:page}
+        .qp-print-title{font-size:22px;font-weight:900;text-align:center;margin:0 0 3mm;color:#082336}
+        .qp-print-subtitle{text-align:center;font-size:12px;margin-bottom:2mm;color:#526a73}
+        .qp-print-svg{width:196mm;height:258mm;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
+        .qp-print-svg svg{width:196mm!important;height:258mm!important;max-width:196mm!important;max-height:258mm!important;display:block!important;background:#fff}
+        .qp-print-summary{font-size:13px;line-height:1.5;border:1px solid #999;padding:3mm;margin-bottom:3mm}
+        .qp-print-parts-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;align-items:start}
+        .qp-print-part{border:1px solid #999;padding:2.2mm;margin:0;break-inside:avoid;page-break-inside:avoid}
+        .qp-print-parts-grid .qp-print-part h3{font-size:13px}
+        .qp-print-parts-grid .qp-print-dim-row{font-size:9.5px;padding:0.9mm 0.8mm}
+        .qp-print-parts-grid .qp-print-dim-row strong{font-size:10px}
+        .qp-print-part h3{font-size:16px;margin:0 0 2mm}
+        .qp-print-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:2mm;margin-bottom:2mm}
+        .qp-print-result-grid>div{border:1px solid #ddd;padding:2mm;display:flex;justify-content:space-between;gap:4mm;font-size:12px}
+        .qp-print-dim-card{border:1px solid #ddd;padding:2mm;margin-top:2mm;break-inside:avoid}
+        .qp-print-dim-card h4{margin:0 0 1mm;font-size:13px}
+        .qp-print-dim-row{display:flex;justify-content:space-between;gap:5mm;padding:1.2mm 1mm;border-top:1px solid #eee;font-size:11px}
+        .qp-print-dim-row strong{white-space:nowrap;font-size:12px}
+        @media print{
+          html,body{margin:0!important;padding:0!important;background:#fff!important}
+          body>*:not(.qp-print-sheet){display:none!important}
+          .qp-print-sheet{position:static!important;left:auto!important;top:auto!important;width:100%!important;display:block!important;opacity:1!important;visibility:visible!important}
+          .qp-print-page{display:block!important}
+          .qp-print-page+.qp-print-page{page-break-before:always!important;break-before:page!important}
+          *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+        }`;
+      document.head.appendChild(style);
+      const doPrint=()=>{try{window.print();}catch(e){console.error(e);alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।')}};
+      if(document.fonts?.ready) document.fonts.ready.then(()=>setTimeout(doPrint,300)); else setTimeout(doPrint,500);
+      window.addEventListener('afterprint',()=>{setTimeout(()=>{sheet.remove();style.remove()},800)},{once:true});
+    }catch(e){console.error(e);alert('PDF তৈরি করা যায়নি। আবার চেষ্টা করুন।');}
   }
 
   function calculate(){
