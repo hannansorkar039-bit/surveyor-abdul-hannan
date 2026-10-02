@@ -405,7 +405,7 @@
       const t=rec.part.targetPoly,r=rec.part.remainPoly;
       layers.push(`<polygon points="${poly(t)}" fill="${colors[idx%colors.length]}" opacity=".92" stroke="#b27a1f" stroke-width="4" stroke-linejoin="round"/>`);
       labels.push(`<text x="${tx(t.reduce((s,p)=>s+p[0],0)/t.length).toFixed(1)}" y="${ty(t.reduce((s,p)=>s+p[1],0)/t.length).toFixed(1)}" text-anchor="middle" font-size="34" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8">প্লট ${bn(idx+1)} — ${bn(rec.part.partArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
-      const tp=t.map(p=>[tx(p[0]),ty(p[1])]), rp=r.map(p=>[tx(p[0]),ty(p[1])]);
+      const tp=t.map(p=>[tx(p[0]),ty(p[1])]);
       const sv=partSideValues(rec.part);
       dims.push(dimLine(tp[0],tp[1],`${SIDE_META[rec.direction].label} ${SIDE_META[rec.direction].key}: ${ftIn(sv[0])}`,48,-1));
       dims.push(dimLine(tp[1],tp[2],`পূর্ব অংশ: ${ftIn(sv[1])}`,44,-1));
@@ -416,6 +416,37 @@
       // Cut boundary is also highlighted on the remaining parcel.
       layers.push(`<line x1="${tp[2][0]}" y1="${tp[2][1]}" x2="${tp[3][0]}" y2="${tp[3][1]}" stroke="#c44f2b" stroke-width="7"/>`);
     });
+
+    // Show the four directional dimensions and both corner diagonals of the
+    // CURRENT remaining parcel. Earlier remaining parcels are intentionally
+    // not dimensioned in the SVG so multiple split labels do not overlap.
+    const last=qpState.splits.slice().reverse().find(r=>r.part);
+    if(last){
+      const meta=SIDE_META[last.direction] || SIDE_META.north;
+      const i=meta.i, n=(i+1)%4, opp=(i+2)%4, prev=(i+3)%4;
+      const rp=last.part.remainPoly; // [P,Q,R,L] for the current remainder
+      const rpScreen=rp.map(p=>[tx(p[0]),ty(p[1])]);
+      const sideNames=['উত্তর','পূর্ব','দক্ষিণ','পশ্চিম'];
+      const sideKeys=['AB','BC','CD','DA'];
+      const remainEdges=[
+        {a:0,b:1,label:`${meta.label} সীমা / ভাগরেখা`,key:meta.key,off:82,sign:1,dot:true,color:'#c44f2b'},
+        {a:1,b:2,label:sideNames[n],key:sideKeys[n],off:78,sign:-1,dot:false,color:'#176b72'},
+        {a:2,b:3,label:sideNames[opp],key:sideKeys[opp],off:82,sign:1,dot:false,color:'#176b72'},
+        {a:3,b:0,label:sideNames[prev],key:sideKeys[prev],off:78,sign:-1,dot:false,color:'#176b72'}
+      ];
+      remainEdges.forEach(e=>{
+        const len=dist(rp[e.a],rp[e.b]);
+        dims.push(dimLine(rpScreen[e.a],rpScreen[e.b],`${e.label} ${e.key}: ${ftIn(len)}`,e.off,e.sign,e.dot,e.color));
+      });
+      dims.push(dimLine(rpScreen[0],rpScreen[2],`অবশিষ্ট কর্ণ PR: ${ftIn(dist(rp[0],rp[2]))}`,62,-1,true,'#75629b'));
+      dims.push(dimLine(rpScreen[1],rpScreen[3],`অবশিষ্ট কর্ণ QL: ${ftIn(dist(rp[1],rp[3]))}`,62,1,true,'#75629b'));
+      labels.push(`<text x="${tx(rp.reduce((s,p)=>s+p[0],0)/rp.length).toFixed(1)}" y="${(ty(rp.reduce((s,p)=>s+p[1],0)/rp.length)+55).toFixed(1)}" text-anchor="middle" font-size="32" font-weight="950" fill="#0b5f68" paint-order="stroke" stroke="#fff" stroke-width="8">অবশিষ্ট জমি — ${bn(polygonArea(rp)/SQFT_PER_DECIMAL)} শতাংশ</text>`);
+      const cornerNames=['P','Q','R','L'];
+      rpScreen.forEach((p,k)=>{
+        labels.push(`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="9" fill="#0b7a82"/>`);
+        labels.push(`<text x="${(p[0]+18).toFixed(1)}" y="${(p[1]-18).toFixed(1)}" font-size="34" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8">${cornerNames[k]}</text>`);
+      });
+    }
     const outerLabels=[['A',q.pts[0]],['B',q.pts[1]],['C',q.pts[2]],['D',q.pts[3]]].map(([n,p])=>`<circle cx="${tx(p[0]).toFixed(1)}" cy="${ty(p[1]).toFixed(1)}" r="8" fill="#08747b"/><text x="${(tx(p[0])+16).toFixed(1)}" y="${(ty(p[1])-16).toFixed(1)}" font-size="36" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8">${n}</text>`).join('');
     return `<div class="qp-drawing qp-multi-drawing"><div class="qp-drawing-head">📐 সবগুলো প্লট / ভাগ — একই মূল জমির Drawing (${bn(qpState.splits.length)}টি ভাগ)</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • সব প্লট একই Drawing-এ • প্রতিটি মাপ তার রেখার সমান্তরাল • কর্ণ ডটেড • Drawing আগের চেয়ে ৩ গুণ বড়</div><div class="qp-svg-wrap"><svg id="qpMultiSvg" class="qp-svg qp-svg-large" viewBox="0 0 ${W} ${H}" role="img" aria-label="একই Drawing-এ একাধিক জমি ভাগ">${layers.join('')}${dims.join('')}${labels.join('')}${outerLabels}${northArrow}</svg></div><div class="qp-drawing-legend"><span>🟨/🟩/🟦/🟪 আলাদা প্লট</span><span>🟥 লাল রেখা = ভাগরেখা</span><span>┄ কর্ণ = ডটেড</span></div></div>`;
   }
