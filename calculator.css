@@ -32,3 +32,30 @@
 .length-input-note{font-size:11px;color:var(--muted);margin-top:-2px}
 .length-mode-note{grid-column:1/-1;font-size:12px;color:var(--muted);align-self:end;padding-top:24px}
 @media(max-width:640px){.length-mode-note{padding-top:0}.length-input-pair{grid-template-columns:minmax(0,1fr) minmax(0,.78fr)}}
+
+/* Readability improvement: calculator body text, labels and controls */
+.calc-panel{font-size:17px;}
+.calc-panel .calc-help{font-size:17px;line-height:1.8;}
+.calc-panel .calc-field label{font-size:16px;line-height:1.55;}
+.calc-panel .calc-field input,.calc-panel .calc-field select{font-size:17px;line-height:1.5;}
+.calc-panel .calc-field input::placeholder{font-size:16px;opacity:.8;}
+.calc-panel .calc-btn{font-size:16px;line-height:1.5;}
+.calc-panel .formula code{font-size:17px;line-height:1.6;}
+.calc-panel .small-note,.calc-panel .legal-note,.calc-panel .warning,.calc-panel .calc-help{line-height:1.8;}
+.calc-panel .small-note{font-size:15px;}
+.calc-panel .legal-note,.calc-panel .warning{font-size:16px;}
+.calc-panel .result-item{font-size:16px;line-height:1.65;}
+.calc-panel .result-item strong{font-size:16px;}
+@media(max-width:620px){
+  .calc-panel{font-size:18px;}
+  .calc-panel .calc-help{font-size:17px !important;line-height:1.85 !important;}
+  .calc-panel .calc-field label{font-size:17px !important;line-height:1.6 !important;}
+  .calc-panel .calc-field input,.calc-panel .calc-field select{font-size:18px !important;min-height:52px !important;line-height:1.5 !important;}
+  .calc-panel .calc-field input::placeholder{font-size:16px !important;}
+  .calc-panel .calc-btn{font-size:17px !important;min-height:50px !important;}
+  .calc-panel .formula code{font-size:17px !important;line-height:1.65 !important;}
+  .calc-panel .small-note{font-size:15px !important;line-height:1.8 !important;}
+  .calc-panel .legal-note,.calc-panel .warning{font-size:16px !important;line-height:1.8 !important;}
+  .calc-panel .result-item,.calc-panel .result-item strong{font-size:16px !important;line-height:1.7 !important;}
+  .calc-panel .length-input-note,.calc-panel .shape-unit-note,.calc-panel .calc-field small{font-size:14px !important;line-height:1.7 !important;}
+}
