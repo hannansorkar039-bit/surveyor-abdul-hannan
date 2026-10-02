@@ -185,6 +185,17 @@
     south:{key:'CD',i:2,label:'দক্ষিণ',start:'C',end:'D',opposite:'A'},
     west:{key:'DA',i:3,label:'পশ্চিম',start:'D',end:'A',opposite:'B'}
   };
+  function remainderForCut(pts,P,Q,R,L,sideIndex){
+    // Preserve the original clockwise vertex order and the correct surviving
+    // boundary sequence for each selected side.
+    switch(sideIndex){
+      case 0: return [P,Q,R,L];       // North cut
+      case 1: return [L,P,Q,R];       // East cut
+      case 2: return [R,L,P,Q];       // South cut
+      case 3: return [Q,R,L,P];       // West cut
+      default: return [P,Q,R,L];
+    }
+  }
   function partitionForDirection(q,target,direction){
     const meta=SIDE_META[direction] || SIDE_META.north;
     const pts=q.pts;
@@ -210,7 +221,7 @@
       const P=interpolate(A,L,t);
       const Q=interpolate(B,R,t);
       const targetPoly=[A,B,Q,P];
-      const remainPoly=[P,Q,R,L];
+      const remainPoly=remainderForCut(pts,P,Q,R,L,i);
       if (!polygonIsInside(targetPoly,pts) || !polygonIsInside(remainPoly,pts)) return null;
       if (!polygonEdgesInside(targetPoly,pts) || !polygonEdgesInside(remainPoly,pts)) return null;
       if (!segmentInsidePolygon(P,Q,pts)) return null;
