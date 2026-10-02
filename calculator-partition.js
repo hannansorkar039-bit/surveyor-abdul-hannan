@@ -288,280 +288,242 @@
     // User-selected direction is authoritative. Do not silently switch to another side.
     return partitionForDirection(q,target,direction);
   }
-  function dimensionTable(title,segments){
-    return `<div class="qp-dimension-card"><h4>${esc(title)}</h4><div class="qp-dimension-list">${segments.map(s=>`<div class="qp-dimension-row"><span>${esc(s.label)}</span><strong>${ftIn(s.value)}</strong></div>`).join('')}</div></div>`;
-  }
   const SIDE_KEYS=['north','east','south','west'];
-  function cutEditor(part){
-    const meta=SIDE_META[part.direction] || SIDE_META.north;
-    const i=meta.i;
-    const nextMeta=SIDE_META[SIDE_KEYS[(i+1)%4]];
-    const prevMeta=SIDE_META[SIDE_KEYS[(i+3)%4]];
-    const vals=[
+  const qpState={q:null,splits:[]};
+  const SAVE_KEY='sah_quad_partition_multi_v1';
+  let splitSeq=0;
+
+  function splitParent(rec){
+    if(!rec.parentId) return qpState.q;
+    const parent=qpState.splits.find(x=>x.id===rec.parentId);
+    return parent && parent.part ? {pts:parent.part.remainPoly, area:polygonArea(parent.part.remainPoly), type:'convex'} : null;
+  }
+  function partSideValues(part){
+    return [
       dist(part.targetPoly[0],part.targetPoly[1]),
       dist(part.targetPoly[1],part.targetPoly[2]),
       dist(part.targetPoly[2],part.targetPoly[3]),
       dist(part.targetPoly[3],part.targetPoly[0])
     ];
-    const fields=[
-      {label:`${meta.label} • ${meta.start}${meta.end} (মূল সীমানা — স্বয়ংক্রিয়)`,value:vals[0],readonly:true},
-      {label:`${nextMeta.label} • ${meta.end}Q (এডিটযোগ্য)`,value:vals[1],readonly:false},
-      {label:`ভাগরেখা • QP (স্বয়ংক্রিয়)`,value:vals[2],readonly:true},
-      {label:`${prevMeta.label} • P${meta.start} (এডিটযোগ্য)`,value:vals[3],readonly:false}
-    ];
-    return `<div class="qp-cut-editor"><div class="qp-cut-editor-title">✂️ কর্তন/ভাগকৃত জমির ৪ দিকের ফুট–ইঞ্চি — সরাসরি এডিটযোগ্য</div><div class="qp-cut-editor-note">${esc(meta.label)} দিকের <strong>${esc(meta.start)}${esc(meta.end)}</strong> মূল জমির সীমানা থেকে স্বয়ংক্রিয়ভাবে থাকবে। <strong>${esc(meta.end)}–Q</strong> ও <strong>P–${esc(meta.start)}</strong> একসঙ্গে পরিবর্তন করা যাবে। তাদের নতুন অবস্থান মূল ${esc(nextMeta.key)} ও ${esc(prevMeta.key)} সীমানার ওপরই বসানো হবে। <strong>PQ</strong>, নতুন <strong>AQ</strong> এবং ক্ষেত্রফল স্বয়ংক্রিয়ভাবে পুনঃহিসাব হবে।</div><div class="qp-cut-grid">${fields.map((f,i)=>{const ft=Math.floor(f.value), inch=Number(((f.value-ft)*12).toFixed(2)); return `<div class="qp-cut-field"><label>${esc(f.label)}</label><div class="fi-row"><input id="qpCut${i}ft" type="number" min="0" step="any" value="${ft}" placeholder="ফুট" ${f.readonly?'readonly':''}><input id="qpCut${i}in" type="number" min="0" max="11.999" step="0.01" value="${inch || ''}" placeholder="ইঞ্চি" ${f.readonly?'readonly':''}></div></div>`}).join('')}</div><div class="qp-cut-actions"><button id="qpCutRecalc" type="button" class="calc-btn calc-primary">নতুন ক্ষেত্রফল</button></div><div id="qpCutLive" class="qp-cut-live"><span>মাপ পরিবর্তন করে “নতুন ক্ষেত্রফল” চাপুন।</span></div></div>`;
+  }
+  function makeEditedPart(parentQ, rec){
+    if(!rec.editNext || !rec.editPrev) return null;
+    const base=findPartition(parentQ,rec.targetArea,rec.direction);
+    if(!base) return null;
+    const vals=[dist(base.targetPoly[0],base.targetPoly[1]),rec.editNext,dist(base.targetPoly[2],base.targetPoly[3]),rec.editPrev];
+    return partitionFromEditedBoundary(parentQ,base,vals);
   }
 
-  // Apply edited adjacent side lengths directly to the ORIGINAL parcel boundary.
-  // This is the key geometry rule for the cut editor: the full selected side stays
-  // fixed, Q stays on the next original boundary, P stays on the previous original
-  // boundary, and PQ/AQ are derived from those two positions.
+  // Apply edited adjacent side lengths to a parcel. The full selected side and
+  // the new cut line remain derived geometry; the two adjacent boundary pieces
+  // are directly editable. This is also used by every later split.
   function partitionFromEditedBoundary(q, part, vals){
     const meta=SIDE_META[part.direction] || SIDE_META.north;
-    const i=meta.i, n=(i+1)%4, prev=(i+3)%4, opposite=(i+2)%4;
-    const A=q.pts[i], B=q.pts[n], L=q.pts[prev], R=q.pts[opposite];
-    const fullNext=dist(B,R), fullPrev=dist(A,L);
-    const fullSelected=dist(A,B);
+    const i=meta.i, n=(i+1)%4, prev=(i+3)%4;
+    const A=q.pts[i], B=q.pts[n], L=q.pts[prev], R=q.pts[(i+2)%4];
+    const fullNext=dist(B,R), fullPrev=dist(A,L), fullSelected=dist(A,B);
     const wantedNext=Number(vals[1]), wantedPrev=Number(vals[3]);
     if(!(fullNext>EPS&&fullPrev>EPS&&fullSelected>EPS&&wantedNext>0&&wantedPrev>0)) return null;
     if(wantedNext>fullNext+1e-7 || wantedPrev>fullPrev+1e-7) return null;
-
-    const tq=wantedNext/fullNext;
-    const tp=wantedPrev/fullPrev;
-    const Q=interpolate(B,R,tq);
-    const P=interpolate(A,L,tp);
-    const targetPoly=[A,B,Q,P];
-    const remainPoly=[P,Q,R,L];
+    const Q=interpolate(B,R,wantedNext/fullNext), P=interpolate(A,L,wantedPrev/fullPrev);
+    const targetPoly=[A,B,Q,P], remainPoly=[P,Q,R,L];
     if(!isSimpleQuad(targetPoly) || !isSimpleQuad(remainPoly)) return null;
     if(!polygonIsInside(targetPoly,q.pts) || !polygonIsInside(remainPoly,q.pts)) return null;
     if(!polygonEdgesInside(targetPoly,q.pts) || !polygonEdgesInside(remainPoly,q.pts) || !segmentInsidePolygon(P,Q,q.pts)) return null;
-
     const targetArea=polygonArea(targetPoly), remainArea=polygonArea(remainPoly);
     if(!(targetArea>EPS) || Math.abs(targetArea+remainArea-q.area)>Math.max(1e-4,q.area*1e-10)) return null;
-
-    const names=['A','B','C','D'];
-    const aName=names[i], bName=names[n], pSideName=names[prev], rName=names[opposite];
-    const sideNames=['উত্তর','পূর্ব','দক্ষিণ','পশ্চিম'];
-    const sideKeys=['AB','BC','CD','DA'];
+    const names=['A','B','C','D'], aName=names[i], bName=names[n], pSideName=names[(i+3)%4], rName=names[(i+2)%4];
+    const sideNames=['উত্তর','পূর্ব','দক্ষিণ','পশ্চিম'], sideKeys=['AB','BC','CD','DA'];
     const makeSeg=(name,label,value,extra={})=>({name,label,value,...extra});
     const targetSegments=[
       makeSeg(`${aName}–${bName}`,`${meta.label} ${meta.key} (পূর্ণ বাহু)`,dist(A,B)),
       makeSeg(`${bName}–Q`,`${sideNames[n]} ${sideKeys[n]} (ভাগ অংশ)`,dist(B,Q)),
       makeSeg('Q–P','নতুন ভাগরেখা PQ',dist(Q,P),{cut:true}),
-      makeSeg(`P–${aName}`,`${sideNames[prev]} ${sideKeys[prev]} (ভাগ অংশ)`,dist(P,A)),
+      makeSeg(`P–${aName}`,`${sideNames[(i+3)%4]} ${sideKeys[(i+3)%4]} (ভাগ অংশ)`,dist(P,A)),
       makeSeg(`${aName}–Q`,`ভাগের কর্ণ ${aName}Q`,dist(A,Q),{diagonal:true}),
       makeSeg(`${bName}–P`,`ভাগের কর্ণ ${bName}P`,dist(B,P),{diagonal:true})
     ];
     const remainSegments=[
       makeSeg(`Q–${rName}`,`${sideNames[n]} ${sideKeys[n]} (অবশিষ্ট অংশ)`,dist(Q,R)),
-      makeSeg(`${rName}–${pSideName}`,`${sideNames[opposite]} ${sideKeys[opposite]} (পূর্ণ বাহু)`,dist(R,L)),
-      makeSeg(`${pSideName}–P`,`${sideNames[prev]} ${sideKeys[prev]} (অবশিষ্ট অংশ)`,dist(L,P)),
+      makeSeg(`${rName}–${pSideName}`,`${sideNames[(i+2)%4]} ${sideKeys[(i+2)%4]} (পূর্ণ বাহু)`,dist(R,L)),
+      makeSeg(`${pSideName}–P`,`${sideNames[(i+3)%4]} ${sideKeys[(i+3)%4]} (অবশিষ্ট অংশ)`,dist(L,P)),
       makeSeg('P–Q','নতুন ভাগরেখা PQ',dist(P,Q),{cut:true}),
       makeSeg(`P–${rName}`,`অবশিষ্ট অংশের কর্ণ P${rName}`,dist(P,R),{diagonal:true}),
       makeSeg(`Q–${pSideName}`,`অবশিষ্ট অংশের কর্ণ Q${pSideName}`,dist(Q,L),{diagonal:true})
     ];
-    return {
-      ...part,
-      P,Q,targetPoly,remainPoly,
-      partArea:targetArea,cutLength:dist(P,Q),
-      targetSegments,remainSegments,
-      editedBoundary:true,
-      editedTargetSides:[dist(A,B),dist(B,Q),dist(Q,P),dist(P,A)],
-      editedTargetDiagonal:dist(A,Q),
-      editedTarget:{poly:targetPoly,area:targetArea,diagonal:dist(A,Q),sides:[dist(A,B),dist(B,Q),dist(Q,P),dist(P,A)]}
-    };
+    return {...part,P,Q,targetPoly,remainPoly,partArea:targetArea,cutLength:dist(P,Q),targetSegments,remainSegments,
+      editedTarget:{poly:targetPoly,area:targetArea,diagonal:dist(A,Q),sides:[dist(A,B),dist(B,Q),dist(Q,P),dist(P,A)]},
+      editedTargetDiagonal:dist(A,Q),editedTargetSides:[dist(A,B),dist(B,Q),dist(Q,P),dist(P,A)],editedBoundary:true};
   }
 
-  function bindCutEditor(part,q){
-    const button=$('qpCutRecalc');
-    const live=$('qpCutLive');
-    if(!button) return;
-    button.onclick=()=>{
-      try{
-        // Only the two boundary-adjacent lengths are user-editable. The full
-        // selected side and PQ are derived geometry and therefore read-only.
-        const next=readFI('qpCut1ft','qpCut1in');
-        const prev=readFI('qpCut3ft','qpCut3in');
-        if(next===null || prev===null || !(next>0) || !(prev>0)){
-          if(live) live.innerHTML='<span class="qp-cut-error">এডিটযোগ্য দুই পাশের ফুট ও ইঞ্চির মান সঠিকভাবে দিন।</span>';
-          return;
-        }
-        const vals=[dist(part.targetPoly[0],part.targetPoly[1]),next,dist(part.targetPoly[2],part.targetPoly[3]),prev];
-        const recalculated=partitionFromEditedBoundary(q,part,vals);
-        if(!recalculated){
-          const meta=SIDE_META[part.direction] || SIDE_META.north;
-          const fullNext=dist(q.pts[meta.i+1>3?0:meta.i+1],q.pts[(meta.i+2)%4]);
-          const fullPrev=dist(q.pts[meta.i],q.pts[(meta.i+3)%4]);
-          if(live) live.innerHTML=`<span class="qp-cut-error">নতুন মাপ মূল জমির সীমানার মধ্যে বসানো যাচ্ছে না। ${meta.label} দিকের সংলগ্ন দুই সীমানার সর্বোচ্চ মাপ যথাক্রমে ${ftIn(fullNext)} এবং ${ftIn(fullPrev)}।</span>`;
-          return;
-        }
-
-        part.P=recalculated.P;
-        part.Q=recalculated.Q;
-        part.targetPoly=recalculated.targetPoly;
-        part.remainPoly=recalculated.remainPoly;
-        part.partArea=recalculated.partArea;
-        part.cutLength=recalculated.cutLength;
-        part.targetSegments=recalculated.targetSegments;
-        part.remainSegments=recalculated.remainSegments;
-        part.editedTarget=recalculated.editedTarget;
-        part.editedTargetSides=recalculated.editedTargetSides;
-        part.editedTargetArea=recalculated.partArea;
-        part.editedTargetDiagonal=recalculated.editedTargetDiagonal;
-        part.recalculatedPart=recalculated;
-
-        const decimal=recalculated.partArea/SQFT_PER_DECIMAL;
-        const liveArea=document.querySelector('.qp-live-area');
-        if(liveArea) liveArea.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(recalculated.partArea)} বর্গফুট = ${bn(decimal)} শতাংশ<br><strong>নতুন কর্ণ AQ:</strong> ${ftIn(recalculated.editedTargetDiagonal)} &nbsp;•&nbsp; <strong>নতুন ভাগরেখা PQ:</strong> ${ftIn(recalculated.cutLength)}`;
-        if(live) live.innerHTML=`<strong>নতুন ক্ষেত্রফল:</strong> ${bn(recalculated.partArea)} বর্গফুট = ${bn(decimal)} শতাংশ &nbsp;•&nbsp; <strong>নতুন AQ:</strong> ${ftIn(recalculated.editedTargetDiagonal)} &nbsp;•&nbsp; <strong>নতুন PQ:</strong> ${ftIn(recalculated.cutLength)}`;
-
-        const cards=document.querySelectorAll('.qp-dimensions .qp-dimension-card');
-        const remainingDecimal=(q.area-recalculated.partArea)/SQFT_PER_DECIMAL;
-        if(cards[0]) cards[0].outerHTML=dimensionTable(`নতুন নির্ধারিত ভাগ (${bn(decimal)} শতাংশ)`,recalculated.targetSegments);
-        if(cards[1]) cards[1].outerHTML=dimensionTable(`অবশিষ্ট জমি (${bn(remainingDecimal)} শতাংশ)`,recalculated.remainSegments);
-
-        const oldDrawing=document.querySelector('.qp-drawing');
-        if(oldDrawing) oldDrawing.outerHTML=makeDrawing(q,recalculated,recalculated.editedTarget);
-      }catch(err){
-        console.error('qpCutRecalc error:',err);
-        if(live) live.innerHTML='<span class="qp-cut-error">নতুন ক্ষেত্রফল হিসাব করতে একটি সমস্যা হয়েছে। মাপগুলো আবার যাচাই করুন।</span>';
-      }
-    };
+  function dimensionTable(title,segments){
+    return `<div class="qp-dimension-card"><h4>${esc(title)}</h4><div class="qp-dimension-list">${segments.map(s=>`<div class="qp-dimension-row"><span>${esc(s.label)}</span><strong>${ftIn(s.value)}</strong></div>`).join('')}</div></div>`;
   }
-  function makeDrawing(q, part, editedTarget=null) {
-    // The calculation geometry is kept untouched. For Drawing only, reflect
-    // mathematical Y so AB (North) is at the top, BC (East) is on the right,
-    // CD (South) is at the bottom, and DA (West) is on the left.
-    // After editing the four cut-parcel sides, the Drawing must use that exact
-    // rebuilt target geometry; otherwise the labels are calculated from the old
-    // P/Q positions and can show a different feet/inches value than the editor.
-    const drawTargetPoly = editedTarget?.poly || part.targetPoly;
-    const drawCutP = drawTargetPoly[3];
-    const drawCutQ = drawTargetPoly[2];
-    const all=[...q.pts, ...drawTargetPoly, part.P, part.Q].map(p=>[p[0],-p[1]]);
-    let minX=Math.min(...all.map(p=>p[0])), maxX=Math.max(...all.map(p=>p[0])), minY=Math.min(...all.map(p=>p[1])), maxY=Math.max(...all.map(p=>p[1]));
-    const padX=Math.max((maxX-minX)*0.045,18), padY=Math.max((maxY-minY)*0.055,18);
-    minX-=padX; maxX+=padX; minY-=padY; maxY+=padY;
-    const W=1200,H=820, scale=Math.min((W-90)/(maxX-minX),(H-90)/(maxY-minY));
-    const tx=x=>35+(x-minX)*scale;
-    const ty=y=>H-35-((-y)-minY)*scale;
-    const P=q.pts.map(p=>[tx(p[0]),ty(p[1])]);
-    const PP=[tx(drawCutP[0]),ty(drawCutP[1])], QQ=[tx(drawCutQ[0]),ty(drawCutQ[1])];
-    const poly=P.map(p=>p.join(',')).join(' ');
-    const [pA,pB,pC,pD]=P;
-    const ts=drawTargetPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
-    const rs=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]).map(p=>p.join(',')).join(' ');
 
-    const clampAngle=a=>a>90?a-180:(a<-90?a+180:a);
-    const dimLine=(a,b,text,offsetPx=24,opts={})=>{
-      const dx=b[0]-a[0], dy=b[1]-a[1], len=Math.hypot(dx,dy)||1;
-      const nx=-dy/len, ny=dx/len;
-      const sign=opts.sideSign ?? 1;
-      const ox=nx*offsetPx*sign, oy=ny*offsetPx*sign;
-      const x1=a[0]+ox, y1=a[1]+oy, x2=b[0]+ox, y2=b[1]+oy;
-      const mx=(x1+x2)/2, my=(y1+y2)/2;
-      const ang=clampAngle(Math.atan2(dy,dx)*180/Math.PI);
-      const dash=opts.dotted?' stroke-dasharray="7 6"':'';
-      const lineColor=opts.color || '#58707a';
-      const textColor=opts.textColor || '#082336';
-      return `<g class="qp-dim-line"><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${lineColor}" stroke-width="${opts.width||2}"${dash}/><line x1="${(a[0]+ox).toFixed(1)}" y1="${(a[1]+oy).toFixed(1)}" x2="${a[0].toFixed(1)}" y2="${a[1].toFixed(1)}" stroke="${lineColor}" stroke-width="1" opacity="0.65"/><line x1="${(b[0]+ox).toFixed(1)}" y1="${(b[1]+oy).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${lineColor}" stroke-width="1" opacity="0.65"/><text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${mx.toFixed(1)} ${my.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="21" font-weight="850" fill="${textColor}" paint-order="stroke" stroke="#fff" stroke-width="5" stroke-linejoin="round">${esc(text)}</text></g>`;
-    };
-    const sideLine=(a,b,label,value,offsetPx,sideSign=1)=>dimLine(a,b,`${label}: ${ftIn(value)}`,offsetPx,{sideSign,color:'#506d76'});
-    const diagonalLine=(a,b,label,value,offsetPx,sideSign=1)=>dimLine(a,b,`${label}: ${ftIn(value)}`,offsetPx,{sideSign,dotted:true,color:'#7b6b9a',width:2});
-
-    // Original parcel boundary and the two created parcels.
-    const boundary=`<polygon points="${poly}" fill="#eef8f8" stroke="#08747b" stroke-width="3" stroke-linejoin="round"/>`;
-    const targetFill=`<polygon points="${ts}" fill="#fff0bf" opacity="0.92" stroke="#d59b28" stroke-width="2" stroke-linejoin="round"/>`;
-    const remainFill=`<polygon points="${rs}" fill="#eaf7f7" opacity="0.55" stroke="#08747b" stroke-width="1.5"/>`;
-    const cut=`<line x1="${PP[0]}" y1="${PP[1]}" x2="${QQ[0]}" y2="${QQ[1]}" stroke="#c44f2b" stroke-width="4"/>`;
-
-    // Draw ONLY the actual parcel boundary segments once. This prevents the
-    // full BC/DA labels from sitting on top of their split segments.
-    const dimParts=[];
-    const addSeg=(a,b,label,value,off,sign=1)=>dimParts.push(sideLine(a,b,label,value,off,sign));
-    const t=drawTargetPoly.map(p=>[tx(p[0]),ty(p[1])]);
-    const r=part.remainPoly.map(p=>[tx(p[0]),ty(p[1])]);
-
-    const meta=SIDE_META[part.direction] || SIDE_META.north;
-    const i=meta.i;
-    const nextMeta=SIDE_META[SIDE_KEYS[(i+1)%4]];
-    const prevMeta=SIDE_META[SIDE_KEYS[(i+3)%4]];
-    const oppositeMeta=SIDE_META[SIDE_KEYS[(i+2)%4]];
-    const n0=meta.start, n1=meta.end;
-    const nOppStart=oppositeMeta.start, nOppEnd=oppositeMeta.end;
-
-    // Dimension text inside the Drawing contains only direction/segment names
-    // and the actual feet/inches. No "অবশিষ্ট" wording is placed on the lines.
-    // All four sides of the selected parcel are explicitly dimensioned.
-    // The edited four lengths are the authoritative dimensions for the
-    // selected parcel. Otherwise use the original calculated geometry.
-    const targetSideValues=editedTarget?.sides || [
-      dist(part.targetPoly[0],part.targetPoly[1]),
-      dist(part.targetPoly[1],part.targetPoly[2]),
-      part.cutLength,
-      dist(part.targetPoly[3],part.targetPoly[0])
+  function makePartEditor(rec, index){
+    const part=rec.part, meta=SIDE_META[rec.direction]||SIDE_META.north, i=meta.i;
+    const nextMeta=SIDE_META[SIDE_KEYS[(i+1)%4]], prevMeta=SIDE_META[SIDE_KEYS[(i+3)%4]];
+    const vals=partSideValues(part);
+    const next=rec.editNext ?? vals[1], prev=rec.editPrev ?? vals[3];
+    const inputs=[
+      {label:`${meta.label} • ${meta.start}${meta.end} (মূল সীমানা — স্বয়ংক্রিয়)`,v:vals[0],ro:true},
+      {label:`${nextMeta.label} • ${meta.end}Q (এডিটযোগ্য)`,v:next,ro:false},
+      {label:`ভাগরেখা • QP (স্বয়ংক্রিয়)`,v:vals[2],ro:true},
+      {label:`${prevMeta.label} • P${meta.start} (এডিটযোগ্য)`,v:prev,ro:false}
     ];
-    addSeg(t[0],t[1],`${meta.label} ${meta.key}`,targetSideValues[0],24,-1);
-    addSeg(t[1],t[2],`${nextMeta.label} ${n1}Q`,targetSideValues[1],22,-1);
-    addSeg(t[2],t[3],`ভাগরেখা PQ`,targetSideValues[2],24,1);
-    addSeg(t[3],t[0],`${prevMeta.label} P${n0}`,targetSideValues[3],22,1);
-
-    // Remaining parcel boundary order is P-Q-R-L: PQ is the cut,
-    // Q-R is on the next side, R-L is the opposite full side, and
-    // L-P is on the previous side. Draw each actual outer segment once.
-    addSeg(r[1],r[2],`${nextMeta.label} Q${nOppStart}`,dist(part.remainPoly[1],part.remainPoly[2]),22,-1);
-    addSeg(r[2],r[3],`${oppositeMeta.label} ${nOppStart}${nOppEnd}`,dist(part.remainPoly[2],part.remainPoly[3]),24,1);
-    addSeg(r[3],r[0],`${prevMeta.label} ${prevMeta.start}P`,dist(part.remainPoly[3],part.remainPoly[0]),22,1);
-
-    // Original measured diagonals are reference lines; every diagonal is dotted
-    // and carries a conventional feet/inches label aligned to that diagonal.
-    const diagLines=[];
-    diagLines.push(diagonalLine(pA,pC,'মূল কর্ণ AC',q.v.AC,28,-1));
-    diagLines.push(diagonalLine(pB,pD,'মূল কর্ণ BD',dist(q.B,q.D),28,1));
-    const A0=t[0], B0=t[1], Q0=t[2], P0=t[3];
-    const aqValue=dist(part.targetPoly[0],part.targetPoly[2]);
-    diagLines.push(diagonalLine(A0,Q0,editedTarget?'নতুন কর্ণ AQ':`${bn(part.partArea/SQFT_PER_DECIMAL)}% কর্ণ AQ`,aqValue,20,-1));
-    diagLines.push(diagonalLine(B0,P0,`${bn(part.partArea/SQFT_PER_DECIMAL)}% কর্ণ BP`,dist(part.targetPoly[1],part.targetPoly[3]),20,1));
-    const P1=r[0], Q1=r[1], R1=r[2], L1=r[3];
-    diagLines.push(diagonalLine(P1,R1,'কর্ণ PC',dist(part.remainPoly[0],part.remainPoly[2]),20,1));
-    diagLines.push(diagonalLine(Q1,L1,'কর্ণ QD',dist(part.remainPoly[1],part.remainPoly[3]),20,-1));
-
-    const verts=[['A',pA],['B',pB],['C',pC],['D',pD],['P',PP],['Q',QQ]].map(([n,p])=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#08747b"/><text x="${p[0]+9}" y="${p[1]-9}" font-size="24" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4">${n}</text>`).join('');
-    const northArrow=`<g transform="translate(70 62)"><line x1="0" y1="30" x2="0" y2="0" stroke="#082336" stroke-width="3"/><path d="M0 0 L-7 11 L7 11 Z" fill="#082336"/><text x="0" y="48" text-anchor="middle" font-size="22" font-weight="900" fill="#082336">উত্তর</text></g>`;
-    return `<div class="qp-drawing"><div class="qp-drawing-head">📐 ${q.type==='convex'?'উত্তল (Convex)':'অবতল (Concave)'} চতুর্ভূজ — ${esc(SIDE_META[part.direction].label)} দিক থেকে ${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ ভাগের Drawing</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • প্রতিটি মাপ তার সংশ্লিষ্ট রেখার সমান্তরাল • কর্ণ ডটেড</div><div class="qp-svg-wrap"><svg class="qp-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="দিক নির্ধারণসহ দুইটি চতুর্ভূজে জমি ভাগের চিত্র">${boundary}${remainFill}${targetFill}${diagLines.join('')}${cut}${dimParts.join('')}${northArrow}${verts}</svg></div><div class="qp-drawing-legend"><span>🟨 নির্ধারিত ভাগ (${bn(part.partArea/SQFT_PER_DECIMAL)} শতাংশ)</span><span>⬜ অবশিষ্ট জমি (${bn((q.area-part.partArea)/SQFT_PER_DECIMAL)} শতাংশ)</span><span>┄ কর্ণ = ডটেড</span></div></div>`;
+    const fields=inputs.map((f,j)=>{let ft=Math.floor(f.v),inch=Number(((f.v-ft)*12).toFixed(2));if(inch>=11.995){ft++;inch=0;}return `<div class="qp-cut-field"><label>${esc(f.label)}</label><div class="fi-row"><input id="qpSplit${rec.id}_${j}ft" type="number" min="0" step="any" value="${ft}" placeholder="ফুট" ${f.ro?'readonly':''}><input id="qpSplit${rec.id}_${j}in" type="number" min="0" max="11.999" step="0.01" value="${inch||''}" placeholder="ইঞ্চি" ${f.ro?'readonly':''}></div></div>`}).join('');
+    return `<div class="qp-cut-editor qp-split-editor" data-split-id="${rec.id}"><div class="qp-cut-editor-title">✂️ ${index+1} নং ভাগকৃত প্লট — ৪ দিকের ফুট–ইঞ্চি</div><div class="qp-cut-editor-note">${esc(meta.label)} দিকের মূল বাহু স্থির থাকবে। সংলগ্ন দুই অংশ সরাসরি এডিট করা যাবে। <strong>নতুন ক্ষেত্রফল</strong> চাপলে এই প্লটের Drawing ও ক্ষেত্রফল আপডেট হবে এবং এর পরের সব ভাগও একই Drawing-এ স্বয়ংক্রিয়ভাবে পুনর্গণনা হবে।</div><div class="qp-cut-grid">${fields}</div><div class="qp-cut-actions"><button id="qpRecalcSplit${rec.id}" type="button" class="calc-btn calc-primary">নতুন ক্ষেত্রফল</button></div><div id="qpLiveSplit${rec.id}" class="qp-cut-live"><span>${rec.notice?esc(rec.notice):'মাপ পরিবর্তন করে “নতুন ক্ষেত্রফল” চাপুন।'}</span></div></div>`;
   }
-  function calculate() {
-    let v=sideValues();
-    if (Object.values(v).some(x=>x===null || !(x>0))) return warning('উত্তর, পূর্ব, দক্ষিণ, পশ্চিম ও কর্ণ—সবগুলোর ফুট এবং ইঞ্চির সঠিক মান দিন। ইঞ্চি ০ থেকে ১১.৯৯-এর মধ্যে হতে হবে।');
-    const wanted=$('qpShapeType')?.value || 'auto';
-    const q=buildQuad(v,wanted);
-    if (!q) return warning(wanted==='auto'
-      ? 'দেওয়া চার বাহু ও AC কর্ণ দিয়ে বৈধ সরল অনিয়মিত চতুর্ভূজ তৈরি করা যাচ্ছে না। AB–BC–AC এবং AD–CD–AC—দুই ত্রিভুজের triangle inequality এবং জ্যামিতিক সংযোগ যাচাই করুন।'
-      : `দেওয়া চার বাহু ও AC কর্ণ দিয়ে নির্বাচিত ${wanted==='convex'?'উত্তল':'অবতল'} চতুর্ভূজ তৈরি করা যাচ্ছে না। অন্য ধরনটি চেষ্টা করুন অথবা মাঠের মাপ পুনরায় যাচাই করুন।`);
-    const target=targetSqft();
-    if (!(target>0)) return warning('যে পরিমাণ জমি ভাগ করবেন সেটি দিন।');
-    if (target >= q.area-EPS) return warning(`ভাগের পরিমাণ মোট জমির চেয়ে কম হতে হবে। মোট জমি ≈ ${bn(q.area)} বর্গফুট।`);
-    const direction=$('qpPartitionDirection')?.value || 'north';
-    const part=findPartition(q,target,direction);
-    if(!part){
-      const m=SIDE_META[direction];
-      const max=trianglePointsArea(q.pts[m.i],q.pts[(m.i+1)%4],q.pts[(m.i+2)%4]);
-      return warning(`${m.label} দিক থেকে নির্বাচিত পরিমাণ ভাগ করা যাচ্ছে না। ${m.label} দিকের এই ভাগ-পদ্ধতিতে সর্বোচ্চ প্রায় ${bn(max)} বর্গফুট (${bn(max/SQFT_PER_DECIMAL)} শতাংশ) পর্যন্ত নেওয়া যায়। প্রয়োজন হলে অন্য দিক নির্বাচন করুন বা মাঠের মাপ যাচাই করুন।`);
+
+  function makeNextSplitControls(){
+    const remain=qpState.splits.length?qpState.splits[qpState.splits.length-1].part?.remainPoly:null;
+    if(!remain) return '';
+    const area=polygonArea(remain), remainingAfter=area/SQFT_PER_DECIMAL;
+    return `<div class="qp-multi-controls"><div class="qp-multi-title">➕ অবশিষ্ট জমি থেকে আরো প্লট / ভাগ যোগ করুন</div><div class="qp-multi-grid"><div class="calc-field"><label for="qpNextTarget">পরবর্তী ভাগের পরিমাণ</label><input id="qpNextTarget" type="number" min="0" step="any" placeholder="যেমন 2"></div><div class="calc-field"><label for="qpNextUnit">একক</label><select id="qpNextUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div><div class="calc-field"><label for="qpNextDirection">পরবর্তী ভাগ কোন দিক থেকে হবে</label><select id="qpNextDirection"><option value="north">উত্তর দিক</option><option value="east">পূর্ব দিক</option><option value="south">দক্ষিণ দিক</option><option value="west">পশ্চিম দিক</option></select></div></div><div class="qp-multi-actions"><button id="qpAddSplit" type="button" class="calc-btn calc-primary">আরেকটি ভাগ যোগ করুন</button><button id="qpSave" type="button" class="calc-btn calc-secondary">💾 সেভ করুন</button><button id="qpPdf" type="button" class="calc-btn calc-secondary">📄 PDF করুন</button></div><div class="qp-multi-note">বর্তমান অবশিষ্ট জমি ≈ <strong>${bn(remainingAfter)} শতাংশ</strong>। নতুন ভাগ যোগ হলে আগের সব প্লট অপরিবর্তিত থাকবে। পরে আগের কোনো প্লটের মাপ বদলালে তার পরের প্লটগুলো স্বয়ংক্রিয়ভাবে নতুন Drawing অনুযায়ী বসবে।</div></div>`;
+  }
+
+  function makeMultiDrawing(){
+    if(!qpState.q || !qpState.splits.length) return '';
+    const q=qpState.q;
+    const allPts=[...q.pts];
+    qpState.splits.forEach(r=>{if(r.part){allPts.push(...r.part.targetPoly,...r.part.remainPoly);}});
+    const drawPts=allPts.map(p=>[p[0],-p[1]]);
+    let minX=Math.min(...drawPts.map(p=>p[0])),maxX=Math.max(...drawPts.map(p=>p[0])),minY=Math.min(...drawPts.map(p=>p[1])),maxY=Math.max(...drawPts.map(p=>p[1]));
+    const padX=Math.max((maxX-minX)*.07,40),padY=Math.max((maxY-minY)*.07,40);minX-=padX;maxX+=padX;minY-=padY;maxY+=padY;
+    const W=2400,H=1500,scale=Math.min((W-180)/(maxX-minX),(H-180)/(maxY-minY));
+    const tx=x=>90+(x-minX)*scale, ty=y=>H-90-((-y)-minY)*scale;
+    const poly=pts=>pts.map(p=>`${tx(p[0]).toFixed(1)},${ty(p[1]).toFixed(1)}`).join(' ');
+    const clampAngle=a=>a>90?a-180:(a<-90?a+180:a);
+    const dimLine=(a,b,text,offset=38,sign=1,dotted=false,color='#526a73')=>{const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len,ox=nx*offset*sign,oy=ny*offset*sign,x1=a[0]+ox,y1=a[1]+oy,x2=b[0]+ox,y2=b[1]+oy,mx=(x1+x2)/2,my=(y1+y2)/2,ang=clampAngle(Math.atan2(dy,dx)*180/Math.PI),dash=dotted?' stroke-dasharray="11 9"':'';return `<g class="qp-dim-line"><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="${dotted?3:2.5}"${dash}/><line x1="${(a[0]+ox).toFixed(1)}" y1="${(a[1]+oy).toFixed(1)}" x2="${a[0].toFixed(1)}" y2="${a[1].toFixed(1)}" stroke="${color}" stroke-width="1.5" opacity=".7"/><line x1="${(b[0]+ox).toFixed(1)}" y1="${(b[1]+oy).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${color}" stroke-width="1.5" opacity=".7"/><text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${mx.toFixed(1)} ${my.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="36" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8" stroke-linejoin="round">${esc(text)}</text></g>`;};
+    const northArrow=`<g transform="translate(95 95)"><line x1="0" y1="58" x2="0" y2="0" stroke="#082336" stroke-width="6"/><path d="M0 0 L-14 22 L14 22 Z" fill="#082336"/><text x="0" y="86" text-anchor="middle" font-size="34" font-weight="900" fill="#082336">উত্তর</text></g>`;
+    const colors=['#fff0bf','#e8f6e8','#eaf1ff','#f7eafa','#ffe9e0','#e9f7f7','#f3f0d9'];
+    const layers=[]; const labels=[]; const dims=[];
+    // Original boundary.
+    layers.push(`<polygon points="${poly(q.pts)}" fill="#f7fbfc" stroke="#08747b" stroke-width="6" stroke-linejoin="round"/>`);
+    qpState.splits.forEach((rec,idx)=>{
+      if(!rec.part) return;
+      const t=rec.part.targetPoly,r=rec.part.remainPoly;
+      layers.push(`<polygon points="${poly(t)}" fill="${colors[idx%colors.length]}" opacity=".92" stroke="#b27a1f" stroke-width="4" stroke-linejoin="round"/>`);
+      labels.push(`<text x="${tx(t.reduce((s,p)=>s+p[0],0)/t.length).toFixed(1)}" y="${ty(t.reduce((s,p)=>s+p[1],0)/t.length).toFixed(1)}" text-anchor="middle" font-size="34" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8">প্লট ${bn(idx+1)} — ${bn(rec.part.partArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
+      const tp=t.map(p=>[tx(p[0]),ty(p[1])]), rp=r.map(p=>[tx(p[0]),ty(p[1])]);
+      const sv=partSideValues(rec.part);
+      dims.push(dimLine(tp[0],tp[1],`${SIDE_META[rec.direction].label} ${SIDE_META[rec.direction].key}: ${ftIn(sv[0])}`,48,-1));
+      dims.push(dimLine(tp[1],tp[2],`পূর্ব অংশ: ${ftIn(sv[1])}`,44,-1));
+      dims.push(dimLine(tp[2],tp[3],`ভাগরেখা: ${ftIn(sv[2])}`,46,1,true,'#c44f2b'));
+      dims.push(dimLine(tp[3],tp[0],`পশ্চিম অংশ: ${ftIn(sv[3])}`,44,1));
+      dims.push(dimLine(tp[0],tp[2],`কর্ণ: ${ftIn(dist(t[0],t[2]))}`,38,-1,true,'#75629b'));
+      dims.push(dimLine(tp[1],tp[3],`কর্ণ: ${ftIn(dist(t[1],t[3]))}`,38,1,true,'#75629b'));
+      // Cut boundary is also highlighted on the remaining parcel.
+      layers.push(`<line x1="${tp[2][0]}" y1="${tp[2][1]}" x2="${tp[3][0]}" y2="${tp[3][1]}" stroke="#c44f2b" stroke-width="7"/>`);
+    });
+    const outerLabels=[['A',q.pts[0]],['B',q.pts[1]],['C',q.pts[2]],['D',q.pts[3]]].map(([n,p])=>`<circle cx="${tx(p[0]).toFixed(1)}" cy="${ty(p[1]).toFixed(1)}" r="8" fill="#08747b"/><text x="${(tx(p[0])+16).toFixed(1)}" y="${(ty(p[1])-16).toFixed(1)}" font-size="36" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8">${n}</text>`).join('');
+    return `<div class="qp-drawing qp-multi-drawing"><div class="qp-drawing-head">📐 সবগুলো প্লট / ভাগ — একই মূল জমির Drawing (${bn(qpState.splits.length)}টি ভাগ)</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • সব প্লট একই Drawing-এ • প্রতিটি মাপ তার রেখার সমান্তরাল • কর্ণ ডটেড • Drawing আগের চেয়ে ৩ গুণ বড়</div><div class="qp-svg-wrap"><svg id="qpMultiSvg" class="qp-svg qp-svg-large" viewBox="0 0 ${W} ${H}" role="img" aria-label="একই Drawing-এ একাধিক জমি ভাগ">${layers.join('')}${dims.join('')}${labels.join('')}${outerLabels}${northArrow}</svg></div><div class="qp-drawing-legend"><span>🟨/🟩/🟦/🟪 আলাদা প্লট</span><span>🟥 লাল রেখা = ভাগরেখা</span><span>┄ কর্ণ = ডটেড</span></div></div>`;
+  }
+
+  function renderMultiResult(message=''){
+    if(!qpState.q) return;
+    const valid=qpState.splits.filter(r=>r.part);
+    const total=qpState.q.area, used=valid.reduce((s,r)=>s+r.part.partArea,0), remain=total-used;
+    let html=`<div class="qp-ok">হিসাব সফল। মোট জমি ≈ <strong>${bn(total)} বর্গফুট (${bn(total/SQFT_PER_DECIMAL)} শতাংশ)</strong>। বর্তমানে <strong>${bn(valid.length)}টি প্লট/ভাগ</strong> তৈরি হয়েছে। মোট ভাগ ≈ ${bn(used/SQFT_PER_DECIMAL)} শতাংশ এবং অবশিষ্ট ≈ ${bn(remain/SQFT_PER_DECIMAL)} শতাংশ।</div>`;
+    if(message) html+=`<div class="qp-warning" style="margin-top:10px">${esc(message)}</div>`;
+    html+=`<div class="qp-split-list">`;
+    valid.forEach((rec,idx)=>{
+      const dec=rec.part.partArea/SQFT_PER_DECIMAL;
+      html+=`<div class="qp-split-card" id="qpSplitCard${rec.id}"><div class="qp-split-card-head"><strong>✂️ প্লট / ভাগ ${bn(idx+1)}</strong><span>${esc(SIDE_META[rec.direction].label)} দিক থেকে • ${bn(dec)} শতাংশ</span></div><div class="result-list"><div class="result-item"><strong>${bn(rec.part.partArea)} বর্গফুট</strong><span>নতুন প্লটের ক্ষেত্রফল</span></div><div class="result-item"><strong>${ftIn(rec.part.cutLength)}</strong><span>নতুন ভাগরেখা PQ</span></div></div><div class="qp-dimensions">${dimensionTable(`প্লট ${bn(idx+1)} — ${bn(dec)} শতাংশ`,rec.part.targetSegments)}${dimensionTable(`এই ভাগের পর অবশিষ্ট অংশ`,rec.part.remainSegments)}</div>${makePartEditor(rec,idx)}</div>`;
+    });
+    html+=`</div>${makeNextSplitControls()}${makeMultiDrawing()}<div class="qp-save-status" id="qpSaveStatus">${localStorage.getItem(SAVE_KEY)?'💾 এই হিসাবের একটি সেভ কপি এই ডিভাইসে আছে।':'💾 সেভ করতে “সেভ করুন” চাপুন।'}</div>`;
+    result.innerHTML=html;
+    bindMultiButtons();
+  }
+
+  function bindMultiButtons(){
+    qpState.splits.forEach((rec)=>{
+      const b=$(`qpRecalcSplit${rec.id}`); if(b) b.onclick=()=>recalcSplit(rec.id);
+    });
+    const add=$('qpAddSplit'); if(add) add.onclick=addAnotherSplit;
+    const save=$('qpSave'); if(save) save.onclick=saveMulti;
+    const pdf=$('qpPdf'); if(pdf) pdf.onclick=pdfMulti;
+  }
+
+  function recalcSplit(id){
+    const idx=qpState.splits.findIndex(r=>r.id===id); if(idx<0) return;
+    const rec=qpState.splits[idx], parent=idx===0?qpState.q:qpState.splits[idx-1].part?{pts:qpState.splits[idx-1].part.remainPoly,area:polygonArea(qpState.splits[idx-1].part.remainPoly),type:'convex'}:null;
+    if(!parent){renderMultiResult('আগের ভাগের জ্যামিতি সঠিক নেই, তাই এই ভাগ আপডেট করা যায়নি।');return;}
+    const next=readFI(`qpSplit${id}_1ft`,`qpSplit${id}_1in`), prev=readFI(`qpSplit${id}_3ft`,`qpSplit${id}_3in`);
+    if(next===null||prev===null||!(next>0)||!(prev>0)){renderMultiResult('এডিটযোগ্য দুই পাশের ফুট ও ইঞ্চির মান সঠিকভাবে দিন।');return;}
+    rec.editNext=next; rec.editPrev=prev;
+    const base=findPartition(parent,rec.targetArea,rec.direction);
+    if(!base){renderMultiResult('এই ভাগের নির্ধারিত ক্ষেত্রফল বর্তমান অবশিষ্ট জমির মধ্যে আর বসানো যাচ্ছে না।');return;}
+    const edited=partitionFromEditedBoundary(parent,base,[partSideValues(base)[0],next,partSideValues(base)[2],prev]);
+    if(!edited){renderMultiResult('নতুন মাপ বর্তমান অবশিষ্ট জমির সীমানার মধ্যে বসানো যাচ্ছে না।');return;}
+    rec.part=edited; rec.targetArea=edited.partArea; rec.notice='আপডেট হয়েছে। এর পরের ভাগগুলোও স্বয়ংক্রিয়ভাবে নতুন Drawing অনুযায়ী হিসাব হচ্ছে।';
+    // Every later split is recalculated from the newly changed remaining parcel.
+    let warningMsg='';
+    for(let j=idx+1;j<qpState.splits.length;j++){
+      const child=qpState.splits[j], p=qpState.splits[j-1].part?{pts:qpState.splits[j-1].part.remainPoly,area:polygonArea(qpState.splits[j-1].part.remainPoly),type:'convex'}:null;
+      if(!p){child.part=null;warningMsg=`${j+1} নং ভাগের জন্য আগের অবশিষ্ট জমি পাওয়া যায়নি।`;break;}
+      let np=null;
+      if(child.editNext&&child.editPrev){const baseChild=findPartition(p,child.targetArea,child.direction);if(baseChild) np=partitionFromEditedBoundary(p,baseChild,[partSideValues(baseChild)[0],child.editNext,partSideValues(baseChild)[2],child.editPrev]);}
+      if(!np) np=findPartition(p,child.targetArea,child.direction);
+      if(!np){child.part=null;warningMsg=`${j+1} নং ভাগের ${bn(child.targetArea/SQFT_PER_DECIMAL)} শতাংশ বর্তমান অবশিষ্ট জমিতে বসানো যাচ্ছে না। আগের ভাগের মাপ ঠিক করুন।`;break;}
+      child.part=np;
     }
-    q.v=v;
-    const targetDecimal=target/SQFT_PER_DECIMAL, remainingDecimal=(q.area-target)/SQFT_PER_DECIMAL;
-    const typeBn=q.type==='convex'?'উত্তল (Convex)':'অবতল (Concave)';
-    result.innerHTML=`<div class="qp-ok">হিসাব সফল হয়েছে। এটি <strong>অনিয়মিত ${typeBn} চতুর্ভূজ</strong> হিসেবে তৈরি করা হয়েছে। মোট জমি ≈ ${bn(q.area)} বর্গফুট (${bn(q.area/SQFT_PER_DECIMAL)} শতাংশ)। <strong>${esc(SIDE_META[direction].label)} দিক</strong> থেকে ${bn(targetDecimal)} শতাংশ আলাদা করা হয়েছে।</div>
-      <div class="result-list"><div class="result-item result-item-primary"><strong>${bn(target)} বর্গফুট</strong><span>নির্ধারিত ভাগ = ${bn(targetDecimal)} শতাংশ</span></div><div class="result-item"><strong>${bn(remainingDecimal)} শতাংশ</strong><span>অবশিষ্ট জমি</span></div><div class="result-item"><strong>${ftIn(part.cutLength)}</strong><span>নতুন ভাগরেখা ${esc(part.cutName)}</span></div><div class="result-item"><strong>${esc(part.side)} বাহু</strong><span>P–Q নতুন ভাগরেখা দিয়ে সীমা নির্ধারিত হয়েছে</span></div></div>
-      <div class="qp-dimensions"><div class="qp-dimensions-title">${bn(targetDecimal)} শতাংশের আলাদা ফুট-ইঞ্চি মাপ — কর্ণ ও ভাগরেখাসহ</div>${dimensionTable(`নির্ধারিত ভাগ (${bn(targetDecimal)} শতাংশ)`,part.targetSegments)}${dimensionTable(`অবশিষ্ট জমি (${bn(remainingDecimal)} শতাংশ)`,part.remainSegments)}</div>
-      ${cutEditor(part)}${makeDrawing(q,part)}<p class="qp-note">⚠️ নির্বাচিত দিকের উপর P বিন্দু নির্ধারণ করে তার সংলগ্ন বিপরীত কোণে নতুন ভাগরেখা তৈরি করে নির্ধারিত ক্ষেত্রফল বের করা হয়েছে। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে এবং পশ্চিম বামে রাখা হয়েছে। নির্ধারিত ভাগ ও অবশিষ্ট জমির প্রতিটি অংশের আলাদা ফুট-ইঞ্চি মাপ এবং প্রযোজ্য কর্ণ দেখানো হয়েছে। মাঠে দাগ কাটার আগে বাস্তব সীমানা ও জরিপ মাপ যাচাই করুন।</p>`;
-    bindCutEditor(part,q);
+    renderMultiResult(warningMsg);
   }
+
+  function addAnotherSplit(){
+    if(!qpState.splits.length) return;
+    const input=$('qpNextTarget'), unit=$('qpNextUnit'), dir=$('qpNextDirection');
+    const x=Number(input?.value||0); if(!(x>0)){renderMultiResult('পরবর্তী ভাগের পরিমাণ দিন।');return;}
+    const remain=qpState.splits[qpState.splits.length-1].part?.remainPoly;
+    if(!remain){renderMultiResult('বর্তমান অবশিষ্ট জমির Drawing সঠিক নয়।');return;}
+    const area=polygonArea(remain), u=unit?.value||'decimal', target=u==='sqft'?x:u==='sqm'?x*10.763910416709722:x*SQFT_PER_DECIMAL;
+    if(!(target>0) || target>=area-EPS){renderMultiResult(`পরবর্তী ভাগের পরিমাণ অবশিষ্ট জমির চেয়ে কম হতে হবে। অবশিষ্ট ≈ ${bn(area/SQFT_PER_DECIMAL)} শতাংশ।`);return;}
+    const parent={pts:remain,area,type:'convex'}, direction=dir?.value||'north';
+    const part=findPartition(parent,target,direction);
+    if(!part){renderMultiResult('নির্বাচিত দিক থেকে এই পরিমাণ নতুন প্লট তৈরি করা যাচ্ছে না। অন্য দিক বা কম ক্ষেত্রফল দিন।');return;}
+    const rec={id:++splitSeq,parentId:qpState.splits[qpState.splits.length-1].id,direction,targetArea:target,part,editNext:null,editPrev:null};
+    qpState.splits.push(rec); renderMultiResult();
+  }
+
+  function saveMulti(){
+    try{
+      const data={version:1,savedAt:new Date().toISOString(),inputs:{ABft:$('qpABft')?.value||'',ABin:$('qpABin')?.value||'',BCft:$('qpBCft')?.value||'',BCin:$('qpBCin')?.value||'',CDft:$('qpCDft')?.value||'',CDin:$('qpCDin')?.value||'',DAft:$('qpDAft')?.value||'',DAin:$('qpDAin')?.value||'',ACft:$('qpACft')?.value||'',ACin:$('qpACin')?.value||'',shape:$('qpShapeType')?.value||'auto'},targetUnit:$('qpTargetUnit')?.value||'decimal',splits:qpState.splits.map(r=>({id:r.id,parentId:r.parentId,direction:r.direction,targetArea:r.targetArea,editNext:r.editNext,editPrev:r.editPrev}))};
+      localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+      const s=$('qpSaveStatus'); if(s) s.textContent='✅ হিসাব এই ডিভাইসে সেভ হয়েছে।';
+    }catch(e){console.error(e);const s=$('qpSaveStatus');if(s)s.textContent='সেভ করা যায়নি। Browser storage অনুমতি যাচাই করুন।';}
+  }
+
+  async function pdfMulti(){
+    // Use the browser's print-to-PDF path when a full Bengali PDF engine is not
+    // available. This preserves the large SVG Drawing and Bengali text exactly.
+    try{
+      const title=document.title;
+      document.title='চতুর্ভূজ জমি ভাগ-বণ্টন — PDF';
+      window.print();
+      setTimeout(()=>{document.title=title;},1200);
+    }catch(e){console.error(e);}
+  }
+
+  function calculate(){
+    const v=sideValues();
+    if(Object.values(v).some(x=>x===null||!(x>0))) return warning('উত্তর, পূর্ব, দক্ষিণ, পশ্চিম ও কর্ণ—সবগুলোর ফুট এবং ইঞ্চির সঠিক মান দিন। ইঞ্চি ০ থেকে ১১.৯৯-এর মধ্যে হতে হবে।');
+    const wanted=$('qpShapeType')?.value||'auto', q=buildQuad(v,wanted);
+    if(!q) return warning(wanted==='auto'?'দেওয়া চার বাহু ও AC কর্ণ দিয়ে বৈধ সরল অনিয়মিত চতুর্ভূজ তৈরি করা যাচ্ছে না।':'দেওয়া চার বাহু ও AC কর্ণ দিয়ে নির্বাচিত চতুর্ভূজ তৈরি করা যাচ্ছে না।');
+    const target=targetSqft(); if(!(target>0)) return warning('যে পরিমাণ জমি ভাগ করবেন সেটি দিন।');
+    if(target>=q.area-EPS) return warning(`ভাগের পরিমাণ মোট জমির চেয়ে কম হতে হবে। মোট জমি ≈ ${bn(q.area)} বর্গফুট।`);
+    const direction=$('qpPartitionDirection')?.value||'north', part=findPartition(q,target,direction);
+    if(!part){const m=SIDE_META[direction];return warning(`${m.label} দিক থেকে নির্বাচিত পরিমাণ ভাগ করা যাচ্ছে না। কম ক্ষেত্রফল বা অন্য দিক নির্বাচন করুন।`);}
+    qpState.q=q; qpState.splits=[]; splitSeq=0;
+    qpState.splits.push({id:++splitSeq,parentId:null,direction,targetArea:target,part,editNext:null,editPrev:null,notice:''});
+    renderMultiResult();
+  }
+
   function clear(){
-    for(const k of ['AB','BC','CD','DA','AC']) { $(k==='AB'?'qpABft':`qp${k}ft`).value=''; $(k==='AB'?'qpABin':`qp${k}in`).value=''; }
-    $('qpTarget').value=''; result.innerHTML='';
+    for(const k of ['AB','BC','CD','DA','AC']){const a=$(k==='AB'?'qpABft':`qp${k}ft`),b=$(k==='AB'?'qpABin':`qp${k}in`);if(a)a.value='';if(b)b.value='';}
+    if($('qpTarget'))$('qpTarget').value=''; result.innerHTML=''; qpState.q=null;qpState.splits=[];splitSeq=0;
   }
-  if (!$('qpCalc') || !result) return;
+  if(!$('qpCalc')||!result)return;
   $('qpCalc').onclick=calculate;
   document.querySelectorAll('[data-clear="quad-partition"]').forEach(b=>b.addEventListener('click',clear));
 })();
