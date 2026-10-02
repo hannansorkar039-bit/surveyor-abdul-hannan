@@ -71,9 +71,34 @@
   function readQuad(prefix,unit){
     return ['AB','BC','CD','DA'].map(k=>readLength(prefix+k,unit));
   }
-  function quadDiagonalArea(ab,bc,cd,da,diag){
+  function quadDiagonalArea(ab,bc,cd,da,diag,which='AC'){
+    if(which==='BD'){
+      const t1=triangleArea(ab,da,diag), t2=triangleArea(bc,cd,diag);
+      return t1&&t2?{t1,t2,area:t1+t2}:null;
+    }
     const t1=triangleArea(ab,bc,diag), t2=triangleArea(cd,da,diag);
     return t1&&t2?{t1,t2,area:t1+t2}:null;
+  }
+  function otherDiagonalFromBD(ab,bc,cd,da,bd,shape='auto'){
+    if(!(bd>0)) return NaN;
+    const ax=(ab*ab+bd*bd-da*da)/(2*bd);
+    const cx=(bc*bc+bd*bd-cd*cd)/(2*bd);
+    const ay2=ab*ab-ax*ax, cy2=bc*bc-cx*cx;
+    if(ay2<-1e-7||cy2<-1e-7) return NaN;
+    const ay=Math.sqrt(Math.max(0,ay2));
+    const cy=Math.sqrt(Math.max(0,cy2));
+    const signedCy=shape==='concave'?ay:-cy;
+    return Math.hypot(ax-cx, ay-signedCy);
+  }
+  const qpDiagonalType=$('qpDiagonalType');
+  if(qpDiagonalType){
+    const syncQpDiagonal=()=>{
+      const bd=qpDiagonalType.value==='BD';
+      $('qpACWrap').style.display=bd?'none':'';
+      $('qpBDWrap').style.display=bd?'':'none';
+    };
+    qpDiagonalType.addEventListener('change',syncQpDiagonal);
+    syncQpDiagonal();
   }
   $('qdCalc').onclick=()=>{
     const u=$('qdUnit').value, [ab,bc,cd,da]=readQuad('qd',u), diag=readLength('qdAC',u), r=$('qdResult');
@@ -95,14 +120,20 @@
     r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',`<p>গাণিতিকভাবে নির্ণীত কর্ণ AC = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p><p>A কোণ = ${fmt(angle,6)}°</p>`);
   };
   $('qpCalc').onclick=()=>{
-    const [ab,bc,cd,da]=readQuad('qp'), diag=+$('qpAC').value, totalUnit=$('qpTotalUnit').value, target=+$('qpTarget').value, targetUnit=$('qpTargetUnit').value, r=$('qpResult');
-    if(![ab,bc,cd,da,diag,target].every(v=>v>0)) return err(r,'চারটি বাহু, কর্ণ AC এবং যে পরিমাণ জমি ভাগ করবেন—সবগুলোর সঠিক মান দিন।');
-    const q=quadDiagonalArea(ab,bc,cd,da,diag);
-    if(!q) return err(r,'দেওয়া বাহু ও কর্ণ দিয়ে বৈধ চতুর্ভুজ গঠন হচ্ছে না।');
+    const [ab,bc,cd,da]=readQuad('qp'), diagonalType=$('qpDiagonalType')?.value||'AC';
+    const enteredDiag=readLength(diagonalType==='BD'?'qpBD':'qpAC','ft');
+    const totalUnit='ft', target=+$('qpTarget').value, targetUnit=$('qpTargetUnit').value, shape=$('qpShapeType')?.value||'auto', r=$('qpResult');
+    if(![ab,bc,cd,da,enteredDiag,target].every(v=>v>0)) return err(r,`চারটি বাহু, কর্ণ ${diagonalType} এবং যে পরিমাণ জমি ভাগ করবেন—সবগুলোর সঠিক মান দিন।`);
+    const q=quadDiagonalArea(ab,bc,cd,da,enteredDiag,diagonalType);
+    if(!q) return err(r,`দেওয়া বাহু ও কর্ণ ${diagonalType} দিয়ে বৈধ চতুর্ভুজ গঠন হচ্ছে না।`);
+    const diag=diagonalType==='AC'?enteredDiag:otherDiagonalFromBD(ab,bc,cd,da,enteredDiag,shape);
+    if(!(diag>0)) return err(r,`কর্ণ ${diagonalType}-এর দেওয়া মাপ থেকে বৈধ চতুর্ভুজের অপর কর্ণ নির্ণয় করা যাচ্ছে না। বাহু/কর্ণের মাপ যাচাই করুন।`);
+    const qAC=diagonalType==='AC'?q:quadDiagonalArea(ab,bc,cd,da,diag,'AC');
+    if(!qAC) return err(r,'নির্বাচিত কর্ণ দিয়ে বৈধ চতুর্ভুজ গঠন হচ্ছে না।');
     const totalSqft=totalUnit==='ft'?q.area:q.area*10.763910416709722;
     const targetSqft=targetUnit==='sqft'?target:targetUnit==='sqm'?target*10.763910416709722:target*435.6;
     if(targetSqft>=totalSqft-1e-8) return err(r,'ভাগের পরিমাণ মোট জমির চেয়ে কম হতে হবে।');
-    const triACDsqft=totalUnit==='ft'?q.t2:q.t2*10.763910416709722;
+    const triACDsqft=totalUnit==='ft'?qAC.t2:qAC.t2*10.763910416709722;
     const wantTriangle=targetSqft<=triACDsqft+1e-8;
     const triangleTarget=wantTriangle?targetSqft:totalSqft-targetSqft;
     if(triangleTarget>triACDsqft+1e-8) return err(r,'এই নির্দিষ্ট A→CD ভাগরেখা দিয়ে চাওয়া পরিমাণ আলাদা করা সম্ভব নয়। অন্য একটি ভাগের দিক/বিন্দু নির্বাচন করতে হবে।');
