@@ -34,7 +34,7 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
   whenVisible(document.querySelector('#professional-land-suite'),()=>loadScript('calculator-land-suite.js','land-suite').catch(()=>{}));
   // The multi-field Drawing & Alignment section lives before the registry calculator.
   // Load its engine when that section becomes visible so its inputs are live immediately.
-  const shapeSketch=document.querySelector('#featured-shape-sketch');
+  const shapeSketch=document.querySelector('#panel-multi-field-drawing');
   whenVisible(shapeSketch,()=>loadScript('calculator-registry.js?v=v14-smooth-point-edit','registry').catch(()=>{}));
   const registry=document.querySelector('#registry-calculator');
   whenVisible(registry,async()=>{
