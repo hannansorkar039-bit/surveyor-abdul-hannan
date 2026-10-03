@@ -32,3 +32,38 @@
 .length-input-note{font-size:11px;color:var(--muted);margin-top:-2px}
 .length-mode-note{grid-column:1/-1;font-size:12px;color:var(--muted);align-self:end;padding-top:24px}
 @media(max-width:640px){.length-mode-note{padding-top:0}.length-input-pair{grid-template-columns:minmax(0,1fr) minmax(0,.78fr)}}
+
+/* Mobile visibility fix — keeps desktop layout unchanged */
+@media (max-width: 850px) {
+  main { display: block !important; visibility: visible !important; }
+  .section { display: block !important; visibility: visible !important; }
+  .calc-wrap { width: min(94%, 1050px); max-width: 1050px; margin-left: auto; margin-right: auto; }
+  .calc-intro,
+  .calculator-launcher,
+  .formula-suite-title,
+  .calc-tabs,
+  .calc-panel,
+  .featured-calcs,
+  .land-suite,
+  .registry-upgrade { visibility: visible; }
+  .calc-panel.active { display: block !important; visibility: visible !important; opacity: 1 !important; }
+  .calc-tabs { width: 100%; }
+  .calc-tab { min-width: 0; width: 100%; }
+  .calculator-launcher { width: 100%; overflow: visible; }
+  .calculator-launcher-grid { width: 100%; }
+  .calculator-launch-card { width: 100%; min-width: 0; }
+}
+
+@media (max-width: 560px) {
+  .calc-wrap { width: 94%; }
+  .calc-intro { width: 100%; }
+  .calc-tabs { grid-template-columns: 1fr 1fr; }
+  .calc-panel { width: 100%; max-width: 100%; overflow: visible; }
+  .calc-grid { width: 100%; }
+  .calc-field { min-width: 0; }
+  .calc-field input,
+  .calc-field select,
+  .calc-field textarea { max-width: 100%; box-sizing: border-box; }
+  .calc-actions { width: 100%; }
+  .calc-actions .calc-btn { max-width: 100%; }
+}
