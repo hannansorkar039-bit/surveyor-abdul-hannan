@@ -111,30 +111,41 @@
     r.innerHTML='<div class="result-main">আপনার হিস্যা ≈ '+fmt(ratio,8)+'</div><div class="result-list"><div class="result-item result-item-primary"><strong>'+a+' আনা '+g+' গণ্ডা '+k+' কড়া '+kr+' ক্রান্তি '+t+' তিল</strong><span>নিকটতম তিল পর্যন্ত</span></div><div class="result-item"><strong>'+symbol+'</strong><span>আনার সাংকেতিক চিহ্ন</span></div><div class="result-item"><strong>'+fmt(ratio*100,6)+'%</strong><span>মোট সম্পত্তির অংশ</span></div><div class="result-item"><strong>'+fmt(raw,3)+' তিল → '+til+' তিল</strong><span>রাউন্ডিং যাচাই</span></div></div><p class="conversion-note">আপনার দেওয়া পরিমাণটি ৭৬,৮০০ তিলের পূর্ণ হিস্যার স্কেলে রূপান্তর করা হয়েছে। ফলে ভগ্নাংশের ক্ষেত্রে নিকটতম তিল পর্যন্ত সামান্য rounding হতে পারে।</p>';
   }
   $('frCalc').onclick=reverseHissa;$('frReset').onclick=()=>{['frTotal','frOwn'].forEach(id=>$(id).value='');$('frResult').innerHTML='';};
-  // Featured calculator cards act as an accordion: only the selected calculator is open.
+  // Featured calculator cards act as an accordion.
+  // Each calculator panel is placed directly under its own title card.
   const featureCards=[...document.querySelectorAll('[data-feature-target]')];
   const featurePanels=featureCards.map(btn=>$(btn.dataset.featureTarget)).filter(Boolean);
-  const openFeature=(btn,scroll=true)=>{
+
+  featureCards.forEach((btn)=>{
     const target=$(btn.dataset.featureTarget);
     if(!target)return;
-    featureCards.forEach(card=>{
-      const active=card===btn;
-      card.setAttribute('aria-expanded',active?'true':'false');
+
+    // Move the existing, unchanged calculator panel beside its own launcher.
+    const wrap=document.createElement('div');
+    wrap.className='featured-accordion-item';
+    btn.parentNode.insertBefore(wrap,btn);
+    wrap.appendChild(btn);
+    wrap.appendChild(target);
+
+    btn.setAttribute('aria-controls',target.id);
+    btn.setAttribute('aria-expanded','false');
+    target.hidden=true;
+    target.classList.remove('is-active');
+
+    btn.addEventListener('click',()=>{
+      const willOpen=target.hidden;
+      featureCards.forEach(other=>{
+        const otherTarget=$(other.dataset.featureTarget);
+        if(!otherTarget)return;
+        otherTarget.hidden=true;
+        otherTarget.classList.remove('is-active');
+        other.setAttribute('aria-expanded','false');
+      });
+      if(willOpen){
+        target.hidden=false;
+        target.classList.add('is-active');
+        btn.setAttribute('aria-expanded','true');
+      }
     });
-    featurePanels.forEach(panel=>{
-      const active=panel===target;
-      panel.hidden=!active;
-      panel.classList.toggle('is-active',active);
-    });
-    if(scroll) target.scrollIntoView({behavior:'smooth',block:'start'});
-  };
-  featureCards.forEach((btn,index)=>{
-    btn.setAttribute('aria-expanded',index===0?'true':'false');
-    btn.setAttribute('aria-controls',btn.dataset.featureTarget);
-    btn.addEventListener('click',()=>openFeature(btn,true));
-  });
-  featurePanels.forEach((panel,index)=>{
-    panel.hidden=index!==0;
-    panel.classList.toggle('is-active',index===0);
   });
 })();
