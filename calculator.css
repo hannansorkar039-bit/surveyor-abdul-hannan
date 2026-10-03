@@ -73,3 +73,4 @@
 .tp-more-card{margin-top:14px;border:1px solid #dce7ea;border-radius:15px;background:#fff;padding:16px}.tp-more-card .tp-card-head{margin-bottom:10px}
 
 .tp-demarcation-extra{border-left:4px solid #7a5a00}
+.tp-region-boundary{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#f7fafb}.tp-region-boundary h5{margin:0 0 8px;color:var(--navy);font-size:14px}.tp-region-boundary>div{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dashed #d6e0e4}.tp-region-boundary>div:last-child{border-bottom:0}.tp-region-boundary b{white-space:nowrap;color:var(--navy)}
