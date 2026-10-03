@@ -33,71 +33,55 @@
 .length-mode-note{grid-column:1/-1;font-size:12px;color:var(--muted);align-self:end;padding-top:24px}
 @media(max-width:640px){.length-mode-note{padding-top:0}.length-input-pair{grid-template-columns:minmax(0,1fr) minmax(0,.78fr)}}
 
-
-/* ===== Readability upgrade: entire land-calculator area =====
-   Typography only. No calculation, content, layout or color rules changed. */
-.calc-wrap .calc-intro .lead{font-size:17px!important;line-height:1.75!important}
-.calc-wrap .calculator-launcher-head p{font-size:16px!important;line-height:1.7!important}
-.calc-wrap .calculator-launch-card strong{font-size:16px!important;line-height:1.5!important}
-.calc-wrap .calculator-launch-card small{font-size:15px!important;line-height:1.55!important}
-.calc-wrap .calc-tab{font-size:16px!important;line-height:1.5!important}
-.calc-wrap .calc-panel h3{font-size:22px!important;line-height:1.5!important}
-.calc-wrap .calc-help{font-size:17px!important;line-height:1.8!important}
-.calc-wrap .calc-field label{font-size:16px!important;line-height:1.55!important}
-.calc-wrap .calc-field input,.calc-wrap .calc-field select{font-size:17px!important;line-height:1.5!important}
-.calc-wrap .calc-field input::placeholder{font-size:16px!important;opacity:.8}
-.calc-wrap .length-input-note,.calc-wrap .length-mode-note{font-size:15px!important;line-height:1.65!important}
-.calc-wrap .shape-unit-note,.calc-wrap .small-note{font-size:15px!important;line-height:1.65!important}
-.calc-wrap .calc-btn{font-size:16px!important;line-height:1.5!important}
-.calc-wrap .formula{font-size:16px!important;line-height:1.7!important}
-.calc-wrap .formula code{font-size:17px!important;line-height:1.7!important}
-.calc-wrap .warning,.calc-wrap .legal-note{font-size:16px!important;line-height:1.8!important}
-.calc-wrap .result-main{font-size:27px!important;line-height:1.45!important}
-.calc-wrap .result-item{font-size:16px!important;line-height:1.6!important}
-.calc-wrap .result-item strong{font-size:16px!important}
-.calc-wrap .inheritance-table th,.calc-wrap .inheritance-table td{font-size:16px!important;line-height:1.6!important}
-.calc-wrap .heir-field label{font-size:16px!important;line-height:1.55!important}
-.calc-wrap .heir-field input{font-size:17px!important}
-.calc-wrap .featured-head>p{font-size:17px!important;line-height:1.75!important}
-.calc-wrap .featured-card h3{font-size:20px!important;line-height:1.5!important}
-.calc-wrap .featured-card p{font-size:16px!important;line-height:1.75!important}
-.calc-wrap .featured-separator{font-size:18px!important;line-height:1.6!important}
-.calc-wrap .shape-sketch-note,.calc-wrap .shape-multi-head p{font-size:16px!important;line-height:1.75!important}
-.calc-wrap .shape-dimension-head{font-size:16px!important;line-height:1.55!important}
-.calc-wrap .shape-dimension-head span{font-size:14px!important}
-.calc-wrap .qp-note,.calc-wrap .qp-drawing-meta,.calc-wrap .qp-drawing-legend{font-size:15px!important;line-height:1.65!important}
-.calc-wrap .qp-cut-editor-note{font-size:15px!important;line-height:1.65!important}
-.calc-wrap .qp-cut-field label{font-size:15px!important}
-.calc-wrap .qp-cut-live,.calc-wrap .qp-warning,.calc-wrap .qp-ok{font-size:15px!important;line-height:1.65!important}
-.calc-wrap .qp-multi-title{font-size:20px!important;line-height:1.5!important}
-.calc-wrap .qp-multi-note,.calc-wrap .qp-save-status{font-size:15px!important;line-height:1.65!important}
-.calc-wrap .qp-split-card-head strong{font-size:18px!important}
-.calc-wrap .qp-split-card-head span{font-size:14px!important}
-.calc-wrap .qp-dimension-card h4{font-size:16px!important}
-.calc-wrap .qp-dimension-row span,.calc-wrap .qp-dimension-row strong{font-size:15px!important;line-height:1.55!important}
-.calc-wrap .qp-live-area{font-size:15px!important;line-height:1.65!important}
-.calc-wrap .registry-upgrade .lead{font-size:17px!important;line-height:1.75!important}
-.calc-wrap .registry-upgrade .registry-rate{font-size:14px!important}
-.calc-wrap .registry-upgrade .cost-name{font-size:16px!important}
-.calc-wrap .registry-upgrade .cost-meta{font-size:14px!important;line-height:1.55!important}
-.calc-wrap .registry-upgrade .cost-amount{font-size:16px!important}
-.calc-wrap .registry-upgrade .registry-note{font-size:15px!important;line-height:1.7!important}
-.calc-wrap .registry-upgrade .map-offline-note{font-size:15px!important;line-height:1.65!important}
-.calc-wrap .registry-upgrade .map-tools button{font-size:15px!important}
-.calc-wrap .registry-upgrade .map-tools strong{font-size:15px!important}
-.calc-wrap .suite-help,.calc-wrap .suite-note{font-size:15px!important;line-height:1.65!important}
-.calc-wrap .sources a{font-size:15px!important}
+/* Final readability refinement — land calculator content only */
+.calc-wrap .calc-panel p,
+.calc-wrap .calc-panel .calc-help,
+.calc-wrap .calc-panel .calc-note,
+.calc-wrap .calc-panel .suite-help,
+.calc-wrap .calc-panel .suite-note,
+.calc-wrap .calc-panel small { font-size:16px; line-height:1.7; }
+.calc-wrap .calc-field label,
+.calc-wrap .suite-field label,
+.calc-wrap .heir-field label,
+.calc-wrap .asset-box label { font-size:16px; line-height:1.55; }
+.calc-wrap .calc-field input,
+.calc-wrap .calc-field select,
+.calc-wrap .suite-field input,
+.calc-wrap .suite-field select,
+.calc-wrap .heir-field input,
+.calc-wrap .asset-box input { font-size:17px; }
+.calc-wrap .calc-btn,
+.calc-wrap .land-suite-btn,
+.calc-wrap button { line-height:1.45; }
+.calc-wrap .calc-result,
+.calc-wrap .suite-result { font-size:16px; line-height:1.7; }
+.calculator-launcher .calculator-launch-card,
+.featured-calcs .featured-card,
+.land-suite .suite-card { font-size:16px; line-height:1.65; }
+.calculator-launcher .calculator-launch-card p,
+.featured-calcs .featured-card p,
+.land-suite .suite-card p,
+.land-suite .land-suite-sub,
+.land-suite .suite-help,
+.land-suite .suite-note { font-size:16px; line-height:1.7; }
 @media(max-width:620px){
-  .calc-wrap .calc-intro .lead{font-size:16px!important}
-  .calc-wrap .calc-tab{font-size:15px!important}
-  .calc-wrap .calc-panel h3{font-size:21px!important}
-  .calc-wrap .calc-help{font-size:16px!important}
-  .calc-wrap .calc-field label{font-size:15px!important}
-  .calc-wrap .calc-field input,.calc-wrap .calc-field select{font-size:16px!important}
-  .calc-wrap .calc-btn{font-size:15px!important}
-  .calc-wrap .featured-card h3{font-size:19px!important}
-  .calc-wrap .featured-card p{font-size:15px!important}
-  .calc-wrap .featured-head>p{font-size:16px!important}
-  .calc-wrap .registry-upgrade .lead{font-size:16px!important}
+  .calc-wrap .calc-panel p,
+  .calc-wrap .calc-panel .calc-help,
+  .calc-wrap .calc-panel .calc-note,
+  .calc-wrap .calc-panel .suite-help,
+  .calc-wrap .calc-panel .suite-note,
+  .calc-wrap .calc-panel small,
+  .calculator-launcher .calculator-launch-card p,
+  .featured-calcs .featured-card p,
+  .land-suite .land-suite-sub,
+  .land-suite .suite-help,
+  .land-suite .suite-note { font-size:16px; line-height:1.75; }
+  .calc-wrap .calc-field label,
+  .calc-wrap .suite-field label,
+  .calc-wrap .heir-field label,
+  .calc-wrap .asset-box label { font-size:16px; }
+  .calc-wrap .calc-field input,
+  .calc-wrap .calc-field select,
+  .calc-wrap .suite-field input,
+  .calc-wrap .suite-field select { font-size:17px; }
 }
-/* ===== End readability upgrade ===== */
