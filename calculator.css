@@ -171,3 +171,20 @@
   #panel-sawn-wood-cft{position:absolute!important;left:0!important;top:0!important;width:100%!important;margin:0!important;box-shadow:none!important}
   .sawn-wood-cft-actions,.sawn-wood-cft-add,.sawn-wood-cft-remove{display:none!important}
 }
+
+
+/* Triangle partition sequential-split upgrade */
+.tp-part-summary{display:grid;gap:8px;margin:4px 0 10px}
+.tp-part-summary-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;border:1px solid #dce7ea;border-radius:10px;background:#f8fbfb}
+.tp-part-summary-row strong{color:#082336;font-size:13px}
+.tp-part-summary-row span{color:#52656f;font-size:12px;font-weight:700;text-align:right}
+.tp-part-summary-remaining{border-left:4px solid #0c516a;background:#eef8f8}
+.tp-more-card{background:#fbfefe}
+.tp-more-card .calc-grid{margin-top:8px}
+@media(max-width:620px){
+  .tp-part-summary-row{align-items:flex-start;flex-direction:column;gap:4px}
+  .tp-part-summary-row span{text-align:left}
+}
+/* Larger mobile-friendly drawing area for triangle partition */
+.tp-drawing-wrap .tp-canvas-box{min-height:620px}
+.tp-drawing-wrap .tp-canvas-box canvas{min-height:620px}
