@@ -268,6 +268,25 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     ctx.fillText(text,(p1.x+q1.x)/2,(p1.y+q1.y)/2);ctx.restore();
   }
 
+  function drawRegionDimension(ctx,poly,sc){
+    if(!poly||poly.length<2)return;
+    let best=null,bestLen=-1;
+    for(let j=0;j<poly.length;j++){
+      const a=poly[j],b=poly[(j+1)%poly.length],L=dist(a,b);
+      if(L>bestLen){best={a,b};bestLen=L;}
+    }
+    if(!best||bestLen<=EPS)return;
+    const cc=centroid(poly);
+    const mid={x:(best.a.x+best.b.x)/2,y:(best.a.y+best.b.y)/2};
+    const dx=best.b.x-best.a.x,dy=best.b.y-best.a.y,L=bestLen;
+    const nx=-dy/L,ny=dx/L;
+    const toward={x:cc.x-mid.x,y:cc.y-mid.y};
+    const inward=(nx*toward.x+ny*toward.y)>=0?1:-1;
+    // Keep the dimension clearly inside the actual region.
+    const off=28*inward;
+    drawDimension(ctx,sc(best.a),sc(best.b),ftIn(bestLen),off,true);
+  }
+
   function draw(){
     const canvas=$('tpCanvas');if(!canvas||!state.points)return;
     const wrap=canvas.parentElement,W=Math.max(780,Math.min(1400,wrap.clientWidth||1200)),H=Math.max(620,Math.min(900,Math.round(W*.72))),dpr=window.devicePixelRatio||1;
@@ -296,27 +315,16 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
         drawDimension(ctx,sc(line.V),sc(line.D),ftIn(dist(line.V,line.D)),-32,true);
       }
 
-      // Each separated ভাগ gets its own feet-inch dimension.  Use the
-      // longest boundary of that actual ভাগ so the label describes the
-      // geometry of the separated plot, not the original whole triangle.
-      if(part.cut?.length>=2){
-        let best=null,bestLen=-1;
-        for(let j=0;j<part.cut.length;j++){
-          const a=part.cut[j],b=part.cut[(j+1)%part.cut.length],L=dist(a,b);
-          if(L>bestLen){best={a,b};bestLen=L;}
-        }
-        if(best&&bestLen>EPS){
-          const cc=centroid(part.cut);
-          const mid={x:(best.a.x+best.b.x)/2,y:(best.a.y+best.b.y)/2};
-          const dx=best.b.x-best.a.x,dy=best.b.y-best.a.y,L=bestLen;
-          const nx=-dy/L,ny=dx/L;
-          const toward={x:cc.x-mid.x,y:cc.y-mid.y};
-          const inward=(nx*toward.x+ny*toward.y)>=0?1:-1;
-          const off=22*inward;
-          drawDimension(ctx,sc(best.a),sc(best.b),ftIn(bestLen),off,true);
-        }
-      }
+      // Show a dedicated feet-inch dimension INSIDE every separated plot.
+      // This is independent of the original triangle side dimensions, so the
+      // first ভাগ and every later ভাগ always get their own readable measure.
+      drawRegionDimension(ctx,part.cut,sc);
     });
+
+    // The remaining field also gets its own feet-inch dimension inside the
+    // remaining polygon.  Its label is deliberately kept separate from the
+    // original triangle dimensions.
+    if(state.remaining?.length>=3) drawRegionDimension(ctx,state.remaining,sc);
 
     // Corner labels
     [['A',p.A],['B',p.B],['C',p.C]].forEach(([n,q])=>{
@@ -335,7 +343,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     if(state.remaining?.length>=3){
       const c=sc(centroid(state.remaining));
       ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='900 20px Arial,"Noto Sans Bengali",sans-serif';ctx.fillStyle='#0c516a';
-      ctx.fillText('অবশিষ্ট ভাগ',c.x,c.y-10);ctx.font='700 14px Arial,"Noto Sans Bengali",sans-serif';ctx.fillText(fmtArea(polyArea(state.remaining)),c.x,c.y+16);ctx.restore();
+      ctx.fillText('অবশিষ্ট ক্ষেত্র',c.x,c.y-10);ctx.font='700 14px Arial,"Noto Sans Bengali",sans-serif';ctx.fillText(fmtArea(polyArea(state.remaining)),c.x,c.y+16);ctx.restore();
     }
   }
 
@@ -345,7 +353,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     const last=state.parts[state.parts.length-1];
     $('tpResult').innerHTML=
       `<div class="tp-result-main"><strong>মোট ক্ষেত্রফল: ${fmtArea(total)}</strong><span>${state.parts.length}টি ভাগ তৈরি হয়েছে • প্রতিটি নতুন ভাগ বর্তমান অবশিষ্ট ক্ষেত্র থেকে আলাদা করা হয়েছে</span></div>`+
-      `<div class="tp-result-grid"><div><b>${fmtArea(last.area)}</b><small>${partName(last.index)}</small></div><div><b>${fmtArea(rem)}</b><small>অবশিষ্ট ভাগ</small></div><div><b>${bn((last.area/total)*100,3)}%</b><small>মোট ক্ষেত্রের তুলনায় সর্বশেষ ভাগ</small></div></div>`;
+      `<div class="tp-result-grid"><div><b>${fmtArea(last.area)}</b><small>${partName(last.index)}</small></div><div><b>${fmtArea(rem)}</b><small>অবশিষ্ট ক্ষেত্র</small></div><div><b>${bn((last.area/total)*100,3)}%</b><small>মোট ক্ষেত্রের তুলনায় সর্বশেষ ভাগ</small></div></div>`;
     $('tpEditor').hidden=false;$('tpDrawingWrap').hidden=false;
     $('tpDimAB').textContent=ftIn(total?sideInputs().AB:NaN);$('tpDimBC').textContent=ftIn(sideInputs().BC);$('tpDimCA').textContent=ftIn(sideInputs().CA);
     $('tpDimSplit').textContent=last.line.type==='horizontal'?'হরিজন্টাল':`শীর্ষবিন্দু ${last.line.vertex}`;
@@ -359,32 +367,51 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     const box=$('tpPartSummary');
     if(!box)return;
     box.innerHTML=state.parts.map(p=>`<div class="tp-part-summary-row"><strong>${partName(p.index)}</strong><span>${p.method==='horizontal'?'হরিজন্টাল':'শীর্ষবিন্দু থেকে'} • ${fmtArea(p.area)}</span></div>`).join('')+
-      `<div class="tp-part-summary-row tp-part-summary-remaining"><strong>অবশিষ্ট ভাগ</strong><span>${fmtArea(polyArea(state.remaining))}</span></div>`;
+      `<div class="tp-part-summary-row tp-part-summary-remaining"><strong>অবশিষ্ট ক্ষেত্র</strong><span>${fmtArea(polyArea(state.remaining))}</span></div>`;
     if($('tpMultiStatus'))$('tpMultiStatus').textContent=`মোট ${state.parts.length}টি ভাগ • ${fmtArea(polyArea(state.remaining))} অবশিষ্ট। পরের ভাগও এখান থেকেই কাটা হবে।`;
   }
 
   function updateLegacyDemarcation(total){
     const first=state.parts[0], last=state.parts[state.parts.length-1];
     const set=(id,v)=>{if($(id))$(id).textContent=ftIn(v);};
-    if(first?.line.type==='horizontal'){
-      const cut=first.cut;
-      const basePts=cut.filter(p=>Math.abs(p.y-Math.min(...cut.map(q=>q.y)))<1e-5);
-      if(basePts.length>=2){
-        const [a,b]=basePts.slice(0,2);set('tpSegPQ',dist(a,b));
-      }
-    }
     if($('tpFirstAreaLabel'))$('tpFirstAreaLabel').textContent=first?fmtArea(first.area):'—';
-    if($('tpRestAreaLabel'))$('tpRestAreaLabel').textContent=fmtArea(polyArea(state.remaining));
-    if($('tpSegBP'))$('tpSegBP').textContent='—';
-    if($('tpSegQC'))$('tpSegQC').textContent='—';
-    if($('tpSegBaseBC'))$('tpSegBaseBC').textContent=ftIn(sideInputs().BC);
-    if($('tpSegAP'))$('tpSegAP').textContent='—';
-    if($('tpSegAQ'))$('tpSegAQ').textContent='—';
-    if($('tpSegRestPQ'))$('tpSegRestPQ').textContent='—';
+    if($('tpRestAreaLabel'))$('tpRestAreaLabel').textContent=state.remaining?fmtArea(polyArea(state.remaining)):'—';
+
+    // First-part dimensions: identify the actual boundary segments of the
+    // separated first plot instead of leaving them blank.
+    ['tpSegBP','tpSegPQ','tpSegQC','tpSegAP','tpSegAQ','tpSegRestPQ'].forEach(id=>{if($(id))$(id).textContent='—';});
+    if(first?.cut?.length>=3){
+      const vals=first.cut.map((a,i)=>({a,b:first.cut[(i+1)%first.cut.length],len:dist(a,first.cut[(i+1)%first.cut.length])}));
+      const bc=sideInputs().BC;
+      const tol=1e-5;
+      const base=vals.find(e=>Math.abs(e.len-bc)<tol);
+      const split=first.line?.type==='horizontal' ? (first.line.points?.length===2?dist(first.line.points[0],first.line.points[1]):null) : null;
+      const splitEdge=split?vals.find(e=>Math.abs(e.len-split)<tol):null;
+      const sides=vals.filter(e=>e!==base&&e!==splitEdge).sort((a,b)=>b.len-a.len);
+      if($('tpSegBaseBC'))$('tpSegBaseBC').textContent=base?ftIn(base.len):ftIn(bc);
+      if(first.line?.type==='horizontal'){
+        if($('tpSegPQ'))$('tpSegPQ').textContent=splitEdge?ftIn(splitEdge.len):'—';
+        if($('tpSegBP'))$('tpSegBP').textContent=sides[0]?ftIn(sides[0].len):'—';
+        if($('tpSegQC'))$('tpSegQC').textContent=sides[1]?ftIn(sides[1].len):'—';
+      } else if($('tpSegPQ')) $('tpSegPQ').textContent=ftIn(first.line.D?dist(first.line.V,first.line.D):0);
+    }
+
+    // Remaining-field dimensions: for a horizontal split these are the two
+    // sloping boundaries plus the shared split line; for other split types we
+    // still provide the longest actual boundaries rather than blanks.
+    if(state.remaining?.length>=3){
+      const vals=state.remaining.map((a,i)=>({a,b:state.remaining[(i+1)%state.remaining.length],len:dist(a,state.remaining[(i+1)%state.remaining.length])}));
+      const firstLine=first?.line;
+      let shared=null;
+      if(firstLine?.type==='horizontal'&&firstLine.points?.length===2) shared=dist(firstLine.points[0],firstLine.points[1]);
+      const candidates=vals.filter(e=>shared===null||Math.abs(e.len-shared)>1e-5).sort((a,b)=>b.len-a.len);
+      if($('tpSegAP'))$('tpSegAP').textContent=candidates[0]?ftIn(candidates[0].len):'—';
+      if($('tpSegAQ'))$('tpSegAQ').textContent=candidates[1]?ftIn(candidates[1].len):'—';
+      if($('tpSegRestPQ'))$('tpSegRestPQ').textContent=shared!==null?ftIn(shared):(candidates[2]?ftIn(candidates[2].len):'—');
+    }
     if($('tpExtraDemarcation')){
       $('tpExtraDemarcation').hidden=false;
-      $('tpExtraDemarcation').innerHTML=state.parts.map(p=>`<div class="tp-region-boundary"><h5>${partName(p.index)} — ${fmtArea(p.area)}</h5><div><span>ভাগের ধরন</span><b>${p.method==='horizontal'?'হরিজন্টাল':'শীর্ষবিন্দু থেকে'}</b></div><div><span>ভাগরেখা</span><b>${p.line.type==='horizontal'?ftIn(Math.abs((p.line.points?.[0]?.x||0)-(p.line.points?.[1]?.x||0))):ftIn(dist(p.line.V,p.line.D))}</b></div></div>`).join('')+
-        `<div class="tp-region-boundary"><h5>অবশিষ্ট ভাগ — ${fmtArea(polyArea(state.remaining))}</h5><div><span>বর্তমান অবশিষ্ট ক্ষেত্র</span><b>${fmtArea(polyArea(state.remaining))}</b></div></div>`;
+      $('tpExtraDemarcation').innerHTML=state.parts.map(p=>`<div class="tp-region-boundary"><h5>${partName(p.index)} — ${fmtArea(p.area)}</h5><div><span>ভাগের ধরন</span><b>${p.method==='horizontal'?'হরিজন্টাল':'শীর্ষবিন্দু থেকে'}</b></div><div><span>ভাগরেখা</span><b>${p.line.type==='horizontal'?ftIn(Math.abs((p.line.points?.[0]?.x||0)-(p.line.points?.[1]?.x||0))):ftIn(dist(p.line.V,p.line.D))}</b></div></div>`).join('');
     }
   }
 
