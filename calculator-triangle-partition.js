@@ -77,7 +77,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     if(sp.type==='horizontal'){
       return {
         first:[['BP',Math.hypot(p.B.x-sp.P.x,p.B.y-sp.P.y)],['PQ',sp.length],['QC',Math.hypot(sp.Q.x-p.C.x,sp.Q.y-p.C.y)]],
-        remaining:[['AP',Math.hypot(p.A.x-sp.P.x,p.A.y-sp.P.y)],['AQ',Math.hypot(p.A.x-sp.Q.x,p.A.y-sp.Q.y)],['BC',Math.hypot(p.B.x-p.C.x,p.B.y-p.C.y)]]
+        remaining:[['AP',Math.hypot(p.A.x-sp.P.x,p.A.y-sp.P.y)],['AQ',Math.hypot(p.A.x-sp.Q.x,p.A.y-sp.Q.y)],['PQ',sp.length]]
       };
     }
     return {
@@ -87,7 +87,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   }
   function segmentLabels(sp){
     return sp.type==='horizontal'
-      ? {first:['BP','PQ','QC'],remaining:['AP','AQ','BC']}
+      ? {first:['BP','PQ','QC'],remaining:['AP','AQ','PQ']}
       : {first:[sp.vertex+sp.U,'U-D',sp.vertex+'-D'],remaining:[sp.vertex+sp.W,'D-W',sp.U+'-'+sp.W]};
   }
   function dimInputHTML(prefix,label){
@@ -278,7 +278,21 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     renderResult(total);
     if($('tpMultiStatus')) $('tpMultiStatus').textContent=`৩টি ক্ষেত্র: ${fmtArea(a1)} • ${fmtArea(a2)} • ${fmtArea(a3)}`;
   }
-  function removeExtraSplit(){state.extraSplit=null;if($('tpExtraDemarcation'))$('tpExtraDemarcation').hidden=true;if($('tpMorePercent'))$('tpMorePercent').value='';if($('tpMoreAreaLabel'))$('tpMoreAreaLabel').textContent='—';if($('tpMultiStatus'))$('tpMultiStatus').textContent='হরিজন্টাল পদ্ধতিতে দ্বিতীয় ভাগরেখা যোগ হলে ৩টি পৃথক ক্ষেত্রের ক্ষেত্রফল ও ডিমার্কেশন দেখা যাবে।';if(state.points)draw();}
+  function removeExtraSplit(e){
+    if(e){e.preventDefault();e.stopPropagation();}
+    state.extraSplit=null;
+    if($('tpExtraDemarcation')) $('tpExtraDemarcation').hidden=true;
+    if($('tpMorePercent')) $('tpMorePercent').value='';
+    if($('tpMoreAreaLabel')) $('tpMoreAreaLabel').textContent='—';
+    if($('tpMultiStatus')) $('tpMultiStatus').textContent='হরিজন্টাল পদ্ধতিতে দ্বিতীয় ভাগরেখা যোগ হলে ৩টি পৃথক ক্ষেত্রের ক্ষেত্রফল ও ডিমার্কেশন দেখা যাবে।';
+    if($('tpMoreCard')) $('tpMoreCard').hidden=false;
+    if(state.points && state.split){
+      const total=area(sideInputs());
+      renderResult(total);
+    } else if(state.points){
+      draw();
+    }
+  }
 
 
   document.querySelectorAll('.tp-mode').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.tpMode)));
