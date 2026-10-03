@@ -206,9 +206,20 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     let f;
     if(state.mode==='horizontal'){
       const sp=state.split,seg=currentSegments(sp),changed=state._editingSegmentIndex;
-      if(changed===0) f=1-Math.pow(Math.max(0,1-v/s.AB),2);
-      else if(changed===1){if(v>=s.BC)return false; const t=v/s.BC; f=1-t*t;}
-      else {f=1-Math.pow(Math.max(0,1-v/s.CA),2);}
+      // For a horizontal cut parallel to BC:
+      // BP = AB * t, PQ = BC * (1 - t), QC = CA * t,
+      // where t = sqrt(1 - first-area-fraction).
+      // Therefore each editable dimension must be inverted against the SAME t.
+      if(changed===0){
+        if(v>=s.AB)return false;
+        const t=v/s.AB; f=1-t*t;
+      } else if(changed===1){
+        if(v>=s.BC)return false;
+        const t=1-v/s.BC; f=1-t*t;
+      } else {
+        if(v>=s.CA)return false;
+        const t=v/s.CA; f=1-t*t;
+      }
     } else {
       const sp=state.split,seg=currentSegments(sp),changed=state._editingSegmentIndex;
       if(changed===0){const base=seg.first[0][1]; if(Math.abs(base-v)<EPS) f=sp.fraction; else { const U=sp.U,W=sp.W; const ratio=1-v/Math.max(EPS,Math.hypot(sp.V.x-sp.U.x,sp.V.y-sp.U.y)); f=1-ratio; }}
@@ -319,6 +330,12 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   $('tpMorePart')?.addEventListener('click',addMorePart);
   $('tpAddSplitApply')?.addEventListener('click',applyExtraSplit);
   $('tpRemoveExtra')?.addEventListener('click',removeExtraSplit);
+  // Defensive delegated handler: keeps the remove action working even if the
+  // calculator panel is re-rendered or another script replaces the button node.
+  document.addEventListener('click',e=>{
+    const btn=e.target?.closest?.('#tpRemoveExtra');
+    if(btn){removeExtraSplit(e);}
+  });
   $('tpReset')?.addEventListener('click',()=>{['tpAB','tpABIn','tpBC','tpBCIn','tpCA','tpCAIn'].forEach(id=>$(id).value='');$('tpPart').value='50';$('tpResult').innerHTML='<div class="small-note">তিন বাহুর ফুট–ইঞ্চি মাপ দিয়ে হিসাব শুরু করুন।</div>';$('tpEditor').hidden=true;$('tpDrawingWrap').hidden=true;state.points=null;state.split=null;state.dragEdit=false;state.zoom=1;state.panX=0;state.panY=0;state.editBaseline=null;state.extraSplit=null; if($('tpPointEdit'))$('tpPointEdit').textContent='✋ Drawing Edit: OFF'; if($('tpMoreCard'))$('tpMoreCard').hidden=true; if($('tpExtraDemarcation'))$('tpExtraDemarcation').hidden=true; if($('tpZoomValue'))$('tpZoomValue').textContent='100%';});
   let down=false,lastPt=null,panMode=false;
   $('tpCanvas')?.addEventListener('pointerdown',e=>{
