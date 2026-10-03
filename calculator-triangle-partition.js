@@ -165,6 +165,41 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     line(A,B);line(B,C);line(C,A);
     const dim=(a,b,text,offset,cls='base')=>{const dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L,p1={x:a.x+nx*offset,y:a.y+ny*offset},q1={x:b.x+nx*offset,y:b.y+ny*offset};ctx.save();ctx.strokeStyle=cls==='split'?'#c23b32':'#71828a';ctx.lineWidth=1.4;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(p1.x,p1.y);ctx.moveTo(b.x,b.y);ctx.lineTo(q1.x,q1.y);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(q1.x,q1.y);ctx.stroke();ctx.fillStyle=cls==='split'?'#a62922':'#082336';ctx.font='700 14px Arial,"Noto Sans Bengali",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,(p1.x+q1.x)/2,(p1.y+q1.y)/2);ctx.restore();};
     dim(A,B,ftIn(dist(p.A,p.B)),28);dim(B,C,ftIn(dist(p.B,p.C)),30);dim(C,A,ftIn(dist(p.C,p.A)),28);
+
+    // Draw region labels inside each partitioned area. These labels are
+    // presentation-only; they do not change any geometry or calculation.
+    const drawRegionLabel=(pts,text)=>{
+      if(!pts||!pts.length)return;
+      const cx=pts.reduce((s,q)=>s+q.x,0)/pts.length, cy=pts.reduce((s,q)=>s+q.y,0)/pts.length;
+      ctx.save();
+      ctx.font='800 17px Arial,"Noto Sans Bengali",sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      const m=ctx.measureText(text), padX=10,padY=6;
+      const w=m.width+padX*2,h=26+padY;
+      ctx.fillStyle='rgba(255,255,255,.92)';
+      ctx.strokeStyle='#8a8a8a';ctx.lineWidth=1;
+      ctx.fillRect(cx-w/2,cy-h/2,w,h);ctx.strokeRect(cx-w/2,cy-h/2,w,h);
+      ctx.fillStyle='#082336';ctx.fillText(text,cx,cy);
+      ctx.restore();
+    };
+    const regionPoint=q=>sc(q);
+    if(state.mode==='horizontal'&&cuts.length){
+      const sortedCuts=cuts.slice().sort((a,b)=>a.fraction-b.fraction);
+      const first=sortedCuts[0];
+      if(sortedCuts.length===1){
+        drawRegionLabel([B,C,regionPoint(first.Q),regionPoint(first.P)],'১ম ভাগ');
+        drawRegionLabel([A,regionPoint(first.P),regionPoint(first.Q)],'অবশিষ্ট ক্ষেত্র');
+      }else{
+        const second=sortedCuts[1];
+        drawRegionLabel([B,C,regionPoint(first.Q),regionPoint(first.P)],'১ম ভাগ');
+        drawRegionLabel([regionPoint(first.P),regionPoint(first.Q),regionPoint(second.Q),regionPoint(second.P)],'২য় ভাগ');
+        drawRegionLabel([A,regionPoint(second.P),regionPoint(second.Q)],'অবশিষ্ট ক্ষেত্র');
+      }
+    }else if(state.mode==='vertex'&&state.split){
+      const sp=state.split;
+      drawRegionLabel([sc(sp.V),sc(sp.U),sc(sp.D)],'১ম ভাগ');
+      drawRegionLabel([sc(sp.V),sc(sp.D),sc(sp.W)],'অবশিষ্ট ক্ষেত্র');
+    }
     if(state.mode==='horizontal'){
       const sorted=cuts.sort((a,b)=>a.fraction-b.fraction);
       sorted.forEach((sp,idx)=>{const P=sc(sp.P),Q=sc(sp.Q),off=idx===0?-28:-58;line(P,Q,true);dim(P,Q,ftIn(sp.length),off,'split');});
