@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v30-mobile-calculator-fix";
+const CACHE_NAME = "sah-pwa-v31-multifield-drawing-fix";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 const CORE_ASSETS = [
   "./", "./index.html", "./404.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
