@@ -104,6 +104,7 @@
 <button class="calc-tab" data-tab="quad-partition" role="tab" aria-selected="false">চতুর্ভুজ ভাগ-বণ্টন</button>
 <button class="calc-tab" data-tab="triangle-partition" role="tab" aria-selected="false">ত্রিভুজ ভাগ-বণ্টন</button>
 <button class="calc-tab" data-tab="wood-cft" role="tab" aria-selected="false">গোল কাঠের CFT ক্যালকুলেটর</button>
+<button class="calc-tab" data-tab="sawn-wood-cft" role="tab" aria-selected="false">চেরাই কাঠের CFT ক্যালকুলেটর</button>
 <button class="calc-tab" data-tab="inheritance" role="tab" aria-selected="false">মুসলিম উত্তরাধিকার</button>
 <button class="calc-tab" data-tab="heron" role="tab" aria-selected="false">হেরনের সূত্র</button>
 <button class="calc-tab" data-tab="brahmagupta" role="tab" aria-selected="false">ব্রহ্মগুপ্তের সূত্র</button>
@@ -454,6 +455,76 @@
   </div>
 
   <p class="wood-cft-disclaimer">নোট: এটি গোল কাঠের মাঝের পরিধি/বেড়-ভিত্তিক Hoppus পদ্ধতির হিসাব। বাণিজ্যিক/চূড়ান্ত মাপের ক্ষেত্রে সংশ্লিষ্ট ক্রয়-বিক্রয় চুক্তি ও প্রচলিত মাপপদ্ধতি যাচাই করুন।</p>
+
+</section>
+<section class="calc-panel sawn-wood-cft-panel" id="panel-sawn-wood-cft" role="tabpanel" aria-labelledby="sawn-wood-cft-title">
+  <div class="sawn-wood-cft-head">
+    <div>
+      <div class="sawn-wood-cft-kicker">🪵 SAWN WOOD CFT CALCULATOR</div>
+      <h2 id="sawn-wood-cft-title">চেরাই কাঠের CFT ক্যালকুলেটর</h2>
+      <p>দৈর্ঘ্য, প্রস্থ, পুরুত্ব ও পিসের সংখ্যা দিয়ে চেরাই কাঠের মোট CFT এবং মূল্য হিসাব করুন। একাধিক মাপ একই তালিকায় যোগ করা যাবে।</p>
+    </div>
+    <div class="sawn-wood-cft-mark" aria-hidden="true">CFT</div>
+  </div>
+
+  <div class="sawn-wood-cft-note">
+    <strong>সূত্র:</strong>
+    <b>CFT = (দৈর্ঘ্য ফুট × প্রস্থ ইঞ্চি × পুরুত্ব ইঞ্চি × পিস) ÷ 144</b>।
+    দৈর্ঘ্যে ফুটের সঙ্গে অতিরিক্ত ইঞ্চিও দেওয়া যাবে।
+  </div>
+
+  <div class="sawn-wood-cft-toolbar">
+    <strong>🪵 চেরাই কাঠের তালিকা</strong>
+    <button type="button" class="sawn-wood-cft-add" id="sawnWoodAddRow">＋ কাঠ যোগ করুন</button>
+  </div>
+
+  <div class="sawn-wood-cft-table-wrap">
+    <table class="sawn-wood-cft-table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">দৈর্ঘ্য<br><small>ফুট + ইঞ্চি</small></th>
+          <th scope="col">প্রস্থ<br><small>ইঞ্চি</small></th>
+          <th scope="col">পুরুত্ব<br><small>ইঞ্চি</small></th>
+          <th scope="col">পিস</th>
+          <th scope="col">CFT</th>
+          <th scope="col">কাজ</th>
+        </tr>
+      </thead>
+      <tbody id="sawnWoodRows"></tbody>
+    </table>
+  </div>
+
+  <div class="sawn-wood-cft-price-grid">
+    <div class="sawn-wood-cft-field">
+      <label for="sawnWoodPricePerCft">প্রতি CFT কাঠের দাম (৳)</label>
+      <input id="sawnWoodPricePerCft" type="number" min="0" step="0.01" inputmode="decimal" placeholder="যেমন 2500">
+    </div>
+    <div class="sawn-wood-cft-total-box">
+      <span>মোট পিস</span>
+      <strong id="sawnWoodTotalPieces">0</strong>
+    </div>
+    <div class="sawn-wood-cft-total-box">
+      <span>মোট CFT</span>
+      <strong id="sawnWoodTotalCft">0.000</strong>
+    </div>
+    <div class="sawn-wood-cft-total-box">
+      <span>মোট মূল্য</span>
+      <strong id="sawnWoodTotalPrice">৳ 0.00</strong>
+    </div>
+  </div>
+
+  <div class="sawn-wood-cft-actions">
+    <button type="button" class="calc-btn calc-primary" id="sawnWoodCalculate">🧮 হিসাব করুন</button>
+    <button type="button" class="calc-btn calc-secondary" id="sawnWoodReset">↺ Reset</button>
+    <button type="button" class="calc-btn sawn-wood-print-btn" id="sawnWoodPrint">🖨️ Print / PDF</button>
+  </div>
+
+  <div class="sawn-wood-cft-result" id="sawnWoodResult" aria-live="polite">
+    <span>প্রতিটি চেরাই কাঠের CFT এবং মোট হিসাব এখানে দেখাবে।</span>
+  </div>
+
+  <p class="sawn-wood-cft-disclaimer">নোট: এটি আয়তাকার/চৌকো চেরাই কাঠের মাপের হিসাব। কাঠের প্রকৃত ক্রয়-বিক্রয় বা বিলের ক্ষেত্রে সংশ্লিষ্ট প্রচলিত মাপ ও চুক্তির শর্ত যাচাই করুন।</p>
 </section>
 <section class="calc-panel" id="panel-inheritance" role="tabpanel">
 <div class="inherit-hero">
@@ -651,6 +722,7 @@
 <script src="app.js" defer></script>
 <script src="calculator-triangle-partition.js?v=20261003-1238-fix5" defer></script>
 <script src="calculator-wood-cft.js?v=20261003-wood1" defer></script>
+<script src="calculator-sawn-wood-cft.js?v=20261003-sawn1" defer></script>
 <script src="calculator-bootstrap.js" defer></script>
 </body>
 </html>
