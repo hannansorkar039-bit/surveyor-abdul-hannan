@@ -33,29 +33,71 @@
 .length-mode-note{grid-column:1/-1;font-size:12px;color:var(--muted);align-self:end;padding-top:24px}
 @media(max-width:640px){.length-mode-note{padding-top:0}.length-input-pair{grid-template-columns:minmax(0,1fr) minmax(0,.78fr)}}
 
-/* Readability improvement: calculator body text, labels and controls */
-.calc-panel{font-size:17px;}
-.calc-panel .calc-help{font-size:17px;line-height:1.8;}
-.calc-panel .calc-field label{font-size:16px;line-height:1.55;}
-.calc-panel .calc-field input,.calc-panel .calc-field select{font-size:17px;line-height:1.5;}
-.calc-panel .calc-field input::placeholder{font-size:16px;opacity:.8;}
-.calc-panel .calc-btn{font-size:16px;line-height:1.5;}
-.calc-panel .formula code{font-size:17px;line-height:1.6;}
-.calc-panel .small-note,.calc-panel .legal-note,.calc-panel .warning,.calc-panel .calc-help{line-height:1.8;}
-.calc-panel .small-note{font-size:15px;}
-.calc-panel .legal-note,.calc-panel .warning{font-size:16px;}
-.calc-panel .result-item{font-size:16px;line-height:1.65;}
-.calc-panel .result-item strong{font-size:16px;}
+
+/* ===== Readability upgrade: entire land-calculator area =====
+   Typography only. No calculation, content, layout or color rules changed. */
+.calc-wrap .calc-intro .lead{font-size:17px!important;line-height:1.75!important}
+.calc-wrap .calculator-launcher-head p{font-size:16px!important;line-height:1.7!important}
+.calc-wrap .calculator-launch-card strong{font-size:16px!important;line-height:1.5!important}
+.calc-wrap .calculator-launch-card small{font-size:15px!important;line-height:1.55!important}
+.calc-wrap .calc-tab{font-size:16px!important;line-height:1.5!important}
+.calc-wrap .calc-panel h3{font-size:22px!important;line-height:1.5!important}
+.calc-wrap .calc-help{font-size:17px!important;line-height:1.8!important}
+.calc-wrap .calc-field label{font-size:16px!important;line-height:1.55!important}
+.calc-wrap .calc-field input,.calc-wrap .calc-field select{font-size:17px!important;line-height:1.5!important}
+.calc-wrap .calc-field input::placeholder{font-size:16px!important;opacity:.8}
+.calc-wrap .length-input-note,.calc-wrap .length-mode-note{font-size:15px!important;line-height:1.65!important}
+.calc-wrap .shape-unit-note,.calc-wrap .small-note{font-size:15px!important;line-height:1.65!important}
+.calc-wrap .calc-btn{font-size:16px!important;line-height:1.5!important}
+.calc-wrap .formula{font-size:16px!important;line-height:1.7!important}
+.calc-wrap .formula code{font-size:17px!important;line-height:1.7!important}
+.calc-wrap .warning,.calc-wrap .legal-note{font-size:16px!important;line-height:1.8!important}
+.calc-wrap .result-main{font-size:27px!important;line-height:1.45!important}
+.calc-wrap .result-item{font-size:16px!important;line-height:1.6!important}
+.calc-wrap .result-item strong{font-size:16px!important}
+.calc-wrap .inheritance-table th,.calc-wrap .inheritance-table td{font-size:16px!important;line-height:1.6!important}
+.calc-wrap .heir-field label{font-size:16px!important;line-height:1.55!important}
+.calc-wrap .heir-field input{font-size:17px!important}
+.calc-wrap .featured-head>p{font-size:17px!important;line-height:1.75!important}
+.calc-wrap .featured-card h3{font-size:20px!important;line-height:1.5!important}
+.calc-wrap .featured-card p{font-size:16px!important;line-height:1.75!important}
+.calc-wrap .featured-separator{font-size:18px!important;line-height:1.6!important}
+.calc-wrap .shape-sketch-note,.calc-wrap .shape-multi-head p{font-size:16px!important;line-height:1.75!important}
+.calc-wrap .shape-dimension-head{font-size:16px!important;line-height:1.55!important}
+.calc-wrap .shape-dimension-head span{font-size:14px!important}
+.calc-wrap .qp-note,.calc-wrap .qp-drawing-meta,.calc-wrap .qp-drawing-legend{font-size:15px!important;line-height:1.65!important}
+.calc-wrap .qp-cut-editor-note{font-size:15px!important;line-height:1.65!important}
+.calc-wrap .qp-cut-field label{font-size:15px!important}
+.calc-wrap .qp-cut-live,.calc-wrap .qp-warning,.calc-wrap .qp-ok{font-size:15px!important;line-height:1.65!important}
+.calc-wrap .qp-multi-title{font-size:20px!important;line-height:1.5!important}
+.calc-wrap .qp-multi-note,.calc-wrap .qp-save-status{font-size:15px!important;line-height:1.65!important}
+.calc-wrap .qp-split-card-head strong{font-size:18px!important}
+.calc-wrap .qp-split-card-head span{font-size:14px!important}
+.calc-wrap .qp-dimension-card h4{font-size:16px!important}
+.calc-wrap .qp-dimension-row span,.calc-wrap .qp-dimension-row strong{font-size:15px!important;line-height:1.55!important}
+.calc-wrap .qp-live-area{font-size:15px!important;line-height:1.65!important}
+.calc-wrap .registry-upgrade .lead{font-size:17px!important;line-height:1.75!important}
+.calc-wrap .registry-upgrade .registry-rate{font-size:14px!important}
+.calc-wrap .registry-upgrade .cost-name{font-size:16px!important}
+.calc-wrap .registry-upgrade .cost-meta{font-size:14px!important;line-height:1.55!important}
+.calc-wrap .registry-upgrade .cost-amount{font-size:16px!important}
+.calc-wrap .registry-upgrade .registry-note{font-size:15px!important;line-height:1.7!important}
+.calc-wrap .registry-upgrade .map-offline-note{font-size:15px!important;line-height:1.65!important}
+.calc-wrap .registry-upgrade .map-tools button{font-size:15px!important}
+.calc-wrap .registry-upgrade .map-tools strong{font-size:15px!important}
+.calc-wrap .suite-help,.calc-wrap .suite-note{font-size:15px!important;line-height:1.65!important}
+.calc-wrap .sources a{font-size:15px!important}
 @media(max-width:620px){
-  .calc-panel{font-size:18px;}
-  .calc-panel .calc-help{font-size:17px !important;line-height:1.85 !important;}
-  .calc-panel .calc-field label{font-size:17px !important;line-height:1.6 !important;}
-  .calc-panel .calc-field input,.calc-panel .calc-field select{font-size:18px !important;min-height:52px !important;line-height:1.5 !important;}
-  .calc-panel .calc-field input::placeholder{font-size:16px !important;}
-  .calc-panel .calc-btn{font-size:17px !important;min-height:50px !important;}
-  .calc-panel .formula code{font-size:17px !important;line-height:1.65 !important;}
-  .calc-panel .small-note{font-size:15px !important;line-height:1.8 !important;}
-  .calc-panel .legal-note,.calc-panel .warning{font-size:16px !important;line-height:1.8 !important;}
-  .calc-panel .result-item,.calc-panel .result-item strong{font-size:16px !important;line-height:1.7 !important;}
-  .calc-panel .length-input-note,.calc-panel .shape-unit-note,.calc-panel .calc-field small{font-size:14px !important;line-height:1.7 !important;}
+  .calc-wrap .calc-intro .lead{font-size:16px!important}
+  .calc-wrap .calc-tab{font-size:15px!important}
+  .calc-wrap .calc-panel h3{font-size:21px!important}
+  .calc-wrap .calc-help{font-size:16px!important}
+  .calc-wrap .calc-field label{font-size:15px!important}
+  .calc-wrap .calc-field input,.calc-wrap .calc-field select{font-size:16px!important}
+  .calc-wrap .calc-btn{font-size:15px!important}
+  .calc-wrap .featured-card h3{font-size:19px!important}
+  .calc-wrap .featured-card p{font-size:15px!important}
+  .calc-wrap .featured-head>p{font-size:16px!important}
+  .calc-wrap .registry-upgrade .lead{font-size:16px!important}
 }
+/* ===== End readability upgrade ===== */
