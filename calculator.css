@@ -48,3 +48,21 @@
 .tp-card{border:1px solid #dce7ea;border-radius:15px;background:#fff;padding:16px;margin-top:14px;box-shadow:0 5px 18px rgba(8,35,54,.04)}.tp-card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.tp-card-head>div{display:flex;align-items:center;gap:9px}.tp-card-head>div>span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#eaf5f6;color:#0c516a;font-weight:900}.tp-card-head h4{margin:0;color:#17313d}.tp-card-head small{color:var(--muted);font-size:11px;font-weight:700}.tp-fi{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.75fr);gap:8px}.tp-fi input{width:100%;box-sizing:border-box}.tp-note{margin-top:12px;padding:10px 12px;border-radius:10px;background:#f5fafb;color:#52656f;font-size:12px;font-weight:700}.tp-result{margin-top:16px}.tp-result-main{padding:14px 16px;border-radius:13px;background:#eef8f8;border:1px solid #d5e9eb;color:#17313d}.tp-result-main strong{display:block;font-size:18px}.tp-result-main span{display:block;margin-top:4px;color:#5a7079;font-size:12px;font-weight:700}.tp-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}.tp-result-grid>div{padding:12px;border:1px solid #dce7ea;border-radius:12px;background:#fff}.tp-result-grid b{display:block;font-size:14px;color:#082336}.tp-result-grid small{display:block;margin-top:4px;color:var(--muted)}.tp-edit-card,.tp-drawing-wrap{margin-top:16px;border:1px solid #dce7ea;border-radius:15px;background:#fff;padding:16px}.tp-edit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.tp-edit-group strong{display:block;margin-bottom:6px;color:#31545f;font-size:12px}.tp-edit-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.tp-status{margin-top:10px;padding:9px 11px;border-radius:10px;background:#f7fbfc;color:#5c7078;font-size:12px;font-weight:700}.tp-drawing-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}.tp-drawing-head strong{display:block;color:#082336}.tp-drawing-head span{display:block;font-size:11px;color:var(--muted);margin-top:3px}.tp-canvas-box{width:100%;overflow:auto;border:1px solid #dce7ea;border-radius:12px;background:#fff}.tp-canvas-box canvas{display:block;max-width:100%;touch-action:none}.tp-legend{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:9px}.tp-legend span{padding:8px 9px;border-radius:9px;background:#f5fafb;color:#52656f;font-size:11px}.tp-legend b{color:#082336}
 @media(max-width:760px){.tp-hero{align-items:flex-start;flex-direction:column}.tp-result-grid,.tp-edit-grid{grid-template-columns:1fr 1fr}.tp-legend{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.tp-mode-tabs{grid-template-columns:1fr}.tp-result-grid,.tp-edit-grid{grid-template-columns:1fr}.tp-card-head{align-items:flex-start;flex-direction:column}.tp-badge{white-space:normal}}
+
+/* Triangle partition v3: separate demarcation + zoom/edit UI */
+.tp-edit-grid-partition{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tp-drawing-tools{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+.tp-drawing-tools>span{min-width:48px;text-align:center;font-weight:900;color:#31545f;font-size:12px}
+.tp-zoom-btn{min-width:38px;padding-left:10px!important;padding-right:10px!important}
+.tp-demarcation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.tp-demarcation-card{border:1px solid #dce7ea;border-radius:12px;background:#f9fcfc;padding:11px 12px}
+.tp-demarcation-card strong{display:block;color:#082336;margin-bottom:7px;font-size:13px}
+.tp-demarcation-card>div{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-top:1px dashed #d8e5e8;font-size:11px;color:#5a7079}
+.tp-demarcation-card b{color:#082336;white-space:nowrap}
+.tp-demarcation-first{border-left:4px solid #c23b32}
+.tp-demarcation-rest{border-left:4px solid #0c516a}
+.tp-demarcation-vertex{border-left:4px solid #c23b32}
+.tp-canvas-box{position:relative;touch-action:none}
+.tp-canvas-box canvas{cursor:default}
+.tp-canvas-box canvas.tp-editing{cursor:grab}
+@media(max-width:760px){.tp-demarcation-grid{grid-template-columns:1fr}.tp-drawing-head{align-items:flex-start;flex-direction:column}.tp-drawing-tools{justify-content:flex-start}.tp-edit-grid-partition{grid-template-columns:1fr}}
