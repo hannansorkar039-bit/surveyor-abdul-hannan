@@ -560,19 +560,7 @@
     <div class="calc-result" id="fqResult" aria-live="polite"></div>
   </div>
 </section>
-<section class="featured-panel" id="featured-separate" aria-labelledby="featured-separate-title">
-  <div class="featured-panel-head"><h3 class="land-calc-section-title" id="featured-separate-title">✂️ নির্দিষ্ট শতাংশ জমি পৃথক করার মাপ</h3><p>এটি কেবল আয়তক্ষেত্র বা সমান প্রস্থের জমির জন্য সঠিক। অনিয়মিত জমিতে এই সরল সূত্র ব্যবহার করবেন না।</p></div>
-  <div class="featured-panel-body">
-    <div class="calc-grid">
-      <div class="calc-field"><label for="fsepLength">মোট দৈর্ঘ্য</label><input id="fsepLength" type="number" min="0" step="any" placeholder="যেমন ১০০"></div>
-      <div class="calc-field"><label for="fsepWidth">প্রস্থ</label><input id="fsepWidth" type="number" min="0" step="any" placeholder="যেমন ৫০"></div>
-      <div class="calc-field"><label for="fsepPercent">যে শতাংশ জমি পৃথক করতে চান (%)</label><input id="fsepPercent" type="number" min="0.000001" max="99.999999" step="any" placeholder="যেমন ৩০"></div>
-      <div class="calc-field"><label for="fsepUnit">দৈর্ঘ্য/প্রস্থের একক</label><select id="fsepUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
-    </div>
-    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fsepCalc">পৃথক করার মাপ বের করুন</button><button class="calc-btn calc-secondary" type="button" id="fsepReset">রিসেট</button></div>
-    <div class="calc-result" id="fsepResult" aria-live="polite"></div>
-  </div>
-</section>
+
 <section class="featured-panel" id="featured-reverse" aria-labelledby="featured-reverse-title">
   <div class="featured-panel-head"><h3 class="land-calc-section-title" id="featured-reverse-title">🔄 মোট জমি থেকে নিজের জমির হিস্যা বের করুন</h3><p>মোট জমি ও আপনার অংশ একই এককে লিখলে হিস্যাটি নিকটতম তিল পর্যন্ত আনা–গণ্ডা–কড়া–ক্রান্তি–তিলে ভেঙে দেখানো হবে।</p></div>
   <div class="featured-panel-body">
@@ -585,63 +573,7 @@
     <div class="calc-result" id="frResult" aria-live="polite"></div>
   </div>
 </section>
-<section class="land-suite" id="professional-land-suite" aria-labelledby="land-suite-title">
-  <div class="land-suite-hero">
-    <div>
-      <span class="land-suite-badge">🧭 Professional Land Calculator Suite</span>
-      <h2 class="land-suite-title" id="land-suite-title">ভূমি হিসাব <span>এক জায়গায়</span></h2>
-      <p class="land-suite-sub">জমির ক্ষেত্রফল, একক রূপান্তর, দ্রুত হিসাব ও পূর্বের হিসাব—সবকিছু একটি পরিষ্কার ও মোবাইল-ফ্রেন্ডলি ইন্টারফেসে।</p>
-    </div>
-    <div class="land-suite-actions">
-      <button class="land-suite-btn" type="button" id="suitePrint">🖨️ ফলাফল প্রিন্ট</button>
-      <button class="land-suite-btn alt" type="button" id="suiteShare">↗️ শেয়ার</button>
-    </div>
-  </div>
-  <div class="land-suite-grid">
-    <div class="suite-card">
-      <h3>⚡ দ্রুত জমির পরিমাণ ও ভাগ</h3>
-      <p class="suite-help">মোট জমি ও নির্দিষ্ট ভাগের পরিমাণ লিখে দ্রুত শতাংশ/বর্গফুটের সমতুল্য দেখুন। সুনির্দিষ্ট সীমানার ফুট-ইঞ্চি পেতে নিচের “চতুর্ভুজ ভাগ-বণ্টন” মডিউল ব্যবহার করুন।</p>
-      <div class="suite-form">
-        <div class="suite-field"><label for="suiteLength">মোট জমি</label><input id="suiteLength" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 5"></div>
-        <div class="suite-field"><label for="suiteWidth">ভাগের পরিমাণ</label><input id="suiteWidth" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 2"></div>
-        <div class="suite-field"><label for="suiteUnit">বর্তমান একক</label><select id="suiteUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option></select></div>
-        <div class="suite-field"><label for="suiteDecimals">দশমিক</label><select id="suiteDecimals"><option value="2">২ ঘর</option><option value="4" selected>৪ ঘর</option><option value="6">৬ ঘর</option></select></div>
-      </div>
-      <div class="quick-tools"><button type="button" id="suiteCalc">ভাগ হিসাব করুন</button><button type="button" id="suiteClear">পরিষ্কার</button></div>
-      <div class="suite-result" id="suiteResult" aria-live="polite">মোট জমি ও ভাগের পরিমাণ দিলে ফলাফল এখানে দেখাবে।</div>
-    </div>
-    <div class="suite-card">
-      <h3>🔄 ভূমি একক রূপান্তর</h3>
-      <p class="suite-help">একটি এককে জমির পরিমাণ লিখলে অন্যান্য প্রচলিত এককে সমতুল্য পরিমাণ দেখাবে।</p>
-      <div class="suite-form">
-        <div class="suite-field"><label for="suiteArea">জমির পরিমাণ</label><input id="suiteArea" type="number" min="0" step="any" inputmode="decimal" placeholder="যেমন 5"></div>
-        <div class="suite-field"><label for="suiteAreaUnit">বর্তমান একক</label><select id="suiteAreaUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="katha">কাঠা</option><option value="bigha">বিঘা</option><option value="acre">একর</option><option value="hectare">হেক্টর</option></select></div>
-      </div>
-      <div class="quick-tools"><button type="button" id="suiteConvert">রূপান্তর করুন</button><button type="button" id="suiteCopy" disabled>ফলাফল কপি</button></div>
-      <div class="suite-result" id="suiteConversionResult" aria-live="polite">জমির পরিমাণ দিলে রূপান্তরের ফলাফল এখানে দেখাবে।</div>
-      <p class="suite-note">রূপান্তরের মান: ১ শতাংশ/ডেসিমেল = ৪৩৫.৬ বর্গফুট; ১ কাঠা = ৭২০ বর্গফুট; ১ বিঘা = ১৪,৪০০ বর্গফুট; ১ একর = ৪৩,৫৬০ বর্গফুট।</p>
-    </div>
-    <div class="suite-card">
-      <h3>📌 দ্রুত রেফারেন্স</h3>
-      <p class="suite-help">জমির হিসাব করার সময় ব্যবহৃত গুরুত্বপূর্ণ রূপান্তরগুলো এক নজরে।</p>
-      <div class="unit-grid">
-        <div class="unit-pill"><b>১ শতাংশ</b><span>৪৩৫.৬ sq ft</span></div>
-        <div class="unit-pill"><b>১ কাঠা</b><span>৭২০ sq ft</span></div>
-        <div class="unit-pill"><b>১ বিঘা</b><span>১৪,৪০০ sq ft</span></div>
-        <div class="unit-pill"><b>১ একর</b><span>৪৩,৫৬০ sq ft</span></div>
-        <div class="unit-pill"><b>১ হেক্টর</b><span>১০৭,৬৩৯.১০৪ sq ft</span></div>
-        <div class="unit-pill"><b>১ sq m</b><span>১০.৭৬৩৯ sq ft</span></div>
-      </div>
-      <p class="suite-note">স্থানীয় রেকর্ড বা সরকারি জরিপে কোনো ভিন্ন মান নির্ধারিত থাকলে সেই নির্দিষ্ট মান অনুসরণ করুন।</p>
-    </div>
-    <div class="suite-card">
-      <h3>🕘 সাম্প্রতিক হিসাব</h3>
-      <p class="suite-help">এই ডিভাইসে করা সর্বশেষ কয়েকটি দ্রুত হিসাব এখানে থাকবে।</p>
-      <div class="history-list" id="suiteHistory"><div class="suite-note">এখনও কোনো হিসাব সংরক্ষিত নেই।</div></div>
-      <div class="quick-tools"><button type="button" id="suiteClearHistory">ইতিহাস মুছুন</button></div>
-    </div>
-  </div>
-</section>
+
 <div class="suite-toast" id="suiteToast" role="status" aria-live="polite"></div>
 <div class="legal-note"><strong>আইনি/তথ্যসূত্র:</strong> মুসলিমদের intestate succession-এর ক্ষেত্রে Muslim Personal Law (Shariat) Application Act, 1937 প্রাসঙ্গিক; Muslim Family Laws Ordinance, 1961-এর ধারা ৪ পূর্বমৃত পুত্র/কন্যার জীবিত সন্তানদের বিষয়ে বিশেষ বিধান দেয়। <div class="sources"><a href="https://bdlaws.minlaw.gov.bd/act-print-173.html" target="_blank" rel="noopener noreferrer">Shariat Application Act, 1937</a><a href="https://bdlaws.minlaw.gov.bd/act-print-305/section-print-13528.html" target="_blank" rel="noopener noreferrer">MFLO 1961 — ধারা ৪</a><a href="https://inheritance.gov.bd/" target="_blank" rel="noopener noreferrer">সরকারি উত্তরাধিকার তথ্য</a></div></div>
 </section>
