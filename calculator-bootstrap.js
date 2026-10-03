@@ -28,6 +28,8 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
   };
   const loadPartition=()=>loadScript('calculator-partition.js?v=multi-v2','partition').catch(()=>{});
   document.querySelectorAll('.calc-tab[data-tab="quad-partition"]').forEach(btn=>btn.addEventListener('click',loadPartition,{once:true}));
+  const loadTrianglePartition=()=>loadScript('calculator-triangle-partition.js?v=tp-v1','triangle-partition').catch(()=>{});
+  document.querySelectorAll('.calc-tab[data-tab="triangle-partition"]').forEach(btn=>btn.addEventListener('click',loadTrianglePartition,{once:true}));
   whenVisible(document.querySelector('.featured-calcs'),()=>loadScript('calculator-featured.js','featured').catch(()=>{}));
   whenVisible(document.querySelector('#professional-land-suite'),()=>loadScript('calculator-land-suite.js','land-suite').catch(()=>{}));
   // The multi-field Drawing & Alignment section lives before the registry calculator.
@@ -47,6 +49,7 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
       const target=document.querySelector('.calc-tab[data-tab="'+tab+'"]');
       if(target) target.click();
       if(tab==='quad-partition') await loadPartition();
+      if(tab==='triangle-partition') await loadTrianglePartition();
       document.querySelector('#panel-'+tab)?.scrollIntoView({behavior:'smooth',block:'start'});
       return;
     }
