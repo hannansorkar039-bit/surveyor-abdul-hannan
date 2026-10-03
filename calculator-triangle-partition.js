@@ -411,7 +411,21 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     }
     if($('tpExtraDemarcation')){
       $('tpExtraDemarcation').hidden=false;
-      $('tpExtraDemarcation').innerHTML=state.parts.map(p=>`<div class="tp-region-boundary"><h5>${partName(p.index)} — ${fmtArea(p.area)}</h5><div><span>ভাগের ধরন</span><b>${p.method==='horizontal'?'হরিজন্টাল':'শীর্ষবিন্দু থেকে'}</b></div><div><span>ভাগরেখা</span><b>${p.line.type==='horizontal'?ftIn(Math.abs((p.line.points?.[0]?.x||0)-(p.line.points?.[1]?.x||0))):ftIn(dist(p.line.V,p.line.D))}</b></div></div>`).join('');
+      const boundaryHtml=(label,poly)=>{
+        if(!poly||poly.length<2)return '';
+        const rows=poly.map((a,i)=>{
+          const b=poly[(i+1)%poly.length];
+          return `<div><span>সীমা ${bn(i+1,0)}</span><b>${ftIn(dist(a,b))}</b></div>`;
+        }).join('');
+        return `<div class="tp-region-boundary"><h5>${label}</h5>${rows}</div>`;
+      };
+      const partsHtml=state.parts.map(p=>
+        boundaryHtml(`${partName(p.index)} — ${fmtArea(p.area)}`,p.cut)
+      ).join('');
+      const remainingHtml=state.remaining?.length>=3
+        ? boundaryHtml(`অবশিষ্ট ক্ষেত্র — ${fmtArea(polyArea(state.remaining))}`,state.remaining)
+        : '';
+      $('tpExtraDemarcation').innerHTML=partsHtml+remainingHtml;
     }
   }
 
