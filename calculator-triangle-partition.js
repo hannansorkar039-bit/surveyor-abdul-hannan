@@ -96,11 +96,18 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   function renderEditFields(sp){
     const seg=currentSegments(sp), labels=segmentLabels(sp);
     const first=$('tpEditFirstFields'); if(!first)return;
-    first.innerHTML=seg.first.map((x,i)=>dimInputHTML('tpEditF'+i,labels.first[i])).join('');
+    if(sp.type==='horizontal'){
+      // The first (lower) partition is a quadrilateral: BP + PQ + QC + BC.
+      // BP/PQ/QC determine the cut position; BC is the fixed original base.
+      first.innerHTML=seg.first.slice(0,3).map((x,i)=>dimInputHTML('tpEditF'+i,labels.first[i])).join('')
+        + `<div class="tp-readonly-dim tp-fixed-base"><span>BC / সম্পূর্ণ ভিত্তি</span><b>${ftIn(seg.first[3]?.[1])}</b></div>`;
+    } else {
+      first.innerHTML=seg.first.map((x,i)=>dimInputHTML('tpEditF'+i,labels.first[i])).join('');
+    }
     const rest=$('tpEditRestFields');
     if(rest) rest.innerHTML=seg.remaining.map((x,i)=>`<div class="tp-readonly-dim"><span>${labels.remaining[i]}</span><b>${ftIn(x[1])}</b></div>`).join('');
-    seg.first.forEach((x,i)=>writeFI('tpEditF'+i+'Ft','tpEditF'+i+'In',x[1]));
-    state.editBaseline=seg.first.map(x=>x[1]);
+    seg.first.slice(0,3).forEach((x,i)=>writeFI('tpEditF'+i+'Ft','tpEditF'+i+'In',x[1]));
+    state.editBaseline=seg.first.slice(0,3).map(x=>x[1]);
   }
   function draw(){
     const canvas=$('tpCanvas'); if(!canvas||!state.points) return;
@@ -156,8 +163,8 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   function updateSegmentText(){
     const sp=state.split;if(!sp)return; const seg=currentSegments(sp),set=(id,v)=>{if($(id))$(id).textContent=ftIn(v);};
     if(sp.type==='horizontal'){
-      set('tpSegBP',seg.first[0][1]);set('tpSegPQ',seg.first[1][1]);set('tpSegQC',seg.first[2][1]);
-      set('tpSegAP',seg.remaining[0][1]);set('tpSegAQ',seg.remaining[1][1]);set('tpSegBC',seg.remaining[2][1]);
+      set('tpSegBP',seg.first[0][1]);set('tpSegPQ',seg.first[1][1]);set('tpSegQC',seg.first[2][1]);set('tpSegBaseBC',seg.first[3][1]);
+      set('tpSegAP',seg.remaining[0][1]);set('tpSegAQ',seg.remaining[1][1]);set('tpSegRestPQ',seg.remaining[2][1]);
     } else {
       set('tpSegVU',seg.first[0][1]);set('tpSegUD',seg.first[1][1]);set('tpSegVD',seg.first[2][1]);
       set('tpSegVW',seg.remaining[0][1]);set('tpSegDW',seg.remaining[1][1]);set('tpSegUW',seg.remaining[2][1]);
@@ -210,15 +217,18 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
       // BP = AB * t, PQ = BC * (1 - t), QC = CA * t,
       // where t = sqrt(1 - first-area-fraction).
       // Therefore each editable dimension must be inverted against the SAME t.
+      // Horizontal cut parallel to BC: AP/AB = AQ/AC = PQ/BC = t.
+      // The first (lower) quadrilateral B-P-Q-C therefore has area fraction 1-t².
+      // BP=(1-t)AB and QC=(1-t)AC.
       if(changed===0){
-        if(v>=s.AB)return false;
-        const t=v/s.AB; f=1-t*t;
+        if(v<=0 || v>=s.AB)return false;
+        const t=1-(v/s.AB); f=1-t*t;
       } else if(changed===1){
-        if(v>=s.BC)return false;
-        const t=1-v/s.BC; f=1-t*t;
+        if(v<=0 || v>=s.BC)return false;
+        const t=v/s.BC; f=1-t*t;
       } else {
-        if(v>=s.CA)return false;
-        const t=v/s.CA; f=1-t*t;
+        if(v<=0 || v>=s.CA)return false;
+        const t=1-(v/s.CA); f=1-t*t;
       }
     } else {
       const sp=state.split,seg=currentSegments(sp),changed=state._editingSegmentIndex;
@@ -291,17 +301,26 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   }
   function removeExtraSplit(e){
     if(e){e.preventDefault();e.stopPropagation();}
+    // Clear every extra-part state first, then redraw from the original single split.
     state.extraSplit=null;
+    state.multiSplits=[];
     if($('tpExtraDemarcation')) $('tpExtraDemarcation').hidden=true;
     if($('tpMorePercent')) $('tpMorePercent').value='';
     if($('tpMoreAreaLabel')) $('tpMoreAreaLabel').textContent='—';
-    if($('tpMultiStatus')) $('tpMultiStatus').textContent='হরিজন্টাল পদ্ধতিতে দ্বিতীয় ভাগরেখা যোগ হলে ৩টি পৃথক ক্ষেত্রের ক্ষেত্রফল ও ডিমার্কেশন দেখা যাবে।';
+    if($('tpExtraAreaLabel')) $('tpExtraAreaLabel').textContent='—';
+    if($('tpExtraPercentLabel')) $('tpExtraPercentLabel').textContent='—';
+    if($('tpExtraSeg1')) $('tpExtraSeg1').textContent='—';
+    if($('tpExtraSeg2')) $('tpExtraSeg2').textContent='—';
+    if($('tpExtraSplitDim')) $('tpExtraSplitDim').textContent='—';
+    if($('tpMultiStatus')) $('tpMultiStatus').textContent='অতিরিক্ত ভাগ সরানো হয়েছে। এখন শুধু প্রথম ভাগ ও অবশিষ্ট ক্ষেত্র দেখানো হচ্ছে।';
     if($('tpMoreCard')) $('tpMoreCard').hidden=false;
     if(state.points && state.split){
       const total=area(sideInputs());
       renderResult(total);
+      if($('tpExtraDemarcation')) $('tpExtraDemarcation').hidden=true;
+      requestAnimationFrame(()=>draw());
     } else if(state.points){
-      draw();
+      requestAnimationFrame(()=>draw());
     }
   }
 
@@ -330,6 +349,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   $('tpMorePart')?.addEventListener('click',addMorePart);
   $('tpAddSplitApply')?.addEventListener('click',applyExtraSplit);
   $('tpRemoveExtra')?.addEventListener('click',removeExtraSplit);
+  $('tpRemoveExtra')?.addEventListener('pointerup',e=>{ if(e.pointerType==='touch') removeExtraSplit(e); });
   // Defensive delegated handler: keeps the remove action working even if the
   // calculator panel is re-rendered or another script replaces the button node.
   document.addEventListener('click',e=>{
