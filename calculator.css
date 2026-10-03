@@ -32,3 +32,11 @@
 .length-input-note{font-size:11px;color:var(--muted);margin-top:-2px}
 .length-mode-note{grid-column:1/-1;font-size:12px;color:var(--muted);align-self:end;padding-top:24px}
 @media(max-width:640px){.length-mode-note{padding-top:0}.length-input-pair{grid-template-columns:minmax(0,1fr) minmax(0,.78fr)}}
+
+/* Mobile visibility safeguard: keep the calculator page content visible even if the global reveal animation has not initialized yet. */
+.calculator-page .section.reveal{opacity:1;transform:none;}
+@media(max-width:620px){
+  .calculator-page .section.reveal{opacity:1;transform:none;}
+  .calculator-page .calc-wrap{width:100%;max-width:100%;}
+  .calculator-page .calc-panel.active{display:block;}
+}
