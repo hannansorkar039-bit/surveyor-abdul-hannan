@@ -66,7 +66,11 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   function getPartFraction(inputId,typeId,totalRemaining){
     const v=Number($(inputId)?.value), type=$(typeId)?.value;
     if(!Number.isFinite(v)||v<=0||!(totalRemaining>0))return NaN;
-    return type==='sqft'?v/totalRemaining:v/100;
+    // ডেসিমেল/শতাংশের ক্ষেত্রে ১ শতাংশ = ৪৩৫.৬ বর্গফুট।
+    // প্রতিটি নতুন ভাগের পরিমাণ বর্তমান অবশিষ্ট ক্ষেত্রের absolute area
+    // হিসেবে নেওয়া হবে; তাই ১% অবশিষ্ট নয়, ১ শতাংশ = ৪৩৫.৬ sqft।
+    const requestedSqft = type==='sqft' ? v : v*SQFT_PER_DECIMAL;
+    return requestedSqft/totalRemaining;
   }
   function validateFraction(f){
     return Number.isFinite(f)&&f>EPS&&f<1-EPS;
