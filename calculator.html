@@ -240,9 +240,9 @@
     </div>
     <div class="tp-edit-grid tp-edit-grid-partition">
       <div class="tp-edit-group tp-edit-wide">
-        <strong>যে ভাগটি আলাদা করছেন — তিন বাহুর ফুট–ইঞ্চি</strong>
+        <strong>যে ভাগটি আলাদা করছেন — ৪ বাহুর মাপ</strong>
         <div class="tp-edit-dim-grid" id="tpEditFirstFields"></div>
-        <small class="tp-inline-help">একবারে একটি মাপ পরিবর্তন করুন। প্রয়োগ করলে বাকি দুই মাপ, ভাগরেখা, Drawing ও ক্ষেত্রফল স্বয়ংক্রিয়ভাবে নতুন হবে।</small>
+        <small class="tp-inline-help">একবারে BP / PQ / QC-এর একটি মাপ পরিবর্তন করুন। BC হলো সম্পূর্ণ মূল ভিত্তি—এটি অপরিবর্তিত থাকবে। প্রয়োগ করলে বাকি মাপ, ভাগরেখা, Drawing ও ক্ষেত্রফল স্বয়ংক্রিয়ভাবে নতুন হবে।</small>
       </div>
       <div class="tp-edit-group">
         <strong>প্রথম ভাগের শতাংশ</strong>
@@ -286,12 +286,13 @@
         <div><span>BP / অংশের সীমা</span><b id="tpSegBP">—</b></div>
         <div><span>PQ / ভাগরেখা</span><b id="tpSegPQ">—</b></div>
         <div><span>QC / অংশের সীমা</span><b id="tpSegQC">—</b></div>
+        <div><span>BC / সম্পূর্ণ ভিত্তি</span><b id="tpSegBaseBC">—</b></div>
       </div>
       <div class="tp-demarcation-card tp-demarcation-rest">
         <strong>অবশিষ্ট ক্ষেত্র — <span id="tpRestAreaLabel">—</span></strong>
         <div><span>AP / সীমা</span><b id="tpSegAP">—</b></div>
         <div><span>AQ / সীমা</span><b id="tpSegAQ">—</b></div>
-        <div><span>PQ / ভাগরেখা</span><b id="tpSegBC">—</b></div>
+        <div><span>PQ / ভাগরেখা</span><b id="tpSegRestPQ">—</b></div>
       </div>
       <div class="tp-demarcation-card tp-demarcation-vertex" hidden>
         <strong>প্রথম ভাগের সীমা</strong>
@@ -653,7 +654,7 @@
 </footer>
 <a aria-label="উপরে যান" class="backtop" href="#top">↑</a>
 <script src="app.js" defer></script>
-<script src="calculator-triangle-partition.js?v=20261003-1209-fix3" defer></script>
+<script src="calculator-triangle-partition.js?v=20261003-1209-fix4" defer></script>
 <script src="calculator-bootstrap.js" defer></script>
 </body>
 </html>
