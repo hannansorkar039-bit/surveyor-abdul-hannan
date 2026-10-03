@@ -171,11 +171,6 @@
     <span class="tp-badge">ফুট • ইঞ্চি • Drawing</span>
   </div>
 
-  <div class="tp-mode-tabs" role="tablist" aria-label="ত্রিভুজ ভাগের পদ্ধতি">
-    <button type="button" class="tp-mode active" data-tp-mode="horizontal" aria-selected="true">↔ হরিজন্টাল ভাগ</button>
-    <button type="button" class="tp-mode" data-tp-mode="vertex" aria-selected="false">✂ শীর্ষবিন্দু থেকে ভাগ</button>
-  </div>
-
   <div class="tp-card">
     <div class="tp-card-head">
       <div><span>১</span><h4>ত্রিভুজের বাহুর মাপ</h4></div>
@@ -200,32 +195,38 @@
 
   <div class="tp-card">
     <div class="tp-card-head">
-      <div><span>২</span><h4>ভাগের পরিমাণ</h4></div>
-      <small id="tpModeHelp">হরিজন্টাল ভাগে BC-র সমান্তরাল রেখা তৈরি হবে।</small>
+      <div><span>২</span><h4>প্রথম ভাগের পরিমাণ ও ধরন</h4></div>
+      <small id="tpModeHelp">এই ভাগটি বর্তমান অবশিষ্ট ক্ষেত্র থেকে কাটা হবে।</small>
     </div>
     <div class="calc-grid">
       <div class="calc-field">
         <label for="tpPart">প্রথম ভাগের পরিমাণ</label>
-        <input id="tpPart" type="number" min="0.01" max="99.99" step="0.01" value="50" placeholder="যেমন ৫০">
+        <input id="tpPart" type="number" min="0.01" step="0.01" placeholder="পরিমাণ লিখুন">
       </div>
       <div class="calc-field">
         <label for="tpPartType">ভাগের ধরন</label>
         <select id="tpPartType">
-          <option value="percent">শতাংশ (%)</option>
-          <option value="decimal">শতাংশ / ডেসিমেল</option>
+          <option value="decimal">ডেসিমেল / শতাংশ</option>
           <option value="sqft">বর্গফুট</option>
         </select>
       </div>
-      <div class="calc-field tp-vertex-only" hidden>
-        <label for="tpVertex">কোন শীর্ষবিন্দু থেকে রেখা</label>
+      <div class="calc-field">
+        <label for="tpMethod">এই ভাগের ধরন</label>
+        <select id="tpMethod">
+          <option value="horizontal">↔ হরিজন্টাল ভাগ</option>
+          <option value="vertex">✂ শীর্ষবিন্দু থেকে ভাগ</option>
+        </select>
+      </div>
+      <div class="calc-field" id="tpVertexWrap" hidden>
+        <label for="tpVertex">কোন শীর্ষবিন্দু থেকে</label>
         <select id="tpVertex">
-          <option value="A">A → বিপরীত বাহু</option>
-          <option value="B">B → বিপরীত বাহু</option>
-          <option value="C">C → বিপরীত বাহু</option>
+          <option value="A">A → বিপরীত সীমানা</option>
+          <option value="B">B → বিপরীত সীমানা</option>
+          <option value="C">C → বিপরীত সীমানা</option>
         </select>
       </div>
     </div>
-    <div class="tp-note" id="tpModeNote">৫০% দিলে ত্রিভুজের অর্ধেক ক্ষেত্রফল হবে। Drawing-এ ভাগরেখাটি BC-র সমান্তরাল থাকবে।</div>
+    <div class="tp-note" id="tpModeNote">এই ভাগটি বর্তমান অবশিষ্ট ক্ষেত্র থেকে আলাদা হবে।</div>
   </div>
 
   <div class="calc-actions">
@@ -239,36 +240,55 @@
 
   <div class="tp-edit-card" id="tpEditor" hidden>
     <div class="tp-card-head">
-      <div><span>✋</span><h4>ভাগের Drawing Edit</h4></div>
-      <small>শুধু যে অংশটি আলাদা করছেন তার ভাগরেখা Edit হবে</small>
+      <div><span>✂</span><h4>ভাগের তালিকা ও অবশিষ্ট ক্ষেত্র</h4></div>
+      <small>প্রতিটি নতুন ভাগ বর্তমান অবশিষ্ট ক্ষেত্র থেকেই আলাদা হবে</small>
     </div>
-    <div class="tp-edit-grid tp-edit-grid-partition">
-      <div class="tp-edit-group tp-edit-wide">
-        <strong id="tpEditFirstTitle">যে ভাগটি আলাদা করছেন — ৪ বাহুর মাপ</strong>
-        <div class="tp-edit-dim-grid" id="tpEditFirstFields"></div>
-        <small class="tp-inline-help">একবারে BP / PQ / QC-এর একটি মাপ পরিবর্তন করুন। BC হলো সম্পূর্ণ মূল ভিত্তি—এটি অপরিবর্তিত থাকবে। প্রয়োগ করলে বাকি মাপ, ভাগরেখা, Drawing ও ক্ষেত্রফল স্বয়ংক্রিয়ভাবে নতুন হবে।</small>
-      </div>
-      <div class="tp-edit-group">
-        <strong>প্রথম ভাগের শতাংশ</strong>
-        <div class="tp-fi"><input id="tpEditPart" type="number" min="0.01" max="99.99" step="0.01" placeholder="%" readonly></div>
-        <strong class="tp-rest-title">অবশিষ্ট ক্ষেত্রের ৩ বাহু</strong>
-        <div class="tp-readonly-list" id="tpEditRestFields"></div>
-      </div>
-    </div>
+    <div class="tp-part-summary" id="tpPartSummary"></div>
     <div class="tp-edit-actions">
-      <button type="button" class="calc-btn calc-primary" id="tpApplyEdit">ফুট–ইঞ্চি পরিবর্তন প্রয়োগ করুন</button>
+      <button type="button" class="calc-btn calc-primary" id="tpMorePart">＋ আরো ক্ষেত্র / ভাগ যোগ করুন</button>
       <button type="button" class="calc-btn calc-secondary" id="tpPointEdit">✋ Drawing Edit: OFF</button>
-      <button type="button" class="calc-btn calc-secondary" id="tpMorePart">＋ আরো ক্ষেত্র/ভাগ যোগ করুন</button>
     </div>
-    <div class="tp-status" id="tpEditStatus">Drawing Edit চালু করলে লাল ভাগরেখা Touch/Mouse দিয়ে সরানো যাবে। Drawing-এর খালি অংশ আঙুল দিয়ে টেনে উপরে–নিচে বা পাশে নেওয়া যাবে।</div>
+    <div class="tp-status" id="tpEditStatus">Drawing Edit চালু করলে সর্বশেষ হরিজন্টাল ভাগরেখা Touch/Mouse দিয়ে সরানো যাবে।</div>
+
     <div class="tp-more-card" id="tpMoreCard" hidden>
-      <div class="tp-card-head"><div><span>＋</span><h4>আরও ক্ষেত্র / ভাগ</h4></div><small>একই Drawing-এ আরও একটি আলাদা ভাগরেখা যোগ করুন</small></div>
-      <div class="tp-edit-grid tp-edit-grid-partition">
-        <div class="tp-edit-group"><strong>নতুন ভাগের শতাংশ</strong><div class="tp-fi"><input id="tpMorePercent" type="number" min="0.01" max="99.99" step="0.01" placeholder="যেমন 50"></div></div>
-        <div class="tp-edit-group"><strong>নতুন ভাগের ক্ষেত্রফল</strong><div class="tp-readonly-dim"><span>স্বয়ংক্রিয়</span><b id="tpMoreAreaLabel">—</b></div></div>
+      <div class="tp-card-head">
+        <div><span>＋</span><h4>নতুন ভাগ</h4></div>
+        <small>এই ভাগটি অবশিষ্ট ক্ষেত্র থেকে আলাদা হবে</small>
       </div>
-      <div class="tp-edit-actions"><button type="button" class="calc-btn calc-primary" id="tpAddSplitApply">Drawing-এ নতুন ভাগ যোগ করুন</button><button type="button" class="calc-btn calc-secondary" id="tpRemoveExtra">অতিরিক্ত ভাগ সরান</button></div>
-      <div class="tp-status" id="tpMultiStatus">হরিজন্টাল পদ্ধতিতে দ্বিতীয় ভাগরেখা যোগ হলে ৩টি পৃথক ক্ষেত্রের ক্ষেত্রফল ও ডিমার্কেশন দেখা যাবে।</div>
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label for="tpMoreAmount">নতুন ভাগের পরিমাণ</label>
+          <input id="tpMoreAmount" type="number" min="0.01" step="0.01" placeholder="পরিমাণ লিখুন">
+        </div>
+        <div class="calc-field">
+          <label for="tpMoreType">ভাগের ধরন</label>
+          <select id="tpMoreType">
+            <option value="decimal">ডেসিমেল / শতাংশ</option>
+            <option value="sqft">বর্গফুট</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label for="tpMoreMethod">এই ভাগের ধরন</label>
+          <select id="tpMoreMethod">
+            <option value="horizontal">↔ হরিজন্টাল ভাগ</option>
+            <option value="vertex">✂ শীর্ষবিন্দু থেকে ভাগ</option>
+          </select>
+        </div>
+        <div class="calc-field" id="tpMoreVertexWrap" hidden>
+          <label for="tpMoreVertex">কোন শীর্ষবিন্দু থেকে</label>
+          <select id="tpMoreVertex">
+            <option value="A">A → বিপরীত সীমানা</option>
+            <option value="B">B → বিপরীত সীমানা</option>
+            <option value="C">C → বিপরীত সীমানা</option>
+          </select>
+        </div>
+      </div>
+      <div class="tp-note" id="tpMoreModeNote">এই নতুন ভাগটি বর্তমান অবশিষ্ট ক্ষেত্রের নিচের দিক থেকে হবে।</div>
+      <div class="tp-edit-actions">
+        <button type="button" class="calc-btn calc-primary" id="tpAddSplitApply">Drawing-এ নতুন ভাগ যোগ করুন</button>
+        <button type="button" class="calc-btn calc-secondary" id="tpRemoveExtra">সর্বশেষ ভাগ সরান</button>
+      </div>
+      <div class="tp-status" id="tpMultiStatus">নতুন ভাগ যোগ করলে সেটি অবশিষ্ট ক্ষেত্র থেকে আলাদা হবে।</div>
     </div>
   </div>
 
