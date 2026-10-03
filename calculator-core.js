@@ -100,24 +100,38 @@
     qpDiagonalType.addEventListener('change',syncQpDiagonal);
     syncQpDiagonal();
   }
+  const qdDiagonalType=$('qdDiagonalType');
+  if(qdDiagonalType){
+    const syncQdDiagonal=()=>{
+      const bd=qdDiagonalType.value==='BD';
+      $('qdACWrap').style.display=bd?'none':'';
+      $('qdBDWrap').style.display=bd?'':'none';
+    };
+    qdDiagonalType.addEventListener('change',syncQdDiagonal);
+    syncQdDiagonal();
+  }
   $('qdCalc').onclick=()=>{
-    const u=$('qdUnit').value, [ab,bc,cd,da]=readQuad('qd',u), diag=readLength('qdAC',u), r=$('qdResult');
-    if(![ab,bc,cd,da,diag].every(v=>v>0)) return err(r,'চারটি বাহু ও কর্ণ AC—সবগুলোই শূন্যের চেয়ে বেশি দিন।');
-    const q=quadDiagonalArea(ab,bc,cd,da,diag);
-    if(!q) return err(r,'এই মাপগুলো দিয়ে দুটি বৈধ ত্রিভুজ গঠন হচ্ছে না। AC কর্ণটি AB–BC এবং AD–CD—উভয় ত্রিভুজের triangle inequality পূরণ করতে হবে।');
-    const sq= sqrAreaForDisplay(q.area,u);
-    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',`<p>△ABC = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △ACD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ AC = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`);
+    const u=$('qdUnit').value, [ab,bc,cd,da]=readQuad('qd',u), diagonalType=$('qdDiagonalType')?.value||'AC', diag=readLength(diagonalType==='BD'?'qdBD':'qdAC',u), r=$('qdResult');
+    if(![ab,bc,cd,da,diag].every(v=>v>0)) return err(r,`চারটি বাহু ও কর্ণ ${diagonalType}—সবগুলোই শূন্যের চেয়ে বেশি দিন।`);
+    const q=quadDiagonalArea(ab,bc,cd,da,diag,diagonalType);
+    if(!q) return err(r,`এই মাপগুলো দিয়ে দুটি বৈধ ত্রিভুজ গঠন হচ্ছে না। কর্ণ ${diagonalType}-টি সংশ্লিষ্ট দুই ত্রিভুজের triangle inequality পূরণ করতে হবে।`);
+    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',diagonalType==='AC'?`<p>△ABC = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △ACD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ AC = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`:`<p>△ABD = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △BCD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ BD = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`);
   };
   function sqrAreaForDisplay(area,u){return u==='ft'?area:area;}
   $('qaCalc').onclick=()=>{
-    const u=$('qaUnit').value, [ab,bc,cd,da]=readQuad('qa',u), angle=+$('qaAngle').value, r=$('qaResult');
-    if(![ab,bc,cd,da,angle].every(v=>v>0)) return err(r,'চারটি বাহু ও A কোণের সঠিক মান দিন।');
-    if(!(angle>0&&angle<180)) return err(r,'A কোণ ০°-এর বেশি এবং ১৮০°-এর কম হতে হবে।');
+    const u=$('qaUnit').value, [ab,bc,cd,da]=readQuad('qa',u), angleType=$('qaAngleType')?.value||'A', angle=+$('qaAngle').value, r=$('qaResult');
+    if(![ab,bc,cd,da,angle].every(v=>v>0)) return err(r,`চারটি বাহু ও ${angleType} কোণের সঠিক মান দিন।`);
+    if(!(angle>0&&angle<180)) return err(r,`${angleType} কোণ ০°-এর বেশি এবং ১৮০°-এর কম হতে হবে।`);
     const rad=angle*Math.PI/180;
-    const diag=Math.sqrt(ab*ab+da*da-2*ab*da*Math.cos(rad));
-    const q=quadDiagonalArea(ab,bc,cd,da,diag);
-    if(!q) return err(r,'দেওয়া বাহু ও কোণের সমন্বয়ে বৈধ চতুর্ভুজ গঠন হচ্ছে না। অনুগ্রহ করে মাঠের মাপগুলো পুনরায় যাচাই করুন।');
-    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',`<p>গাণিতিকভাবে নির্ণীত কর্ণ AC = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p><p>A কোণ = ${fmt(angle,6)}°</p>`);
+    let diag, diagonalType;
+    if(angleType==='A'){ diag=Math.sqrt(ab*ab+da*da-2*ab*da*Math.cos(rad)); diagonalType='AC'; }
+    else if(angleType==='B'){ diag=Math.sqrt(ab*ab+bc*bc-2*ab*bc*Math.cos(rad)); diagonalType='AC'; }
+    else if(angleType==='C'){ diag=Math.sqrt(bc*bc+cd*cd-2*bc*cd*Math.cos(rad)); diagonalType='BD'; }
+    else { diag=Math.sqrt(cd*cd+da*da-2*cd*da*Math.cos(rad)); diagonalType='BD'; }
+    const q=quadDiagonalArea(ab,bc,cd,da,diag,diagonalType);
+    if(!q) return err(r,`দেওয়া বাহু ও ${angleType} কোণের সমন্বয়ে বৈধ চতুর্ভুজ গঠন হচ্ছে না। অনুগ্রহ করে মাঠের মাপগুলো পুনরায় যাচাই করুন।`);
+    const diagLabel=diagonalType==='AC'?'AC (A–C)':'BD (B–D)';
+    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',`<p>নির্বাচিত ${angleType} কোণ = ${fmt(angle,6)}°</p><p>গাণিতিকভাবে নির্ণীত কর্ণ ${diagLabel} = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`);
   };
   $('qpCalc').onclick=()=>{
     const [ab,bc,cd,da]=readQuad('qp'), diagonalType=$('qpDiagonalType')?.value||'AC';
