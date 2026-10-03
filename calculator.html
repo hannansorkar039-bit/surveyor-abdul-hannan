@@ -239,20 +239,33 @@
       <small>শুধু যে অংশটি আলাদা করছেন তার ভাগরেখা Edit হবে</small>
     </div>
     <div class="tp-edit-grid tp-edit-grid-partition">
-      <div class="tp-edit-group">
-        <strong>ভাগরেখা — ফুট</strong>
-        <div class="tp-fi"><input id="tpEditSplitFt" type="number" min="0" step="any" placeholder="ফুট"><input id="tpEditSplitIn" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div>
+      <div class="tp-edit-group tp-edit-wide">
+        <strong>যে ভাগটি আলাদা করছেন — তিন বাহুর ফুট–ইঞ্চি</strong>
+        <div class="tp-edit-dim-grid" id="tpEditFirstFields"></div>
+        <small class="tp-inline-help">একবারে একটি মাপ পরিবর্তন করুন। প্রয়োগ করলে বাকি দুই মাপ, ভাগরেখা, Drawing ও ক্ষেত্রফল স্বয়ংক্রিয়ভাবে নতুন হবে।</small>
       </div>
       <div class="tp-edit-group">
         <strong>প্রথম ভাগের শতাংশ</strong>
         <div class="tp-fi"><input id="tpEditPart" type="number" min="0.01" max="99.99" step="0.01" placeholder="%" readonly></div>
+        <strong class="tp-rest-title">অবশিষ্ট ক্ষেত্রের ৩ বাহু</strong>
+        <div class="tp-readonly-list" id="tpEditRestFields"></div>
       </div>
     </div>
     <div class="tp-edit-actions">
-      <button type="button" class="calc-btn calc-primary" id="tpApplyEdit">ভাগরেখার Dimension প্রয়োগ করুন</button>
+      <button type="button" class="calc-btn calc-primary" id="tpApplyEdit">ফুট–ইঞ্চি পরিবর্তন প্রয়োগ করুন</button>
       <button type="button" class="calc-btn calc-secondary" id="tpPointEdit">✋ Drawing Edit: OFF</button>
+      <button type="button" class="calc-btn calc-secondary" id="tpMorePart">＋ আরো ক্ষেত্র/ভাগ যোগ করুন</button>
     </div>
-    <div class="tp-status" id="tpEditStatus">Drawing Edit চালু করলে লাল ভাগরেখার পয়েন্ট/রেখা Touch/Mouse দিয়ে সরানো যাবে।</div>
+    <div class="tp-status" id="tpEditStatus">Drawing Edit চালু করলে লাল ভাগরেখা Touch/Mouse দিয়ে সরানো যাবে। Drawing-এর খালি অংশ আঙুল দিয়ে টেনে উপরে–নিচে বা পাশে নেওয়া যাবে।</div>
+    <div class="tp-more-card" id="tpMoreCard" hidden>
+      <div class="tp-card-head"><div><span>＋</span><h4>আরও ক্ষেত্র / ভাগ</h4></div><small>একই Drawing-এ আরও একটি আলাদা ভাগরেখা যোগ করুন</small></div>
+      <div class="tp-edit-grid tp-edit-grid-partition">
+        <div class="tp-edit-group"><strong>নতুন ভাগের শতাংশ</strong><div class="tp-fi"><input id="tpMorePercent" type="number" min="0.01" max="99.99" step="0.01" placeholder="যেমন 50"></div></div>
+        <div class="tp-edit-group"><strong>নতুন ভাগের ক্ষেত্রফল</strong><div class="tp-readonly-dim"><span>স্বয়ংক্রিয়</span><b id="tpMoreAreaLabel">—</b></div></div>
+      </div>
+      <div class="tp-edit-actions"><button type="button" class="calc-btn calc-primary" id="tpAddSplitApply">Drawing-এ নতুন ভাগ যোগ করুন</button><button type="button" class="calc-btn calc-secondary" id="tpRemoveExtra">অতিরিক্ত ভাগ সরান</button></div>
+      <div class="tp-status" id="tpMultiStatus">হরিজন্টাল পদ্ধতিতে দ্বিতীয় ভাগরেখা যোগ হলে ৩টি পৃথক ক্ষেত্রের ক্ষেত্রফল ও ডিমার্কেশন দেখা যাবে।</div>
+    </div>
   </div>
 
   <div class="tp-drawing-wrap" id="tpDrawingWrap" hidden>
@@ -285,6 +298,13 @@
         <div><span>V–U</span><b id="tpSegVU">—</b></div>
         <div><span>U–D</span><b id="tpSegUD">—</b></div>
         <div><span>V–D / ভাগরেখা</span><b id="tpSegVD">—</b></div>
+      </div>
+      <div class="tp-demarcation-card tp-demarcation-extra" id="tpExtraDemarcation" hidden>
+        <strong>অতিরিক্ত ভাগ — <span id="tpExtraAreaLabel">—</span></strong>
+        <div><span>নতুন ভাগের অংশ</span><b id="tpExtraPercentLabel">—</b></div>
+        <div><span>প্রথম সীমারেখা</span><b id="tpExtraSeg1">—</b></div>
+        <div><span>দ্বিতীয় সীমারেখা</span><b id="tpExtraSeg2">—</b></div>
+        <div><span>ভাগরেখা</span><b id="tpExtraSplitDim">—</b></div>
       </div>
       <div class="tp-demarcation-card tp-demarcation-vertex" hidden>
         <strong>অবশিষ্ট ক্ষেত্রের সীমা</strong>
@@ -633,7 +653,7 @@
 </footer>
 <a aria-label="উপরে যান" class="backtop" href="#top">↑</a>
 <script src="app.js" defer></script>
-<script src="calculator-triangle-partition.js?v=tp-v3" defer></script>
+<script src="calculator-triangle-partition.js?v=tp-v4" defer></script>
 <script src="calculator-bootstrap.js" defer></script>
 </body>
 </html>
