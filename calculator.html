@@ -108,6 +108,7 @@
 <button class="calc-tab" data-tab="heron" role="tab" aria-selected="false">হেরনের সূত্র</button>
 <button class="calc-tab" data-tab="brahmagupta" role="tab" aria-selected="false">ব্রহ্মগুপ্তের সূত্র</button>
 <button class="calc-tab" data-tab="four-side-sqrt" role="tab" aria-selected="false">চার পাশের মাপ</button>
+<button class="calc-tab" id="multi-field-drawing-tab" data-tab="multi-field-drawing" role="tab" aria-selected="false">বহু ক্ষেত্র Drawing ও Alignment</button>
 </div>
 <section class="calc-panel active" id="panel-quad-diagonal" role="tabpanel">
 <h3>📐 কর্ণসহ অনিয়মিত চতুর্ভুজের ক্ষেত্রফল</h3>
@@ -359,6 +360,39 @@
 <div class="calc-actions"><button class="calc-btn calc-primary" id="fourSideCalc">হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="four-side-sqrt">পরিষ্কার</button></div>
 <div class="calc-result" id="fourSideResult" aria-live="polite"></div>
 </section>
+<section class="calc-panel multi-field-tab-panel" id="panel-multi-field-drawing" role="tabpanel" aria-labelledby="multi-field-drawing-tab">
+<div class="shape-sketch-title" id="shape-sketch-heading"><span>🗺️</span><span>বহু ক্ষেত্র Drawing ও Alignment</span></div>
+<p class="shape-sketch-note"><strong>ম্যানুয়াল Drawing + Auto SNAP:</strong> A/B/C/D পয়েন্ট আঙুল দিয়ে সরান। কাছাকাছি boundary line বা point-এ আনলে পয়েন্টটি স্বয়ংক্রিয়ভাবে exact alignment হবে।</p>
+<canvas id="landShapeCanvas" width="1" height="1" aria-hidden="true" style="display:none"></canvas>
+<div class="shape-multi-head"><h3>🗺️ বহু ক্ষেত্রের Drawing ও Alignment</h3><p>প্রতিটি নতুন ক্ষেত্র আঁকার আগে কোন বিদ্যমান ক্ষেত্রের কোন পাশে হবে তা নির্বাচন করুন। তারপর নিচে সেই নতুন ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন।</p></div>
+<div class="multi-field-toolbar" id="multiFieldPlacement">
+  <div class="calc-field"><label for="mfBaseField">১. কোন ক্ষেত্রের পাশে আঁকবেন?</label><select id="mfBaseField"><option value="__first__">প্রথম ক্ষেত্র / নতুন শুরু</option></select></div>
+  <div class="calc-field"><label for="mfSide" id="mfSideLabel">২. কোন পাশে?</label><select id="mfSide"><option value="north">↑ উত্তর</option><option value="east">→ পূর্ব</option><option value="south">↓ দক্ষিণ</option><option value="west">← পশ্চিম</option></select></div>
+  <div class="calc-field"><label for="mfAttachMode">৩. ওই পাশের কোথায় যুক্ত হবে?</label><select id="mfAttachMode"><option value="center">↕ মাঝখানে</option><option value="north">↑ উত্তর প্রান্তে</option><option value="south">↓ দক্ষিণ প্রান্তে</option><option value="custom">📏 নির্দিষ্ট দূরত্বে</option></select></div>
+  <div class="calc-field" id="mfAttachOffsetWrap" style="display:none"><label for="mfAttachRef">নির্দিষ্ট দূরত্ব কোন দিক থেকে?</label><select id="mfAttachRef"><option value="start">↑ উত্তর থেকে</option><option value="end">↓ দক্ষিণ থেকে</option></select><label for="mfAttachOffsetFt" style="margin-top:8px"><span id="mfAttachOffsetLabel">উত্তর প্রান্ত থেকে দূরত্ব</span></label><div class="feet-inch"><input id="mfAttachOffsetFt" type="number" min="0" step="any" placeholder="ফুট"><input id="mfAttachOffsetIn" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি" aria-label="নির্দিষ্ট দূরত্ব: ইঞ্চি"></div></div>
+</div>
+<div class="multi-field-status" id="mfAttachInfo" role="status">প্রান্তে যুক্ত করলে নতুন ক্ষেত্রের সংযুক্ত বাহু ও লাগোয়া বাহু—দুই পাশের boundary line-এ একসাথে assignment হবে। মাঝখানে দিলে single-edge SNAP থাকবে।</div>
+<div class="multi-field-status" id="mfPlacementStatus" role="status">প্রথম ক্ষেত্র তৈরি করুন। দ্বিতীয়/পরবর্তী ক্ষেত্রের আগে কোন ক্ষেত্রের উত্তর/দক্ষিণ/পূর্ব/পশ্চিম পাশে হবে তা নির্বাচন করুন।</div>
+<div class="shape-dimension-head"><strong>📏 ৩. নতুন/নির্বাচিত ক্ষেত্রের ধরন ও বাহুর মাপ</strong><span>ফুট + ইঞ্চি</span></div>
+<div class="calc-field" style="margin-top:12px"><label for="mfShapeType">ক্ষেত্রের ধরন</label><select id="mfShapeType"><option value="quad">চতুর্ভুজ ক্ষেত্র — ৪ বাহু</option><option value="tri">ত্রিভুজ ক্ষেত্র — ৩ বাহু</option></select></div>
+<div class="calc-field" id="mfTriAttachWrap" style="display:none"><label for="mfTriAttachEdge">ত্রিভুজের কোন বাহু সংযুক্ত হবে?</label><select id="mfTriAttachEdge"><option value="0">AB — ১ম বাহু</option><option value="1">BC — ২য় বাহু</option><option value="2">CA — ৩য় বাহু</option></select></div>
+<div class="calc-field" id="mfQuadAttachWrap" style="display:none"><label for="mfQuadAttachEdge">নতুন চতুর্ভুজের কোন বাহু সংযুক্ত হবে?</label><select id="mfQuadAttachEdge"><option value="0">AB — ১ম বাহু</option><option value="1">BC — ২য় বাহু</option><option value="2">CD — ৩য় বাহু</option><option value="3">DA — ৪র্থ বাহু</option></select></div>
+<div class="calc-grid shape-dimension-grid" style="margin-top:12px">
+<div class="calc-field"><label for="shapeAft"><span class="direction-badge north">উত্তর</span> বাহু AB</label><div class="feet-inch"><input id="shapeAft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeAin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি" aria-label="বাহু AB: ইঞ্চি"></div><input id="shapeA" type="hidden"></div>
+<div class="calc-field"><label for="shapeBft"><span class="direction-badge east">পূর্ব</span> বাহু BC</label><div class="feet-inch"><input id="shapeBft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeBin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি" aria-label="বাহু BC: ইঞ্চি"></div><input id="shapeB" type="hidden"></div>
+<div class="calc-field"><label for="shapeCft"><span class="direction-badge south">দক্ষিণ</span> বাহু CD</label><div class="feet-inch"><input id="shapeCft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeCin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি" aria-label="বাহু CD: ইঞ্চি"></div><input id="shapeC" type="hidden"></div>
+<div class="calc-field" id="shapeDWrap"><label for="shapeDft"><span class="direction-badge west">পশ্চিম</span> বাহু DA</label><div class="feet-inch"><input id="shapeDft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeDin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি" aria-label="বাহু DA: ইঞ্চি"></div><input id="shapeD" type="hidden"></div>
+</div>
+<div class="shape-unit-note">ইঞ্চি ০–১১.৯৯৯ পর্যন্ত দিন। ১২ ইঞ্চি হলে স্বয়ংক্রিয়ভাবে ১ ফুটে রূপান্তর হবে। <strong>ত্রিভুজে ৩টি বাহু, চতুর্ভুজে ৪টি বাহু</strong> দিন। নতুন ক্ষেত্রটি আগের SNAP/দুই-পাশের boundary assignment/অ্যালাইনমেন্ট মেনে যুক্ত হবে। <strong>ম্যানুয়ালি ড্র্যাগ করেও অ্যালাইন করা যাবে; কাছে এলে SNAP অটো-অ্যাডজাস্ট হবে।</strong></div>
+<div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="shapeNew">＋ নতুন ক্ষেত্র</button><button class="calc-btn calc-secondary" type="button" id="shapeSave">💾 ক্ষেত্র সেভ করুন</button><button class="calc-btn calc-secondary" type="button" id="shapePdf">📄 PDF ডাউনলোড</button><button class="calc-btn calc-secondary" type="button" id="shapePointEdit">✋ পয়েন্ট এডিট: OFF</button><button class="calc-btn calc-secondary" type="button" id="shapeClear">↶ মাপ পরিষ্কার</button></div>
+<div class="multi-field-status" id="shapeStatus" role="status">প্রথম ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন। নতুন ক্ষেত্রের ক্ষেত্রে আগে পাশ নির্বাচন করে তারপর বাহুর মাপ দিন।</div>
+<div class="multi-field-result" id="shapeResult" aria-live="polite"></div>
+<div class="multi-field-compass" aria-label="দিকনির্দেশ"><span class="compass-n">↑ উত্তর • AB</span><span class="compass-e">পূর্ব → BC</span><span class="compass-s">↓ দক্ষিণ • CD</span><span class="compass-w">← পশ্চিম • DA</span></div>
+<div class="multi-field-canvas-wrap"><canvas id="multiFieldCanvas" width="1200" height="760" aria-label="ফুট-ইঞ্চি মাপ থেকে বহু ক্ষেত্রের স্বয়ংক্রিয় স্কেচ"></canvas></div>
+<div class="multi-field-saved-head"><strong>💾 সেভ করা ক্ষেত্র</strong><span id="mfSavedCount">০টি</span></div><div class="multi-field-list" id="mfSavedList"></div><div class="multi-field-total" id="mfSavedTotal" aria-live="polite"></div>
+<p class="calc-help">গুরুত্বপূর্ণ: ৪টি বাহু দিয়ে প্রকৃত জমির একক/সুনির্দিষ্ট আকৃতি ও ক্ষেত্রফল নির্ধারণ করা যায় না। এখানে চার বাহুর মাপ থেকে একটি সামঞ্জস্যপূর্ণ আনুমানিক স্কেচ/ক্ষেত্রফল দেখানো হয়।</p>
+</section>
+
 <section class="calc-panel wood-cft-panel" id="panel-wood-cft" aria-labelledby="wood-cft-title">
   <div class="wood-cft-head">
     <div>
@@ -478,38 +512,6 @@
     <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M21 29h58v42H21z" fill="#fff" stroke="#082336" stroke-width="3"/><path d="M31 50h38" stroke="#08747b" stroke-width="5"/><path d="M39 39l-10 11 10 11M61 39l10 11-10 11" fill="none" stroke="#ef7d22" stroke-width="3"/></svg></span>
     <span><h3>মোট জমি + নিজের জমি → আনা-গণ্ডা হিস্যা</h3><p>মোট জমির পরিমাণ এবং আপনার প্রাপ্ত জমির পরিমাণ দিলে হিস্যাটি আনা, গণ্ডা, কড়া, ক্রান্তি ও তিলে ভেঙে দেখাবে।</p></span><span class="featured-go" aria-hidden="true">↓</span>
   </button>
-</section>
-<section class="featured-panel shape-sketch-panel" id="featured-shape-sketch" aria-labelledby="shape-sketch-heading">
-<div class="shape-sketch-title" id="shape-sketch-heading"><span>🗺️</span><span>বহু ক্ষেত্র Drawing ও Alignment</span></div>
-<p class="shape-sketch-note"><strong>ম্যানুয়াল Drawing + Auto SNAP:</strong> A/B/C/D পয়েন্ট আঙুল দিয়ে সরান। কাছাকাছি boundary line বা point-এ আনলে পয়েন্টটি স্বয়ংক্রিয়ভাবে exact alignment হবে।</p>
-<canvas id="landShapeCanvas" width="1" height="1" aria-hidden="true" style="display:none"></canvas>
-<div class="shape-multi-head"><h3>🗺️ বহু ক্ষেত্রের Drawing ও Alignment</h3><p>প্রতিটি নতুন ক্ষেত্র আঁকার আগে কোন বিদ্যমান ক্ষেত্রের কোন পাশে হবে তা নির্বাচন করুন। তারপর নিচে সেই নতুন ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন।</p></div>
-<div class="multi-field-toolbar" id="multiFieldPlacement">
-  <div class="calc-field"><label for="mfBaseField">১. কোন ক্ষেত্রের পাশে আঁকবেন?</label><select id="mfBaseField"><option value="__first__">প্রথম ক্ষেত্র / নতুন শুরু</option></select></div>
-  <div class="calc-field"><label for="mfSide" id="mfSideLabel">২. কোন পাশে?</label><select id="mfSide"><option value="north">↑ উত্তর</option><option value="east">→ পূর্ব</option><option value="south">↓ দক্ষিণ</option><option value="west">← পশ্চিম</option></select></div>
-  <div class="calc-field"><label for="mfAttachMode">৩. ওই পাশের কোথায় যুক্ত হবে?</label><select id="mfAttachMode"><option value="center">↕ মাঝখানে</option><option value="north">↑ উত্তর প্রান্তে</option><option value="south">↓ দক্ষিণ প্রান্তে</option><option value="custom">📏 নির্দিষ্ট দূরত্বে</option></select></div>
-  <div class="calc-field" id="mfAttachOffsetWrap" style="display:none"><label for="mfAttachRef">নির্দিষ্ট দূরত্ব কোন দিক থেকে?</label><select id="mfAttachRef"><option value="start">↑ উত্তর থেকে</option><option value="end">↓ দক্ষিণ থেকে</option></select><label for="mfAttachOffsetFt" style="margin-top:8px"><span id="mfAttachOffsetLabel">উত্তর প্রান্ত থেকে দূরত্ব</span></label><div class="feet-inch"><input id="mfAttachOffsetFt" type="number" min="0" step="any" placeholder="ফুট"><input id="mfAttachOffsetIn" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি" aria-label="নির্দিষ্ট দূরত্ব: ইঞ্চি"></div></div>
-</div>
-<div class="multi-field-status" id="mfAttachInfo" role="status">প্রান্তে যুক্ত করলে নতুন ক্ষেত্রের সংযুক্ত বাহু ও লাগোয়া বাহু—দুই পাশের boundary line-এ একসাথে assignment হবে। মাঝখানে দিলে single-edge SNAP থাকবে।</div>
-<div class="multi-field-status" id="mfPlacementStatus" role="status">প্রথম ক্ষেত্র তৈরি করুন। দ্বিতীয়/পরবর্তী ক্ষেত্রের আগে কোন ক্ষেত্রের উত্তর/দক্ষিণ/পূর্ব/পশ্চিম পাশে হবে তা নির্বাচন করুন।</div>
-<div class="shape-dimension-head"><strong>📏 ৩. নতুন/নির্বাচিত ক্ষেত্রের ধরন ও বাহুর মাপ</strong><span>ফুট + ইঞ্চি</span></div>
-<div class="calc-field" style="margin-top:12px"><label for="mfShapeType">ক্ষেত্রের ধরন</label><select id="mfShapeType"><option value="quad">চতুর্ভুজ ক্ষেত্র — ৪ বাহু</option><option value="tri">ত্রিভুজ ক্ষেত্র — ৩ বাহু</option></select></div>
-<div class="calc-field" id="mfTriAttachWrap" style="display:none"><label for="mfTriAttachEdge">ত্রিভুজের কোন বাহু সংযুক্ত হবে?</label><select id="mfTriAttachEdge"><option value="0">AB — ১ম বাহু</option><option value="1">BC — ২য় বাহু</option><option value="2">CA — ৩য় বাহু</option></select></div>
-<div class="calc-field" id="mfQuadAttachWrap" style="display:none"><label for="mfQuadAttachEdge">নতুন চতুর্ভুজের কোন বাহু সংযুক্ত হবে?</label><select id="mfQuadAttachEdge"><option value="0">AB — ১ম বাহু</option><option value="1">BC — ২য় বাহু</option><option value="2">CD — ৩য় বাহু</option><option value="3">DA — ৪র্থ বাহু</option></select></div>
-<div class="calc-grid shape-dimension-grid" style="margin-top:12px">
-<div class="calc-field"><label for="shapeAft"><span class="direction-badge north">উত্তর</span> বাহু AB</label><div class="feet-inch"><input id="shapeAft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeAin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি" aria-label="বাহু AB: ইঞ্চি"></div><input id="shapeA" type="hidden"></div>
-<div class="calc-field"><label for="shapeBft"><span class="direction-badge east">পূর্ব</span> বাহু BC</label><div class="feet-inch"><input id="shapeBft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeBin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি" aria-label="বাহু BC: ইঞ্চি"></div><input id="shapeB" type="hidden"></div>
-<div class="calc-field"><label for="shapeCft"><span class="direction-badge south">দক্ষিণ</span> বাহু CD</label><div class="feet-inch"><input id="shapeCft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeCin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি" aria-label="বাহু CD: ইঞ্চি"></div><input id="shapeC" type="hidden"></div>
-<div class="calc-field" id="shapeDWrap"><label for="shapeDft"><span class="direction-badge west">পশ্চিম</span> বাহু DA</label><div class="feet-inch"><input id="shapeDft" type="number" min="0" step="any" placeholder="ফুট"><input id="shapeDin" type="number" min="0" max="11.999" step="any" placeholder="ইঞ্চি" aria-label="বাহু DA: ইঞ্চি"></div><input id="shapeD" type="hidden"></div>
-</div>
-<div class="shape-unit-note">ইঞ্চি ০–১১.৯৯৯ পর্যন্ত দিন। ১২ ইঞ্চি হলে স্বয়ংক্রিয়ভাবে ১ ফুটে রূপান্তর হবে। <strong>ত্রিভুজে ৩টি বাহু, চতুর্ভুজে ৪টি বাহু</strong> দিন। নতুন ক্ষেত্রটি আগের SNAP/দুই-পাশের boundary assignment/অ্যালাইনমেন্ট মেনে যুক্ত হবে। <strong>ম্যানুয়ালি ড্র্যাগ করেও অ্যালাইন করা যাবে; কাছে এলে SNAP অটো-অ্যাডজাস্ট হবে।</strong></div>
-<div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="shapeNew">＋ নতুন ক্ষেত্র</button><button class="calc-btn calc-secondary" type="button" id="shapeSave">💾 ক্ষেত্র সেভ করুন</button><button class="calc-btn calc-secondary" type="button" id="shapePdf">📄 PDF ডাউনলোড</button><button class="calc-btn calc-secondary" type="button" id="shapePointEdit">✋ পয়েন্ট এডিট: OFF</button><button class="calc-btn calc-secondary" type="button" id="shapeClear">↶ মাপ পরিষ্কার</button></div>
-<div class="multi-field-status" id="shapeStatus" role="status">প্রথম ক্ষেত্রের ফুট–ইঞ্চি মাপ দিন। নতুন ক্ষেত্রের ক্ষেত্রে আগে পাশ নির্বাচন করে তারপর বাহুর মাপ দিন।</div>
-<div class="multi-field-result" id="shapeResult" aria-live="polite"></div>
-<div class="multi-field-compass" aria-label="দিকনির্দেশ"><span class="compass-n">↑ উত্তর • AB</span><span class="compass-e">পূর্ব → BC</span><span class="compass-s">↓ দক্ষিণ • CD</span><span class="compass-w">← পশ্চিম • DA</span></div>
-<div class="multi-field-canvas-wrap"><canvas id="multiFieldCanvas" width="1200" height="760" aria-label="ফুট-ইঞ্চি মাপ থেকে বহু ক্ষেত্রের স্বয়ংক্রিয় স্কেচ"></canvas></div>
-<div class="multi-field-saved-head"><strong>💾 সেভ করা ক্ষেত্র</strong><span id="mfSavedCount">০টি</span></div><div class="multi-field-list" id="mfSavedList"></div><div class="multi-field-total" id="mfSavedTotal" aria-live="polite"></div>
-<p class="calc-help">গুরুত্বপূর্ণ: ৪টি বাহু দিয়ে প্রকৃত জমির একক/সুনির্দিষ্ট আকৃতি ও ক্ষেত্রফল নির্ধারণ করা যায় না। এখানে চার বাহুর মাপ থেকে একটি সামঞ্জস্যপূর্ণ আনুমানিক স্কেচ/ক্ষেত্রফল দেখানো হয়।</p>
 </section>
 <section class="featured-panel" id="featured-hissa" aria-labelledby="featured-hissa-title">
   <div class="featured-panel-head"><h3 class="land-calc-section-title" id="featured-hissa-title">📜 খতিয়ানের হিস্যা থেকে জমির পরিমাণ</h3><p>পূর্ণ হিস্যা = ১৬ আনা = ৭৬,৮০০ তিল। ১ আনা = ২০ গণ্ডা, ১ গণ্ডা = ৪ কড়া, ১ কড়া = ৩ ক্রান্তি, ১ ক্রান্তি = ২০ তিল।</p></div>
