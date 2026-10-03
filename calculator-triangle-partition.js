@@ -1,3 +1,7 @@
+if (window.__SAH_TRIANGLE_PARTITION_LOADED) {
+  // Prevent duplicate initialization when the lazy loader also requests this module.
+} else {
+window.__SAH_TRIANGLE_PARTITION_LOADED = true;
 (() => {
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -275,3 +279,4 @@
   window.addEventListener('resize',()=>{if(state.points)draw();});
   setMode('horizontal');
 })();
+}
