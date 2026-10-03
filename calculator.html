@@ -235,40 +235,64 @@
 
   <div class="tp-edit-card" id="tpEditor" hidden>
     <div class="tp-card-head">
-      <div><span>✋</span><h4>Drawing Edit</h4></div>
-      <small>পয়েন্ট Drag করুন অথবা Dimension ফুট–ইঞ্চিতে পরিবর্তন করুন</small>
+      <div><span>✋</span><h4>ভাগের Drawing Edit</h4></div>
+      <small>শুধু যে অংশটি আলাদা করছেন তার ভাগরেখা Edit হবে</small>
     </div>
-    <div class="tp-edit-grid">
+    <div class="tp-edit-grid tp-edit-grid-partition">
       <div class="tp-edit-group">
-        <strong>A–B</strong>
-        <div class="tp-fi"><input id="tpEditABft" type="number" min="0" step="any" placeholder="ফুট"><input id="tpEditABin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div>
+        <strong>ভাগরেখা — ফুট</strong>
+        <div class="tp-fi"><input id="tpEditSplitFt" type="number" min="0" step="any" placeholder="ফুট"><input id="tpEditSplitIn" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div>
       </div>
       <div class="tp-edit-group">
-        <strong>B–C</strong>
-        <div class="tp-fi"><input id="tpEditBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="tpEditBCin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div>
-      </div>
-      <div class="tp-edit-group">
-        <strong>C–A</strong>
-        <div class="tp-fi"><input id="tpEditCAft" type="number" min="0" step="any" placeholder="ফুট"><input id="tpEditCAin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div>
-      </div>
-      <div class="tp-edit-group">
-        <strong>প্রথম ভাগ</strong>
-        <div class="tp-fi"><input id="tpEditPart" type="number" min="0.01" max="99.99" step="0.01" placeholder="%"></div>
+        <strong>প্রথম ভাগের শতাংশ</strong>
+        <div class="tp-fi"><input id="tpEditPart" type="number" min="0.01" max="99.99" step="0.01" placeholder="%" readonly></div>
       </div>
     </div>
     <div class="tp-edit-actions">
-      <button type="button" class="calc-btn calc-primary" id="tpApplyEdit">Dimension প্রয়োগ করুন</button>
-      <button type="button" class="calc-btn calc-secondary" id="tpPointEdit">✋ পয়েন্ট Edit: OFF</button>
+      <button type="button" class="calc-btn calc-primary" id="tpApplyEdit">ভাগরেখার Dimension প্রয়োগ করুন</button>
+      <button type="button" class="calc-btn calc-secondary" id="tpPointEdit">✋ Drawing Edit: OFF</button>
     </div>
-    <div class="tp-status" id="tpEditStatus">পয়েন্ট Edit চালু করলে A/B/C এবং ভাগের পয়েন্ট/রেখা Touch/Mouse দিয়ে সরানো যাবে।</div>
+    <div class="tp-status" id="tpEditStatus">Drawing Edit চালু করলে লাল ভাগরেখার পয়েন্ট/রেখা Touch/Mouse দিয়ে সরানো যাবে।</div>
   </div>
 
   <div class="tp-drawing-wrap" id="tpDrawingWrap" hidden>
     <div class="tp-drawing-head">
-      <div><strong>📐 Dimension সহ Drawing</strong><span id="tpDrawingMeta">—</span></div>
-      <button type="button" class="calc-btn calc-secondary" id="tpDownloadSvg">Drawing সংরক্ষণ</button>
+      <div><strong>📐 Dimension ও আলাদা ডিমার্কেশনসহ Drawing</strong><span id="tpDrawingMeta">—</span></div>
+      <div class="tp-drawing-tools">
+        <button type="button" class="calc-btn calc-secondary tp-zoom-btn" id="tpZoomOut" aria-label="Drawing ছোট করুন">−</button>
+        <span id="tpZoomValue">100%</span>
+        <button type="button" class="calc-btn calc-secondary tp-zoom-btn" id="tpZoomIn" aria-label="Drawing বড় করুন">+</button>
+        <button type="button" class="calc-btn calc-secondary" id="tpZoomReset">100%</button>
+        <button type="button" class="calc-btn calc-secondary" id="tpDownloadSvg">Drawing সংরক্ষণ</button>
+      </div>
     </div>
     <div class="tp-canvas-box"><canvas id="tpCanvas" width="1200" height="720" aria-label="বিষমবাহু ত্রিভুজের ফুট-ইঞ্চি Dimension Drawing"></canvas></div>
+    <div class="tp-demarcation-grid">
+      <div class="tp-demarcation-card tp-demarcation-first">
+        <strong>প্রথম ভাগ — <span id="tpFirstAreaLabel">—</span></strong>
+        <div><span>BP / অংশের সীমা</span><b id="tpSegBP">—</b></div>
+        <div><span>PQ / ভাগরেখা</span><b id="tpSegPQ">—</b></div>
+        <div><span>QC / অংশের সীমা</span><b id="tpSegQC">—</b></div>
+      </div>
+      <div class="tp-demarcation-card tp-demarcation-rest">
+        <strong>অবশিষ্ট ক্ষেত্র — <span id="tpRestAreaLabel">—</span></strong>
+        <div><span>AP / সীমা</span><b id="tpSegAP">—</b></div>
+        <div><span>AQ / সীমা</span><b id="tpSegAQ">—</b></div>
+        <div><span>BC / সম্পূর্ণ ভিত্তি</span><b id="tpSegBC">—</b></div>
+      </div>
+      <div class="tp-demarcation-card tp-demarcation-vertex" hidden>
+        <strong>প্রথম ভাগের সীমা</strong>
+        <div><span>V–U</span><b id="tpSegVU">—</b></div>
+        <div><span>U–D</span><b id="tpSegUD">—</b></div>
+        <div><span>V–D / ভাগরেখা</span><b id="tpSegVD">—</b></div>
+      </div>
+      <div class="tp-demarcation-card tp-demarcation-vertex" hidden>
+        <strong>অবশিষ্ট ক্ষেত্রের সীমা</strong>
+        <div><span>V–W</span><b id="tpSegVW">—</b></div>
+        <div><span>D–W</span><b id="tpSegDW">—</b></div>
+        <div><span>U–W</span><b id="tpSegUW">—</b></div>
+      </div>
+    </div>
     <div class="tp-legend">
       <span>AB = <b id="tpDimAB">—</b></span>
       <span>BC = <b id="tpDimBC">—</b></span>
@@ -609,7 +633,7 @@
 </footer>
 <a aria-label="উপরে যান" class="backtop" href="#top">↑</a>
 <script src="app.js" defer></script>
-<script src="calculator-triangle-partition.js?v=tp-v2" defer></script>
+<script src="calculator-triangle-partition.js?v=tp-v3" defer></script>
 <script src="calculator-bootstrap.js" defer></script>
 </body>
 </html>
