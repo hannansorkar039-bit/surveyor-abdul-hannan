@@ -90,7 +90,7 @@
     <button type="button" class="calculator-launch-card" data-calc-tab="quad-diagonal"><span>▱</span><strong>চতুর্ভুজ ক্ষেত্রফল</strong><small>বাহু ও কর্ণভিত্তিক হিসাব</small></button>
     <button type="button" class="calculator-launch-card" data-calc-tab="heron"><span>△</span><strong>ত্রিভুজ</strong><small>হেরনের সূত্রে ক্ষেত্রফল</small></button>
     <button type="button" class="calculator-launch-card" data-calc-target="professional-land-suite"><span>⇄</span><strong>একক রূপান্তর</strong><small>শতাংশ, কাঠা, একরসহ</small></button>
-    <button type="button" class="calculator-launch-card" data-calc-tab="quad-partition"><span>✂</span><strong>জমি ভাগ-বণ্টন</strong><small>ভাগের সীমারেখা ও Drawing</small></button>
+    <button type="button" class="calculator-launch-card" data-calc-tab="quad-partition"><span>✂</span><strong>জমি ভাগ-বণ্টন</strong><small>ভাগের সীমারেখা ও Drawing</small></button> <button type="button" class="calculator-launch-card" data-calc-tab="triangle-partition"><span>△</span><strong>ত্রিভুজ ভাগ-বণ্টন</strong><small>হরিজন্টাল ও শীর্ষবিন্দু থেকে ভাগ</small></button>
     <button type="button" class="calculator-launch-card" data-calc-tab="inheritance"><span>⚖</span><strong>উত্তরাধিকার</strong><small>অংশ ও সম্পদভিত্তিক হিসাব</small></button>
     <button type="button" class="calculator-launch-card" data-calc-target="registry-calculator"><span>▣</span><strong>দলিল/রেজিস্ট্রি</strong><small>আনুমানিক খরচের হিসাব</small></button>
     <button type="button" class="calculator-launch-card" data-calc-target="registryMap"><span>⌖</span><strong>Map Measurement</strong><small>পয়েন্ট বসিয়ে আনুমানিক ক্ষেত্রফল</small></button>
@@ -101,7 +101,7 @@
 <div class="calc-tabs" role="tablist" aria-label="ক্যালকুলেটর নির্বাচন">
 <button class="calc-tab active" data-tab="quad-diagonal" role="tab" aria-selected="true">কর্ণসহ অনিয়মিত চতুর্ভুজ</button>
 <button class="calc-tab" data-tab="quad-angle" role="tab" aria-selected="false">কর্ণ ছাড়া অনিয়মিত চতুর্ভুজ</button>
-<button class="calc-tab" data-tab="quad-partition" role="tab" aria-selected="false">চতুর্ভুজ ভাগ-বণ্টন</button>
+<button class="calc-tab" data-tab="quad-partition" role="tab" aria-selected="false">চতুর্ভুজ ভাগ-বণ্টন</button> <button class="calc-tab" data-tab="triangle-partition" role="tab" aria-selected="false">ত্রিভুজ ভাগ-বণ্টন</button>
 <button class="calc-tab" data-tab="heron" role="tab" aria-selected="false">হেরনের সূত্র</button>
 <button class="calc-tab" data-tab="brahmagupta" role="tab" aria-selected="false">ব্রহ্মগুপ্তের সূত্র</button>
 <button class="calc-tab" data-tab="four-side-sqrt" role="tab" aria-selected="false">চার পাশের মাপ</button>
@@ -155,6 +155,127 @@
   <div class="calc-actions"><button class="calc-btn calc-primary" id="qpCalc" type="button">ভাগের সীমারেখা হিসাব করুন</button><button class="calc-btn calc-secondary" data-clear="quad-partition" type="button">পরিষ্কার</button></div>
   <p class="calc-help"><strong>ভাগের দিক:</strong> উত্তর/পূর্ব/দক্ষিণ/পশ্চিম থেকে যেদিক নির্বাচন করবেন, সেই দিকটি সম্পূর্ণ রেখে P–Q নতুন ভাগরেখার মাধ্যমে জমি ভাগ করা হবে। প্রথম ভাগের পর অবশিষ্ট জমি থেকে “আরেকটি ভাগ যোগ করুন” দিয়ে একাধিক প্লট তৈরি করা যাবে। প্রতিটি প্লটের ফুট-ইঞ্চি মাপ সরাসরি এডিটযোগ্য; আগের কোনো প্লটের মাপ বদলালে তার পরের প্লটগুলো স্বয়ংক্রিয়ভাবে পুনর্গণনা হবে এবং সব প্লট একই বড় Drawing-এ দেখা যাবে। Drawing-এ উত্তর উপরে, পূর্ব ডানে, দক্ষিণ নিচে ও পশ্চিম বামে থাকবে। “নতুন ক্ষেত্রফল”, “সেভ করুন” এবং “PDF করুন” অপশন থাকবে।</p>
   <div class="calc-result" id="qpResult" aria-live="polite"></div>
+</section>
+
+<section class="calc-panel" id="panel-triangle-partition" role="tabpanel">
+  <div class="tp-hero">
+    <div>
+      <span class="tp-kicker">△ TRIANGLE LAND PARTITION</span>
+      <h3>বিষমবাহু ত্রিভুজের ভাগ-বণ্টন</h3>
+      <p>তিন বাহুর প্রকৃত মাপ থেকে ত্রিভুজের ক্ষেত্রফল নির্ণয় করে সহজে হরিজন্টাল বা শীর্ষবিন্দু থেকে জমি ভাগ করুন।</p>
+    </div>
+    <span class="tp-badge">ফুট • ইঞ্চি • Drawing</span>
+  </div>
+
+  <div class="tp-mode-tabs" role="tablist" aria-label="ত্রিভুজ ভাগের পদ্ধতি">
+    <button type="button" class="tp-mode active" data-tp-mode="horizontal" aria-selected="true">↔ হরিজন্টাল ভাগ</button>
+    <button type="button" class="tp-mode" data-tp-mode="vertex" aria-selected="false">✂ শীর্ষবিন্দু থেকে ভাগ</button>
+  </div>
+
+  <div class="tp-card">
+    <div class="tp-card-head">
+      <div><span>১</span><h4>ত্রিভুজের বাহুর মাপ</h4></div>
+      <small>BC-কে Drawing-এর নিচের/ভিত্তি রেখা ধরা হবে</small>
+    </div>
+    <div class="calc-grid">
+      <div class="calc-field">
+        <label for="tpAB">A–B বাহু</label>
+        <div class="tp-fi"><input id="tpAB" type="number" min="0" step="any" placeholder="ফুট" inputmode="decimal"><input id="tpABIn" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" inputmode="decimal" aria-label="A–B ইঞ্চি"></div>
+      </div>
+      <div class="calc-field">
+        <label for="tpBC">B–C ভিত্তি</label>
+        <div class="tp-fi"><input id="tpBC" type="number" min="0" step="any" placeholder="ফুট" inputmode="decimal"><input id="tpBCIn" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" inputmode="decimal" aria-label="B–C ইঞ্চি"></div>
+      </div>
+      <div class="calc-field">
+        <label for="tpCA">C–A বাহু</label>
+        <div class="tp-fi"><input id="tpCA" type="number" min="0" step="any" placeholder="ফুট" inputmode="decimal"><input id="tpCAIn" type="number" min="0" max="11.999" step="0.01" placeholder="C–A ইঞ্চি" inputmode="decimal" aria-label="C–A ইঞ্চি"></div>
+      </div>
+    </div>
+    <p class="length-input-note">প্রতিটি মাপ ফুট + ইঞ্চিতে দিন। ১২ ইঞ্চি স্বয়ংক্রিয়ভাবে গ্রহণযোগ্য নয়; ১ ফুট হিসেবে লিখুন।</p>
+  </div>
+
+  <div class="tp-card">
+    <div class="tp-card-head">
+      <div><span>২</span><h4>ভাগের পরিমাণ</h4></div>
+      <small id="tpModeHelp">হরিজন্টাল ভাগে BC-র সমান্তরাল রেখা তৈরি হবে।</small>
+    </div>
+    <div class="calc-grid">
+      <div class="calc-field">
+        <label for="tpPart">প্রথম ভাগের পরিমাণ</label>
+        <input id="tpPart" type="number" min="0.01" max="99.99" step="0.01" value="50" placeholder="যেমন ৫০">
+      </div>
+      <div class="calc-field">
+        <label for="tpPartType">ভাগের ধরন</label>
+        <select id="tpPartType">
+          <option value="percent">শতাংশ (%)</option>
+          <option value="decimal">শতাংশ / ডেসিমেল</option>
+          <option value="sqft">বর্গফুট</option>
+        </select>
+      </div>
+      <div class="calc-field tp-vertex-only" hidden>
+        <label for="tpVertex">কোন শীর্ষবিন্দু থেকে রেখা</label>
+        <select id="tpVertex">
+          <option value="A">A → বিপরীত বাহু</option>
+          <option value="B">B → বিপরীত বাহু</option>
+          <option value="C">C → বিপরীত বাহু</option>
+        </select>
+      </div>
+    </div>
+    <div class="tp-note" id="tpModeNote">৫০% দিলে ত্রিভুজের অর্ধেক ক্ষেত্রফল হবে। Drawing-এ ভাগরেখাটি BC-র সমান্তরাল থাকবে।</div>
+  </div>
+
+  <div class="calc-actions">
+    <button class="calc-btn calc-primary" type="button" id="tpCalc">ভাগের হিসাব ও Drawing তৈরি করুন</button>
+    <button class="calc-btn calc-secondary" type="button" id="tpReset">পরিষ্কার</button>
+  </div>
+
+  <div class="tp-result" id="tpResult" aria-live="polite">
+    <div class="small-note">তিন বাহুর ফুট–ইঞ্চি মাপ দিয়ে হিসাব শুরু করুন।</div>
+  </div>
+
+  <div class="tp-edit-card" id="tpEditor" hidden>
+    <div class="tp-card-head">
+      <div><span>✋</span><h4>Drawing Edit</h4></div>
+      <small>পয়েন্ট Drag করুন অথবা Dimension ফুট–ইঞ্চিতে পরিবর্তন করুন</small>
+    </div>
+    <div class="tp-edit-grid">
+      <div class="tp-edit-group">
+        <strong>A–B</strong>
+        <div class="tp-fi"><input id="tpEditABft" type="number" min="0" step="any" placeholder="ফুট"><input id="tpEditABin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div>
+      </div>
+      <div class="tp-edit-group">
+        <strong>B–C</strong>
+        <div class="tp-fi"><input id="tpEditBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="tpEditBCin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div>
+      </div>
+      <div class="tp-edit-group">
+        <strong>C–A</strong>
+        <div class="tp-fi"><input id="tpEditCAft" type="number" min="0" step="any" placeholder="ফুট"><input id="tpEditCAin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div>
+      </div>
+      <div class="tp-edit-group">
+        <strong>প্রথম ভাগ</strong>
+        <div class="tp-fi"><input id="tpEditPart" type="number" min="0.01" max="99.99" step="0.01" placeholder="%"></div>
+      </div>
+    </div>
+    <div class="tp-edit-actions">
+      <button type="button" class="calc-btn calc-primary" id="tpApplyEdit">Dimension প্রয়োগ করুন</button>
+      <button type="button" class="calc-btn calc-secondary" id="tpPointEdit">✋ পয়েন্ট Edit: OFF</button>
+    </div>
+    <div class="tp-status" id="tpEditStatus">পয়েন্ট Edit চালু করলে A/B/C এবং ভাগের পয়েন্ট/রেখা Touch/Mouse দিয়ে সরানো যাবে।</div>
+  </div>
+
+  <div class="tp-drawing-wrap" id="tpDrawingWrap" hidden>
+    <div class="tp-drawing-head">
+      <div><strong>📐 Dimension সহ Drawing</strong><span id="tpDrawingMeta">—</span></div>
+      <button type="button" class="calc-btn calc-secondary" id="tpDownloadSvg">Drawing সংরক্ষণ</button>
+    </div>
+    <div class="tp-canvas-box"><canvas id="tpCanvas" width="1200" height="720" aria-label="বিষমবাহু ত্রিভুজের ফুট-ইঞ্চি Dimension Drawing"></canvas></div>
+    <div class="tp-legend">
+      <span>AB = <b id="tpDimAB">—</b></span>
+      <span>BC = <b id="tpDimBC">—</b></span>
+      <span>CA = <b id="tpDimCA">—</b></span>
+      <span>ভাগরেখা = <b id="tpDimSplit">—</b></span>
+    </div>
+  </div>
 </section>
 <section class="calc-panel" id="panel-heron" role="tabpanel">
 <h3>হেরনের সূত্রে ত্রিভুজের ক্ষেত্রফল</h3>
