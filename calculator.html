@@ -385,6 +385,70 @@
 </div>
 <div class="calc-result inherit-result" id="inheritResult" aria-live="polite"></div>
 </section>
+
+<section class="wood-cft-panel" id="wood-cft-calculator" aria-labelledby="wood-cft-title">
+  <div class="wood-cft-head">
+    <div>
+      <div class="wood-cft-kicker">🪵 WOOD CFT CALCULATOR</div>
+      <h2 id="wood-cft-title">গোল কাঠের CFT ক্যালকুলেটর</h2>
+      <p>মাঝখানের পরিধি/বেড় ও কাঠের দৈর্ঘ্য দিয়ে Hoppus-ভিত্তিক হিসাবে CFT নির্ণয় করুন। এখানে ব্যাসের কোনো ইনপুট প্রয়োজন নেই।</p>
+    </div>
+    <div class="wood-cft-mark" aria-hidden="true">CFT</div>
+  </div>
+
+  <div class="wood-cft-note">
+    <strong>সূত্র:</strong> পরিধি ইঞ্চিতে হলে <b>CFT = (পরিধি × পরিধি × দৈর্ঘ্য) ÷ 2304</b>।
+    পরিধি ফুটে দিলে একই সূত্রের রূপ <b>CFT = (পরিধি × পরিধি × দৈর্ঘ্য) ÷ 16</b>।
+  </div>
+
+  <div class="wood-cft-toolbar">
+    <strong>🪵 কাঠের তালিকা</strong>
+    <button type="button" class="wood-cft-add" id="woodAddRow">＋ কাঠ যোগ করুন</button>
+  </div>
+
+  <div class="wood-cft-table-wrap">
+    <table class="wood-cft-table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">মাঝের পরিধি/বেড়<br><small>ফুট + ইঞ্চি</small></th>
+          <th scope="col">দৈর্ঘ্য<br><small>ফুট + ইঞ্চি</small></th>
+          <th scope="col">CFT</th>
+          <th scope="col">কাজ</th>
+        </tr>
+      </thead>
+      <tbody id="woodRows"></tbody>
+    </table>
+  </div>
+
+  <div class="wood-cft-price-grid">
+    <div class="wood-cft-field">
+      <label for="woodPricePerCft">প্রতি CFT কাঠের দাম (৳)</label>
+      <input id="woodPricePerCft" type="number" min="0" step="0.01" inputmode="decimal" placeholder="যেমন 2500">
+    </div>
+    <div class="wood-cft-total-box">
+      <span>মোট CFT</span>
+      <strong id="woodTotalCft">0.000</strong>
+    </div>
+    <div class="wood-cft-total-box">
+      <span>মোট মূল্য</span>
+      <strong id="woodTotalPrice">৳ 0.00</strong>
+    </div>
+  </div>
+
+  <div class="wood-cft-actions">
+    <button type="button" class="calc-btn calc-primary" id="woodCalculate">🧮 হিসাব করুন</button>
+    <button type="button" class="calc-btn calc-secondary" id="woodReset">↺ Reset</button>
+    <button type="button" class="calc-btn wood-print-btn" id="woodPrint">🖨️ Print / PDF</button>
+  </div>
+
+  <div class="wood-cft-result" id="woodResult" aria-live="polite">
+    <span>প্রতিটি কাঠের CFT এবং মোট হিসাব এখানে দেখাবে।</span>
+  </div>
+
+  <p class="wood-cft-disclaimer">নোট: এটি গোল কাঠের মাঝের পরিধি/বেড়-ভিত্তিক Hoppus পদ্ধতির হিসাব। বাণিজ্যিক/চূড়ান্ত মাপের ক্ষেত্রে সংশ্লিষ্ট ক্রয়-বিক্রয় চুক্তি ও প্রচলিত মাপপদ্ধতি যাচাই করুন।</p>
+</section>
+
 <section class="featured-calcs" aria-labelledby="featured-calc-title">
   <div class="featured-head">
     <div class="calc-title-kicker">🧮 PROFESSIONAL LAND CALCULATOR</div>
@@ -649,6 +713,7 @@
 <a aria-label="উপরে যান" class="backtop" href="#top">↑</a>
 <script src="app.js" defer></script>
 <script src="calculator-triangle-partition.js?v=20261003-1238-fix5" defer></script>
+<script src="calculator-wood-cft.js?v=20261003-wood1" defer></script>
 <script src="calculator-bootstrap.js" defer></script>
 </body>
 </html>
