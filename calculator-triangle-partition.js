@@ -111,7 +111,15 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     const cut=clipHalfPlane(poly,{x:0,y},{x:1,y:0},1);
     const rem=clipHalfPlane(poly,{x:0,y},{x:1,y:0},-1);
     if(polyArea(cut)<=EPS||polyArea(rem)<=EPS)return null;
-    return {cut,remaining:rem,line:{type:'horizontal',y}};
+    // Keep the actual cut-line endpoints so the Drawing can show the
+    // separate feet-inch dimension for this specific ভাগ.
+    const pts=cut.filter(q=>Math.abs(q.y-y)<1e-5);
+    let points=[];
+    if(pts.length>=2){
+      pts.sort((a,b)=>a.x-b.x);
+      points=[{...pts[0]},{...pts[pts.length-1]}];
+    }
+    return {cut,remaining:rem,line:{type:'horizontal',y,points}};
   }
 
   function cross(a,b,c){return (b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);}
@@ -286,6 +294,27 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
         if(xs.length===2)drawDimension(ctx,sc(xs[0]),sc(xs[1]),ftIn(dist(xs[0],xs[1])),-30,true);
       }else if(line.type==='vertex'){
         drawDimension(ctx,sc(line.V),sc(line.D),ftIn(dist(line.V,line.D)),-32,true);
+      }
+
+      // Each separated ভাগ gets its own feet-inch dimension.  Use the
+      // longest boundary of that actual ভাগ so the label describes the
+      // geometry of the separated plot, not the original whole triangle.
+      if(part.cut?.length>=2){
+        let best=null,bestLen=-1;
+        for(let j=0;j<part.cut.length;j++){
+          const a=part.cut[j],b=part.cut[(j+1)%part.cut.length],L=dist(a,b);
+          if(L>bestLen){best={a,b};bestLen=L;}
+        }
+        if(best&&bestLen>EPS){
+          const cc=centroid(part.cut);
+          const mid={x:(best.a.x+best.b.x)/2,y:(best.a.y+best.b.y)/2};
+          const dx=best.b.x-best.a.x,dy=best.b.y-best.a.y,L=bestLen;
+          const nx=-dy/L,ny=dx/L;
+          const toward={x:cc.x-mid.x,y:cc.y-mid.y};
+          const inward=(nx*toward.x+ny*toward.y)>=0?1:-1;
+          const off=22*inward;
+          drawDimension(ctx,sc(best.a),sc(best.b),ftIn(bestLen),off,true);
+        }
       }
     });
 
