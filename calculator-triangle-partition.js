@@ -25,7 +25,8 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     if(!Number.isFinite(v)) return '—';
     const sign=v<0?'-':'', x=Math.abs(v); let f=Math.floor(x+1e-9), i=Math.round((x-f)*100)/100;
     if(i>=12){f++;i=0;}
-    return `${sign}${bn(f,2)}′ ${bn(i,2)}″`;
+    const inchText=Number.isInteger(i)?bn(i,0):bn(i,2);
+    return `${sign}${bn(f,0)}'-${inchText}"`;
   }
   function sideInputs(){return {AB:readFI('tpAB','tpABIn'),BC:readFI('tpBC','tpBCIn'),CA:readFI('tpCA','tpCAIn')};}
   function triangleFromSides(s){
@@ -83,16 +84,16 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     if(!cuts.length) return [];
     if(cuts.length===1){
       const c=cuts[0];
-      return [{id:'r1',title:'প্রথম/নিম্ন ক্ষেত্র',fraction:c.fraction,areaFraction:c.fraction,
+      return [{id:'r1',title:'১ম ভাগ',fraction:c.fraction,areaFraction:c.fraction,
         boundaries:[['BP',dist(p.B,c.P)],['PQ',c.length],['QC',dist(c.Q,p.C)],['BC',dist(p.B,p.C)]]},
-        {id:'r2',title:'অবশিষ্ট/উপরের ক্ষেত্র',fraction:c.fraction,areaFraction:1-c.fraction,
+        {id:'r2',title:'অবশিষ্ট ক্ষেত্র',fraction:c.fraction,areaFraction:1-c.fraction,
         boundaries:[['AP',dist(p.A,c.P)],['PQ',c.length],['AQ',dist(p.A,c.Q)]]}];
     }
     const lo=cuts[0], hi=cuts[1];
     return [
-      {id:'r1',title:'ক্ষেত্র ১ — BC পাশের অংশ',areaFraction:lo.fraction,boundaries:[['BP',dist(p.B,lo.P)],['P₁Q₁',lo.length],['Q₁C',dist(lo.Q,p.C)],['BC',dist(p.B,p.C)]]},
-      {id:'r2',title:'ক্ষেত্র ২ — মধ্যবর্তী অংশ',areaFraction:hi.fraction-lo.fraction,boundaries:[['P₁P₂',dist(lo.P,hi.P)],['P₂Q₂',hi.length],['Q₂Q₁',dist(hi.Q,lo.Q)],['Q₁P₁',lo.length]]},
-      {id:'r3',title:'ক্ষেত্র ৩ — A পাশের অংশ',areaFraction:1-hi.fraction,boundaries:[['AP₂',dist(p.A,hi.P)],['P₂Q₂',hi.length],['Q₂A',dist(hi.Q,p.A)]]}
+      {id:'r1',title:'১ম ভাগ',areaFraction:lo.fraction,boundaries:[['BP',dist(p.B,lo.P)],['P₁Q₁',lo.length],['Q₁C',dist(lo.Q,p.C)],['BC',dist(p.B,p.C)]]},
+      {id:'r2',title:'২য় ভাগ',areaFraction:hi.fraction-lo.fraction,boundaries:[['P₁P₂',dist(lo.P,hi.P)],['P₂Q₂',hi.length],['Q₂Q₁',dist(hi.Q,lo.Q)],['Q₁P₁',lo.length]]},
+      {id:'r3',title:'অবশিষ্ট ক্ষেত্র',areaFraction:1-hi.fraction,boundaries:[['AP₂',dist(p.A,hi.P)],['P₂Q₂',hi.length],['Q₂A',dist(hi.Q,p.A)]]}
     ];
   }
   function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
@@ -141,10 +142,43 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     const box=$('tpExtraDemarcation'); if(!box)return;
     if(regions.length<3){box.hidden=true;return;}
     box.hidden=false;
-    box.innerHTML=`<strong>৩টি ক্ষেত্রের পূর্ণ Boundary Dimension</strong>`+regions.map((r,i)=>`<div class="tp-region-boundary"><h5>${r.title} — ${fmtArea(total*r.areaFraction)}</h5>${r.boundaries.map(([n,v])=>`<div><span>${n}</span><b>${ftIn(v)}</b></div>`).join('')}</div>`).join('');
+    box.innerHTML=`<strong>৩টি ভাগের পূর্ণ Boundary Dimension</strong>`+regions.map((r,i)=>`<div class="tp-region-boundary"><h5>${r.title} — ${fmtArea(total*r.areaFraction)}</h5>${r.boundaries.map(([n,v])=>`<div><span>${n}</span><b>${ftIn(v)}</b></div>`).join('')}</div>`).join('');
     const status=$('tpMultiStatus');
-    if(status) status.textContent=regions.map((r,i)=>`ক্ষেত্র ${i+1}: ${bn(r.areaFraction*100,3)}% • ${fmtArea(total*r.areaFraction)}`).join('  |  ');
+    if(status) status.textContent=regions.map((r,i)=>`${r.title}: ${bn(r.areaFraction*100,3)}% • ${fmtArea(total*r.areaFraction)}`).join('  |  ');
     if($('tpMoreAreaLabel')) $('tpMoreAreaLabel').textContent=state.extraFraction!=null?fmtArea(total*state.extraFraction):'—';
+  }
+
+  function drawRegionLabel(ctx,text,x,y){
+    ctx.save();
+    ctx.font='800 15px Arial,"Noto Sans Bengali",sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    const padX=10,padY=6,w=ctx.measureText(text).width+padX*2,h=26;
+    ctx.fillStyle='rgba(255,255,255,.92)';
+    ctx.fillRect(x-w/2,y-h/2,w,h);
+    ctx.strokeStyle='rgba(8,35,54,.25)';ctx.lineWidth=1;ctx.strokeRect(x-w/2,y-h/2,w,h);
+    ctx.fillStyle='#082336';ctx.fillText(text,x,y);
+    ctx.restore();
+  }
+
+  function centroid(points){
+    return {x:points.reduce((a,p)=>a+p.x,0)/points.length,y:points.reduce((a,p)=>a+p.y,0)/points.length};
+  }
+
+  function drawRegionLabels(ctx,sc,cuts){
+    if(state.mode!=='horizontal'||!cuts.length)return;
+    const sorted=[...cuts].sort((a,b)=>a.fraction-b.fraction);
+    if(sorted.length===1){
+      const c=sorted[0], p=state.points;
+      const first=centroid([p.B,c.P,c.Q,p.C]), rest=centroid([p.A,c.Q,c.P]);
+      drawRegionLabel(ctx,'১ম ভাগ',sc(first).x,sc(first).y);
+      drawRegionLabel(ctx,'অবশিষ্ট ক্ষেত্র',sc(rest).x,sc(rest).y);
+    }else{
+      const lo=sorted[0],hi=sorted[1],p=state.points;
+      const r1=centroid([p.B,lo.P,lo.Q,p.C]), r2=centroid([lo.P,hi.P,hi.Q,lo.Q]), r3=centroid([p.A,hi.Q,hi.P]);
+      drawRegionLabel(ctx,'১ম ভাগ',sc(r1).x,sc(r1).y);
+      drawRegionLabel(ctx,'২য় ভাগ',sc(r2).x,sc(r2).y);
+      drawRegionLabel(ctx,'অবশিষ্ট ক্ষেত্র',sc(r3).x,sc(r3).y);
+    }
   }
 
   function draw(){
@@ -169,6 +203,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     [['A',A],['B',B],['C',C]].forEach(([n,q])=>{ctx.beginPath();ctx.arc(q.x,q.y,9,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#0c516a';ctx.stroke();ctx.fillStyle='#082336';ctx.font='800 16px Arial';ctx.fillText(n,q.x+14,q.y-14);});
     if(state.mode==='horizontal') cuts.forEach(sp=>{[sc(sp.P),sc(sp.Q)].forEach(q=>{ctx.beginPath();ctx.arc(q.x,q.y,8,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#c23b32';ctx.stroke();});});
     else if(state.split){const q=sc(state.split.D);ctx.beginPath();ctx.arc(q.x,q.y,8,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#c23b32';ctx.stroke();}
+    drawRegionLabels(ctx,sc,cuts);
   }
 
   function updateSegmentText(){
