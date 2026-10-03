@@ -632,6 +632,19 @@
   </div>
 </section>
 
+<section class="featured-panel" id="featured-separate" aria-labelledby="featured-separate-title">
+  <div class="featured-panel-head"><h3 class="land-calc-section-title" id="featured-separate-title">📏 নির্দিষ্ট শতাংশ জমি → পৃথক করার মাপ</h3><p>আয়তক্ষেত্র/সমান প্রস্থের জমিতে মোট দৈর্ঘ্য ও প্রস্থ এবং কাঙ্ক্ষিত শতাংশ দিলে কোথায় বিভাজন রেখা হবে তা নির্ণয় করুন।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label for="fsepLength">মোট দৈর্ঘ্য</label><input id="fsepLength" type="number" min="0" step="any" placeholder="যেমন ১০০"></div>
+      <div class="calc-field"><label for="fsepWidth">মোট প্রস্থ</label><input id="fsepWidth" type="number" min="0" step="any" placeholder="যেমন ৫০"></div>
+      <div class="calc-field"><label for="fsepPercent">পৃথক করার শতাংশ</label><input id="fsepPercent" type="number" min="0" max="100" step="any" placeholder="যেমন ২৫"></div>
+      <div class="calc-field"><label for="fsepUnit">দৈর্ঘ্য ও প্রস্থের একক</label><select id="fsepUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
+    </div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fsepCalc">পৃথক করার মাপ হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fsepReset">রিসেট</button></div>
+    <div class="calc-result" id="fsepResult" aria-live="polite"></div>
+  </div>
+</section>
 <section class="featured-panel" id="featured-reverse" aria-labelledby="featured-reverse-title">
   <div class="featured-panel-head"><h3 class="land-calc-section-title" id="featured-reverse-title">🔄 মোট জমি থেকে নিজের জমির হিস্যা বের করুন</h3><p>মোট জমি ও আপনার অংশ একই এককে লিখলে হিস্যাটি নিকটতম তিল পর্যন্ত আনা–গণ্ডা–কড়া–ক্রান্তি–তিলে ভেঙে দেখানো হবে।</p></div>
   <div class="featured-panel-body">
