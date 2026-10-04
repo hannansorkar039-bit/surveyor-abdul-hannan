@@ -258,30 +258,59 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();
   }
 
-  // Screen-space text boxes keep dimension labels from colliding. This is
-  // presentation-only and does not participate in any area/length calculation.
+  // Screen-space dimension labels are presentation-only.  Each label is
+  // placed once, aligned with its dimension line, and protected from overlap.
   let dimensionLabelBoxes=[];
-  function boxesOverlap(a,b){return a.left<b.right+3&&a.right>b.left-3&&a.top<b.bottom+3&&a.bottom>b.top-3;}
+  function boxesOverlap(a,b,pad=5){return a.left<b.right+pad&&a.right>b.left-pad&&a.top<b.bottom+pad&&a.bottom>b.top-pad;}
+  function edgeKey(a,b){
+    const q=v=>Math.round(v*10000)/10000;
+    const p1=`${q(a.x)},${q(a.y)}`,p2=`${q(b.x)},${q(b.y)}`;
+    return p1<p2?`${p1}|${p2}`:`${p2}|${p1}`;
+  }
+  function rotatedBox(cx,cy,w,h,angle,pad=5){
+    const ca=Math.cos(angle),sa=Math.sin(angle),hw=w/2,hh=h/2;
+    const pts=[[hw,hh],[hw,-hh],[-hw,hh],[-hw,-hh]];
+    const xs=pts.map(p=>cx+p[0]*ca-p[1]*sa),ys=pts.map(p=>cy+p[0]*sa+p[1]*ca);
+    return {left:Math.min(...xs)-pad,right:Math.max(...xs)+pad,top:Math.min(...ys)-pad,bottom:Math.max(...ys)+pad};
+  }
   function drawDimension(ctx,a,b,text,offset,split=false){
     const dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L;
     const p1={x:a.x+nx*offset,y:a.y+ny*offset},q1={x:b.x+nx*offset,y:b.y+ny*offset};
-    ctx.save();ctx.strokeStyle=split?'#a62922':'#71828a';ctx.lineWidth=1.1;ctx.setLineDash([4,4]);
+    const mx=(p1.x+q1.x)/2,my=(p1.y+q1.y)/2;
+    let angle=Math.atan2(q1.y-p1.y,q1.x-p1.x);
+    // Keep text upright while remaining parallel to the dimension line.
+    if(angle>Math.PI/2||angle<-Math.PI/2)angle+=Math.PI;
+    ctx.save();
+    ctx.strokeStyle=split?'#a62922':'#71828a';ctx.lineWidth=1.1;ctx.setLineDash([4,4]);
     ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(p1.x,p1.y);ctx.moveTo(b.x,b.y);ctx.lineTo(q1.x,q1.y);ctx.stroke();
     ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(q1.x,q1.y);ctx.stroke();
-    ctx.fillStyle=split?'#8e251e':'#082336';ctx.font='700 15px Arial,"Noto Sans Bengali",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    const mx=(p1.x+q1.x)/2,my=(p1.y+q1.y)/2,w=Math.max(42,ctx.measureText(text).width+12),h=25;
-    const shifts=[0,18,-18,36,-36,54,-54,72,-72,90,-90];let chosen=null;
-    for(const d of shifts){const x=mx+nx*d,y=my+ny*d,box={left:x-w/2,right:x+w/2,top:y-h/2,bottom:y+h/2};
-      if(!dimensionLabelBoxes.some(r=>boxesOverlap(box,r))){chosen={x,y,box};break;}}
-    if(!chosen){ctx.font='600 12px Arial,"Noto Sans Bengali",sans-serif';const sw=Math.max(36,ctx.measureText(text).width+8),sh=21;
-      for(const d of shifts){const x=mx+nx*d,y=my+ny*d,box={left:x-sw/2,right:x+sw/2,top:y-sh/2,bottom:y+sh/2};if(!dimensionLabelBoxes.some(r=>boxesOverlap(box,r))){chosen={x,y,box};break;}}}
-    if(chosen){dimensionLabelBoxes.push(chosen.box);ctx.fillStyle='rgba(255,255,255,.94)';ctx.fillRect(chosen.box.left,chosen.box.top,chosen.box.right-chosen.box.left,chosen.box.bottom-chosen.box.top);ctx.fillStyle=split?'#8e251e':'#082336';ctx.fillText(text,chosen.x,chosen.y);}
+    ctx.font='700 15px Arial,"Noto Sans Bengali",sans-serif';
+    const w=Math.max(48,ctx.measureText(text).width+18),h=26;
+    const shifts=[0,22,-22,44,-44,66,-66,90,-90,116,-116,145,-145];
+    let chosen=null;
+    for(const d of shifts){
+      const x=mx+nx*d,y=my+ny*d,box=rotatedBox(x,y,w,h,angle,5);
+      if(!dimensionLabelBoxes.some(r=>boxesOverlap(box,r))){chosen={x,y,box};break;}
+    }
+    if(!chosen){
+      const sw=Math.max(42,ctx.measureText(text).width+10),sh=22;
+      for(const d of shifts){
+        const x=mx+nx*d,y=my+ny*d,box=rotatedBox(x,y,sw,sh,angle,4);
+        if(!dimensionLabelBoxes.some(r=>boxesOverlap(box,r))){chosen={x,y,box,w:sw,h:sh};break;}
+      }
+    }
+    if(chosen){
+      dimensionLabelBoxes.push(chosen.box);
+      ctx.translate(chosen.x,chosen.y);ctx.rotate(angle);
+      ctx.fillStyle='rgba(255,255,255,.95)';ctx.fillRect(-chosen.w/2,-chosen.h/2,chosen.w,chosen.h);
+      ctx.fillStyle=split?'#8e251e':'#082336';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,0,0);
+    }
     ctx.restore();
   }
 
   function draw(){
     const canvas=$('tpCanvas');if(!canvas||!state.points)return;
-    const wrap=canvas.parentElement,W=Math.max(780,Math.min(1400,wrap.clientWidth||1200)),H=Math.max(620,Math.min(900,Math.round(W*.72))),dpr=window.devicePixelRatio||1;
+    const wrap=canvas.parentElement,baseW=wrap.clientWidth||900,W=Math.max(1170,Math.min(1800,Math.round(baseW*1.5))),H=Math.max(880,Math.min(1260,Math.round(W*.72))),dpr=window.devicePixelRatio||1;
     canvas.style.width=W+'px';canvas.style.height=H+'px';canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);
     const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
     dimensionLabelBoxes=[];
@@ -298,51 +327,51 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     drawDimension(ctx,sc(p.B),sc(p.C),ftIn(dist(p.B,p.C)),32);
     drawDimension(ctx,sc(p.C),sc(p.A),ftIn(dist(p.C,p.A)),30);
 
-    // Draw every split boundary and every actual boundary segment of each
-    // separated plot/remaining field.  Each segment gets its own feet-inch
-    // dimension so the drawing itself always shows the real dimensions of
-    // the ১ম ভাগ, ২য় ভাগ, ... and the current অবশিষ্ট ক্ষেত্র.
+    // Draw every internal boundary only once.  The original triangle sides are
+    // already dimensioned above, and split lines are dimensioned separately;
+    // excluding those edges here removes the old 2x/3x duplicate labels.
+    const originalEdges=new Set([edgeKey(p.A,p.B),edgeKey(p.B,p.C),edgeKey(p.C,p.A)]);
+    const splitEdges=new Set();
+    state.parts.forEach(part=>{
+      const line=part.line;
+      if(line.type==='horizontal'){
+        const xs=line.points||[];
+        if(xs.length===2){
+          splitEdges.add(edgeKey(xs[0],xs[1]));
+          drawDimension(ctx,sc(xs[0]),sc(xs[1]),ftIn(dist(xs[0],xs[1])),-42,true);
+        }
+      }else if(line.type==='vertex'){
+        splitEdges.add(edgeKey(line.V,line.D));
+        drawDimension(ctx,sc(line.V),sc(line.D),ftIn(dist(line.V,line.D)),-42,true);
+      }
+    });
+
+    const drawnEdges=new Set([...originalEdges,...splitEdges]);
     const drawRegionDimensions = (poly, strong=false) => {
       if(!poly || poly.length<2)return;
       const cc=poly.length>=3?centroid(poly):null;
       for(let j=0;j<poly.length;j++){
         const a=poly[j],b=poly[(j+1)%poly.length],L=dist(a,b);
         if(!(L>EPS))continue;
+        const key=edgeKey(a,b);
+        if(drawnEdges.has(key))continue;
+        drawnEdges.add(key);
         const sa=sc(a),sb=sc(b);
         const dx=sb.x-sa.x,dy=sb.y-sa.y,SL=Math.hypot(dx,dy)||1;
         const nx=-dy/SL,ny=dx/SL;
         const midS={x:(sa.x+sb.x)/2,y:(sa.y+sb.y)/2};
         let inward=1;
         if(cc){
-          const midW={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
-          const tw={x:cc.x-midW.x,y:cc.y-midW.y};
-          // screen normal corresponding to the polygon interior
-          const cS=sc(cc), twS={x:cS.x-midS.x,y:cS.y-midS.y};
+          const cS=sc(cc),twS={x:cS.x-midS.x,y:cS.y-midS.y};
           inward=(nx*twS.x+ny*twS.y)>=0?1:-1;
         }
-        // Keep the dimension line and its feet-inch text INSIDE the actual region.
-        // The offset is limited by the edge-to-centroid distance so small partitions
-        // do not push their dimension outside the polygon.
-        const room=Math.hypot((cc?sc(cc).x:midS.x)-midS.x,(cc?sc(cc).y:midS.y)-midS.y);
-        const base=strong?34:28;
-        const insideOffset=Math.min(base,Math.max(8,room*0.55));
+        const room=cc?Math.hypot(sc(cc).x-midS.x,sc(cc).y-midS.y):40;
+        const insideOffset=Math.min(strong?42:36,Math.max(14,room*0.52));
         drawDimension(ctx,sa,sb,ftIn(L),insideOffset*inward,strong);
       }
     };
-
-    // Keep the split line emphasized, then show dimensions for every edge of
-    // the actual separated regions.  No calculator data/logic is changed.
-    state.parts.forEach((part)=>{
-      const line=part.line;
-      if(line.type==='horizontal'){
-        const xs=line.points||[];
-        if(xs.length===2)drawDimension(ctx,sc(xs[0]),sc(xs[1]),ftIn(dist(xs[0],xs[1])),-34,true);
-      }else if(line.type==='vertex'){
-        drawDimension(ctx,sc(line.V),sc(line.D),ftIn(dist(line.V,line.D)),-36,true);
-      }
-      drawRegionDimensions(part.cut,true);
-    });
-    if(state.remaining?.length>=3) drawRegionDimensions(state.remaining,false);
+    state.parts.forEach(part=>drawRegionDimensions(part.cut,true));
+    if(state.remaining?.length>=3)drawRegionDimensions(state.remaining,false);
 
     // Corner labels
     [['A',p.A],['B',p.B],['C',p.C]].forEach(([n,q])=>{
@@ -409,11 +438,34 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     if($('tpSegRestPQ'))$('tpSegRestPQ').textContent='—';
     if($('tpExtraDemarcation')){
       $('tpExtraDemarcation').hidden=false;
+      // Use the actual geometric boundary points for the summary card too.
+      // The previous A-B/C-D style indexing was only array-index based, so it
+      // could report the original triangle sides for a newly created part.
+      const namedBoundaryPoints=()=>{
+        const names=[
+          {name:'A',p:state.points?.A},{name:'B',p:state.points?.B},{name:'C',p:state.points?.C}
+        ].filter(x=>x.p);
+        state.parts.forEach((part,i)=>{
+          const line=part.line;
+          if(line.type==='horizontal'&&line.points?.length===2){
+            names.push({name:`P${i+1}`,p:line.points[0]},{name:`Q${i+1}`,p:line.points[1]});
+          }else if(line.type==='vertex'&&line.D){
+            names.push({name:`D${i+1}`,p:line.D});
+          }
+        });
+        return names;
+      };
+      const pointName=(p,names)=>{
+        let best=null,bd=1e9;
+        names.forEach(x=>{const d=dist(p,x.p);if(d<bd){bd=d;best=x.name;}});
+        return bd<1e-4?best:'•';
+      };
       const regionRows=(poly)=>{
         if(!poly||poly.length<2)return '';
+        const names=namedBoundaryPoints();
         return poly.map((a,i)=>{
-          const b=poly[(i+1)%poly.length];
-          return `<div><span>${String.fromCharCode(65+i)}–${String.fromCharCode(65+((i+1)%poly.length))} / সীমা</span><b>${ftIn(dist(a,b))}</b></div>`;
+          const b=poly[(i+1)%poly.length],na=pointName(a,names),nb=pointName(b,names);
+          return `<div><span>${na}–${nb} / সীমা</span><b>${ftIn(dist(a,b))}</b></div>`;
         }).join('');
       };
       $('tpExtraDemarcation').innerHTML=state.parts.map(p=>`<div class="tp-region-boundary"><h5>${partName(p.index)} — ${fmtArea(p.area)}</h5><div><span>ভাগের ধরন</span><b>${p.method==='horizontal'?'হরিজন্টাল':'শীর্ষবিন্দু থেকে'}</b></div>${regionRows(p.cut)}</div>`).join('')+
