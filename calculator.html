@@ -248,7 +248,19 @@
       <button type="button" class="calc-btn calc-primary" id="tpMorePart">＋ আরো ক্ষেত্র / ভাগ যোগ করুন</button>
       <button type="button" class="calc-btn calc-secondary" id="tpPointEdit">✋ Drawing Edit: OFF</button>
     </div>
-    <div class="tp-status" id="tpEditStatus">Drawing Edit চালু করলে সর্বশেষ হরিজন্টাল ভাগরেখা Touch/Mouse দিয়ে সরানো যাবে।</div>
+    <div class="tp-status" id="tpEditStatus">Drawing Edit চালু করলে সর্বশেষ ভাগরেখা Touch/Mouse দিয়ে সরানো যাবে।</div>
+    <div class="tp-edit-dim-grid tp-edit-wide" id="tpDimEditBox">
+      <div class="tp-dim-edit-item">
+        <strong>সর্বশেষ ভাগরেখার ফুট–ইঞ্চি Edit</strong>
+        <div class="tp-fi"><input id="tpEditFeet" type="number" min="0" step="any" placeholder="ফুট" inputmode="decimal"><input id="tpEditInch" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" inputmode="decimal" aria-label="সর্বশেষ ভাগরেখা ইঞ্চি"></div>
+        <span class="tp-inline-help">Drawing Edit চালু করে রেখা টেনে পরিবর্তন করা যাবে; অথবা এখানে সঠিক ফুট–ইঞ্চি দৈর্ঘ্য লিখে Apply করুন।</span>
+      </div>
+      <div class="tp-dim-edit-item">
+        <strong>বর্তমান সর্বশেষ ভাগরেখা</strong>
+        <div class="tp-readonly-dim"><span>দৈর্ঘ্য</span><b id="tpEditCurrentDim">—</b></div>
+        <button type="button" class="calc-btn calc-secondary" id="tpApplyDimEdit">ফুট–ইঞ্চি দিয়ে Edit করুন</button>
+      </div>
+    </div>
 
     <div class="tp-more-card" id="tpMoreCard" hidden>
       <div class="tp-card-head">
