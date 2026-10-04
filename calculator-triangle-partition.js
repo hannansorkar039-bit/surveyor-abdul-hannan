@@ -378,16 +378,8 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   }
 
   function updateLegacyDemarcation(total){
-    const first=state.parts[0], last=state.parts[state.parts.length-1];
     const set=(id,v)=>{if($(id))$(id).textContent=ftIn(v);};
-    if(first?.line.type==='horizontal'){
-      const cut=first.cut;
-      const basePts=cut.filter(p=>Math.abs(p.y-Math.min(...cut.map(q=>q.y)))<1e-5);
-      if(basePts.length>=2){
-        const [a,b]=basePts.slice(0,2);set('tpSegPQ',dist(a,b));
-      }
-    }
-    if($('tpFirstAreaLabel'))$('tpFirstAreaLabel').textContent=first?fmtArea(first.area):'—';
+    if($('tpFirstAreaLabel'))$('tpFirstAreaLabel').textContent=state.parts[0]?fmtArea(state.parts[0].area):'—';
     if($('tpRestAreaLabel'))$('tpRestAreaLabel').textContent=fmtArea(polyArea(state.remaining));
     if($('tpSegBP'))$('tpSegBP').textContent='—';
     if($('tpSegQC'))$('tpSegQC').textContent='—';
@@ -397,14 +389,46 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     if($('tpSegRestPQ'))$('tpSegRestPQ').textContent='—';
     if($('tpExtraDemarcation')){
       $('tpExtraDemarcation').hidden=false;
-      const regionRows=(poly)=>{
+      // Give original triangle corners their fixed names and each newly created
+      // demarcation endpoint a stable P, Q, R... name in creation order.
+      const named=[['A',state.points.A],['B',state.points.B],['C',state.points.C]];
+      const pointLabel=q=>{
+        const hit=named.find(([,p])=>pointNear(p,q));
+        if(hit)return hit[0];
+        let found=named.find(([,p])=>pointNear(p,q));
+        if(!found){
+          const alphabet='PQRSTUVWXYZJKLMNO';
+          const used=named.length-3;
+          const label=alphabet[used]||`P${used+1}`;
+          named.push([label,{...q}]);found=[label,q];
+        }
+        return found[0];
+      };
+      state.parts.forEach(part=>{
+        const line=part.line;
+        if(line.type==='horizontal') (line.points||[]).forEach(pointLabel);
+        else if(line.type==='vertex') pointLabel(line.D);
+      });
+      const regionRows=poly=>{
         if(!poly||poly.length<2)return '';
-        return poly.map((a,i)=>{
-          const b=poly[(i+1)%poly.length];
-          return `<div><span>${String.fromCharCode(65+i)}–${String.fromCharCode(65+((i+1)%poly.length))} / সীমা</span><b>${ftIn(dist(a,b))}</b></div>`;
+        // Reverse the clipping polygon's vertex order so the first bottom
+        // partition reads B→P→Q→C→B, matching the requested demarcation order.
+        let pts=[...poly].reverse();
+        const bi=pts.findIndex(q=>pointLabel(q)==='B');
+        if(bi>0)pts=pts.slice(bi).concat(pts.slice(0,bi));
+        return pts.map((a,i)=>{
+          const b=pts[(i+1)%pts.length],label=`${pointLabel(a)}${pointLabel(b)}`;
+          const isBase=(pointNear(a,state.points.B)&&pointNear(b,state.points.C))||(pointNear(a,state.points.C)&&pointNear(b,state.points.B));
+          const isCut=state.parts.some(part=>{
+            const l=part.line;
+            if(l.type==='horizontal')return (l.points||[]).length===2 &&
+              ((pointNear(a,l.points[0])&&pointNear(b,l.points[1]))||(pointNear(a,l.points[1])&&pointNear(b,l.points[0])));
+            return l.type==='vertex'&&((pointNear(a,l.V)&&pointNear(b,l.D))||(pointNear(a,l.D)&&pointNear(b,l.V)));
+          });
+          return `<div><span>${label} / ${isCut?'ভাগরেখা':isBase?'সম্পূর্ণ ভিত্তি':'অংশের সীমা'}</span><b>${ftIn(dist(a,b))}</b></div>`;
         }).join('');
       };
-      $('tpExtraDemarcation').innerHTML=state.parts.map(p=>`<div class="tp-region-boundary"><h5>${partName(p.index)} — ${fmtArea(p.area)}</h5><div><span>ভাগের ধরন</span><b>${p.method==='horizontal'?'হরিজন্টাল':'শীর্ষবিন্দু থেকে'}</b></div>${regionRows(p.cut)}</div>`).join('')+
+      $('tpExtraDemarcation').innerHTML=state.parts.map(p=>`<div class="tp-region-boundary"><h5>${partName(p.index)} — ${fmtArea(p.area)}</h5>${regionRows(p.cut)}</div>`).join('')+
         `<div class="tp-region-boundary"><h5>অবশিষ্ট ক্ষেত্র — ${fmtArea(polyArea(state.remaining))}</h5>${regionRows(state.remaining)}</div>`;
     }
   }
