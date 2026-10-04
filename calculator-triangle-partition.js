@@ -675,7 +675,9 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     let t=((p.x-a.x)*dx+(p.y-a.y)*dy)/l2;t=Math.max(0,Math.min(1,t));
     return Math.hypot(p.x-(a.x+t*dx),p.y-(a.y+t*dy));
   }
-  let dragging=false,lastPt=null,activePointerId=null,pinchStart=null;
+  // One-finger pan for the completed Drawing. In edit mode, touching the
+  // latest split line still edits it; touching elsewhere pans the Drawing.
+  let dragging=false,panning=false,lastPt=null,activePointerId=null,pinchStart=null;
   const activePointers=new Map();
   const pointerDistance=()=>{
     const a=[...activePointers.values()]; if(a.length<2)return 0;
@@ -684,18 +686,31 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   $('tpCanvas')?.addEventListener('pointerdown',e=>{
     activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(activePointers.size===2){
-      dragging=false;pinchStart={distance:pointerDistance(),zoom:state.zoom};
+      dragging=false;panning=false;lastPt=null;pinchStart={distance:pointerDistance(),zoom:state.zoom};
       e.currentTarget.setPointerCapture?.(e.pointerId);e.preventDefault();return;
     }
-    if(activePointers.size!==1||!state.dragEdit||!state.lastSplitLine)return;
-    const sp=canvasPoint(e),t=fitTransform(),line=state.lastSplitLine;
+    if(activePointers.size!==1||!state.points)return;
+
+    // When Drawing Edit is ON, keep the existing split-line editing behavior.
+    // A touch anywhere else (or when edit mode is OFF) starts a pan gesture.
     let hit=false;
-    if(line.type==='horizontal'&&line.points){
-      const a=t.sc(line.points[0]),b=t.sc(line.points[1]);hit=pointSegDistance(sp,a,b)<40;
-    }else if(line.type==='vertex'&&line.D){
-      hit=pointSegDistance(sp,t.sc(line.V),t.sc(line.D))<40;
+    if(state.dragEdit&&state.lastSplitLine){
+      const sp=canvasPoint(e),t=fitTransform(),line=state.lastSplitLine;
+      if(line.type==='horizontal'&&line.points){
+        const a=t.sc(line.points[0]),b=t.sc(line.points[1]);hit=pointSegDistance(sp,a,b)<40;
+      }else if(line.type==='vertex'&&line.D){
+        hit=pointSegDistance(sp,t.sc(line.V),t.sc(line.D))<40;
+      }
     }
-    if(hit){dragging=true;activePointerId=e.pointerId;e.currentTarget.setPointerCapture?.(e.pointerId);e.preventDefault();}
+    activePointerId=e.pointerId;
+    lastPt={x:e.clientX,y:e.clientY};
+    if(hit){
+      dragging=true;panning=false;
+    }else{
+      dragging=false;panning=true;
+    }
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    e.preventDefault();
   });
   $('tpCanvas')?.addEventListener('pointermove',e=>{
     if(activePointers.has(e.pointerId))activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
@@ -706,7 +721,21 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
       }
       e.preventDefault();return;
     }
-    if(!dragging||e.pointerId!==activePointerId||!state.lastSplitLine)return;
+    if(e.pointerId!==activePointerId||!state.points)return;
+
+    // One-finger pan: move the whole Drawing without changing any calculated
+    // dimensions, areas, partition ratios, or other calculator state.
+    if(panning){
+      if(lastPt){
+        state.panX+=e.clientX-lastPt.x;
+        state.panY+=e.clientY-lastPt.y;
+        draw();
+      }
+      lastPt={x:e.clientX,y:e.clientY};
+      e.preventDefault();return;
+    }
+
+    if(!dragging||!state.lastSplitLine)return;
     const w=worldFromScreen(canvasPoint(e)),last=state.parts[state.parts.length-1],base=basePolygonBeforeLast();if(!base)return;
     let result=null;
     if(last.line.type==='horizontal'){
@@ -727,7 +756,14 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     }
     e.preventDefault();
   });
-  const endPointer=e=>{activePointers.delete(e.pointerId);if(activePointers.size<2)pinchStart=null;if(e.pointerId===activePointerId){dragging=false;activePointerId=null;}try{e.currentTarget.releasePointerCapture?.(e.pointerId);}catch(_){} };
+  const endPointer=e=>{
+    activePointers.delete(e.pointerId);
+    if(activePointers.size<2)pinchStart=null;
+    if(e.pointerId===activePointerId){
+      dragging=false;panning=false;lastPt=null;activePointerId=null;
+    }
+    try{e.currentTarget.releasePointerCapture?.(e.pointerId);}catch(_){}
+  };
   $('tpCanvas')?.addEventListener('pointerup',endPointer);
   $('tpCanvas')?.addEventListener('pointercancel',endPointer);
 
