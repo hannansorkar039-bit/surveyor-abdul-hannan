@@ -258,6 +258,10 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();
   }
 
+  // Screen-space text boxes keep dimension labels from colliding. This is
+  // presentation-only and does not participate in any area/length calculation.
+  let dimensionLabelBoxes=[];
+  function boxesOverlap(a,b){return a.left<b.right+3&&a.right>b.left-3&&a.top<b.bottom+3&&a.bottom>b.top-3;}
   function drawDimension(ctx,a,b,text,offset,split=false){
     const dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L;
     const p1={x:a.x+nx*offset,y:a.y+ny*offset},q1={x:b.x+nx*offset,y:b.y+ny*offset};
@@ -265,7 +269,14 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(p1.x,p1.y);ctx.moveTo(b.x,b.y);ctx.lineTo(q1.x,q1.y);ctx.stroke();
     ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(q1.x,q1.y);ctx.stroke();
     ctx.fillStyle=split?'#8e251e':'#082336';ctx.font='700 15px Arial,"Noto Sans Bengali",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(text,(p1.x+q1.x)/2,(p1.y+q1.y)/2);ctx.restore();
+    const mx=(p1.x+q1.x)/2,my=(p1.y+q1.y)/2,w=Math.max(42,ctx.measureText(text).width+12),h=25;
+    const shifts=[0,18,-18,36,-36,54,-54,72,-72,90,-90];let chosen=null;
+    for(const d of shifts){const x=mx+nx*d,y=my+ny*d,box={left:x-w/2,right:x+w/2,top:y-h/2,bottom:y+h/2};
+      if(!dimensionLabelBoxes.some(r=>boxesOverlap(box,r))){chosen={x,y,box};break;}}
+    if(!chosen){ctx.font='600 12px Arial,"Noto Sans Bengali",sans-serif';const sw=Math.max(36,ctx.measureText(text).width+8),sh=21;
+      for(const d of shifts){const x=mx+nx*d,y=my+ny*d,box={left:x-sw/2,right:x+sw/2,top:y-sh/2,bottom:y+sh/2};if(!dimensionLabelBoxes.some(r=>boxesOverlap(box,r))){chosen={x,y,box};break;}}}
+    if(chosen){dimensionLabelBoxes.push(chosen.box);ctx.fillStyle='rgba(255,255,255,.94)';ctx.fillRect(chosen.box.left,chosen.box.top,chosen.box.right-chosen.box.left,chosen.box.bottom-chosen.box.top);ctx.fillStyle=split?'#8e251e':'#082336';ctx.fillText(text,chosen.x,chosen.y);}
+    ctx.restore();
   }
 
   function draw(){
@@ -273,6 +284,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     const wrap=canvas.parentElement,W=Math.max(780,Math.min(1400,wrap.clientWidth||1200)),H=Math.max(620,Math.min(900,Math.round(W*.72))),dpr=window.devicePixelRatio||1;
     canvas.style.width=W+'px';canvas.style.height=H+'px';canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);
     const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+    dimensionLabelBoxes=[];
     const {sc}=fitTransform(),p=state.points;
     // Base triangle outline
     drawPolygon(ctx,[p.B,p.C,p.A],sc,'rgba(255,255,255,.98)','#163b4d',4);
@@ -378,8 +390,16 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   }
 
   function updateLegacyDemarcation(total){
+    const first=state.parts[0], last=state.parts[state.parts.length-1];
     const set=(id,v)=>{if($(id))$(id).textContent=ftIn(v);};
-    if($('tpFirstAreaLabel'))$('tpFirstAreaLabel').textContent=state.parts[0]?fmtArea(state.parts[0].area):'—';
+    if(first?.line.type==='horizontal'){
+      const cut=first.cut;
+      const basePts=cut.filter(p=>Math.abs(p.y-Math.min(...cut.map(q=>q.y)))<1e-5);
+      if(basePts.length>=2){
+        const [a,b]=basePts.slice(0,2);set('tpSegPQ',dist(a,b));
+      }
+    }
+    if($('tpFirstAreaLabel'))$('tpFirstAreaLabel').textContent=first?fmtArea(first.area):'—';
     if($('tpRestAreaLabel'))$('tpRestAreaLabel').textContent=fmtArea(polyArea(state.remaining));
     if($('tpSegBP'))$('tpSegBP').textContent='—';
     if($('tpSegQC'))$('tpSegQC').textContent='—';
@@ -389,46 +409,14 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     if($('tpSegRestPQ'))$('tpSegRestPQ').textContent='—';
     if($('tpExtraDemarcation')){
       $('tpExtraDemarcation').hidden=false;
-      // Give original triangle corners their fixed names and each newly created
-      // demarcation endpoint a stable P, Q, R... name in creation order.
-      const named=[['A',state.points.A],['B',state.points.B],['C',state.points.C]];
-      const pointLabel=q=>{
-        const hit=named.find(([,p])=>pointNear(p,q));
-        if(hit)return hit[0];
-        let found=named.find(([,p])=>pointNear(p,q));
-        if(!found){
-          const alphabet='PQRSTUVWXYZJKLMNO';
-          const used=named.length-3;
-          const label=alphabet[used]||`P${used+1}`;
-          named.push([label,{...q}]);found=[label,q];
-        }
-        return found[0];
-      };
-      state.parts.forEach(part=>{
-        const line=part.line;
-        if(line.type==='horizontal') (line.points||[]).forEach(pointLabel);
-        else if(line.type==='vertex') pointLabel(line.D);
-      });
-      const regionRows=poly=>{
+      const regionRows=(poly)=>{
         if(!poly||poly.length<2)return '';
-        // Reverse the clipping polygon's vertex order so the first bottom
-        // partition reads B→P→Q→C→B, matching the requested demarcation order.
-        let pts=[...poly].reverse();
-        const bi=pts.findIndex(q=>pointLabel(q)==='B');
-        if(bi>0)pts=pts.slice(bi).concat(pts.slice(0,bi));
-        return pts.map((a,i)=>{
-          const b=pts[(i+1)%pts.length],label=`${pointLabel(a)}${pointLabel(b)}`;
-          const isBase=(pointNear(a,state.points.B)&&pointNear(b,state.points.C))||(pointNear(a,state.points.C)&&pointNear(b,state.points.B));
-          const isCut=state.parts.some(part=>{
-            const l=part.line;
-            if(l.type==='horizontal')return (l.points||[]).length===2 &&
-              ((pointNear(a,l.points[0])&&pointNear(b,l.points[1]))||(pointNear(a,l.points[1])&&pointNear(b,l.points[0])));
-            return l.type==='vertex'&&((pointNear(a,l.V)&&pointNear(b,l.D))||(pointNear(a,l.D)&&pointNear(b,l.V)));
-          });
-          return `<div><span>${label} / ${isCut?'ভাগরেখা':isBase?'সম্পূর্ণ ভিত্তি':'অংশের সীমা'}</span><b>${ftIn(dist(a,b))}</b></div>`;
+        return poly.map((a,i)=>{
+          const b=poly[(i+1)%poly.length];
+          return `<div><span>${String.fromCharCode(65+i)}–${String.fromCharCode(65+((i+1)%poly.length))} / সীমা</span><b>${ftIn(dist(a,b))}</b></div>`;
         }).join('');
       };
-      $('tpExtraDemarcation').innerHTML=state.parts.map(p=>`<div class="tp-region-boundary"><h5>${partName(p.index)} — ${fmtArea(p.area)}</h5>${regionRows(p.cut)}</div>`).join('')+
+      $('tpExtraDemarcation').innerHTML=state.parts.map(p=>`<div class="tp-region-boundary"><h5>${partName(p.index)} — ${fmtArea(p.area)}</h5><div><span>ভাগের ধরন</span><b>${p.method==='horizontal'?'হরিজন্টাল':'শীর্ষবিন্দু থেকে'}</b></div>${regionRows(p.cut)}</div>`).join('')+
         `<div class="tp-region-boundary"><h5>অবশিষ্ট ক্ষেত্র — ${fmtArea(polyArea(state.remaining))}</h5>${regionRows(state.remaining)}</div>`;
     }
   }
@@ -511,6 +499,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   function toggleDrag(){
     state.dragEdit=!state.dragEdit;
     if($('tpPointEdit'))$('tpPointEdit').textContent=state.dragEdit?'✋ Drawing Edit: ON':'✋ Drawing Edit: OFF';
+    $('tpCanvas')?.classList.toggle('tp-editing',state.dragEdit);
     if($('tpEditStatus'))$('tpEditStatus').textContent=state.dragEdit
       ?'সর্বশেষ ভাগের সীমারেখা Touch/Mouse দিয়ে সরানো যাবে।'
       :'Drawing Edit চালু করলে সর্বশেষ ভাগের সীমারেখা Edit করা যাবে।';
@@ -519,8 +508,8 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   // Lightweight drawing edit: drag the latest horizontal cut up/down and
   // rebuild all later partitions from their saved remaining-area fractions.
   function worldFromScreen(sp){
-    const canvas=$('tpCanvas'),r=canvas.getBoundingClientRect(),t=fitTransform();
-    return {x:(sp.x-r.left-t.ox)/t.scale,y:(t.oy-(sp.y-r.top))/t.scale};
+    const t=fitTransform();
+    return {x:(sp.x-t.ox)/t.scale,y:(t.oy-sp.y)/t.scale};
   }
   function canvasPoint(e){const r=$('tpCanvas').getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
   function pointSegDistance(p,a,b){
@@ -531,6 +520,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
   let dragging=false,lastPt=null;
   $('tpCanvas')?.addEventListener('pointerdown',e=>{
     if(!state.dragEdit||!state.lastSplitLine)return;
+    e.preventDefault();
     const sp=canvasPoint(e),t=fitTransform();
     if(state.lastSplitLine.type==='horizontal'&&state.lastSplitLine.points){
       const a=t.sc(state.lastSplitLine.points[0]),b=t.sc(state.lastSplitLine.points[1]);
