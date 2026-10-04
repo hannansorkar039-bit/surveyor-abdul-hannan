@@ -180,7 +180,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     candidates.sort((a,b)=>a.error-b.error);
     const best=candidates[0], rem=clipHalfPlane(poly,V,{x:best.D.x-V.x,y:best.D.y-V.y},-1);
     if(polyArea(rem)<=EPS)return null;
-    return {cut:best.cut,remaining:rem,line:{type:'vertex',V:{...V},D:{...best.D},vertex:vertexKey}};
+    return {cut:best.cut,remaining:rem,line:{type:'vertex',V:{...V},D:{...best.D},vertex:vertexKey,edge:[{...best.edge[0]},{...best.edge[1]}]}};
   }
 
   function applySplit(poly,method,f,vertexKey){
@@ -310,7 +310,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
 
   function draw(){
     const canvas=$('tpCanvas');if(!canvas||!state.points)return;
-    const wrap=canvas.parentElement,baseW=wrap.clientWidth||900,W=Math.max(1170,Math.min(1800,Math.round(baseW*1.5))),H=Math.max(880,Math.min(1260,Math.round(W*.72))),dpr=window.devicePixelRatio||1;
+    const wrap=canvas.parentElement,baseW=wrap.clientWidth||900,W=Math.max(1800,Math.min(2600,Math.round(baseW*3))),H=Math.max(1400,Math.min(1900,Math.round(W*.72))),dpr=window.devicePixelRatio||1;
     canvas.style.width=W+'px';canvas.style.height=H+'px';canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);
     const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
     dimensionLabelBoxes=[];
@@ -401,7 +401,7 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     $('tpResult').innerHTML=
       `<div class="tp-result-main"><strong>মোট ক্ষেত্রফল: ${fmtArea(total)}</strong><span>${state.parts.length}টি ভাগ তৈরি হয়েছে • প্রতিটি নতুন ভাগ বর্তমান অবশিষ্ট ক্ষেত্র থেকে আলাদা করা হয়েছে</span></div>`+
       `<div class="tp-result-grid"><div><b>${fmtArea(last.area)}</b><small>${partName(last.index)}</small></div><div><b>${fmtArea(rem)}</b><small>অবশিষ্ট ক্ষেত্র</small></div><div><b>${bn((last.area/total)*100,3)}%</b><small>মোট ক্ষেত্রের তুলনায় সর্বশেষ ভাগ</small></div></div>`;
-    $('tpEditor').hidden=false;$('tpDrawingWrap').hidden=false;
+    $('tpEditor').hidden=false;$('tpDrawingWrap').hidden=false;ensureFootInchEditor();
     $('tpDimAB').textContent=ftIn(total?sideInputs().AB:NaN);$('tpDimBC').textContent=ftIn(sideInputs().BC);$('tpDimCA').textContent=ftIn(sideInputs().CA);
     $('tpDimSplit').textContent=last.line.type==='horizontal'?'হরিজন্টাল':`শীর্ষবিন্দু ${last.line.vertex}`;
     $('tpDrawingMeta').textContent=`${state.parts.length}টি ভাগ • ${fmtArea(rem)} অবশিষ্ট`;
@@ -569,34 +569,213 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
     let t=((p.x-a.x)*dx+(p.y-a.y)*dy)/l2;t=Math.max(0,Math.min(1,t));
     return Math.hypot(p.x-(a.x+t*dx),p.y-(a.y+t*dy));
   }
+  // Drawing interaction state: one-finger edit, two-finger pinch zoom.
   let dragging=false,lastPt=null;
-  $('tpCanvas')?.addEventListener('pointerdown',e=>{
-    if(!state.dragEdit||!state.lastSplitLine)return;
-    e.preventDefault();
-    const sp=canvasPoint(e),t=fitTransform();
-    if(state.lastSplitLine.type==='horizontal'&&state.lastSplitLine.points){
-      const a=t.sc(state.lastSplitLine.points[0]),b=t.sc(state.lastSplitLine.points[1]);
-      if(pointSegDistance(sp,a,b)<35){dragging=true;e.currentTarget.setPointerCapture(e.pointerId);e.preventDefault();}
+  const activePointers=new Map();
+  let pinchStartDistance=0,pinchStartZoom=1,pinchStartMid=null;
+
+  function pointerDistance(a,b){return Math.hypot(a.x-b.x,a.y-b.y)||1;}
+  function pointerMidpoint(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+  function zoomAtScreen(factor,center){
+    const oldZoom=state.zoom;
+    const next=Math.max(.65,Math.min(4.5,Number((oldZoom*factor).toFixed(3))));
+    if(Math.abs(next-oldZoom)<1e-6)return;
+    // Keep the drawing point under the pinch midpoint visually stable.
+    const t=fitTransform(), world={x:(center.x-t.ox)/t.scale,y:(t.oy-center.y)/t.scale};
+    state.zoom=next;
+    const t2=fitTransform();
+    const projected={x:t2.ox+world.x*t2.scale,y:t2.oy-world.y*t2.scale};
+    state.panX += center.x-projected.x;
+    state.panY += center.y-projected.y;
+    if($('tpZoomValue'))$('tpZoomValue').textContent=`${Math.round(state.zoom*100)}%`;
+    draw();
+  }
+
+  function currentEditBase(){
+    const base=[state.points.B,state.points.C,state.points.A];
+    if(state.parts.length<=1)return base;
+    let rem=base;
+    for(let i=0;i<state.parts.length-1;i++){
+      const old=state.parts[i],r=applySplit(rem,old.method,old.remainingFraction,old.vertex);
+      if(!r||r.error)return base;
+      rem=r.remaining;
     }
-  });
-  $('tpCanvas')?.addEventListener('pointermove',e=>{
-    if(!dragging||!state.lastSplitLine||state.lastSplitLine.type!=='horizontal')return;
-    const w=worldFromScreen(canvasPoint(e)), last=state.parts[state.parts.length-1], remBefore=state.parts.length===1?[state.points.B,state.points.C,state.points.A]:null;
-    // Dragging is intentionally limited to the latest horizontal boundary;
-    // rebuild the latest split as a fraction of its current remaining polygon.
-    const basePoly=state.parts.length===1?[state.points.B,state.points.C,state.points.A]:state.parts[state.parts.length-2]?state.parts[state.parts.length-2].cut:null;
-    if(!basePoly)return;
-    const total=polyArea(basePoly),cut=clipHalfPlane(basePoly,{x:0,y:w.y},{x:1,y:0},1),f=polyArea(cut)/total;
-    if(validateFraction(f)){
-      const result=splitHorizontal(basePoly,f);if(!result)return;
-      last.cut=result.cut;last.area=polyArea(result.cut);last.line=result.line;state.remaining=result.remaining;state.lastSplitLine=result.line;
-      if(result.line.type==='horizontal'){const y=result.line.y,pts=result.cut.filter(p=>Math.abs(p.y-y)<1e-5);if(pts.length>=2)result.line.points=[pts[0],pts[pts.length-1]];}
+    return rem;
+  }
+
+  function rebuildLatestHorizontalFromLength(targetLength){
+    const last=state.parts.at(-1);
+    if(!last||last.line.type!=='horizontal'||!(targetLength>EPS))return false;
+    const base=currentEditBase(),total=polyArea(base);
+    if(!(total>EPS))return false;
+    let lo=Math.min(...base.map(p=>p.y)),hi=Math.max(...base.map(p=>p.y)),best=null;
+    for(let i=0;i<80;i++){
+      const y=(lo+hi)/2;
+      const cut=clipHalfPlane(base,{x:0,y},{x:1,y:0},1);
+      const pts=cut.filter(q=>Math.abs(q.y-y)<1e-5).sort((a,b)=>a.x-b.x);
+      const len=pts.length>=2?dist(pts[0],pts[pts.length-1]):0;
+      best={y,cut,pts,len};
+      // In a convex triangle/polygon the horizontal chord grows upward.
+      if(len<targetLength)lo=y; else hi=y;
+    }
+    if(!best||best.len<=EPS||Math.abs(best.len-targetLength)>Math.max(.08,targetLength*.02))return false;
+    const result=splitHorizontal(base,polyArea(best.cut)/total);
+    if(!result)return false;
+    last.cut=result.cut;last.area=polyArea(result.cut);last.line=result.line;
+    last.remainingFraction=polyArea(result.cut)/total;
+    state.remaining=result.remaining;state.lastSplitLine=result.line;
+    if(result.line.points?.length===2){
+      last.editLength=dist(result.line.points[0],result.line.points[1]);
+    }
+    return true;
+  }
+
+  function rebuildLatestVertexFromLength(targetLength){
+    const last=state.parts.at(-1);
+    if(!last||last.line.type!=='vertex'||!(targetLength>EPS))return false;
+    const base=currentEditBase(),V=last.line.V,D0=last.line.D;
+    const edge=last.line.edge || null;
+    if(!edge)return false;
+    const [a,b]=edge;
+    const edgeLen=dist(a,b);
+    if(!(edgeLen>EPS))return false;
+    // Search the original boundary edge for a point whose distance from V is targetLength.
+    // There are at most two intersections; choose the one nearest the existing D.
+    let candidates=[];
+    for(let i=0;i<=200;i++){
+      const t=i/200,D={x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t};
+      const err=Math.abs(dist(V,D)-targetLength);
+      candidates.push({err,t,D});
+    }
+    candidates.sort((x,y)=>x.err-y.err);
+    let best=candidates[0];
+    if(!best||best.err>Math.max(.12,targetLength*.025))return false;
+    // Refine around the best sample.
+    let l=Math.max(0,best.t-.01),r=Math.min(1,best.t+.01);
+    for(let k=0;k<50;k++){
+      const t=(l+r)/2,D={x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t};
+      if(dist(V,D)<targetLength)l=t;else r=t;
+      best={t,D,err:Math.abs(dist(V,D)-targetLength)};
+    }
+    const dx=best.D.x-V.x,dy=best.D.y-V.y;
+    const sign=cross(V,D0,a)>=0?1:-1;
+    const cut=clipHalfPlane(base,V,{x:dx,y:dy},sign),rem=clipHalfPlane(base,V,{x:dx,y:dy},-sign);
+    if(polyArea(cut)<=EPS||polyArea(rem)<=EPS)return false;
+    last.cut=cut;last.area=polyArea(cut);last.line={type:'vertex',V:{...V},D:{...best.D},vertex:last.vertex,edge:[{...a},{...b}]};
+    last.remainingFraction=polyArea(cut)/polyArea(base);
+    state.remaining=rem;state.lastSplitLine=last.line;
+    last.editLength=dist(V,best.D);
+    return true;
+  }
+
+  function ensureFootInchEditor(){
+    if(!$('tpEditor'))return;
+    let box=$('tpFootInchEdit');
+    if(box)return;
+    box=document.createElement('div');box.id='tpFootInchEdit';box.className='tp-edit-wide';
+    box.innerHTML=`<strong>ফুট–ইঞ্চি দিয়ে Drawing Edit</strong><div class="tp-edit-dim-grid">
+      <div class="tp-dim-edit-item"><strong>সর্বশেষ ভাগরেখার দৈর্ঘ্য</strong><div class="tp-fi"><input id="tpEditFeet" type="number" min="0" step="1" inputmode="numeric" placeholder="ফুট"><input id="tpEditInches" type="number" min="0" max="11" step="1" inputmode="numeric" placeholder="ইঞ্চি"></div></div>
+    </div><div class="tp-edit-actions"><button type="button" class="calc-btn calc-secondary" id="tpApplyFootInchEdit">ফুট–ইঞ্চি দিয়ে Edit করুন</button></div><span class="tp-inline-help">Drawing Edit চালু থাকলে সর্বশেষ ভাগের রেখা টেনে সরানো যাবে; এখানে ফুট–ইঞ্চি দিলে একই ভাগরেখার দৈর্ঘ্য অনুযায়ী Drawing আপডেট হবে।</span>`;
+    $('tpEditor').appendChild(box);
+    $('tpApplyFootInchEdit').addEventListener('click',()=>{
+      if(!state.parts.length){alert('আগে Drawing তৈরি করুন।');return;}
+      const ft=Number($('tpEditFeet').value||0),inch=Number($('tpEditInches').value||0);
+      if(!Number.isFinite(ft)||ft<0||!Number.isFinite(inch)||inch<0||inch>=12){alert('সঠিক ফুট–ইঞ্চি মাপ দিন।');return;}
+      const target=ft+inch/12;
+      const last=state.parts.at(-1);
+      const ok=last.line.type==='horizontal'?rebuildLatestHorizontalFromLength(target):rebuildLatestVertexFromLength(target);
+      if(!ok){alert('এই ফুট–ইঞ্চি মাপ দিয়ে বর্তমান Drawing-এর বৈধ ভাগরেখা তৈরি করা যাচ্ছে না।');return;}
       updateResult();
+    });
+  }
+
+  function toggleDrag(){
+    state.dragEdit=!state.dragEdit;
+    ensureFootInchEditor();
+    if($('tpPointEdit'))$('tpPointEdit').textContent=state.dragEdit?'✋ Drawing Edit: ON':'✋ Drawing Edit: OFF';
+    $('tpCanvas')?.classList.toggle('tp-editing',state.dragEdit);
+    if($('tpEditStatus'))$('tpEditStatus').textContent=state.dragEdit
+      ?'সর্বশেষ ভাগের সীমারেখা Touch/Mouse দিয়ে সরানো যাবে। দুই আঙুলে Drawing Zoom করা যাবে।'
+      :'Drawing Edit চালু করলে সর্বশেষ ভাগের সীমারেখা Edit করা যাবে।';
+  }
+
+  function worldFromScreen(sp){
+    const t=fitTransform();
+    return {x:(sp.x-t.ox)/t.scale,y:(t.oy-sp.y)/t.scale};
+  }
+  function canvasPoint(e){const r=$('tpCanvas').getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+  function pointSegDistance(p,a,b){
+    const dx=b.x-a.x,dy=b.y-a.y,l2=dx*dx+dy*dy||1;
+    let t=((p.x-a.x)*dx+(p.y-a.y)*dy)/l2;t=Math.max(0,Math.min(1,t));
+    return Math.hypot(p.x-(a.x+t*dx),p.y-(a.y+t*dy));
+  }
+
+  $('tpCanvas')?.addEventListener('pointerdown',e=>{
+    if(!state.points)return;
+    activePointers.set(e.pointerId,canvasPoint(e));
+    if(activePointers.size===2){
+      const pts=[...activePointers.values()];
+      pinchStartDistance=pointerDistance(pts[0],pts[1]);
+      pinchStartZoom=state.zoom;pinchStartMid=pointerMidpoint(pts[0],pts[1]);
+      dragging=false;
+      try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){ }
+      e.preventDefault();return;
     }
-    e.preventDefault();
+    if(!state.dragEdit||!state.lastSplitLine)return;
+    const sp=canvasPoint(e),t=fitTransform(),line=state.lastSplitLine;
+    if(line.type==='horizontal'&&line.points?.length===2){
+      const a=t.sc(line.points[0]),b=t.sc(line.points[1]);
+      if(pointSegDistance(sp,a,b)<45){dragging=true;e.currentTarget.setPointerCapture(e.pointerId);}
+    }else if(line.type==='vertex'&&line.D&&line.V){
+      const a=t.sc(line.V),b=t.sc(line.D);
+      if(pointSegDistance(sp,a,b)<45){dragging=true;e.currentTarget.setPointerCapture(e.pointerId);}
+    }
+    if(dragging)e.preventDefault();
   });
-  $('tpCanvas')?.addEventListener('pointerup',e=>{dragging=false;try{e.currentTarget.releasePointerCapture(e.pointerId);}catch(_){}});
-  $('tpCanvas')?.addEventListener('pointercancel',()=>{dragging=false;});
+
+  $('tpCanvas')?.addEventListener('pointermove',e=>{
+    if(!state.points)return;
+    if(activePointers.has(e.pointerId))activePointers.set(e.pointerId,canvasPoint(e));
+    if(activePointers.size>=2){
+      const pts=[...activePointers.values()].slice(0,2),d=pointerDistance(pts[0],pts[1]);
+      if(pinchStartDistance>0){
+        state.zoom=Math.max(.65,Math.min(4.5,Number((pinchStartZoom*(d/pinchStartDistance)).toFixed(3))));
+        if($('tpZoomValue'))$('tpZoomValue').textContent=`${Math.round(state.zoom*100)}%`;
+        draw();
+      }
+      e.preventDefault();return;
+    }
+    if(!dragging||!state.lastSplitLine)return;
+    const w=worldFromScreen(canvasPoint(e)),last=state.parts.at(-1),basePoly=currentEditBase();
+    if(!last||!basePoly)return;
+    if(last.line.type==='horizontal'){
+      const total=polyArea(basePoly),cut=clipHalfPlane(basePoly,{x:0,y:w.y},{x:1,y:0},1),f=polyArea(cut)/total;
+      if(validateFraction(f)){
+        const result=splitHorizontal(basePoly,f);if(!result)return;
+        last.cut=result.cut;last.area=polyArea(result.cut);last.line=result.line;last.remainingFraction=f;
+        state.remaining=result.remaining;state.lastSplitLine=result.line;
+      }
+    }else if(last.line.type==='vertex'){
+      // Drag the endpoint along its existing boundary edge.
+      const V=last.line.V,D0=last.line.D,edge=last.line.edge;
+      if(edge?.length===2){
+        const [a,b]=edge,dx=b.x-a.x,dy=b.y-a.y,l2=dx*dx+dy*dy||1;
+        let t=((w.x-a.x)*dx+(w.y-a.y)*dy)/l2;t=Math.max(.001,Math.min(.999,t));
+        const D={x:a.x+dx*t,y:a.y+dy*t},sign=cross(V,D0,a)>=0?1:-1;
+        const cut=clipHalfPlane(basePoly,V,{x:D.x-V.x,y:D.y-V.y},sign),rem=clipHalfPlane(basePoly,V,{x:D.x-V.x,y:D.y-V.y},-sign);
+        if(polyArea(cut)>EPS&&polyArea(rem)>EPS){last.cut=cut;last.area=polyArea(cut);last.line={type:'vertex',V:{...V},D,vertex:last.vertex,edge:[{...a},{...b}]};last.remainingFraction=polyArea(cut)/polyArea(basePoly);state.remaining=rem;state.lastSplitLine=last.line;}
+      }
+    }
+    updateResult();e.preventDefault();
+  });
+  $('tpCanvas')?.addEventListener('pointerup',e=>{
+    activePointers.delete(e.pointerId);
+    if(activePointers.size<2){pinchStartDistance=0;pinchStartMid=null;}
+    dragging=false;try{e.currentTarget.releasePointerCapture(e.pointerId);}catch(_){ }
+  });
+  $('tpCanvas')?.addEventListener('pointercancel',e=>{
+    activePointers.delete(e.pointerId);dragging=false;if(activePointers.size<2)pinchStartDistance=0;
+  });
 
   // UI events
   $('tpMethod')?.addEventListener('change',()=>updateModeUI('tp'));
