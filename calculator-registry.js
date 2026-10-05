@@ -929,7 +929,7 @@
   function updateMapArea() {
     const latlngs=markers.map(m=>m.getLatLng());
     const m2=polygonAreaM2(latlngs);
-    mapAreaEl.textContent=latlngs.length>=3 ? `ক্ষেত্রফল: ${bn(m2)} বর্গমিটার • ${(m2/10000).toLocaleString('bn-BD',{maximumFractionDigits:4})} হেক্টর` : `পয়েন্ট: ${bn(latlngs.length)}টি`;
+    mapAreaEl.textContent=latlngs.length>=3 ? `ক্ষেত্রফল: ${(m2/435.6).toLocaleString('bn-BD',{maximumFractionDigits:4})} শতাংশ` : `পয়েন্ট: ${bn(latlngs.length)}টি`;
     if(poly && map) { map.removeLayer(poly); poly=null; }
     if(latlngs.length>=3 && map) poly=L.polygon(latlngs,{color:'#08747b',weight:3,fillOpacity:.12}).addTo(map);
   }
@@ -945,7 +945,7 @@
     }
     try {
       map=L.map('registryMap').setView([22.95,90.84],12);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:24,maxNativeZoom:19,attribution:'© Esri'}).addTo(map);
       if (navigator.onLine && mapOfflineNote) mapOfflineNote.classList.remove('show');
       map.on('click',e=>{
         const m=L.marker(e.latlng,{draggable:true}).addTo(map);
