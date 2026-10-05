@@ -110,6 +110,7 @@
 <button class="calc-tab" data-tab="brahmagupta" role="tab" aria-selected="false">ব্রহ্মগুপ্তের সূত্র</button>
 <button class="calc-tab" data-tab="four-side-sqrt" role="tab" aria-selected="false">রুট ওভার বা বর্গমূল পদ্ধতিতে ক্ষেত্রফল</button>
 <button class="calc-tab" id="multi-field-drawing-tab" data-tab="multi-field-drawing" role="tab" aria-selected="false">বহু ক্ষেত্র Drawing ও Alignment</button>
+<button class="calc-tab" id="field-boundary-tab" data-tab="field-boundary" role="tab" aria-selected="false">🧭 সীমানা পরিমাপ ও যাচাই (টপোগ্রাফি)</button>
 </div>
 <section class="calc-panel active" id="panel-quad-diagonal" role="tabpanel">
 <h3>📐 কর্ণসহ অনিয়মিত চতুর্ভুজের ক্ষেত্রফল</h3>
@@ -589,6 +590,138 @@
 
 
 
+<section class="calc-panel field-boundary-panel" id="panel-field-boundary" role="tabpanel" aria-labelledby="field-boundary-tab">
+  <div class="fbc-head">
+    <div>
+      <div class="fbc-kicker">FIELD SURVEY • BEARING/ANGLE NOT REQUIRED</div>
+      <h3>🧭 সীমানা পরিমাপ ও যাচাই (টপোগ্রাফি)</h3>
+      <p>মাঠে Bearing বা Angle না থাকলেও Reference Point, বাহুর মাপ এবং প্রয়োজনীয় কর্ণ দিয়ে boundary reconstruction, ক্ষেত্রফল ও measurement verification করুন।</p>
+    </div>
+    <span class="fbc-badge">Offline-ready</span>
+  </div>
+
+  <div class="fbc-workflow">
+    <span>১. আকৃতি নির্বাচন</span><b>→</b><span>২. বাহুর মাপ</span><b>→</b><span>৩. AC/BD কর্ণ</span><b>→</b><span>৪. Drawing + Area + Check</span>
+  </div>
+
+  <div class="fbc-grid">
+    <div class="fbc-card">
+      <h4>১. Boundary Setup</h4>
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label for="fbcShape">জমির আকৃতি</label>
+          <select id="fbcShape">
+            <option value="quad">চতুর্ভুজ — ৪ বাহু</option>
+            <option value="tri">ত্রিভুজ — ৩ বাহু</option>
+          </select>
+        </div>
+        <div class="calc-field" id="fbcShapeTypeWrap">
+          <label for="fbcShapeType">Boundary shape</label>
+          <select id="fbcShapeType">
+            <option value="auto">Auto — Convex অগ্রাধিকার</option>
+            <option value="convex">Convex</option>
+            <option value="concave">Concave</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label for="fbcReferencePoint">Reference Point 1 / রেফারেন্স পয়েন্ট ১</label>
+          <select id="fbcReferencePoint" aria-describedby="fbcReferencePointHelp">
+            <option value="A">A — পয়েন্ট A</option>
+            <option value="B">B — পয়েন্ট B</option>
+            <option value="C">C — পয়েন্ট C</option>
+            <option value="D">D — পয়েন্ট D</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label for="fbcReferenceMode">Reference Basis / রেফারেন্স ভিত্তি</label>
+          <select id="fbcReferenceMode">
+            <option value="one">1 Point — এক পয়েন্ট</option>
+            <option value="two" selected>2 Points — দুই পয়েন্ট / Baseline</option>
+          </select>
+        </div>
+        <div class="calc-field" id="fbcReferencePoint2Wrap">
+          <label for="fbcReferencePoint2">Reference Point 2 / রেফারেন্স পয়েন্ট ২</label>
+          <select id="fbcReferencePoint2" aria-describedby="fbcReferencePointHelp">
+            <option value="B">B — পয়েন্ট B</option>
+            <option value="A">A — পয়েন্ট A</option>
+            <option value="C">C — পয়েন্ট C</option>
+            <option value="D">D — পয়েন্ট D</option>
+          </select>
+        </div>
+      </div>
+      <p class="calc-help" id="fbcReferencePointHelp">১ Point-এ নির্বাচিত পয়েন্টটি common anchor হবে। ২ Points-এ Point 1 ও Point 2-এর মাঝের রেখা Common Reference / Baseline হিসেবে নেওয়া হবে; দুই Drawing একই baseline-এ align হয়ে একই scale-এ তুলনা হবে। একই পয়েন্ট দুবার নেওয়া যাবে না। Bearing/Angle না থাকলে calculator কোনো দিক অনুমান করে legal boundary দাবি করবে না।</p>
+    </div>
+
+    <div class="fbc-card">
+      <h4>২. Field Measurement</h4>
+      <div class="fbc-measure-grid">
+        <div class="calc-field"><label for="fbcFABft">AB — ১ম বাহু</label><div class="feet-inch"><input id="fbcFABft" type="number" min="0" step="any" placeholder="ফুট"><input id="fbcFABin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+        <div class="calc-field"><label for="fbcFBCft">BC — ২য় বাহু</label><div class="feet-inch"><input id="fbcFBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="fbcFBCin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+        <div class="calc-field" id="fbcQuadFields"><label for="fbcFCDft">CD — ৩য় বাহু</label><div class="feet-inch"><input id="fbcFCDft" type="number" min="0" step="any" placeholder="ফুট"><input id="fbcFCDin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+        <div class="calc-field" id="fbcQuadFields2"><label for="fbcFDAft">DA — ৪র্থ বাহু</label><div class="feet-inch"><input id="fbcFDAft" type="number" min="0" step="any" placeholder="ফুট"><input id="fbcFDAin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+      </div>
+      <div class="fbc-diagonal-box">
+        <div class="calc-field">
+          <label for="fbcDiagonal">অতিরিক্ত মাপ / কর্ণ</label>
+          <select id="fbcDiagonal">
+            <option value="AC">AC — A থেকে C</option>
+            <option value="BD">BD — B থেকে D</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label for="fbcFDiagft"><span id="fbcTriDiagLabel">CA — ৩য় বাহু</span><span id="fbcQuadDiagLabel">কর্ণের</span> মাপ</label>
+          <div class="feet-inch"><input id="fbcFDiagft" type="number" min="0" step="any" placeholder="ফুট"><input id="fbcFDiagin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div>
+        </div>
+      </div>
+      <p class="calc-help">চতুর্ভুজে শুধু ৪ বাহু যথেষ্ট নয়—AC বা BD-এর মতো অন্তত ১টি অতিরিক্ত geometric measurement দিন।</p>
+    </div>
+  </div>
+
+  <div class="fbc-card" id="fbcReferenceCard">
+    <h4>৩. Reference / দলিল / নকশার মাপ <span class="small-note">(তুলনা ও Overlay Drawing-এর জন্য)</span></h4>
+    <div class="fbc-measure-grid">
+      <div class="calc-field"><label for="fbcRABft">AB</label><div class="feet-inch"><input id="fbcRABft" type="number" min="0" step="any" placeholder="ফুট"><input id="fbcRABin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+      <div class="calc-field"><label for="fbcRBCft">BC</label><div class="feet-inch"><input id="fbcRBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="fbcRBCin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+      <div class="calc-field"><label for="fbcRCDft">CD</label><div class="feet-inch"><input id="fbcRCDft" type="number" min="0" step="any" placeholder="ফুট"><input id="fbcRCDin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+      <div class="calc-field"><label for="fbcRDAft">DA</label><div class="feet-inch"><input id="fbcRDAft" type="number" min="0" step="any" placeholder="ফুট"><input id="fbcRDAin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+      <div class="calc-field"><label for="fbcRDiagft">AC / BD কর্ণ</label><div class="feet-inch"><input id="fbcRDiagft" type="number" min="0" step="any" placeholder="ফুট"><input id="fbcRDiagin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি"></div></div>
+    </div>
+  </div>
+
+  <div class="fbc-options">
+    <div class="fbc-checks">
+      <label class="fbc-check"><input type="checkbox" id="fbcCompare" checked> Reference বনাম Field তুলনা করুন</label>
+      <label class="fbc-check"><input type="checkbox" id="fbcOverlay" checked> একই Drawing-এ Overlay দেখান</label>
+    </div>
+    <div class="fbc-actions">
+      <button class="calc-btn calc-primary" type="button" id="fbcCalculate">🧮 হিসাব ও Drawing</button>
+      <button class="calc-btn calc-secondary" type="button" id="fbcReset">↶ পরিষ্কার</button>
+      <button class="calc-btn calc-secondary" type="button" id="fbcPrint">📄 Field Report / PDF</button>
+    </div>
+  </div>
+
+  <div class="fbc-card fbc-result-card" id="fbcResult" aria-live="polite">
+    <div class="fbc-alert">মাঠের মাপ দিন। চতুর্ভুজ হলে AC অথবা BD কর্ণও দিন।</div>
+  </div>
+
+  <div class="fbc-card">
+    <h4>📐 Boundary Drawing</h4>
+    <div class="fbc-legend" id="fbcLegend">
+      <span><i class="fbc-legend-swatch fbc-legend-field"></i> Field Boundary</span>
+      <span><i class="fbc-legend-swatch fbc-legend-reference"></i> Reference / নকশা Boundary</span>
+      <span class="small-note">দুটিই একই scale ও reference point-এ overlay হবে</span>
+    </div>
+    <div class="fbc-canvas-wrap"><canvas id="fbcCanvas" width="1200" height="620" aria-label="Field and reference boundary overlay drawing"></canvas></div>
+    <div class="fbc-field-notes">
+      <strong>Field Note:</strong> Bearing/Angle না থাকলে চার বাহুর মাপ দিয়ে এককভাবে নির্দিষ্ট quadrilateral পাওয়া যায় না। কর্ণ/অতিরিক্ত geometric measurement ছাড়া calculator অনুমানভিত্তিক সুনির্দিষ্ট boundary তৈরি করবে না।
+    </div>
+  </div>
+
+  <div class="fbc-legal">
+    <strong>⚠️ Survey Note:</strong> এটি side + diagonal ভিত্তিক গাণিতিক reconstruction ও verification tool। এটি দলিল/খতিয়ান/সরকারি জরিপ নকশার আইনগত সীমানা নির্ধারণের বিকল্প নয়। মাঠে সন্দেহ থাকলে reference point, পুরনো boundary mark এবং নির্ভরযোগ্য নথির সঙ্গে যাচাই করুন।
+  </div>
+</section>
+
 <section class="featured-calcs" aria-labelledby="featured-calc-title">
   <div class="featured-head">
     <div class="calc-title-kicker">🧮 PROFESSIONAL LAND CALCULATOR</div>
@@ -754,6 +887,7 @@
 <strong>গুরুত্বপূর্ণ:</strong> ক্যালকুলেটরটি তথ্যভিত্তিক সহায়ক টুল। জমির প্রকৃত সীমানা, খতিয়ান/দলিল, মাঠ জরিপ, বিরোধ, বা জটিল উত্তরাধিকার মামলায় কেবল অনলাইন ফলাফলের ওপর নির্ভর করবেন না। বিশেষ করে উত্তরাধিকার ক্ষেত্রে দাদা-দাদী/নানা-নানী, ভাই-বোন, পুত্রের সন্তান, উত্তরাধিকার থেকে বঞ্চিত হওয়া, রদ/আউল, বিভিন্ন মাজহাব বা বিশেষ পারিবারিক পরিস্থিতি থাকলে বিশেষজ্ঞ/আইনজীবীর পরামর্শ ও প্রাসঙ্গিক সরকারি নথি যাচাই করা প্রয়োজন।</div>
 </div>
 </section>
+
 </main>
 <footer class="footer">
 <div class="container">
@@ -769,5 +903,6 @@
 <script src="calculator-wood-cft.js?v=20261003-wood1" defer></script>
 <script src="calculator-sawn-wood-cft.js?v=20261003-sawn1" defer></script>
 <script src="calculator-bootstrap.js" defer></script>
+<script src="calculator-field-boundary-pdf-deepfix.js?v=20261005-fbc-deepfix-v9" defer></script>
 </body>
 </html>
