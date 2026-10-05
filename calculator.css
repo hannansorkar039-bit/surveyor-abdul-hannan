@@ -188,3 +188,70 @@
 /* Larger mobile-friendly drawing area for triangle partition */
 .tp-drawing-wrap .tp-canvas-box{min-height:880px}
 .tp-drawing-wrap .tp-canvas-box canvas{min-height:880px}
+
+
+/* Field Boundary Calculator — isolated styles; does not alter existing calculator rules. */
+.field-boundary-panel{position:relative}
+.fbc-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:20px;border-radius:16px;background:linear-gradient(135deg,#eef7f8,#fff8f1);border:1px solid var(--line);margin-bottom:16px}
+.fbc-head h3{margin:5px 0 7px;color:var(--navy);font-size:25px}
+.fbc-head p{margin:0;color:var(--muted)}
+.fbc-kicker{font-size:12px;font-weight:900;letter-spacing:.6px;color:var(--teal)}
+.fbc-badge{white-space:nowrap;background:var(--navy);color:#fff;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:900}
+.fbc-workflow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 16px;padding:12px 14px;border:1px dashed #b9cdd2;border-radius:12px;background:#fff;font-size:13px;font-weight:800;color:var(--navy)}
+.fbc-workflow b{color:var(--orange)}
+.fbc-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:16px}
+.fbc-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:16px}
+.fbc-card h4{margin:0 0 14px;color:var(--navy);font-size:18px}
+.fbc-measure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.fbc-diagonal-box{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px;padding:13px;border-radius:12px;background:#f5f9fa;border:1px solid #dbe7ea}
+.fbc-options{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-top:18px}
+.fbc-check{display:flex;gap:8px;align-items:center;font-weight:800;color:var(--navy)}
+.fbc-check input{width:18px;height:18px}
+.fbc-actions{display:flex;gap:9px;flex-wrap:wrap}
+.fbc-result-card{min-height:100px}
+.fbc-alert{padding:13px 15px;border-left:4px solid #d79a20;background:#fff8e8;border-radius:9px;color:#5c461e}
+.fbc-success{padding:12px 14px;border-left:4px solid #08747b;background:#eef7f8;border-radius:9px;color:#07575d;font-weight:800}
+.fbc-main-result{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-top:14px;padding:15px;border-radius:12px;background:var(--navy);color:#fff}
+.fbc-main-result strong{font-size:24px}
+.fbc-meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.fbc-meta-grid div{padding:11px;background:#f6f9fa;border:1px solid var(--line);border-radius:10px}
+.fbc-meta-grid strong,.fbc-meta-grid span{display:block}
+.fbc-meta-grid strong{color:var(--navy);font-size:12px}
+.fbc-meta-grid span{font-weight:800;margin-top:3px}
+.fbc-unit-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:12px}
+.fbc-unit-grid div{padding:11px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.fbc-unit-grid strong,.fbc-unit-grid span{display:block}
+.fbc-unit-grid strong{font-size:16px;color:var(--teal)}
+.fbc-unit-grid span{font-size:11px;color:var(--muted);margin-top:3px}
+.fbc-reference-result{margin-top:13px;padding:12px;border:1px solid #d9e7ea;border-radius:10px;background:#f8fbfb}
+.fbc-reference-result .fbc-unit-grid{margin-top:8px}
+.fbc-compare{margin-top:14px}
+.fbc-compare h4{margin-bottom:9px}
+.fbc-table-wrap{overflow:auto}
+.fbc-table-wrap table{width:100%;border-collapse:collapse;min-width:560px}
+.fbc-table-wrap th,.fbc-table-wrap td{padding:9px;border-bottom:1px solid var(--line);text-align:left}
+.fbc-table-wrap th{background:#f2f6f7;color:var(--navy)}
+.fbc-diff-warn{font-weight:900;color:#b44d13}
+.fbc-area-diff{margin-top:10px;padding:10px;background:#fff8f1;border-radius:9px}
+.fbc-note,.fbc-field-notes{margin-top:13px;padding:11px 13px;border-left:4px solid var(--teal);background:#eef7f8;border-radius:9px;font-size:13px;color:#40535d}
+.fbc-canvas-wrap{width:100%;min-height:300px;height:430px;border:1px solid var(--line);border-radius:14px;background:#fbfcfd;overflow:hidden}
+.fbc-canvas-wrap canvas{display:block;width:100%;height:100%}
+.fbc-legal{margin-top:16px;padding:15px 17px;background:#fff8f1;border-left:5px solid var(--orange);border-radius:11px;color:#5a4335;font-size:13px}
+.fbc-card[hidden]{display:none!important}
+@media(max-width:850px){.fbc-grid{grid-template-columns:1fr}.fbc-unit-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:620px){.fbc-head{display:block}.fbc-badge{display:inline-block;margin-top:10px}.fbc-measure-grid,.fbc-diagonal-box{grid-template-columns:1fr}.fbc-meta-grid{grid-template-columns:1fr}.fbc-unit-grid{grid-template-columns:repeat(2,1fr)}.fbc-main-result{display:block}.fbc-main-result strong{display:block;margin-top:4px}.fbc-canvas-wrap{height:350px}.fbc-workflow{font-size:12px}}
+@media print{body *{visibility:hidden}.field-boundary-panel,.field-boundary-panel *{visibility:visible}.field-boundary-panel{position:absolute;left:0;top:0;width:100%;border:0;box-shadow:none}.fbc-actions,.fbc-check{display:none!important}}
+
+/* Field Boundary: Reference + Field overlay comparison */
+.fbc-checks{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.fbc-legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#f8fbfb;font-size:12px;font-weight:800;color:var(--navy)}
+.fbc-legend-swatch{display:inline-block;width:22px;height:4px;border-radius:3px;vertical-align:middle;margin-right:5px}
+.fbc-legend-field{background:#08747b}
+.fbc-legend-reference{background:#d26a00}
+@media(max-width:620px){.fbc-checks{display:grid;grid-template-columns:1fr;gap:8px}.fbc-legend{align-items:flex-start}}
+
+/* Field Boundary drawing: large field canvas + pinch zoom/pan */
+.fbc-canvas-wrap{height:860px;min-height:860px;overflow:hidden;position:relative;touch-action:none;background:#fbfcfd}
+.fbc-canvas-wrap canvas{width:100%;height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.fbc-canvas-wrap canvas:active{cursor:grabbing}
+@media(max-width:620px){.fbc-canvas-wrap{height:700px;min-height:700px}.fbc-canvas-wrap canvas{width:100%;height:100%}}
