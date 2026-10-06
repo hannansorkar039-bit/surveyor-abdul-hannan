@@ -550,7 +550,7 @@
     const W=1240,H=1754, pages=[];
     const makePage=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);x.fillStyle='#17313d';x.textBaseline='top';return [c,x];};
     const [c1,x1]=makePage();
-    const font='"Noto Sans Bengali", "Lohit Bengali", Arial, sans-serif';
+    const font='"Lohit Bengali", Arial, sans-serif';
     x1.font=`bold 34px ${font}`; x1.fillText(title,60,55);
     x1.font=`22px ${font}`; x1.fillText('মাঠের পরিমাপ ও Reference/নকশার মাপের গাণিতিক তুলনা',60,105);
     x1.font=`20px ${font}`; x1.fillText(`Reference Point: ${$('fbcReferencePoint').value}${$('fbcReferenceMode')?.value==='two' ? ' + '+$('fbcReferencePoint2').value+' (Common Baseline)' : ' (1 Point)'}`,60,150);
