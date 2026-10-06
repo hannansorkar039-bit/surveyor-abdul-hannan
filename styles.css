@@ -573,7 +573,7 @@ button,input,select,textarea,.btn,.filter-btn{
    This does not alter calculations, content, formulas or desktop/mouse layout.
 */
 @media (pointer: coarse) and (hover: none) {
-  .nav-toggle { display: block; }
+  .nav-toggle { display: block !important; }
 
   .nav-inner {
     position: relative;
@@ -644,12 +644,42 @@ button,input,select,textarea,.btn,.filter-btn{
 
   /* === REQUESTED: Android touch hamburger menu 3x size === */
   .nav-toggle {
-    width: 132px;
-    height: 132px;
-    flex: 0 0 132px;
-    font-size: 60px;
-    border-radius: 33px;
+    width: 132px !important;
+    height: 132px !important;
+    min-width: 132px !important;
+    min-height: 132px !important;
+    max-width: 132px !important;
+    max-height: 132px !important;
+    flex: 0 0 132px !important;
+    font-size: 60px !important;
+    line-height: 1 !important;
+    border-radius: 33px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }
 /* === END FINAL ANDROID TOUCH BREAKPOINT NORMALIZATION === */
 
+
+/* === FINAL: MOBILE HAMBURGER SIZE OVERRIDE === */
+@media (max-width: 900px) {
+  .nav-toggle {
+    width: 132px !important;
+    height: 132px !important;
+    min-width: 132px !important;
+    min-height: 132px !important;
+    max-width: 132px !important;
+    max-height: 132px !important;
+    flex: 0 0 132px !important;
+    font-size: 60px !important;
+    line-height: 1 !important;
+    border-radius: 33px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+/* === END FINAL: MOBILE HAMBURGER SIZE OVERRIDE === */
