@@ -268,7 +268,7 @@ ${details ? "বিস্তারিত: " + details : ""}`;
     const box=document.createElement('div');
     box.className='lightbox';
     box.setAttribute('role','dialog'); box.setAttribute('aria-modal','true'); box.setAttribute('aria-label','ছবি বড় করে দেখুন');
-    box.innerHTML='<button class="lightbox-close" aria-label="ছবি বন্ধ করুন">×</button><button class="lightbox-nav lightbox-prev" aria-label="আগের ছবি">‹</button><img alt=""><button class="lightbox-nav lightbox-next" aria-label="পরের ছবি">›</button><div class="lightbox-counter" aria-live="polite"></div>';
+    box.innerHTML='<button type="button" class="lightbox-close" aria-label="ছবি বন্ধ করুন">×</button><button type="button" class="lightbox-nav lightbox-prev" aria-label="আগের ছবি">‹</button><img alt=""><button type="button" class="lightbox-nav lightbox-next" aria-label="পরের ছবি">›</button><div class="lightbox-counter" aria-live="polite"></div>';
     document.body.appendChild(box);
     const img=box.querySelector('img'), counter=box.querySelector('.lightbox-counter');
     const sources=[...gallery.querySelectorAll('img')]; let index=0; let previousFocus=null;
