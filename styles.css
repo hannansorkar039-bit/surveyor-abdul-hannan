@@ -683,3 +683,23 @@ button,input,select,textarea,.btn,.filter-btn{
   }
 }
 /* === END FINAL: MOBILE HAMBURGER SIZE OVERRIDE === */
+
+
+/* FINAL MENU SIZE — only the website hamburger button */
+.nav-toggle {
+  width: 132px !important;
+  height: 132px !important;
+  min-width: 132px !important;
+  min-height: 132px !important;
+  max-width: 132px !important;
+  max-height: 132px !important;
+  flex: 0 0 132px !important;
+  font-size: 60px !important;
+  line-height: 1 !important;
+  border-radius: 33px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
