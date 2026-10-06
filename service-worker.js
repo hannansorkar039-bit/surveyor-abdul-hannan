@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v43-calculator-ux-offline-fix";
+const CACHE_NAME = "sah-pwa-v44-font-map-race-fix";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 const CORE_ASSETS = [
   "./", "./index.html", "./404.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
@@ -10,7 +10,7 @@ const CORE_ASSETS = [
   "./calculator-core.js", "./calculator-bootstrap.js", "./calculator-field-boundary-pdf-deepfix.js",
   "./calculator-pdf.js", "./calculator-partition.js", "./calculator-featured.js", "./calculator-registry.js",
   "./calculator-land-suite.js", "./calculator-triangle-partition.js", "./calculator-wood-cft.js",
-  "./calculator-sawn-wood-cft.js", "./calculator-ux.js", "./profile-abdul-hannan.webp", "./fonts/Lohit-Bengali.ttf",
+  "./calculator-sawn-wood-cft.js", "./calculator-ux.js", "./profile-abdul-hannan.webp", "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf",
   "./icons/icon-192.png", "./icons/icon-512.png"
 ];
 const EXTERNAL_CACHE_FIRST = new Set([
@@ -22,7 +22,7 @@ const CACHE_FIRST = new Set([
   "./styles.css", "./app.js", "./content.js", "./calculator-pdf.js", "./calculator-core.js", "./calculator-partition.js",
   "./calculator-featured.js", "./calculator-field-boundary-pdf-deepfix.js", "./calculator-registry.js", "./calculator-land-suite.js",
   "./calculator-bootstrap.js", "./calculator-triangle-partition.js", "./calculator-wood-cft.js",
-  "./calculator-sawn-wood-cft.js", "./calculator-ux.js", "./fonts/Lohit-Bengali.ttf", "./icons/icon-192.png", "./icons/icon-512.png"
+  "./calculator-sawn-wood-cft.js", "./calculator-ux.js", "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf", "./icons/icon-192.png", "./icons/icon-512.png"
 ]);
 const isSameOrigin = url => url.origin === self.location.origin;
 const relativeKey = url => {
