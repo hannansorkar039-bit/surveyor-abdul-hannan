@@ -274,3 +274,287 @@
   body.calc-ux-printing .calc-ux-print-meta{color:#63777e;font-size:12px;margin-bottom:18px}
   body.calc-ux-printing .calc-ux-print-result{white-space:pre-wrap;border:1px solid #d6e3e6;border-radius:12px;padding:18px;background:#f8fbfb}
 }
+
+/* =========================================================
+   DEEP SOFT 3D CALCULATOR UI — VISUAL ONLY
+   Calculator formulas, values, data and JS remain untouched.
+   ========================================================= */
+
+.calc-intro,
+.calc-panel,
+.calc-result,
+.result-item,
+.formula,
+.warning,
+.calc-tab,
+.registry-upgrade .registry-card,
+.registry-upgrade .shape-box,
+.registry-upgrade .map-box{
+  box-shadow:
+    10px 14px 30px rgba(8,35,54,.14),
+    2px 4px 9px rgba(8,35,54,.08),
+    -5px -5px 13px rgba(255,255,255,.92),
+    inset 1px 1px 0 rgba(255,255,255,.72);
+}
+
+.calc-panel,
+.calc-result,
+.result-item,
+.formula,
+.warning,
+.registry-upgrade .registry-card{
+  text-shadow:
+    -1px -1px 0 rgba(255,255,255,.90),
+    1px 1px 0 rgba(8,35,54,.16),
+    2px 3px 3px rgba(8,35,54,.20),
+    0 4px 7px rgba(8,35,54,.09);
+}
+
+.calc-panel h1,
+.calc-panel h2,
+.calc-panel h3,
+.calc-panel h4,
+.calc-result .result-main,
+.calc-field label,
+.result-item strong{
+  text-shadow:
+    -1px -1px 0 rgba(255,255,255,.94),
+    1px 1px 0 rgba(8,35,54,.20),
+    2px 3px 4px rgba(8,35,54,.25),
+    0 5px 9px rgba(8,35,54,.11);
+}
+
+.calc-tab{
+  text-shadow:
+    -1px -1px 0 rgba(255,255,255,.80),
+    1px 1px 0 rgba(8,35,54,.18),
+    2px 2px 3px rgba(8,35,54,.20);
+}
+
+@media (hover:hover) and (pointer:fine){
+  .calc-tab:hover,
+  .calc-panel:hover,
+  .registry-upgrade .registry-card:hover{
+    box-shadow:
+      14px 20px 38px rgba(8,35,54,.18),
+      3px 6px 12px rgba(8,35,54,.10),
+      -6px -6px 15px rgba(255,255,255,.95),
+      inset 1px 1px 0 rgba(255,255,255,.76);
+  }
+}
+
+@media(max-width:850px){
+  .calc-panel,
+  .calc-result,
+  .result-item,
+  .formula,
+  .warning,
+  .calc-tab,
+  .registry-upgrade .registry-card{
+    box-shadow:
+      8px 11px 24px rgba(8,35,54,.13),
+      1px 3px 7px rgba(8,35,54,.07),
+      -4px -4px 11px rgba(255,255,255,.90),
+      inset 1px 1px 0 rgba(255,255,255,.68);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .calc-tab,.calc-panel,.calc-result,.result-item,.formula,.warning,
+  .registry-upgrade .registry-card{
+    transition:none!important;
+  }
+}
+
+
+/* =========================================================
+   Reference Typography — Noto Serif Bengali
+   Offline bundled font. No text shadow.
+   ========================================================= */
+@font-face{
+  font-family:"Noto Serif Bengali";
+  src:url("fonts/NotoSerifBengali-Regular.ttf") format("truetype");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  unicode-range:U+0980-09FF,U+200C-200D,U+25CC;
+}
+@font-face{
+  font-family:"Noto Serif Bengali";
+  src:url("fonts/NotoSerifBengali-Bold.ttf") format("truetype");
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  unicode-range:U+0980-09FF,U+200C-200D,U+25CC;
+}
+
+/* Reference-image typography: serif Bengali, clean and substantial. */
+body,
+body *{
+  font-family:"Noto Serif Bengali","Lohit Bengali",serif !important;
+  text-shadow:none !important;
+}
+
+body{
+  font-size:20px !important;
+  line-height:1.82 !important;
+}
+
+p,li,dd{
+  font-size:20px !important;
+  line-height:1.82 !important;
+}
+
+h1{
+  font-size:clamp(36px,5vw,52px) !important;
+  line-height:1.28 !important;
+  font-weight:700 !important;
+}
+h2{
+  font-size:clamp(32px,4vw,42px) !important;
+  line-height:1.35 !important;
+  font-weight:700 !important;
+}
+h3{
+  font-size:clamp(24px,3vw,30px) !important;
+  line-height:1.45 !important;
+  font-weight:700 !important;
+}
+
+.section-title{
+  font-size:clamp(32px,4vw,42px) !important;
+  line-height:1.35 !important;
+  font-weight:700 !important;
+}
+
+.card h3,
+.service strong,
+.info-card h3,
+.post-card h3,
+.video-card h3,
+.trust-card strong{
+  font-size:23px !important;
+  line-height:1.48 !important;
+  font-weight:700 !important;
+}
+
+.card p,
+.service p,
+.info-card p,
+.info-card li,
+.post-card p,
+.video-card p,
+.contact-card p,
+.trust-card p{
+  font-size:20px !important;
+  line-height:1.82 !important;
+}
+
+button,input,select,textarea,.btn,.filter-btn{
+  font-family:"Noto Serif Bengali","Lohit Bengali",serif !important;
+  font-size:19px !important;
+  line-height:1.55 !important;
+}
+
+.calc-wrap,
+.calc-wrap p,
+.calc-wrap li{
+  font-size:19px !important;
+  line-height:1.82 !important;
+}
+
+.calc-field label{
+  font-size:18px !important;
+  line-height:1.55 !important;
+  font-weight:700 !important;
+}
+
+.calc-field input,
+.calc-field select{
+  font-size:19px !important;
+}
+
+.calc-tab{
+  font-size:18px !important;
+  font-weight:700 !important;
+}
+
+.result-main{
+  font-size:28px !important;
+  line-height:1.4 !important;
+  font-weight:700 !important;
+}
+
+@media(max-width:850px){
+  body{font-size:20px !important;line-height:1.82 !important}
+  p,li,dd{font-size:20px !important;line-height:1.82 !important}
+
+  h1{font-size:38px !important}
+  h2{font-size:34px !important}
+  h3{font-size:26px !important}
+  .section-title{font-size:34px !important}
+
+  .card h3,
+  .service strong,
+  .info-card h3,
+  .post-card h3,
+  .video-card h3,
+  .trust-card strong{
+    font-size:23px !important;
+  }
+
+  .card p,
+  .service p,
+  .info-card p,
+  .info-card li,
+  .post-card p,
+  .video-card p,
+  .contact-card p,
+  .trust-card p{
+    font-size:20px !important;
+  }
+
+  button,input,select,textarea,.btn,.filter-btn{
+    font-size:19px !important;
+  }
+
+  .calc-wrap,
+  .calc-wrap p,
+  .calc-wrap li{
+    font-size:19px !important;
+  }
+}
+
+@media(max-width:620px){
+  body{font-size:19px !important}
+  p,li,dd{font-size:19px !important}
+
+  h1{font-size:35px !important}
+  h2{font-size:31px !important}
+  h3{font-size:24px !important}
+  .section-title{font-size:31px !important}
+
+  .card h3,
+  .service strong,
+  .info-card h3,
+  .post-card h3,
+  .video-card h3,
+  .trust-card strong{
+    font-size:21px !important;
+  }
+
+  .card p,
+  .service p,
+  .info-card p,
+  .info-card li,
+  .post-card p,
+  .video-card p,
+  .contact-card p,
+  .trust-card p{
+    font-size:19px !important;
+  }
+
+  button,input,select,textarea,.btn,.filter-btn{
+    font-size:18px !important;
+  }
+}
