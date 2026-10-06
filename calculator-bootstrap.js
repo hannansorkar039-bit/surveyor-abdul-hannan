@@ -32,16 +32,18 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
   document.querySelectorAll('.calc-tab[data-tab="triangle-partition"]').forEach(btn=>btn.addEventListener('click',loadTrianglePartition,{once:true}));
   whenVisible(document.querySelector('.featured-calcs'),()=>loadScript('calculator-featured.js','featured').catch(()=>{}));
   whenVisible(document.querySelector('#professional-land-suite'),()=>loadScript('calculator-land-suite.js','land-suite').catch(()=>{}));
-  // The multi-field Drawing & Alignment section lives before the registry calculator.
-  // Load its engine when that section becomes visible so its inputs are live immediately.
-  const shapeSketch=document.querySelector('#panel-multi-field-drawing');
-  whenVisible(shapeSketch,()=>loadScript('calculator-registry.js?v=v14-smooth-point-edit','registry').catch(()=>{}));
-  const registry=document.querySelector('#registry-calculator');
-  whenVisible(registry,async()=>{
+  // Load Leaflet before the registry engine from every entry point.
+  // The multi-field Drawing section and the map live in the same calculator,
+  // so the registry engine must never execute before window.L is available.
+  const loadRegistry=async()=>{
     await loadCss('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css','leaflet-css');
     await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js','leaflet').catch(()=>{});
     await loadScript('calculator-registry.js?v=v14-smooth-point-edit','registry').catch(()=>{});
-  });
+  };
+  const shapeSketch=document.querySelector('#panel-multi-field-drawing');
+  whenVisible(shapeSketch,loadRegistry);
+  const registry=document.querySelector('#registry-calculator');
+  whenVisible(registry,loadRegistry);
   document.querySelectorAll('.calculator-launch-card').forEach(btn=>btn.addEventListener('click',async()=>{
     await window.SAH_CALC_READY;
     const tab=btn.dataset.calcTab;
