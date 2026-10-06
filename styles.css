@@ -636,6 +636,11 @@ button,input,select,textarea,.btn,.filter-btn{
     justify-content: center;
     flex-wrap: wrap;
   }
+
+  /* Keep the hero feature pills centered with the profile image and text. */
+  .hero-pills {
+    justify-content: center;
+  }
 }
 /* === END FINAL ANDROID TOUCH BREAKPOINT NORMALIZATION === */
 
