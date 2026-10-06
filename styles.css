@@ -641,6 +641,15 @@ button,input,select,textarea,.btn,.filter-btn{
   .hero-pills {
     justify-content: center;
   }
+
+  /* === REQUESTED: Android touch hamburger menu 3x size === */
+  .nav-toggle {
+    width: 132px;
+    height: 132px;
+    flex: 0 0 132px;
+    font-size: 60px;
+    border-radius: 33px;
+  }
 }
 /* === END FINAL ANDROID TOUCH BREAKPOINT NORMALIZATION === */
 
