@@ -97,6 +97,18 @@
     <button type="button" class="calculator-launch-card" data-calc-target="registry-calculator"><span>▤</span><strong>Report / PDF</strong><small>প্রিন্ট ও PDF রিপোর্ট</small></button>
   </div>
 </div>
+<div class="calc-ux-bar" aria-label="ক্যালকুলেটর দ্রুত নিয়ন্ত্রণ">
+  <div class="calc-ux-search">
+    <span aria-hidden="true">⌕</span>
+    <input id="calcSearch" type="search" autocomplete="off" placeholder="ক্যালকুলেটর খুঁজুন…" aria-label="ক্যালকুলেটর খুঁজুন">
+    <button type="button" id="calcSearchClear" class="calc-ux-icon-btn" aria-label="অনুসন্ধান পরিষ্কার করুন" hidden>×</button>
+  </div>
+  <div class="calc-ux-actions">
+    <button type="button" id="calcShowAll" class="calc-ux-btn">সব ক্যালকুলেটর</button>
+    <button type="button" id="calcRecent" class="calc-ux-btn">সাম্প্রতিক</button>
+  </div>
+</div>
+<div id="calcSearchStatus" class="calc-search-status" role="status" aria-live="polite"></div>
 <div class="featured-separator formula-suite-title"><span>🧮</span> সূত্র ভিত্তিক ক্যালকুলেটর ও মুসলিম উত্তরাধিকার</div>
 <div class="calc-tabs" role="tablist" aria-label="ক্যালকুলেটর নির্বাচন">
 <button class="calc-tab active" data-tab="quad-diagonal" role="tab" aria-selected="true">কর্ণসহ অনিয়মিত চতুর্ভুজ</button>
@@ -904,5 +916,6 @@
 <script src="calculator-sawn-wood-cft.js?v=20261003-sawn1" defer></script>
 <script src="calculator-bootstrap.js" defer></script>
 <script src="calculator-field-boundary-pdf-deepfix.js?v=20261005-fbc-deepfix-v9" defer></script>
+<script src="calculator-ux.js?v=20261006-ux1" defer></script>
 </body>
 </html>
