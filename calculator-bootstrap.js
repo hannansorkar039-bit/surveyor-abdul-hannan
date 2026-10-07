@@ -4,17 +4,28 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
 
 (()=>{
   const loaded=new Map();
-  const loadScript=(src,key=src)=>{
+  const loadScript=(src,key=src,integrity='',crossorigin='')=>{
     if(loaded.has(key)) return loaded.get(key);
     const p=new Promise((resolve,reject)=>{
-      const s=document.createElement('script'); s.src=src; s.defer=true; s.onload=resolve; s.onerror=()=>reject(new Error('Failed to load '+src));
+      const s=document.createElement('script');
+      s.src=src; s.defer=true;
+      if(integrity){ s.integrity=integrity; s.crossOrigin=crossorigin || 'anonymous'; }
+      s.onload=resolve;
+      s.onerror=()=>reject(new Error('Failed to load '+src));
       document.head.appendChild(s);
     });
     loaded.set(key,p); return p;
   };
-  const loadCss=(href,key=href)=>{
+  const loadCss=(href,key=href,integrity='',crossorigin='')=>{
     if(document.querySelector('link[data-dynamic-css="'+key+'"]')) return Promise.resolve();
-    const l=document.createElement('link'); l.rel='stylesheet'; l.href=href; l.dataset.dynamicCss=key; document.head.appendChild(l); return Promise.resolve();
+    return new Promise((resolve,reject)=>{
+      const l=document.createElement('link');
+      l.rel='stylesheet'; l.href=href; l.dataset.dynamicCss=key;
+      if(integrity){ l.integrity=integrity; l.crossOrigin=crossorigin || 'anonymous'; }
+      l.onload=resolve;
+      l.onerror=()=>reject(new Error('Failed to load '+href));
+      document.head.appendChild(l);
+    });
   };
   const whenVisible=(el,loader)=>{
     if(!el)return;
@@ -23,7 +34,7 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
   };
   window.SAH_CALC_READY=loadScript('calculator-core.js','core').catch(()=>{});
   window.SAH_LOAD_PDF=async()=>{
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','jspdf').catch(()=>{});
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','jspdf','sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==','anonymous').catch(error=>{ console.error('jsPDF offline dependency failed:',error); });
     await loadScript('calculator-pdf.js','pdf').catch(()=>{});
   };
   const loadPartition=()=>loadScript('calculator-partition.js?v=multi-v2','partition').catch(()=>{});
@@ -36,8 +47,8 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
   // The multi-field Drawing section and the map live in the same calculator,
   // so the registry engine must never execute before window.L is available.
   const loadRegistry=async()=>{
-    await loadCss('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css','leaflet-css');
-    await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js','leaflet').catch(()=>{});
+    await loadCss('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css','leaflet-css','sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=','anonymous').catch(error=>{ console.error('Leaflet CSS failed:',error); });
+    await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js','leaflet','sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=','anonymous').catch(error=>{ console.error('Leaflet JS failed:',error); });
     await loadScript('calculator-registry.js?v=v14-smooth-point-edit','registry').catch(()=>{});
   };
   const shapeSketch=document.querySelector('#panel-multi-field-drawing');
