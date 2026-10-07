@@ -558,3 +558,193 @@ button,input,select,textarea,.btn,.filter-btn{
     font-size:18px !important;
   }
 }
+
+
+/* FINAL 3D LAND CALCULATOR CONTROLS */
+.calculator-page .feet-inch input,
+.calculator-page .fi-row input,
+.calculator-page .tp-fi input,
+.calculator-page .length-input-pair input{
+  border:1px solid #aebfc6;
+  background:linear-gradient(145deg,#ffffff 0%,#e7eef0 100%);
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.95),
+    inset -3px -3px 6px rgba(65,86,95,.16),
+    0 3px 0 rgba(70,91,100,.28),
+    0 7px 14px rgba(18,43,54,.18);
+  transform:translateY(0);
+  transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease;
+}
+.calculator-page .feet-inch input:focus,
+.calculator-page .fi-row input:focus,
+.calculator-page .tp-fi input:focus,
+.calculator-page .length-input-pair input:focus{
+  border-color:var(--teal);
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.95),
+    inset -3px -3px 6px rgba(8,116,123,.12),
+    0 4px 0 rgba(8,76,84,.27),
+    0 9px 18px rgba(8,76,84,.20),
+    0 0 0 3px rgba(8,116,123,.10);
+  transform:translateY(-1px);
+}
+.calculator-page .feet-inch input:disabled,
+.calculator-page .fi-row input:disabled,
+.calculator-page .tp-fi input:disabled,
+.calculator-page .length-input-pair input:disabled{
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.8),
+    inset -3px -3px 6px rgba(65,86,95,.12),
+    0 2px 0 rgba(70,91,100,.16);
+}
+.calculator-page .calc-btn{
+  border:1px solid rgba(0,0,0,.13);
+  box-shadow:
+    inset 2px 2px 3px rgba(255,255,255,.32),
+    inset -3px -3px 5px rgba(0,0,0,.19),
+    0 4px 0 rgba(0,0,0,.25),
+    0 9px 16px rgba(18,42,52,.23);
+  transition:transform .14s ease,box-shadow .14s ease,filter .14s ease;
+}
+.calculator-page .calc-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    inset 2px 2px 3px rgba(255,255,255,.34),
+    inset -3px -3px 5px rgba(0,0,0,.19),
+    0 6px 0 rgba(0,0,0,.25),
+    0 12px 21px rgba(18,42,52,.26);
+  filter:saturate(1.04);
+}
+.calculator-page .calc-btn:active{
+  transform:translateY(3px);
+  box-shadow:
+    inset 2px 2px 4px rgba(0,0,0,.17),
+    inset -2px -2px 3px rgba(255,255,255,.18),
+    0 1px 0 rgba(0,0,0,.20),
+    0 3px 7px rgba(18,42,52,.18);
+}
+.calculator-page .calc-btn:focus-visible{
+  outline:3px solid rgba(8,116,123,.24);
+  outline-offset:2px;
+}
+
+/* FINAL WOOD CFT 3D CONTROLS - scoped only to the two wood CFT calculators */
+#panel-wood-cft .wood-cft-unit input,
+#panel-wood-cft .wood-cft-field input,
+#panel-sawn-wood-cft .sawn-wood-cft-length input,
+#panel-sawn-wood-cft .sawn-wood-cft-field input,
+#panel-sawn-wood-cft .sawn-wood-cft-table input{
+  border:1px solid #aebfc6;
+  background:linear-gradient(145deg,#ffffff 0%,#e7eef0 100%);
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.95),
+    inset -3px -3px 6px rgba(65,86,95,.16),
+    0 3px 0 rgba(70,91,100,.28),
+    0 7px 14px rgba(18,43,54,.18);
+  transform:translateY(0);
+  transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease;
+}
+#panel-wood-cft .wood-cft-unit input:focus,
+#panel-wood-cft .wood-cft-field input:focus,
+#panel-sawn-wood-cft .sawn-wood-cft-length input:focus,
+#panel-sawn-wood-cft .sawn-wood-cft-field input:focus,
+#panel-sawn-wood-cft .sawn-wood-cft-table input:focus{
+  border-color:#0b8b91;
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.95),
+    inset -3px -3px 6px rgba(8,116,123,.12),
+    0 4px 0 rgba(8,76,84,.27),
+    0 9px 18px rgba(8,76,84,.20),
+    0 0 0 3px rgba(8,116,123,.10);
+  transform:translateY(-1px);
+}
+#panel-wood-cft .wood-cft-actions .calc-btn,
+#panel-wood-cft .wood-cft-add,
+#panel-wood-cft .wood-cft-remove,
+#panel-sawn-wood-cft .sawn-wood-cft-actions .calc-btn,
+#panel-sawn-wood-cft .sawn-wood-cft-add,
+#panel-sawn-wood-cft .sawn-wood-cft-remove{
+  border:1px solid rgba(0,0,0,.13);
+  box-shadow:
+    inset 2px 2px 3px rgba(255,255,255,.32),
+    inset -3px -3px 5px rgba(0,0,0,.19),
+    0 4px 0 rgba(0,0,0,.25),
+    0 9px 16px rgba(18,42,52,.23);
+  transition:transform .14s ease,box-shadow .14s ease,filter .14s ease;
+}
+#panel-wood-cft .wood-cft-actions .calc-btn:hover,
+#panel-wood-cft .wood-cft-add:hover,
+#panel-wood-cft .wood-cft-remove:hover,
+#panel-sawn-wood-cft .sawn-wood-cft-actions .calc-btn:hover,
+#panel-sawn-wood-cft .sawn-wood-cft-add:hover,
+#panel-sawn-wood-cft .sawn-wood-cft-remove:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    inset 2px 2px 3px rgba(255,255,255,.34),
+    inset -3px -3px 5px rgba(0,0,0,.19),
+    0 6px 0 rgba(0,0,0,.25),
+    0 12px 21px rgba(18,42,52,.26);
+  filter:saturate(1.04);
+}
+#panel-wood-cft .wood-cft-actions .calc-btn:active,
+#panel-wood-cft .wood-cft-add:active,
+#panel-wood-cft .wood-cft-remove:active,
+#panel-sawn-wood-cft .sawn-wood-cft-actions .calc-btn:active,
+#panel-sawn-wood-cft .sawn-wood-cft-add:active,
+#panel-sawn-wood-cft .sawn-wood-cft-remove:active{
+  transform:translateY(3px);
+  box-shadow:
+    inset 2px 2px 4px rgba(0,0,0,.17),
+    inset -2px -2px 3px rgba(255,255,255,.18),
+    0 1px 0 rgba(0,0,0,.20),
+    0 3px 7px rgba(18,42,52,.18);
+}
+
+
+/* TRIANGLE PARTITION: deep 3D effect for the four requested controls */
+.calculator-page #tpPart,
+.calculator-page #tpPartType,
+.calculator-page #tpMethod,
+.calculator-page #tpVertex{
+  border:1px solid #aebfc6 !important;
+  background:linear-gradient(145deg,#ffffff 0%,#e7eef0 100%) !important;
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.95),
+    inset -3px -3px 6px rgba(65,86,95,.16),
+    0 3px 0 rgba(70,91,100,.28),
+    0 7px 14px rgba(18,43,54,.18) !important;
+  transform:translateY(0);
+  transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease;
+}
+.calculator-page #tpPart:hover,
+.calculator-page #tpPartType:hover,
+.calculator-page #tpMethod:hover,
+.calculator-page #tpVertex:hover{
+  transform:translateY(-1px);
+  border-color:#8faeb7 !important;
+}
+.calculator-page #tpPart:focus,
+.calculator-page #tpPartType:focus,
+.calculator-page #tpMethod:focus,
+.calculator-page #tpVertex:focus{
+  border-color:var(--teal) !important;
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.95),
+    inset -3px -3px 6px rgba(8,116,123,.12),
+    0 4px 0 rgba(8,76,84,.27),
+    0 9px 18px rgba(8,76,84,.20),
+    0 0 0 3px rgba(8,116,123,.10) !important;
+  transform:translateY(-1px);
+  outline:none;
+}
+.calculator-page #tpPart:active,
+.calculator-page #tpPartType:active,
+.calculator-page #tpMethod:active,
+.calculator-page #tpVertex:active{
+  transform:translateY(2px);
+  box-shadow:
+    inset 2px 2px 4px rgba(0,0,0,.14),
+    inset -2px -2px 3px rgba(255,255,255,.18),
+    0 1px 0 rgba(0,0,0,.20),
+    0 3px 7px rgba(18,42,52,.18) !important;
+}
