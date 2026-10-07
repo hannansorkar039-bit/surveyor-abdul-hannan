@@ -703,3 +703,182 @@ button,input,select,textarea,.btn,.filter-btn{
   justify-content: center !important;
   box-sizing: border-box !important;
 }
+
+
+/* Requested: subtle 3D effect for the calculator choices under
+   "প্রয়োজনীয় হিসাব বেছে নিন" — intentionally shallower than the calculator controls. */
+.calculator-launcher-grid .calculator-launch-card{
+  border-color:#d2e1e4;
+  box-shadow:
+    inset 1px 1px 2px rgba(255,255,255,.90),
+    0 2px 0 rgba(8,35,54,.10),
+    0 4px 9px rgba(8,35,54,.10);
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.calculator-launcher-grid .calculator-launch-card:hover{
+  transform:translateY(-1px);
+  border-color:#a9ced2;
+  box-shadow:
+    inset 1px 1px 2px rgba(255,255,255,.92),
+    0 3px 0 rgba(8,35,54,.10),
+    0 6px 12px rgba(8,35,54,.12);
+}
+.calculator-launcher-grid .calculator-launch-card:active{
+  transform:translateY(2px);
+  box-shadow:
+    inset 1px 1px 3px rgba(8,35,54,.10),
+    0 1px 0 rgba(8,35,54,.10),
+    0 2px 5px rgba(8,35,54,.10);
+}
+
+
+/* USER REQUEST: Deep 3D homepage section titles and content boxes */
+/* Scoped only to the six requested homepage sections. */
+.home-quick-access .section-title,
+.premium-intro .section-title,
+.service-showcase .section-title,
+.process-preview .section-title,
+.trust-section .section-title,
+.section:has(> .container > .section-title) .section-title {
+  text-shadow: 0 3px 0 rgba(0,0,0,.18), 0 7px 14px rgba(16,43,52,.24);
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.10));
+}
+.home-quick-access .home-quick-card,
+.premium-intro .trust-strip > div,
+.service-showcase .showcase-card,
+.process-preview .mini-process > div,
+.trust-section .trust-card,
+.section:has(> .container > .section-title) .cards > .card {
+  border: 1px solid rgba(82,105,114,.22);
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.72),
+    inset -4px -4px 8px rgba(35,58,66,.12),
+    0 5px 0 rgba(48,70,78,.24),
+    0 10px 22px rgba(18,42,52,.22);
+  transform: translateY(0);
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+.home-quick-access .home-quick-card:hover,
+.premium-intro .trust-strip > div:hover,
+.service-showcase .showcase-card:hover,
+.process-preview .mini-process > div:hover,
+.trust-section .trust-card:hover,
+.section:has(> .container > .section-title) .cards > .card:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.025);
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.78),
+    inset -4px -4px 8px rgba(35,58,66,.13),
+    0 7px 0 rgba(48,70,78,.24),
+    0 14px 26px rgba(18,42,52,.25);
+}
+.home-quick-access .home-quick-card:active,
+.premium-intro .trust-strip > div:active,
+.service-showcase .showcase-card:active,
+.process-preview .mini-process > div:active,
+.trust-section .trust-card:active,
+.section:has(> .container > .section-title) .cards > .card:active {
+  transform: translateY(3px);
+  box-shadow:
+    inset 2px 2px 5px rgba(0,0,0,.12),
+    inset -2px -2px 4px rgba(255,255,255,.48),
+    0 2px 0 rgba(48,70,78,.20),
+    0 4px 10px rgba(18,42,52,.16);
+}
+
+
+/* ALL-PAGES DEEP 3D VISUAL UPGRADE */
+/* Visual-only styling: no layout, content, calculation or interaction logic changed. */
+.section-title,
+.land-calc-section-title,
+.kh-section-title{
+  text-shadow:0 3px 0 rgba(8,35,54,.10),0 7px 15px rgba(8,35,54,.16);
+}
+.service,
+.stat,
+.card,
+.gallery-item,
+.video-card,
+.post-card,
+.contact-card,
+.social,
+.notice,
+.article-section,
+.asset-box,
+.featured-card,
+.featured-panel,
+.featured-panel-body,
+.calculator-feature-card,
+.calculator-launch-card,
+.home-quick-card,
+.ls-service,
+.showcase-card,
+.trust-card,
+.v2-step,
+.kh-card,
+.kh-topic,
+.registry-card,
+.order-card,
+.helper-card,
+.inherit-card,
+.fbc-card,
+.fbc-diagonal-box,
+.map-box,
+.tp-card,
+.tp-demarcation-card,
+.tp-edit-card,
+.tp-more-card,
+.error-card,
+.wood-cft-total-box,
+.sawn-wood-cft-total-box{
+  box-shadow:
+    0 4px 0 rgba(8,35,54,.13),
+    0 10px 20px rgba(8,35,54,.12),
+    0 20px 38px rgba(6,26,42,.13),
+    inset 0 1px 0 rgba(255,255,255,.78);
+  border-color:rgba(120,145,157,.48);
+  transition:box-shadow .18s ease,transform .18s ease,border-color .18s ease;
+}
+.service:hover,
+.stat:hover,
+.card:hover,
+.gallery-item:hover,
+.video-card:hover,
+.post-card:hover,
+.contact-card:hover,
+.social:hover,
+.notice:hover,
+.article-section:hover,
+.asset-box:hover,
+.featured-card:hover,
+.featured-panel:hover,
+.calculator-feature-card:hover,
+.calculator-launch-card:hover,
+.home-quick-card:hover,
+.ls-service:hover,
+.showcase-card:hover,
+.trust-card:hover,
+.v2-step:hover,
+.kh-card:hover,
+.kh-topic:hover,
+.registry-card:hover,
+.order-card:hover,
+.helper-card:hover,
+.inherit-card:hover,
+.fbc-card:hover,
+.fbc-diagonal-box:hover,
+.map-box:hover,
+.tp-card:hover,
+.tp-demarcation-card:hover,
+.tp-edit-card:hover,
+.tp-more-card:hover,
+.error-card:hover,
+.wood-cft-total-box:hover,
+.sawn-wood-cft-total-box:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    0 5px 0 rgba(8,35,54,.15),
+    0 13px 24px rgba(8,35,54,.15),
+    0 24px 44px rgba(6,26,42,.15),
+    inset 0 1px 0 rgba(255,255,255,.82);
+}
