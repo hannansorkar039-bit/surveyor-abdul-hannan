@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v44-font-map-race-fix";
+const CACHE_NAME = "sah-pwa-v45-offline-pdf-cache-hardening";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 const CORE_ASSETS = [
   "./", "./index.html", "./404.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
@@ -31,11 +31,26 @@ const relativeKey = url => {
   return rel ? "./" + rel : "./";
 };
 
+async function cacheAsset(cache, asset) {
+  const request = new Request(asset, {cache: "no-cache"});
+  const response = await fetch(request);
+  if (!response || (!response.ok && response.type !== "opaque")) {
+    throw new Error(`Failed to cache ${asset}: ${response ? response.status : "no response"}`);
+  }
+  await cache.put(request, response.clone());
+}
+
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    await Promise.allSettled(CORE_ASSETS.map(asset => cache.add(asset)));
-    await self.skipWaiting();
+    try {
+      await Promise.all(CORE_ASSETS.map(asset => cacheAsset(cache, asset)));
+      await Promise.all([...EXTERNAL_CACHE_FIRST].map(asset => cacheAsset(cache, asset)));
+      await self.skipWaiting();
+    } catch (error) {
+      console.error("SAH PWA installation/cache failed:", error);
+      throw error;
+    }
   })());
 });
 
@@ -60,13 +75,23 @@ async function networkFirst(request, fallback = "./index.html") {
   }
 }
 
+function normalizedCacheRequest(request) {
+  const url = new URL(request.url);
+  if (isSameOrigin(url) && url.search) {
+    url.search = "";
+    return new Request(url.href, {method: request.method, headers: request.headers, credentials: request.credentials});
+  }
+  return request;
+}
+
 async function cacheFirst(request) {
-  const cached = await caches.match(request);
+  const cacheRequest = normalizedCacheRequest(request);
+  const cached = await caches.match(cacheRequest);
   if (cached) return cached;
   const response = await fetch(request);
   if (response && (response.ok || response.type === "opaque")) {
     const cache = await caches.open(CACHE_NAME);
-    await cache.put(request, response.clone());
+    await cache.put(cacheRequest, response.clone());
   }
   return response;
 }
