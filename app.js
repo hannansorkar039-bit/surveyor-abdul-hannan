@@ -49,13 +49,67 @@
     }
   }
 
+  // Shared image fallback handler. Event delegation is used so images added
+  // later by the scalable gallery receive the same protection as initial images.
+  const applyImageFallback = (img) => {
+    if (!img || img.dataset.fallback) return;
+    img.dataset.fallback = '1';
+    const label = (img.alt || 'Surveyor Abdul Hannan').slice(0, 45);
+    const safeLabel = label.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#061a2a"/><stop offset="1" stop-color="#08747b"/></linearGradient></defs><rect width="1200" height="800" fill="url(#g)"/><g fill="none" stroke="#f2bd62" stroke-opacity=".25"><path d="M0 170h1200M0 330h1200M0 490h1200M0 650h1200M180 0v800M390 0v800M600 0v800M810 0v800M1020 0v800"/></g><circle cx="600" cy="315" r="105" fill="#ffffff" fill-opacity=".08" stroke="#f2bd62" stroke-width="4"/><text x="600" y="335" text-anchor="middle" font-family="Arial,sans-serif" font-size="92" font-weight="700" fill="#f2bd62">AH</text><text x="600" y="500" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#ffffff">SURVEYOR ABDUL HANNAN</text><text x="600" y="545" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#d4e7eb">${safeLabel}</text></svg>`;
+    img.src = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+  };
+  document.addEventListener('error', e => {
+    if (e.target instanceof HTMLImageElement) applyImageFallback(e.target);
+  }, true);
+
   const photoGallery = $("photoGallery");
   if (photoGallery) {
-    photoGallery.innerHTML = SITE.photos.map(p => `
-      <figure class="gallery-item">
-        <img src="${esc(p.src)}" alt="${esc(p.alt)}" loading="lazy" decoding="async" tabindex="0">
-        <figcaption class="gallery-caption"><strong>${esc(p.title)}</strong><span>${esc(p.caption || "")}</span></figcaption>
-      </figure>`).join("");
+    // Scalable gallery: keep all photo data available, but only render a small
+    // batch at a time. This prevents hundreds of gallery cards from being
+    // inserted into the DOM at once while preserving the existing lightbox.
+    const photos = Array.isArray(SITE.photos) ? SITE.photos : [];
+    const PAGE_SIZE = 24;
+    let rendered = 0;
+
+    const renderPhotos = () => {
+      const next = photos.slice(rendered, rendered + PAGE_SIZE);
+      if (!next.length) return;
+      const html = next.map(p => `
+        <figure class="gallery-item">
+          <img src="${esc(p.src)}" alt="${esc(p.alt || "ভূমি জরিপের ছবি")}" loading="lazy" decoding="async" width="1200" height="900" tabindex="0">
+          <figcaption class="gallery-caption"><strong>${esc(p.title || "ভূমি জরিপের ছবি")}</strong><span>${esc(p.caption || "")}</span></figcaption>
+        </figure>`).join("");
+      photoGallery.insertAdjacentHTML("beforeend", html);
+      rendered += next.length;
+      updateGalleryMoreButton();
+    };
+
+    const moreWrap = document.createElement("div");
+    moreWrap.className = "gallery-more-wrap";
+    moreWrap.hidden = true;
+    const moreBtn = document.createElement("button");
+    moreBtn.type = "button";
+    moreBtn.className = "btn btn-light gallery-more-btn";
+    moreBtn.textContent = "আরও ছবি দেখুন";
+    moreBtn.setAttribute("aria-controls", "photoGallery");
+    moreBtn.addEventListener("click", renderPhotos);
+    moreWrap.appendChild(moreBtn);
+    photoGallery.insertAdjacentElement("afterend", moreWrap);
+
+    function updateGalleryMoreButton() {
+      const remaining = photos.length - rendered;
+      moreWrap.hidden = remaining <= 0;
+      if (remaining > 0) {
+        moreBtn.textContent = `আরও ছবি দেখুন (${Math.min(PAGE_SIZE, remaining)})`;
+      }
+    }
+
+    if (photos.length) {
+      renderPhotos();
+    } else {
+      photoGallery.innerHTML = '<p class="gallery-empty">বর্তমানে কোনো ছবি যুক্ত করা হয়নি।</p>';
+    }
   }
 
   const pg = $("postGallery");
@@ -254,15 +308,6 @@ ${details ? "বিস্তারিত: " + details : ""}`;
   bar.innerHTML='<a href="tel:+8801810811989">📞<span>কল</span></a><a href="https://wa.me/8801810811989" target="_blank" rel="noopener">💬<span>WhatsApp</span></a><a class="primary" href="calculator.html">🧮<span>ক্যালকুলেটর</span></a><a href="contact.html">📍<span>যোগাযোগ</span></a>';
   document.body.appendChild(bar);
 
-  // Graceful fallback for images that are intentionally kept outside this package.
-  document.querySelectorAll('img').forEach(img=>img.addEventListener('error',()=>{
-    if(img.dataset.fallback) return;
-    img.dataset.fallback='1';
-    const label=(img.alt||'Surveyor Abdul Hannan').slice(0,45);
-    const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#061a2a"/><stop offset="1" stop-color="#08747b"/></linearGradient></defs><rect width="1200" height="800" fill="url(#g)"/><g fill="none" stroke="#f2bd62" stroke-opacity=".25"><path d="M0 170h1200M0 330h1200M0 490h1200M0 650h1200M180 0v800M390 0v800M600 0v800M810 0v800M1020 0v800"/></g><circle cx="600" cy="315" r="105" fill="#ffffff" fill-opacity=".08" stroke="#f2bd62" stroke-width="4"/><text x="600" y="335" text-anchor="middle" font-family="Arial,sans-serif" font-size="92" font-weight="700" fill="#f2bd62">AH</text><text x="600" y="500" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#ffffff">SURVEYOR ABDUL HANNAN</text><text x="600" y="545" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#d4e7eb">${label.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</text></svg>`;
-    img.src='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
-  }));
-
   const gallery=document.querySelector('.gallery');
   if(gallery){
     const box=document.createElement('div');
@@ -271,12 +316,14 @@ ${details ? "বিস্তারিত: " + details : ""}`;
     box.innerHTML='<button type="button" class="lightbox-close" aria-label="ছবি বন্ধ করুন">×</button><button type="button" class="lightbox-nav lightbox-prev" aria-label="আগের ছবি">‹</button><img alt=""><button type="button" class="lightbox-nav lightbox-next" aria-label="পরের ছবি">›</button><div class="lightbox-counter" aria-live="polite"></div>';
     document.body.appendChild(box);
     const img=box.querySelector('img'), counter=box.querySelector('.lightbox-counter');
-    const sources=[...gallery.querySelectorAll('img')]; let index=0; let previousFocus=null;
-    const render=()=>{const source=sources[index]; if(!source)return; img.src=source.currentSrc||source.src; img.alt=source.alt||''; counter.textContent=`${index+1} / ${sources.length}`;};
-    const openAt=i=>{index=(i+sources.length)%sources.length; previousFocus=document.activeElement; render(); box.classList.add('open'); document.body.style.overflow='hidden'; box.querySelector('.lightbox-close').focus();};
+    let index=0; let previousFocus=null;
+    const getSources=()=>[...gallery.querySelectorAll('img')];
+    const render=()=>{const sources=getSources(); const source=sources[index]; if(!source)return; img.src=source.currentSrc||source.src; img.alt=source.alt||''; counter.textContent=`${index+1} / ${sources.length}`;};
+    const openAt=i=>{const sources=getSources(); if(!sources.length)return; index=(i+sources.length)%sources.length; previousFocus=document.activeElement; render(); box.classList.add('open'); document.body.style.overflow='hidden'; box.querySelector('.lightbox-close').focus();};
     const close=()=>{box.classList.remove('open');document.body.style.overflow='';previousFocus?.focus();};
     const next=()=>openAt(index+1), prev=()=>openAt(index-1);
-    sources.forEach((source,i)=>{source.addEventListener('click',()=>openAt(i));source.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openAt(i)}})});
+    gallery.addEventListener('click',e=>{const source=e.target.closest('img'); if(!source)return; const sources=getSources(); const i=sources.indexOf(source); if(i>=0)openAt(i);});
+    gallery.addEventListener('keydown',e=>{if(!['Enter',' '].includes(e.key))return; const source=e.target.closest('img'); if(!source)return; e.preventDefault(); const sources=getSources(); const i=sources.indexOf(source); if(i>=0)openAt(i);});
     box.querySelector('.lightbox-close').addEventListener('click',close); box.querySelector('.lightbox-next').addEventListener('click',next); box.querySelector('.lightbox-prev').addEventListener('click',prev);
     box.addEventListener('click',e=>{if(e.target===box)close();});
     document.addEventListener('keydown',e=>{if(!box.classList.contains('open'))return;if(e.key==='Escape')close();else if(e.key==='ArrowRight')next();else if(e.key==='ArrowLeft')prev();});
