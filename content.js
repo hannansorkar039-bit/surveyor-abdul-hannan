@@ -157,7 +157,7 @@ const SITE = {
 
   photos: [
     {
-      src: "cs dima 1.jpg",
+      src: "cs dima 1.webp",
       alt: "সীমানা নির্ধারণ",
       title: "নকশার ডিমার্কেশন",
       caption: "সীমানা নির্ধারণের জন্য ডিমার্কেশন রিপোর্ট"
@@ -169,25 +169,25 @@ const SITE = {
       caption: "প্যান্টোগ্রাফ বা তুলনামূলক নকশা"
     },
     {
-      src: "Mosjid Bari.jpg",
+      src: "Mosjid Bari.webp",
       alt: "সীমানা নির্ধারণ",
       title: "ত্রিভুজায়ন",
       caption: "ত্রিভুজায়ন পদ্ধতিতে সীমানা নির্ধারণ"
     },
     {
-      src: "IMG_20260921_065659.jpg",
+      src: "IMG_20260921_065659.webp",
       alt: "ভাগ বাটোয়ারা",
       title: "ভাগ-বণ্টন",
       caption: "ভাগ-বণ্টনের ফিল্ডে তৈরি স্কেচ"
     },
     {
-      src: "CHH.jpg",
+      src: "CHH.webp",
       alt: "সীমানা নির্ধারণ",
       title: "ত্রিভুজায়ন",
       caption: "ত্রিভুজায়ন পদ্ধতিতে সীমানা নির্ধারণ"
     },
     {
-      src: "CamScanner 12-07-2026 14.52.jpg",
+      src: "CamScanner 12-07-2026 14.52.webp",
       alt: "ভাগ বাটোয়ারা",
       title: "বন্টন",
       caption: "ভাগ-বণ্টনের স্কেচ"
