@@ -685,18 +685,18 @@ button,input,select,textarea,.btn,.filter-btn{
 /* === END FINAL: MOBILE HAMBURGER SIZE OVERRIDE === */
 
 
-/* FINAL MENU SIZE — only the website hamburger button */
+/* FINAL MENU SIZE — mobile-friendly hamburger button */
 .nav-toggle {
-  width: 99px !important;
-  height: 99px !important;
-  min-width: 99px !important;
-  min-height: 99px !important;
-  max-width: 99px !important;
-  max-height: 99px !important;
-  flex: 0 0 99px !important;
-  font-size: 45px !important;
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  max-width: 52px !important;
+  max-height: 52px !important;
+  flex: 0 0 52px !important;
+  font-size: 26px !important;
   line-height: 1 !important;
-  border-radius: 49.5px !important;
+  border-radius: 14px !important;
   padding: 0 !important;
   display: flex !important;
   align-items: center !important;
@@ -891,10 +891,10 @@ button,input,select,textarea,.btn,.filter-btn{
   }
 }
 
-/* === FINAL: NAV BRAND + MOBILE CALCULATOR SIZE — proportional to 99px menu === */
+/* === FINAL: NAV BRAND + MOBILE CALCULATOR SIZE — proportional to 52px menu === */
 @media (pointer: coarse) {
   .nav-inner {
-    min-height: 99px;
+    min-height: 76px;
     gap: 12px;
     align-items: center;
   }
@@ -925,7 +925,7 @@ button,input,select,textarea,.btn,.filter-btn{
   }
 
   .navlinks {
-    top: 111px !important;
+    top: 76px !important;
   }
 }
 
@@ -961,20 +961,20 @@ button,input,select,textarea,.btn,.filter-btn{
 
 
 /* === FINAL SMALL-SCREEN HEADER SAFETY ===
-   Keeps all requested large sizes intact while preventing the header from
-   overflowing on very narrow touch screens. No calculator/content rules changed. */
+   Keeps the mobile header compact while preventing overflow on very narrow touch screens.
+   No calculator/content rules changed. */
 @media (pointer: coarse) and (max-width: 380px) {
   .nav-inner {
-    min-height: 151px !important;
+    min-height: 116px !important;
     position: relative;
     display: flex;
     align-items: flex-start;
-    padding: 12px 0 60px !important;
+    padding: 10px 0 58px !important;
   }
 
   .site-brand {
     min-width: 0 !important;
-    max-width: calc(100% - 107px) !important;
+    max-width: calc(100% - 68px) !important;
   }
 
   .site-brand span {
@@ -996,15 +996,17 @@ button,input,select,textarea,.btn,.filter-btn{
   }
 
   .nav-toggle {
-    flex: 0 0 99px !important;
-    width: 99px !important;
-    height: 99px !important;
-    min-width: 99px !important;
-    min-height: 99px !important;
+    flex: 0 0 52px !important;
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
+    max-width: 52px !important;
+    max-height: 52px !important;
   }
 
   .navlinks {
-    top: 163px !important;
+    top: 126px !important;
   }
 }
 /* === END FINAL SMALL-SCREEN HEADER SAFETY === */
