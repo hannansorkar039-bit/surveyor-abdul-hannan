@@ -1,5 +1,9 @@
-const CACHE_NAME = "sah-pwa-v46-offline-pdf-cache-hardening";
+const CACHE_NAME = "sah-pwa-v48-image-loading-stable";
 const BASE_PATH = new URL("./", self.location.href).pathname;
+
+// Only the offline application shell is required for Service Worker installation.
+// Images are handled separately so one unavailable image can never prevent the
+// Service Worker from installing/updating.
 const CORE_ASSETS = [
   "./", "./index.html", "./404.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
   "./about.html", "./services.html", "./knowledge.html", "./documents.html", "./mistakes.html",
@@ -10,20 +14,29 @@ const CORE_ASSETS = [
   "./calculator-core.js", "./calculator-bootstrap.js", "./calculator-field-boundary-pdf-deepfix.js",
   "./calculator-pdf.js", "./calculator-partition.js", "./calculator-featured.js", "./calculator-registry.js",
   "./calculator-land-suite.js", "./calculator-triangle-partition.js", "./calculator-wood-cft.js",
-  "./calculator-sawn-wood-cft.js", "./calculator-ux.js", "./profile-abdul-hannan.webp", "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf",
+  "./calculator-sawn-wood-cft.js", "./calculator-ux.js", "./profile-abdul-hannan.webp",
+  "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf",
   "./icons/icon-192.png", "./icons/icon-512.png"
 ];
+
+const IMAGE_ASSETS = [
+  "./cs dima 1.webp", "./03.webp", "./Mosjid Bari.webp", "./IMG_20260921_065659.webp",
+  "./CHH.webp", "./CamScanner 12-07-2026 14.52.webp", "./Abul Kalam.webp", "./visiting-card.jpg"
+];
+
 const EXTERNAL_CACHE_FIRST = new Set([
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
 ]);
+
 const CACHE_FIRST = new Set([
   "./styles.css", "./app.js", "./content.js", "./calculator-pdf.js", "./calculator-core.js", "./calculator-partition.js",
   "./calculator-featured.js", "./calculator-field-boundary-pdf-deepfix.js", "./calculator-registry.js", "./calculator-land-suite.js",
   "./calculator-bootstrap.js", "./calculator-triangle-partition.js", "./calculator-wood-cft.js",
   "./calculator-sawn-wood-cft.js", "./calculator-ux.js", "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf", "./icons/icon-192.png", "./icons/icon-512.png"
 ]);
+
 const isSameOrigin = url => url.origin === self.location.origin;
 const relativeKey = url => {
   if (!isSameOrigin(url) || !url.pathname.startsWith(BASE_PATH)) return null;
@@ -31,10 +44,14 @@ const relativeKey = url => {
   return rel ? "./" + rel : "./";
 };
 
+function isImageRequest(request, url) {
+  return request.destination === "image" || /\.(?:avif|gif|jpe?g|png|svg|webp)$/i.test(url.pathname);
+}
+
 async function cacheAsset(cache, asset) {
-  const request = new Request(asset, {cache: "no-cache"});
+  const request = new Request(asset, { cache: "no-cache" });
   const response = await fetch(request);
-  if (!response || (!response.ok && response.type !== "opaque")) {
+  if (!response || !response.ok) {
     throw new Error(`Failed to cache ${asset}: ${response ? response.status : "no response"}`);
   }
   await cache.put(request, response.clone());
@@ -43,44 +60,46 @@ async function cacheAsset(cache, asset) {
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    try {
-      // Core assets are required for a valid offline shell. External CDN assets are
-      // optional: a temporary CDN/CORS/network failure must not abort SW install.
-      await Promise.all(CORE_ASSETS.map(asset => cacheAsset(cache, asset)));
-      const externalResults = await Promise.allSettled(
-        [...EXTERNAL_CACHE_FIRST].map(asset => cacheAsset(cache, asset))
-      );
-      externalResults.forEach((result, index) => {
-        if (result.status === "rejected") {
-          console.warn("SAH PWA optional external cache skipped:", [...EXTERNAL_CACHE_FIRST][index], result.reason);
-        }
-      });
-      await self.skipWaiting();
-    } catch (error) {
-      console.error("SAH PWA required offline cache failed:", error);
-      throw error;
-    }
-  })());
+
+    // Required shell: failure here means the new Service Worker must not install.
+    await Promise.all(CORE_ASSETS.map(asset => cacheAsset(cache, asset)));
+
+    // Images are optional during installation. They will always be fetched
+    // normally on demand, with cache fallback for offline use.
+    await Promise.allSettled(IMAGE_ASSETS.map(asset => cacheAsset(cache, asset)));
+
+    // External CDN resources are also optional.
+    await Promise.allSettled(
+      [...EXTERNAL_CACHE_FIRST].map(asset => cacheAsset(cache, asset))
+    );
+
+    await self.skipWaiting();
+  })().catch(error => {
+    console.error("SAH PWA required offline cache failed:", error);
+    throw error;
+  }));
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)));
+    await Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });
 
 async function networkFirst(request, fallback = "./index.html") {
   try {
-    const response = await fetch(request, {cache: "no-cache"});
+    const response = await fetch(request, { cache: "no-cache" });
     if (response && response.ok) {
       const cache = await caches.open(CACHE_NAME);
       await cache.put(request, response.clone());
     }
     return response;
   } catch (_) {
-    return (await caches.match(request)) || (await caches.match(fallback));
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    return fallback ? await caches.match(fallback) : Response.error();
   }
 }
 
@@ -88,7 +107,11 @@ function normalizedCacheRequest(request) {
   const url = new URL(request.url);
   if (isSameOrigin(url) && url.search) {
     url.search = "";
-    return new Request(url.href, {method: request.method, headers: request.headers, credentials: request.credentials});
+    return new Request(url.href, {
+      method: request.method,
+      headers: request.headers,
+      credentials: request.credentials
+    });
   }
   return request;
 }
@@ -109,7 +132,9 @@ async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request);
   const update = fetch(request).then(async response => {
-    if (response && (response.ok || response.type === "opaque")) await cache.put(request, response.clone());
+    if (response && (response.ok || response.type === "opaque")) {
+      await cache.put(request, response.clone());
+    }
     return response;
   }).catch(() => cached);
   return cached || update;
@@ -118,6 +143,7 @@ async function staleWhileRevalidate(request) {
 self.addEventListener("fetch", event => {
   const request = event.request;
   if (request.method !== "GET") return;
+
   const url = new URL(request.url);
   const key = relativeKey(url);
 
@@ -137,15 +163,27 @@ self.addEventListener("fetch", event => {
   }
 
   if (isSameOrigin(url)) {
+    // Images are deliberately NOT cache-first. Chrome/PWA must be allowed to
+    // revalidate the current image, while a known-good cached image remains an
+    // offline fallback. Failed/404 responses are never written to the cache.
+    if (isImageRequest(request, url)) {
+      event.respondWith(networkFirst(request, null));
+      return;
+    }
+
     event.respondWith(staleWhileRevalidate(request));
     return;
   }
 
-  event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(async response => {
-    if (response && (response.ok || response.type === "opaque")) {
-      const cache = await caches.open(CACHE_NAME);
-      await cache.put(request, response.clone());
-    }
-    return response;
-  }).catch(() => cached)));
+  event.respondWith(
+    caches.match(request).then(cached =>
+      cached || fetch(request).then(async response => {
+        if (response && (response.ok || response.type === "opaque")) {
+          const cache = await caches.open(CACHE_NAME);
+          await cache.put(request, response.clone());
+        }
+        return response;
+      }).catch(() => cached)
+    )
+  );
 });
