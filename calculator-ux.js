@@ -82,6 +82,42 @@
     }
   }
 
+  function setupNavigationStatus() {
+    const status = $('#calcSearchStatus');
+    if (!status) return;
+    const update = () => {
+      const active = tabs().find(t => t.classList.contains('active'));
+      if (!active || status.dataset.searching === '1') return;
+      status.textContent = `বর্তমানে খোলা: ${tabLabel(active)}`;
+      status.classList.add('is-navigation-status');
+    };
+    tabs().forEach(t => t.addEventListener('click', () => setTimeout(update, 0), { passive: true }));
+    window.addEventListener('hashchange', update, { passive: true });
+    setTimeout(update, 0);
+  }
+
+  function improveValidationMessages() {
+    $$('input, select, textarea').forEach(field => {
+      if (field.dataset.uxValidation === '1') return;
+      field.dataset.uxValidation = '1';
+      field.addEventListener('invalid', () => {
+        field.classList.add('input-error');
+        if (!field.nextElementSibling?.classList.contains('input-error-note')) {
+          const note = document.createElement('small');
+          note.className = 'input-error-note';
+          note.textContent = field.validity.valueMissing ? 'এই ঘরটি পূরণ করুন।' : 'দেওয়া মানটি যাচাই করুন।';
+          field.insertAdjacentElement('afterend', note);
+        }
+      }, { passive: true });
+      field.addEventListener('input', () => {
+        if (field.validity.valid) {
+          field.classList.remove('input-error');
+          if (field.nextElementSibling?.classList.contains('input-error-note')) field.nextElementSibling.remove();
+        }
+      }, { passive: true });
+    });
+  }
+
   function setupSearch() {
     const input = $('#calcSearch');
     const clear = $('#calcSearchClear');
@@ -91,6 +127,7 @@
     if (!input || !status) return;
 
     const apply = (query = '') => {
+      status.dataset.searching = query.trim() ? '1' : '0';
       const q = query.trim().toLocaleLowerCase('bn-BD');
       const list = tabs();
       let count = 0;
@@ -211,6 +248,8 @@
     if (!result || result.dataset.uxEnhanced === '1' || !resultText(result)) return;
     result.dataset.uxEnhanced = '1';
     result.setAttribute('tabindex', '-1');
+    result.setAttribute('role', result.getAttribute('role') || 'region');
+    result.setAttribute('aria-label', 'হিসাবের ফলাফল');
     const tools = document.createElement('div');
     tools.className = 'calc-result-tools';
     tools.innerHTML = '<button type="button" class="calc-result-tool calc-result-copy">📋 ফলাফল কপি</button><button type="button" class="calc-result-tool calc-result-print">🖨️ প্রিন্ট / PDF</button>';
@@ -275,6 +314,8 @@
   function init() {
     setupTabs();
     setupSearch();
+    setupNavigationStatus();
+    improveValidationMessages();
     setupResults();
     setupKeyboardCalculation();
     setupLaunchCards();
