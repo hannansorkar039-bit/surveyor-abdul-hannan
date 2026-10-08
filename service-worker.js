@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v48-image-loading-stable";
+const CACHE_NAME = "sah-pwa-v49-scalable-gallery";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 
 // Only the offline application shell is required for Service Worker installation.
@@ -19,10 +19,10 @@ const CORE_ASSETS = [
   "./icons/icon-192.png", "./icons/icon-512.png"
 ];
 
-const IMAGE_ASSETS = [
-  "./cs dima 1.webp", "./03.webp", "./Mosjid Bari.webp", "./IMG_20260921_065659.webp",
-  "./CHH.webp", "./CamScanner 12-07-2026 14.52.webp", "./Abul Kalam.webp", "./visiting-card.jpg"
-];
+// Gallery images are intentionally cached on demand.
+// Do not maintain a fixed image list here; this keeps the PWA scalable as new
+// photos are added to content.js. Visited images remain available offline.
+const IMAGE_ASSETS = [];
 
 const EXTERNAL_CACHE_FIRST = new Set([
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
@@ -66,7 +66,9 @@ self.addEventListener("install", event => {
 
     // Images are optional during installation. They will always be fetched
     // normally on demand, with cache fallback for offline use.
-    await Promise.allSettled(IMAGE_ASSETS.map(asset => cacheAsset(cache, asset)));
+    if (IMAGE_ASSETS.length) {
+      await Promise.allSettled(IMAGE_ASSETS.map(asset => cacheAsset(cache, asset)));
+    }
 
     // External CDN resources are also optional.
     await Promise.allSettled(
