@@ -687,16 +687,16 @@ button,input,select,textarea,.btn,.filter-btn{
 
 /* FINAL MENU SIZE — only the website hamburger button */
 .nav-toggle {
-  width: 66px !important;
-  height: 66px !important;
-  min-width: 66px !important;
-  min-height: 66px !important;
-  max-width: 66px !important;
-  max-height: 66px !important;
-  flex: 0 0 66px !important;
-  font-size: 30px !important;
+  width: 99px !important;
+  height: 99px !important;
+  min-width: 99px !important;
+  min-height: 99px !important;
+  max-width: 99px !important;
+  max-height: 99px !important;
+  flex: 0 0 99px !important;
+  font-size: 45px !important;
   line-height: 1 !important;
-  border-radius: 33px !important;
+  border-radius: 49.5px !important;
   padding: 0 !important;
   display: flex !important;
   align-items: center !important;
@@ -881,4 +881,12 @@ button,input,select,textarea,.btn,.filter-btn{
     0 13px 24px rgba(8,35,54,.15),
     0 24px 44px rgba(6,26,42,.15),
     inset 0 1px 0 rgba(255,255,255,.82);
+}
+
+
+/* USER REQUEST: mobile menu item text size only */
+@media (pointer: coarse) and (hover: none) {
+  .navlinks a {
+    font-size: 42px !important;
+  }
 }
