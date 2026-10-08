@@ -890,3 +890,121 @@ button,input,select,textarea,.btn,.filter-btn{
     font-size: 42px !important;
   }
 }
+
+/* === FINAL: NAV BRAND + MOBILE CALCULATOR SIZE — proportional to 99px menu === */
+@media (pointer: coarse) {
+  .nav-inner {
+    min-height: 99px;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 27px !important;
+    line-height: 1.2;
+  }
+
+  .site-brand img {
+    width: 51px !important;
+    height: 51px !important;
+    min-width: 51px !important;
+    min-height: 51px !important;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .mobile-calculator-link {
+    font-size: 25.5px !important;
+    line-height: 1.2 !important;
+    padding: 13px 16px !important;
+    border-radius: 15px !important;
+    font-weight: 900 !important;
+  }
+
+  .navlinks {
+    top: 111px !important;
+  }
+}
+
+@media (pointer: coarse) and (max-width: 600px) {
+  .nav-inner {
+    gap: 8px;
+  }
+
+  .site-brand {
+    font-size: 22px !important;
+    gap: 7px;
+    min-width: 0;
+  }
+
+  .site-brand span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .site-brand img {
+    width: 51px !important;
+    height: 51px !important;
+  }
+
+  .mobile-calculator-link {
+    font-size: 20px !important;
+    padding: 11px 12px !important;
+  }
+}
+
+/* === END FINAL NAV BRAND + MOBILE CALCULATOR SIZE === */
+
+
+/* === FINAL SMALL-SCREEN HEADER SAFETY ===
+   Keeps all requested large sizes intact while preventing the header from
+   overflowing on very narrow touch screens. No calculator/content rules changed. */
+@media (pointer: coarse) and (max-width: 380px) {
+  .nav-inner {
+    min-height: 151px !important;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 0 60px !important;
+  }
+
+  .site-brand {
+    min-width: 0 !important;
+    max-width: calc(100% - 107px) !important;
+  }
+
+  .site-brand span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-calculator-link {
+    position: absolute !important;
+    left: 0;
+    bottom: 10px;
+    margin-left: 0 !important;
+    max-width: 100%;
+    font-size: 20px !important;
+    padding: 11px 12px !important;
+    white-space: nowrap;
+  }
+
+  .nav-toggle {
+    flex: 0 0 99px !important;
+    width: 99px !important;
+    height: 99px !important;
+    min-width: 99px !important;
+    min-height: 99px !important;
+  }
+
+  .navlinks {
+    top: 163px !important;
+  }
+}
+/* === END FINAL SMALL-SCREEN HEADER SAFETY === */
