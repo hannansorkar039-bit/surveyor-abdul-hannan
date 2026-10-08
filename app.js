@@ -261,7 +261,7 @@ ${details ? "বিস্তারিত: " + details : ""}`;
   const navLinks = document.querySelector('.navlinks');
   if(nav && navLinks){
     const btn = document.createElement('button');
-    btn.className='nav-toggle'; btn.type='button'; btn.setAttribute('aria-label','মেনু খুলুন'); btn.setAttribute('aria-expanded','false'); btn.innerHTML='☰'; btn.style.cssText='width:99px!important;height:99px!important;min-width:99px!important;min-height:99px!important;max-width:99px!important;max-height:99px!important;flex:0 0 99px!important;font-size:45px!important;line-height:1!important;border-radius:49.5px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;';
+    btn.className='nav-toggle'; btn.type='button'; btn.setAttribute('aria-label','মেনু খুলুন'); btn.setAttribute('aria-expanded','false'); btn.innerHTML='☰'; btn.style.cssText='width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;max-width:52px!important;max-height:52px!important;flex:0 0 52px!important;font-size:26px!important;line-height:1!important;border-radius:14px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;';
     nav.querySelector('.nav-inner')?.appendChild(btn);
     // Group the existing links on mobile without changing desktop navigation order/content.
     if(!navLinks.dataset.grouped){
