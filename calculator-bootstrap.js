@@ -32,7 +32,25 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
     if(!('IntersectionObserver' in window)){loader();return;}
     const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);loader();}}),{rootMargin:'420px 0px'}); io.observe(el);
   };
-  window.SAH_CALC_READY=loadScript('calculator-core.js','core').catch(()=>{});
+  window.SAH_CALC_READY=loadScript('calculator-core.js','core').catch(error=>{ console.error('Calculator core failed to load:',error); throw error; });
+
+  // Direct calculator-tab clicks can happen before the dynamically loaded core is ready.
+  // Hold that click, wait for the core, then replay it once so no tab initialization is lost.
+  document.addEventListener('click',async event=>{
+    const btn=event.target.closest?.('.calc-tab');
+    if(!btn || btn.dataset.sahCoreGuarded==='1') return;
+    if(btn.classList.contains('active')) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    try {
+      await window.SAH_CALC_READY;
+      btn.dataset.sahCoreGuarded='1';
+      btn.click();
+      delete btn.dataset.sahCoreGuarded;
+    } catch(error) {
+      console.error('Calculator initialization failed:',error);
+    }
+  },true);
   window.SAH_LOAD_PDF=async()=>{
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','jspdf','sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==','anonymous').catch(error=>{ console.error('jsPDF offline dependency failed:',error); });
     await loadScript('calculator-pdf.js','pdf').catch(()=>{});
