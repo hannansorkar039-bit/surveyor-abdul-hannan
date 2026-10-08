@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v45-offline-pdf-cache-hardening";
+const CACHE_NAME = "sah-pwa-v46-offline-pdf-cache-hardening";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 const CORE_ASSETS = [
   "./", "./index.html", "./404.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
@@ -44,11 +44,20 @@ self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     try {
+      // Core assets are required for a valid offline shell. External CDN assets are
+      // optional: a temporary CDN/CORS/network failure must not abort SW install.
       await Promise.all(CORE_ASSETS.map(asset => cacheAsset(cache, asset)));
-      await Promise.all([...EXTERNAL_CACHE_FIRST].map(asset => cacheAsset(cache, asset)));
+      const externalResults = await Promise.allSettled(
+        [...EXTERNAL_CACHE_FIRST].map(asset => cacheAsset(cache, asset))
+      );
+      externalResults.forEach((result, index) => {
+        if (result.status === "rejected") {
+          console.warn("SAH PWA optional external cache skipped:", [...EXTERNAL_CACHE_FIRST][index], result.reason);
+        }
+      });
       await self.skipWaiting();
     } catch (error) {
-      console.error("SAH PWA installation/cache failed:", error);
+      console.error("SAH PWA required offline cache failed:", error);
       throw error;
     }
   })());
