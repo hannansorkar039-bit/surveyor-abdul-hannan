@@ -225,7 +225,14 @@
     const father=v('father'), mother=v('mother'), grandfather=v('grandfather'), pgm=v('paternalGrandmother'), mgm=v('maternalGrandmother');
     const fullB=v('fullBrothers'), fullS=v('fullSisters'), patB=v('paternalHalfBrothers'), patS=v('paternalHalfSisters'), matB=v('maternalBrothers'), matS=v('maternalSisters');
     const ss=v('sonsons'), sd=v('sondaughters');
-    const statutoryDesc=deadSons+deadDaughters, hasDesc=(sons+daughters+deadSons+deadDaughters+ss+sd)>0;
+    const deadSonChildren=v('deadSonSons')+v('deadSonDaughters');
+    const deadDaughterChildren=v('deadDaughterSons')+v('deadDaughterDaughters');
+    // Under MFLO 1961 s.4, a predeceased son/daughter contributes a statutory branch
+    // only when that child left children who are alive when succession opens.
+    const statutorySonBranches=deadSons>0&&deadSonChildren>0?deadSons:0;
+    const statutoryDaughterBranches=deadDaughters>0&&deadDaughterChildren>0?deadDaughters:0;
+    const statutoryDesc=statutorySonBranches+statutoryDaughterBranches;
+    const hasDesc=(sons+daughters+statutoryDesc+ss+sd)>0;
     const hasMaleDesc=sons>0||ss>0;
     const rows=[],notes=[];
     function push(name,count,share,reason){if(share>1e-10)rows.push({name,count,share,each:share/(count||1),reason});}
@@ -246,22 +253,22 @@
       else if(hasDesc)push('পিতা',1,1/6,'কন্যা/পুত্রের কন্যা থাকায় ১/৬ এবং অবশিষ্টের দাবিদার');
     } else if(grandfather&&hasDesc) push('দাদা',1,1/6,'পিতা অনুপস্থিত; যোগ্য দাদা ১/৬ এবং অবশিষ্টের দাবিদার');
     // Direct children, including a deceased son/daughter as a statutory branch under section 4.
-    const childSonBranches=sons+deadSons, childDaughterBranches=daughters+deadDaughters;
+    const childSonBranches=sons+statutorySonBranches, childDaughterBranches=daughters+statutoryDaughterBranches;
     if(childSonBranches>0){
       const fixedBeforeChildren=rows.reduce((a,x)=>a+x.share,0);
       const residueForChildren=Math.max(0,1-fixedBeforeChildren);
       const units=childSonBranches*2+childDaughterBranches, per=residueForChildren/(units||1);
       if(sons)push(sons===1?'পুত্র':'পুত্রগণ',sons,per*2*sons,'অবশিষ্ট অংশ; পুত্র-কন্যা ২:১ অনুপাতে');
       if(daughters)push(daughters===1?'কন্যা':'কন্যাগণ',daughters,per*daughters,'পুত্রের সঙ্গে অবশিষ্ট অংশে ২:১ অনুপাত');
-      if(deadSons&&(v('deadSonSons')+v('deadSonDaughters'))){push('মৃত পুত্রের সন্তান (ধারা ৪)',v('deadSonSons')+v('deadSonDaughters'),per*2*deadSons,'MFLO 1961 ধারা ৪: মৃত পুত্র জীবিত থাকলে যে অংশ পেতেন, সেই শাখার সমপরিমাণ অংশ');notes.push('পূর্বমৃত পুত্রের সন্তানদের অংশ ধারা ৪-এর statutory representation হিসেবে দেখানো হয়েছে।');}
-      if(deadDaughters&&(v('deadDaughterSons')+v('deadDaughterDaughters'))){push('মৃত কন্যার সন্তান (ধারা ৪)',v('deadDaughterSons')+v('deadDaughterDaughters'),per*deadDaughters,'MFLO 1961 ধারা ৪: মৃত কন্যা জীবিত থাকলে যে অংশ পেতেন, সেই শাখার সমপরিমাণ অংশ');notes.push('পূর্বমৃত কন্যার সন্তানদের অংশ ধারা ৪-এর statutory representation হিসেবে দেখানো হয়েছে।');}
-      return {rows,notes,fixedTotal:rows.reduce((a,x)=>a+x.share,0),male,wives,husband,sons,deadSons,daughters,deadDaughters,ss,sd,father,mother,grandfather,fullB,fullS,patB,patS,matB,matS,hasDesc,hasMaleDesc,childSonBranches,childDaughterBranches,childrenConsumed:true};
+      if(statutorySonBranches){push('মৃত পুত্রের সন্তান (ধারা ৪)',deadSonChildren,per*2*statutorySonBranches,'MFLO 1961 ধারা ৪: মৃত পুত্র জীবিত থাকলে যে অংশ পেতেন, সেই শাখার সমপরিমাণ অংশ');notes.push('পূর্বমৃত পুত্রের প্রতিটি যোগ্য শাখা ধারা ৪ অনুযায়ী তার পিতার/মাতার কাল্পনিক অংশের সমপরিমাণ অংশ পেয়েছে; একই শাখার সন্তানরা সেই শাখার অংশ সমানভাবে ভাগ করবে।');}
+      if(statutoryDaughterBranches){push('মৃত কন্যার সন্তান (ধারা ৪)',deadDaughterChildren,per*statutoryDaughterBranches,'MFLO 1961 ধারা ৪: মৃত কন্যা জীবিত থাকলে যে অংশ পেতেন, সেই শাখার সমপরিমাণ অংশ');notes.push('পূর্বমৃত কন্যার প্রতিটি যোগ্য শাখা ধারা ৪ অনুযায়ী তার মায়ের কাল্পনিক অংশের সমপরিমাণ অংশ পেয়েছে; একই শাখার সন্তানরা সেই শাখার অংশ সমানভাবে ভাগ করবে।');}
+      return {rows,notes,fixedTotal:rows.reduce((a,x)=>a+x.share,0),male,wives,husband,sons,deadSons,daughters,deadDaughters,ss,sd,father,mother,grandfather,fullB,fullS,patB,patS,matB,matS,hasDesc,hasMaleDesc,childSonBranches,childDaughterBranches,statutorySonBranches,statutoryDaughterBranches,childrenConsumed:true};
     }
     // No direct son branch. Daughters/deceased daughters get fixed 1/2 or 2/3 collectively.
     if(childDaughterBranches>0){
       const ds=childDaughterBranches===1?1/2:2/3;
       if(daughters)push(daughters===1?'কন্যা':'কন্যাগণ',daughters,ds*(daughters/childDaughterBranches),childDaughterBranches===1?'একজন কন্যা: ১/২':'দুই বা ততোধিক কন্যা: ২/৩');
-      if(deadDaughters&&(v('deadDaughterSons')+v('deadDaughterDaughters')))push('মৃত কন্যার সন্তান (ধারা ৪)',v('deadDaughterSons')+v('deadDaughterDaughters'),ds*(deadDaughters/childDaughterBranches),'MFLO 1961 ধারা ৪: মৃত কন্যা জীবিত থাকলে যে অংশ পেতেন');
+      if(statutoryDaughterBranches)push('মৃত কন্যার সন্তান (ধারা ৪)',deadDaughterChildren,ds*(statutoryDaughterBranches/childDaughterBranches),'MFLO 1961 ধারা ৪: মৃত কন্যা জীবিত থাকলে যে অংশ পেতেন');
     }
     // Son's descendants.
     if(sons===0&&ss===0&&sd>0){
@@ -279,7 +286,7 @@
     } else if(noNear&&fullB===0&&patB===0&&patS>0){
       push(patS===1?'বৈমাত্রেয় বোন':'বৈমাত্রেয় বোনগণ',patS,patS===1?1/2:2/3,'বৈমাত্রেয় বোনের নির্ধারিত অংশ');
     }
-    return {rows,notes,fixedTotal:rows.reduce((a,x)=>a+x.share,0),male,wives,husband,sons,deadSons,daughters,deadDaughters,ss,sd,father,mother,grandfather,fullB,fullS,patB,patS,matB,matS,hasDesc,hasMaleDesc,childSonBranches,childDaughterBranches,childrenConsumed:false};
+    return {rows,notes,fixedTotal:rows.reduce((a,x)=>a+x.share,0),male,wives,husband,sons,deadSons,daughters,deadDaughters,ss,sd,father,mother,grandfather,fullB,fullS,patB,patS,matB,matS,hasDesc,hasMaleDesc,childSonBranches,childDaughterBranches,statutorySonBranches,statutoryDaughterBranches,childrenConsumed:false};
   }
   $('inheritCalc').onclick=()=>{
     const r=$('inheritResult'),land=Math.max(0,+$('estateLand').value||0),estate=Math.max(0,+$('estateMoney').value||0),gold=Math.max(0,+$('estateGold').value||0);
