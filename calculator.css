@@ -848,3 +848,9 @@ button,input,select,textarea,.btn,.filter-btn{
 .calculator-page .qp-cut-editor,.calculator-page .qp-multi-controls,.calculator-page .qp-split-editor{box-shadow:0 8px 20px rgba(8,35,54,.06)}.calculator-page .qp-cut-editor-title,.calculator-page .qp-multi-title{font-size:18px;line-height:1.45}.calculator-page .qp-cut-editor-note,.calculator-page .qp-multi-note{font-size:13px}.calculator-page .qp-cut-field input,.calculator-page .qp-multi-grid input,.calculator-page .qp-multi-grid select{min-height:48px}.calculator-page .qp-cut-actions,.calculator-page .qp-multi-actions{position:sticky;bottom:8px;z-index:12;padding:8px;border:1px solid #d5e5e8;border-radius:13px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);box-shadow:0 8px 22px rgba(8,35,54,.10)}.calculator-page .qp-drawing{box-shadow:0 10px 26px rgba(8,35,54,.08)}.calculator-page .qp-drawing-head{font-size:16px;display:flex;align-items:center;justify-content:space-between;gap:10px}.calculator-page .qp-svg-wrap{-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:thin}.calculator-page .qp-drawing-meta{line-height:1.6}
 @media(max-width:620px){.calculator-page .qp-cut-actions .calc-btn,.calculator-page .qp-multi-actions .calc-btn{flex:1;min-width:0;min-height:46px}.calculator-page .qp-drawing-head{align-items:flex-start;flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.calculator-page .calculator-launch-card{transition:none}}
+
+
+/* Targeted visibility fixes for the calculator launcher only. */
+.calculator-page .calculator-launcher-head{background:linear-gradient(135deg,#082336,#0d5360);padding:14px 16px;border-radius:14px}
+.calculator-page .calculator-launcher-kicker{color:#000!important;font-weight:950!important;text-shadow:0 0 1px rgba(0,0,0,.25)}
+.calculator-page .calculator-launcher-head p{color:#fff!important;font-weight:800!important;text-shadow:0 1px 1px rgba(0,0,0,.18)}
