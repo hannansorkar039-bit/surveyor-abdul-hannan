@@ -1010,3 +1010,271 @@ button,input,select,textarea,.btn,.filter-btn{
   }
 }
 /* === END FINAL SMALL-SCREEN HEADER SAFETY === */
+
+
+/* Desktop-site readability correction (CSS only).
+   650px breakpoint accommodates Chrome Android "Desktop site" viewport scaling;
+   ordinary narrow mobile layouts below 650 CSS px keep their existing styles. */
+@media screen and (min-width: 650px) {
+  /* Home page quick-access and trust-strip cards: target actual text nodes. */
+  .home-quick-card strong,
+  .trust-strip strong,
+  .service-showcase .showcase-card strong,
+  .process-preview .mini-process > div strong {
+    font-size: 20px !important;
+    line-height: 1.45 !important;
+  }
+  .home-quick-card small,
+  .trust-strip small,
+  .service-showcase .showcase-card small,
+  .process-preview .mini-process > div small {
+    font-size: 17px !important;
+    line-height: 1.55 !important;
+  }
+  .home-quick-card,
+  .trust-strip > div,
+  .service-showcase .showcase-card,
+  .process-preview .mini-process > div {
+    font-size: 18px !important;
+    line-height: 1.55 !important;
+  }
+
+  /* Common page cards and descriptive text used across non-calculator pages. */
+  .service .service-title,
+  .service p,
+  .card p, .card h3,
+  .info-card p, .info-card h3, .info-card li,
+  .featured-card, .featured-panel-body,
+  .kh-card, .kh-topic,
+  .order-card, .helper-card,
+  .footer .footer-col a,
+  .lead, .hero-sub, .page-hero p,
+  .article-section p, .article-section li,
+  .notice, .contact-card, .contact-item,
+  .post-card p, .video-card p, .gallery-caption span,
+  .v3-note p, .knowledge-front-lead {
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+  }
+}
+
+
+/* Desktop-only card typography correction v2.
+   Targets actual text children of recurring cards across pages.
+   Does not alter mobile layouts, HTML, JavaScript, or calculations. */
+@media screen and (min-width: 650px) {
+  .home-quick-access .home-quick-card strong,
+  .home-quick-access .home-quick-card small,
+  .premium-intro .trust-strip > div strong,
+  .premium-intro .trust-strip > div small,
+  .service-showcase .showcase-card strong,
+  .service-showcase .showcase-card small,
+  .process-preview .mini-process > div strong,
+  .process-preview .mini-process > div small,
+  .trust-section .trust-card strong,
+  .trust-section .trust-card p,
+  .cards > .card h2, .cards > .card h3, .cards > .card h4,
+  .cards > .card p, .cards > .card li, .cards > .card small,
+  .service .service-title, .service p, .service small,
+  .info-card h2, .info-card h3, .info-card h4, .info-card p, .info-card li, .info-card small,
+  .post-card h2, .post-card h3, .post-card p, .post-card small,
+  .video-card h2, .video-card h3, .video-card p, .video-card small,
+  .contact-card h2, .contact-card h3, .contact-card p, .contact-card small,
+  .order-card h2, .order-card h3, .order-card p, .order-card small,
+  .helper-card h2, .helper-card h3, .helper-card p, .helper-card small,
+  .kh-card h2, .kh-card h3, .kh-card p, .kh-card small,
+  .kh-topic h2, .kh-topic h3, .kh-topic p, .kh-topic small,
+  .featured-card h2, .featured-card h3, .featured-card p, .featured-card small,
+  .featured-panel h2, .featured-panel h3, .featured-panel p, .featured-panel small,
+  .calculator-feature-card h2, .calculator-feature-card h3, .calculator-feature-card p, .calculator-feature-card small,
+  .calculator-launch-card h2, .calculator-launch-card h3, .calculator-launch-card p, .calculator-launch-card small,
+  .trust-cards .trust-card p, .trust-cards .trust-card strong,
+  .mini-process > div strong, .mini-process > div small {
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+  }
+
+  .home-quick-access .home-quick-card strong,
+  .service-showcase .showcase-card strong,
+  .process-preview .mini-process > div strong,
+  .trust-section .trust-card strong,
+  .cards > .card h2, .cards > .card h3,
+  .service .service-title, .info-card h2, .info-card h3,
+  .post-card h2, .post-card h3, .video-card h2, .video-card h3,
+  .contact-card h2, .contact-card h3, .order-card h2, .order-card h3,
+  .helper-card h2, .helper-card h3, .kh-card h2, .kh-card h3,
+  .kh-topic h2, .kh-topic h3, .featured-card h2, .featured-card h3,
+  .featured-panel h2, .featured-panel h3,
+  .calculator-feature-card h2, .calculator-feature-card h3,
+  .calculator-launch-card h2, .calculator-launch-card h3,
+  .mini-process > div strong {
+    font-size: 20px !important;
+    line-height: 1.5 !important;
+  }
+
+  .home-quick-access .home-quick-card small,
+  .premium-intro .trust-strip > div small,
+  .service-showcase .showcase-card small,
+  .process-preview .mini-process > div small,
+  .mini-process > div small {
+    font-size: 17px !important;
+    line-height: 1.55 !important;
+  }
+}
+
+
+/* Desktop-only correction v3: selectors verified against actual page HTML.
+   Intentionally scoped to text nodes inside common cards and info panels.
+   Does not change HTML, JavaScript, calculations, or narrow/mobile layouts. */
+@media screen and (min-width: 650px) {
+  /* About/profile page: exact classes found in about.html. */
+  .v3-highlight-grid > div > strong,
+  .v3-highlight-grid > div > span,
+  .section-kicker,
+  .stats .stat > span,
+  .v3-note > div > strong,
+  .v3-note > div > p {
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+  }
+  .v3-highlight-grid > div > strong,
+  .v3-note > div > strong {
+    font-size: 20px !important;
+    line-height: 1.5 !important;
+  }
+  .stats .stat > b { font-size: 22px !important; }
+
+  /* Shared card/content classes actually used by site pages. */
+  .card > h2, .card > h3, .card > h4,
+  .card > p, .card > li, .card > small,
+  .cards .card h2, .cards .card h3, .cards .card h4,
+  .cards .card p, .cards .card li, .cards .card small,
+  .service .service-title, .service p, .service small,
+  .contact-card h2, .contact-card h3, .contact-card p, .contact-card small,
+  .order-card h2, .order-card h3, .order-card p, .order-card small,
+  .helper-card h2, .helper-card h3, .helper-card p, .helper-card small,
+  .kh-card h2, .kh-card h3, .kh-card p, .kh-card small,
+  .kh-topic h2, .kh-topic h3, .kh-topic p, .kh-topic small,
+  .ls-service h2, .ls-service h3, .ls-service p, .ls-service small,
+  .stat span, .v2-process p, .v2-trust p,
+  .footer .small, .footer .footer-col a,
+  .article-section p, .article-section li,
+  .faq-item p, .faq-item li,
+  .question-card p, .question-card li,
+  .document-card p, .document-card li,
+  .v3-note p, .v3-highlight-grid span {
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Headings inside cards remain visibly larger than their descriptions. */
+  .card > h2, .card > h3, .card > h4,
+  .cards .card h2, .cards .card h3, .cards .card h4,
+  .contact-card h2, .contact-card h3,
+  .order-card h2, .order-card h3,
+  .helper-card h2, .helper-card h3,
+  .kh-card h2, .kh-card h3, .kh-topic h2, .kh-topic h3,
+  .ls-service h2, .ls-service h3 {
+    font-size: 21px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Actual homepage quick links and process cards. */
+  .home-quick-card strong, .trust-strip strong,
+  .service-showcase .showcase-card strong,
+  .mini-process > div strong,
+  .trust-card strong,
+  .calculator-feature-card h2, .calculator-feature-card h3,
+  .calculator-launch-card h2, .calculator-launch-card h3 {
+    font-size: 20px !important;
+    line-height: 1.5 !important;
+  }
+  .home-quick-card small, .trust-strip small,
+  .service-showcase .showcase-card small,
+  .mini-process > div small,
+  .trust-card p,
+  .calculator-feature-card p, .calculator-feature-card small,
+  .calculator-launch-card p, .calculator-launch-card small {
+    font-size: 17px !important;
+    line-height: 1.55 !important;
+  }
+}
+
+
+/* Final desktop-view readability pass — CSS only.
+   Scoped to CSS viewports >= 650px; no rules are added for narrow/mobile view.
+   Targets card and supporting-text classes verified in the supplied HTML pages. */
+@media screen and (min-width: 650px) {
+  /* Common page-card titles and labels. */
+  .home-quick-card strong,
+  .service-showcase .showcase-card strong,
+  .calculator-feature-card .calculator-feature-title,
+  .calculator-launch-card h2,
+  .calculator-launch-card h3,
+  .card h2, .card h3, .card h4,
+  .cards .card h2, .cards .card h3, .cards .card h4,
+  .service .service-title,
+  .contact-card h2, .contact-card h3,
+  .order-card h2, .order-card h3,
+  .helper-card h2, .helper-card h3,
+  .kh-card h2, .kh-card h3,
+  .kh-topic h2, .kh-topic h3,
+  .ls-service h2, .ls-service h3,
+  .v3-highlight-grid strong,
+  .v3-note strong,
+  .v2-step h3, .v2-step strong,
+  .contact-item strong,
+  .check-item strong {
+    font-size: 26px !important;
+    line-height: 1.45 !important;
+  }
+
+  /* Descriptions and secondary text inside the actual page-card families. */
+  .home-quick-card,
+  .home-quick-card small,
+  .service-showcase .showcase-card,
+  .service-showcase .showcase-card small,
+  .calculator-feature-card p,
+  .calculator-launch-card p,
+  .card p, .card li, .card small, .card label,
+  .cards .card p, .cards .card li, .cards .card small,
+  .service p, .service small,
+  .contact-card p, .contact-card small, .contact-item,
+  .order-card p, .order-card small, .order-note,
+  .helper-card p, .helper-card small,
+  .kh-card p, .kh-card small, .kh-topic p, .kh-topic small,
+  .kh-callout, .kh-checklist, .kh-source-list,
+  .ls-service p, .ls-service small, .ls-link,
+  .v3-highlight-grid span, .v3-note p,
+  .v2-step p, .v2-trust p,
+  .check-item, .checklist,
+  .post-card p, .video-card p, .gallery-caption,
+  .article-section p, .article-section li,
+  .faq-item p, .faq-item li,
+  .question-card p, .question-card li,
+  .document-card p, .document-card li,
+  .footer .small, .footer .footer-col a,
+  .section .small,
+  .small {
+    font-size: 22px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Supporting text used on hero, service, article and knowledge pages. */
+  .hero-sub, .lead, .tagline,
+  .section-kicker, .section-overline,
+  .eyebrow, .source-note, .mini-source,
+  .kh-source, .kh-updated, .breadcrumb,
+  .footer .footer-col small {
+    font-size: 20px !important;
+    line-height: 1.55 !important;
+  }
+
+  /* Calculator-launcher cards and compact home-page cards. */
+  .calculator-launch-card .calculator-launcher-kicker,
+  .calculator-launch-card .calculator-launcher-badge,
+  .home-quick-card .home-quick-icon,
+  .service-showcase .showcase-icon {
+    font-size: 22px !important;
+  }
+}
