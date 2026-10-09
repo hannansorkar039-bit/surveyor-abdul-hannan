@@ -977,3 +977,39 @@ button,input,select,textarea,.btn,.filter-btn{
     display: none !important;
   }
 }
+
+
+/* PROFESSIONAL LAND TOOLS — verified desktop-only font-size fix v2.
+   Scoped to desktop viewport; mobile styles are intentionally unchanged. */
+@media screen and (min-width: 761px) {
+  body.calculator-page .calculator-launcher .calculator-launcher-head .calculator-launcher-kicker {
+    font-size: 16px !important; line-height: 1.55 !important;
+  }
+  body.calculator-page .calculator-launcher .calculator-launcher-head h3 {
+    font-size: 32px !important; line-height: 1.4 !important;
+  }
+  body.calculator-page .calculator-launcher .calculator-launcher-head p {
+    font-size: 21px !important; line-height: 1.6 !important;
+  }
+  body.calculator-page .calculator-launcher .calculator-launcher-head .calculator-launcher-badge {
+    font-size: 16px !important; line-height: 1.5 !important;
+  }
+  body.calculator-page .calculator-launcher .calculator-launcher-grid .calculator-launch-card strong {
+    font-size: 24px !important; line-height: 1.45 !important;
+  }
+  body.calculator-page .calculator-launcher .calculator-launcher-grid .calculator-launch-card small {
+    font-size: 20px !important; line-height: 1.55 !important;
+  }
+}
+
+
+/* ভূমি ক্যালকুলেটর: শুধু ৫টি calculator card-এর লেখা desktop-এ বড় হবে।
+   মূল “ভূমি ক্যালকুলেটর” শিরোনাম ও মোবাইলের স্টাইল অপরিবর্তিত। */
+@media screen and (min-width: 761px) {
+  body.calculator-page .featured-calcs .featured-card h3 {
+    font-size: 28px !important; line-height: 1.45 !important;
+  }
+  body.calculator-page .featured-calcs .featured-card p {
+    font-size: 20px !important; line-height: 1.7 !important;
+  }
+}
