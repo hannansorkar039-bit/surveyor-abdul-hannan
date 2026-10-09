@@ -118,16 +118,26 @@
     r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',diagonalType==='AC'?`<p>△ABC = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △ACD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ AC = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`:`<p>△ABD = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △BCD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ BD = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`);
   };
   function sqrAreaForDisplay(area,u){return u==='ft'?area:area;}
+  const qaAngleType=$('qaAngleType');
+  if(qaAngleType){
+    const syncQaAngleLabel=()=>{
+      const names={A:'A কোণ (AB ও AD-এর মধ্যে)',B:'B কোণ (AB ও BC-এর মধ্যে)',C:'C কোণ (BC ও CD-এর মধ্যে)',D:'D কোণ (CD ও DA-এর মধ্যে)'};
+      const label=$('qaAngleLabel');
+      if(label) label.textContent=names[qaAngleType.value]||names.A;
+    };
+    qaAngleType.addEventListener('change',syncQaAngleLabel);
+    syncQaAngleLabel();
+  }
   $('qaCalc').onclick=()=>{
     const u=$('qaUnit').value, [ab,bc,cd,da]=readQuad('qa',u), angleType=$('qaAngleType')?.value||'A', angle=+$('qaAngle').value, r=$('qaResult');
     if(![ab,bc,cd,da,angle].every(v=>v>0)) return err(r,`চারটি বাহু ও ${angleType} কোণের সঠিক মান দিন।`);
     if(!(angle>0&&angle<180)) return err(r,`${angleType} কোণ ০°-এর বেশি এবং ১৮০°-এর কম হতে হবে।`);
     const rad=angle*Math.PI/180;
     let diag, diagonalType;
-    if(angleType==='A'){ diag=Math.sqrt(ab*ab+da*da-2*ab*da*Math.cos(rad)); diagonalType='AC'; }
+    if(angleType==='A'){ diag=Math.sqrt(ab*ab+da*da-2*ab*da*Math.cos(rad)); diagonalType='BD'; }
     else if(angleType==='B'){ diag=Math.sqrt(ab*ab+bc*bc-2*ab*bc*Math.cos(rad)); diagonalType='AC'; }
     else if(angleType==='C'){ diag=Math.sqrt(bc*bc+cd*cd-2*bc*cd*Math.cos(rad)); diagonalType='BD'; }
-    else { diag=Math.sqrt(cd*cd+da*da-2*cd*da*Math.cos(rad)); diagonalType='BD'; }
+    else { diag=Math.sqrt(cd*cd+da*da-2*cd*da*Math.cos(rad)); diagonalType='AC'; }
     const q=quadDiagonalArea(ab,bc,cd,da,diag,diagonalType);
     if(!q) return err(r,`দেওয়া বাহু ও ${angleType} কোণের সমন্বয়ে বৈধ চতুর্ভুজ গঠন হচ্ছে না। অনুগ্রহ করে মাঠের মাপগুলো পুনরায় যাচাই করুন।`);
     const diagLabel=diagonalType==='AC'?'AC (A–C)':'BD (B–D)';
