@@ -854,3 +854,126 @@ button,input,select,textarea,.btn,.filter-btn{
 .calculator-page .calculator-launcher-head{background:linear-gradient(135deg,#082336,#0d5360);padding:14px 16px;border-radius:14px}
 .calculator-page .calculator-launcher-kicker{color:#000!important;font-weight:950!important;text-shadow:0 0 1px rgba(0,0,0,.25)}
 .calculator-page .calculator-launcher-head p{color:#fff!important;font-weight:800!important;text-shadow:0 1px 1px rgba(0,0,0,.18)}
+
+
+/* Desktop-only: calculator text enlargement, layout-conscious (reviewed) */
+@media (min-width: 851px) {
+  .calc-wrap .calc-tab,
+  .calc-wrap .calc-field label,
+  .calc-wrap .calc-field input,
+  .calc-wrap .calc-field select,
+  .calc-wrap .calc-field textarea,
+  .calc-wrap .calc-btn,
+  .calc-wrap .calc-help,
+  .calc-wrap .small-note,
+  .calc-wrap .formula,
+  .calc-wrap .warning,
+  .calc-wrap .legal-note,
+  .calc-wrap .result-item,
+  .calc-wrap .inheritance-table th,
+  .calc-wrap .inheritance-table td,
+  .calc-wrap .heir-field label,
+  .calc-wrap .heir-field input,
+  .calc-wrap .sources a,
+  .registry-upgrade .registry-rate,
+  .registry-upgrade .cost-name,
+  .registry-upgrade .cost-meta,
+  .registry-upgrade .cost-amount,
+  .registry-upgrade .registry-actions button,
+  .registry-upgrade .registry-note,
+  .registry-upgrade .map-tools button,
+  .registry-upgrade .map-offline-note {
+    font-size: 1.35em !important;
+    line-height: 1.5 !important;
+  }
+
+  .calc-wrap .result-main,
+  .registry-upgrade .registry-total strong {
+    font-size: 2.1em !important;
+    line-height: 1.3 !important;
+  }
+
+  .calc-wrap .calc-field input,
+  .calc-wrap .calc-field select,
+  .calc-wrap .heir-field input {
+    min-height: 54px;
+  }
+
+  .calc-wrap .calc-btn,
+  .calc-wrap .calc-tab,
+  .registry-upgrade .registry-actions button,
+  .registry-upgrade .map-tools button {
+    padding-top: 13px;
+    padding-bottom: 13px;
+  }
+
+  .calc-wrap .inheritance-summary {
+    overflow-x: auto;
+  }
+}
+
+
+/* Desktop-site calculator text correction. No calculation or layout logic changed. */
+@media screen and (min-width: 650px) {
+  .calc-wrap .direction-badge,
+  .calc-wrap .diagonal-badge {
+    font-size: 20px !important;
+    line-height: 1.45 !important;
+  }
+  .calc-wrap .calc-field label,
+  .calc-wrap .calc-field input,
+  .calc-wrap .calc-field select,
+  .calc-wrap .calc-field textarea,
+  .calc-wrap .calc-help,
+  .calc-wrap .small-note,
+  .calc-wrap .formula,
+  .calc-wrap .warning,
+  .calc-wrap .legal-note,
+  .calc-wrap .result-item,
+  .calc-wrap .wood-cft-field label,
+  .calc-wrap .wood-cft-table th,
+  .calc-wrap .wood-cft-table td,
+  .calc-wrap .wood-cft-note,
+  .calc-wrap .wood-cft-result,
+  .calc-wrap .sawn-wood-cft-field label,
+  .calc-wrap .sawn-wood-cft-table th,
+  .calc-wrap .sawn-wood-cft-table td,
+  .calc-wrap .sawn-wood-cft-note,
+  .calc-wrap .sawn-wood-cft-result {
+    font-size: 18px !important;
+    line-height: 1.5 !important;
+  }
+  /* Hide only the repeated explanatory hints under feet/inches fields. */
+  .calc-wrap .length-input-note,
+  .calc-wrap .length-mode-note,
+  .calc-wrap .wood-cft-unit-note,
+  .calc-wrap .sawn-wood-cft-unit-note {
+    display: none !important;
+  }
+}
+
+
+/* Desktop-site card/text fallback for calculator UI; CSS only. */
+@media screen and (min-width: 650px) {
+  .calc-wrap .calc-tab,
+  .calc-wrap .calc-field label,
+  .calc-wrap .heir-field label,
+  .calc-wrap .direction-badge,
+  .calc-wrap .diagonal-badge,
+  .calc-wrap .wood-cft-field label,
+  .calc-wrap .sawn-wood-cft-field label,
+  .calc-wrap .wood-cft-table th, .calc-wrap .wood-cft-table td,
+  .calc-wrap .sawn-wood-cft-table th, .calc-wrap .sawn-wood-cft-table td {
+    font-size: 24px !important;
+    line-height: 1.5 !important;
+  }
+  .calc-wrap .direction-badge, .calc-wrap .diagonal-badge {
+    font-size: 24px !important;
+  }
+  .calc-wrap .length-input-note,
+  .calc-wrap .length-mode-note,
+  .calc-wrap .wood-cft-unit-note,
+  .calc-wrap .sawn-wood-cft-unit-note {
+    display: none !important;
+  }
+}
