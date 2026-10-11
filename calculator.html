@@ -17,6 +17,7 @@
 <link href="icons/icon-192.png" rel="icon" type="image/png"/>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="calculator.css?v=20261009-featured-5-cards-desktop-v4">
+<link rel="stylesheet" href="calculator-polygon-draw.css?v=20261011-11">
 <!-- V7 SEO START -->
 <meta property="og:site_name" content="সার্ভেয়ার আবদুল হান্নান"/>
 <meta property="og:type" content="website"/>
@@ -90,7 +91,8 @@
     <button type="button" class="calculator-launch-card" data-calc-tab="quad-diagonal"><span>▱</span><strong>চতুর্ভুজ ক্ষেত্রফল</strong><small>বাহু ও কর্ণভিত্তিক হিসাব</small></button>
     <button type="button" class="calculator-launch-card" data-calc-tab="heron"><span>△</span><strong>ত্রিভুজ</strong><small>হেরনের সূত্রে ক্ষেত্রফল</small></button>
     <button type="button" class="calculator-launch-card" data-calc-target="professional-land-suite"><span>⇄</span><strong>একক রূপান্তর</strong><small>শতাংশ, কাঠা, একরসহ</small></button>
-    <button type="button" class="calculator-launch-card" data-calc-tab="quad-partition"><span>✂</span><strong>জমি ভাগ-বণ্টন</strong><small>ভাগের সীমারেখা ও Drawing</small></button> <button type="button" class="calculator-launch-card" data-calc-tab="triangle-partition"><span>△</span><strong>ত্রিভুজ ভাগ-বণ্টন</strong><small>হরিজন্টাল ও শীর্ষবিন্দু থেকে ভাগ</small></button>
+    <button type="button" class="calculator-launch-card" data-calc-tab="quad-partition"><span>✂</span><strong>জমি ভাগ-বণ্টন</strong><small>ভাগের সীমারেখা ও Drawing</small></button>
+    <button type="button" class="calculator-launch-card" data-calc-tab="polygon-draw"><span>⬡</span><strong>বহুভুজ ক্ষেত্র ড্র ও ভাগ বণ্টন</strong><small>আঙুলে Drawing, মাপ, সেভ ও ভাগ</small></button> <button type="button" class="calculator-launch-card" data-calc-tab="triangle-partition"><span>△</span><strong>ত্রিভুজ ভাগ-বণ্টন</strong><small>হরিজন্টাল ও শীর্ষবিন্দু থেকে ভাগ</small></button>
     <button type="button" class="calculator-launch-card" data-calc-tab="inheritance"><span>⚖</span><strong>উত্তরাধিকার</strong><small>অংশ ও সম্পদভিত্তিক হিসাব</small></button>
     <button type="button" class="calculator-launch-card" data-calc-target="registry-calculator"><span>▣</span><strong>দলিল/রেজিস্ট্রি</strong><small>আনুমানিক খরচের হিসাব</small></button>
     <button type="button" class="calculator-launch-card" data-calc-target="registryMap"><span>⌖</span><strong>Map Measurement</strong><small>পয়েন্ট বসিয়ে আনুমানিক ক্ষেত্রফল</small></button>
@@ -114,6 +116,7 @@
 <button type="button" class="calc-tab active" data-tab="quad-diagonal" role="tab" aria-selected="true">কর্ণসহ অনিয়মিত চতুর্ভুজ</button>
 <button type="button" class="calc-tab" data-tab="quad-angle" role="tab" aria-selected="false">কর্ণ ছাড়া অনিয়মিত চতুর্ভুজ</button>
 <button type="button" class="calc-tab" data-tab="quad-partition" role="tab" aria-selected="false">চতুর্ভুজ ভাগ-বণ্টন</button>
+<button type="button" class="calc-tab" id="polygon-draw-tab" data-tab="polygon-draw" role="tab" aria-selected="false">বহুভুজ ক্ষেত্র ড্র ও ভাগ বণ্টন</button>
 <button type="button" class="calc-tab" data-tab="triangle-partition" role="tab" aria-selected="false">ত্রিভুজ ভাগ-বণ্টন</button>
 <button type="button" class="calc-tab" data-tab="wood-cft" role="tab" aria-selected="false">গোল কাঠের CFT ক্যালকুলেটর</button>
 <button type="button" class="calc-tab" data-tab="sawn-wood-cft" role="tab" aria-selected="false">চেরাই কাঠের CFT ক্যালকুলেটর</button>
@@ -124,6 +127,16 @@
 <button type="button" class="calc-tab" id="multi-field-drawing-tab" data-tab="multi-field-drawing" role="tab" aria-selected="false">বহু ক্ষেত্র Drawing ও Alignment</button>
 <button type="button" class="calc-tab" id="field-boundary-tab" data-tab="field-boundary" role="tab" aria-selected="false">🧭 সীমানা পরিমাপ ও যাচাই (টপোগ্রাফি)</button>
 </div>
+<section class="calc-panel" id="panel-polygon-draw" role="tabpanel" aria-labelledby="polygon-draw-tab">
+<h3>⬡ বহুভুজ ক্ষেত্র ড্র ও ভাগ বণ্টন</h3>
+<p class="calc-help">প্রথম পয়েন্টে ট্যাপ করুন, এরপর প্রতিটি কোণায় ট্যাপ করুন। আবার প্রথম পয়েন্টে ট্যাপ করলে ক্ষেত্র বন্ধ হবে। প্রতিটি বাহুর লাইনের মাঝখানে দেখানো ফুট–ইঞ্চি লেবেলে ট্যাপ করে মাপ লিখুন বা এডিট করুন। ক্ষেত্র সেভ করে ভাগের রেখা আঁকুন। এই টুলের ক্ষেত্রফল অঙ্কিত জ্যামিতি ও ইনপুট বাহুর গড় স্কেল থেকে আনুমানিক; নির্ভুল জরিপের জন্য সব বাহু, কোণ/কর্ণ বা স্থানাঙ্ক যাচাই করা আবশ্যক।</p>
+<div class="poly-tool-card"><div class="poly-toolbar"><button type="button" class="calc-btn calc-primary" id="polyFinishBtn">ক্ষেত্র বন্ধ করুন</button><button type="button" class="calc-btn calc-secondary" id="polyEditBtn" disabled>পয়েন্ট এডিট</button><button type="button" class="calc-btn calc-secondary" id="polyDrawPanToggle" aria-pressed="false">ড্রয়িং সরান</button><button type="button" class="calc-btn calc-secondary" id="polyClearBtn">নতুন করে আঁকুন</button></div>
+<div class="poly-canvas-wrap"><canvas id="polyCanvas" aria-label="প্রতিটি পয়েন্টে ট্যাপ করে বহুভুজ প্লট আঁকার ক্ষেত্র"></canvas></div>
+<div class="poly-inner-measure" id="polyInnerMeasure"><p>ঐচ্ছিক ভেতরের মাপ যোগ করতে নিচের বোতাম চাপুন, তারপর ড্রয়িংয়ে একটি কোণা থেকে অন্য কোণা অথবা বাইরের সীমানার যেকোনো বাহুর মাঝামাঝি পর্যন্ত লাইন টানুন। বাহুর মাঝখানে শেষ করলে সেখানে নতুন পয়েন্ট তৈরি হবে এবং দুই পাশের বাহুর ফুট–ইঞ্চি আলাদা ডাইমেনশনে দেখাবে। পয়েন্ট সম্পাদনার মোডে পয়েন্ট টেনে সরানো যাবে।</p><div class="poly-toolbar"><button type="button" class="calc-btn calc-primary" id="polyInnerDrawBtn">＋ ভেতরের মাপের রেখা আঁকুন</button><button type="button" class="calc-btn calc-secondary" id="polyInnerUndo">শেষ ভেতরের মাপ মুছুন</button></div><small>ভেতরের মাপ ঐচ্ছিক। মাপগুলো অসামঞ্জস্যপূর্ণ হলে আগের আকৃতি রাখা হবে।</small></div>
+<p class="poly-mode-status" id="polyModeStatus" role="status">প্রথম পয়েন্টে ট্যাপ করুন, এরপর প্রতিটি কোণায় ট্যাপ করুন। আবার প্রথম পয়েন্টে ট্যাপ করলে ক্ষেত্র বন্ধ হবে। বাহুর মাপ এডিট করতে লাইনের ফুট–ইঞ্চি লেবেলে ট্যাপ করুন।</p><div id="polyResults" class="poly-results" aria-live="polite">এখনো কোনো ক্ষেত্র আঁকা হয়নি।</div>
+<div class="poly-toolbar"><button type="button" class="calc-btn calc-primary" id="polySaveBtn" disabled>ক্ষেত্র সেভ করুন</button><button type="button" class="calc-btn calc-secondary" id="polySplitBtn" disabled>ভাগ বণ্টন চালু করুন</button></div><div id="polySavedStatus" class="poly-mode-status" role="status"></div><div id="polySavedList" class="poly-saved-list"></div>
+</div>
+</section>
 <section class="calc-panel active" id="panel-quad-diagonal" role="tabpanel">
 <h3>📐 কর্ণসহ অনিয়মিত চতুর্ভুজের ক্ষেত্রফল</h3>
 <div class="formula"><code>চতুর্ভুজ ABCD = △ABC + △ACD</code></div>
@@ -919,5 +932,6 @@
 <script src="calculator-bootstrap.js" defer></script>
 <script src="calculator-field-boundary-pdf-deepfix.js?v=20261005-fbc-deepfix-v9" defer></script>
 <script src="calculator-ux.js?v=20261006-ux1" defer></script>
+<script src="calculator-polygon-draw.js?v=v16" defer></script>
 </body>
 </html>
