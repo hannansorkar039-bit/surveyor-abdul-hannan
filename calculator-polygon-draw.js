@@ -54,10 +54,19 @@ function splitChord(poly,a,b){
 }
 function polygonsBeforeSplit(stop){let polys=S.points.length>=3?[S.points.map(p=>({...p}))]:[];for(let si=0;si<Math.min(stop,S.splits.length);si++){const sp=S.splits[si];let done=false;for(let i=0;i<polys.length;i++){const parts=splitChord(polys[i],sp.a,sp.b);if(parts){polys.splice(i,1,...parts);done=true;break}}}return polys}
 function currentPolygons(){let polys=S.points.length>=3?[S.points.map(p=>({...p}))]:[];for(const sp of S.splits){sp.invalid=false;let done=false;for(let i=0;i<polys.length;i++){const parts=splitChord(polys[i],sp.a,sp.b);if(parts){polys.splice(i,1,...parts);done=true;break}}if(!done)sp.invalid=true}return polys}
-function boundarySnap(q,polys=currentPolygons()){let best=null,bd=Infinity;for(const poly of polys)for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],dx=b.x-a.x,dy=b.y-a.y,l2=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((q.x-a.x)*dx+(q.y-a.y)*dy)/l2)),v={x:a.x+t*dx,y:a.y+t*dy},d=dist(q,v);if(d<bd){bd=d;best=v}}return best||q}
+function boundarySnap(q,polys=currentPolygons()){
+  // Prefer an exact existing corner when the finger/mouse is close to it on screen.
+  // This prevents tiny gaps at sharp corners and very short boundary bends.
+  const k=splitScale(),screenQ=toWindow(q,k);let vertex=null,vertexD=29;
+  for(const poly of polys)for(const p of poly){const d=dist(screenQ,toWindow(p,k));if(d<vertexD){vertexD=d;vertex={x:p.x,y:p.y}}}
+  if(vertex)return vertex;
+  let best=null,bd=Infinity;
+  for(const poly of polys)for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],dx=b.x-a.x,dy=b.y-a.y,l2=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((q.x-a.x)*dx+(q.y-a.y)*dy)/l2)),v={x:a.x+t*dx,y:a.y+t*dy},d=dist(q,v);if(d<bd){bd=d;best=v}}
+  return best||q
+}
 // Snap edited split endpoints to existing split endpoints before boundary projection.
 // This keeps adjacent plot corners mathematically identical instead of merely appearing close.
-function snapSplitPoint(q,exclude=null,polys=currentPolygons()){const screenQ=toWindow(q,splitScale());let best=null,bd=18;S.splits.forEach((sp,si)=>['a','b'].forEach(key=>{if(exclude&&exclude.i===si&&exclude.key===key)return;const p=sp[key],d=dist(screenQ,toWindow(p,splitScale()));if(d<bd){bd=d;best={x:p.x,y:p.y}}}));return best||boundarySnap(q,polys)}
+function snapSplitPoint(q,exclude=null,polys=currentPolygons()){const screenQ=toWindow(q,splitScale());let best=null,bd=28;S.splits.forEach((sp,si)=>['a','b'].forEach(key=>{if(exclude&&exclude.i===si&&exclude.key===key)return;const p=sp[key],d=dist(screenQ,toWindow(p,splitScale()));if(d<bd){bd=d;best={x:p.x,y:p.y}}}));return best||boundarySnap(q,polys)}
 
 function showSplits(){const out=$('polySplitResults');if(!out)return;const polys=currentPolygons(),sc=S.scale||1;out.innerHTML=polys.map((part,j)=>{const ds=part.map((q,k)=>dist(q,part[(k+1)%part.length])/sc);return `<div class="poly-split-card"><strong>প্লট ${j+1} — ${fmt(area(part)/(sc*sc)/435.6)} শতাংশ</strong><p>${ds.map((d,k)=>`${String.fromCharCode(65+k)}–${String.fromCharCode(65+(k+1)%ds.length)}: ${ftIn(d)}`).join(' · ')}</p></div>`}).join('')+S.splits.map((sp,i)=>`<div class="poly-split-card"><strong>ভাগরেখা ${i+1}</strong><p>দৈর্ঘ্য: ${ftIn(dist(sp.a,sp.b)/sc)}${sp.invalid?' — এই রেখাটি কোনো প্লটকে সঠিকভাবে ভাগ করেনি':''}</p></div>`).join('')}
 
