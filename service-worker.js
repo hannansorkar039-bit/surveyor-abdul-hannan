@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v85-polygon-split-label-size-v16";
+const CACHE_NAME = "sah-pwa-v87-offline-calculator-required-assets";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 
 // Only the offline application shell is required for Service Worker installation.
@@ -61,27 +61,55 @@ self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
 
-    // Required shell: failure here means the new Service Worker must not install.
-    await Promise.all(CORE_ASSETS.map(asset => cacheAsset(cache, asset)));
+    // Cache assets individually. A missing article or optional page must not
+    // prevent the whole PWA (including its calculators) from working offline.
+    const results = await Promise.allSettled(
+      CORE_ASSETS.map(asset => cacheAsset(cache, asset))
+    );
+    const failed = results
+      .map((result, index) => ({ result, asset: CORE_ASSETS[index] }))
+      .filter(item => item.result.status === "rejected")
+      .map(item => item.asset);
 
-    // Images are optional during installation. They will always be fetched
-    // normally on demand, with cache fallback for offline use.
-    if (IMAGE_ASSETS.length) {
-      await Promise.allSettled(IMAGE_ASSETS.map(asset => cacheAsset(cache, asset)));
+    // These are the minimum files needed to open the app and initialize the
+    // calculator engines. Do not activate an offline shell without them.
+    const REQUIRED_OFFLINE_ASSETS = [
+      "./index.html", "./calculator.html", "./app.js", "./content.js",
+      "./calculator-bootstrap.js", "./calculator-core.js", "./calculator.css",
+      "./calculator-polygon-draw.js", "./calculator-polygon-draw.css",
+      "./calculator-partition.js", "./calculator-featured.js",
+      "./calculator-field-boundary-pdf-deepfix.js", "./calculator-registry.js",
+      "./calculator-triangle-partition.js", "./calculator-land-suite.js",
+      "./calculator-wood-cft.js", "./calculator-sawn-wood-cft.js",
+      "./calculator-ux.js", "./calculator-pdf.js"
+    ];
+    const missingRequired = [];
+    for (const asset of REQUIRED_OFFLINE_ASSETS) {
+      const url = new URL(asset, self.registration.scope).href;
+      if (!(await cache.match(url))) missingRequired.push(asset);
+    }
+    if (missingRequired.length) {
+      throw new Error(
+        "SAH PWA required calculator files could not be cached: " +
+        missingRequired.join(", ") +
+        (failed.length ? " | Other unavailable files: " + failed.join(", ") : "")
+      );
     }
 
-    // External CDN resources are also optional.
+    // Optional images and external libraries must never block installation.
     await Promise.allSettled(
       [...EXTERNAL_CACHE_FIRST].map(asset => cacheAsset(cache, asset))
     );
 
+    if (failed.length) {
+      console.warn("SAH PWA: some non-critical assets were not cached:", failed);
+    }
     await self.skipWaiting();
   })().catch(error => {
     console.error("SAH PWA required offline cache failed:", error);
     throw error;
   }));
 });
-
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
@@ -101,14 +129,34 @@ async function networkFirst(request, fallback = "./index.html") {
       const cache = await caches.open(CACHE_NAME);
       await cache.put(request, response.clone());
     }
-    return response;
+    if (response && response.ok) return response;
+    // A server-side 404 while offline/stale must not replace a cached page.
+    const cachedResponse = await findCachedRequest(request);
+    return cachedResponse || response;
   } catch (_) {
-    const cached = await caches.match(request);
+    const cached = await findCachedRequest(request);
     if (cached) return cached;
-    return fallback ? await caches.match(fallback) : Response.error();
+    return fallback ? (await findCachedRequest(new Request(new URL(fallback, self.registration.scope).href))) : Response.error();
   }
 }
 
+async function findCachedRequest(request) {
+  const url = new URL(request.url);
+  const exact = await caches.match(request);
+  if (exact) return exact;
+
+  // Navigation URLs may contain query parameters or vary by the app's launch
+  // entry point. Retry against the same path without its query string.
+  url.search = "";
+  const queryless = await caches.match(url.href);
+  if (queryless) return queryless;
+
+  // If the installed PWA is launched at the scope root, use its cached shell.
+  if (url.pathname === new URL(self.registration.scope).pathname.replace(/\/$/, "")) {
+    return await caches.match(new URL("./index.html", self.registration.scope).href);
+  }
+  return null;
+}
 function normalizedCacheRequest(request) {
   const url = new URL(request.url);
   if (isSameOrigin(url) && url.search) {
