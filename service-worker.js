@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v49-scalable-gallery";
+const CACHE_NAME = "sah-pwa-v85-polygon-split-label-size-v16";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 
 // Only the offline application shell is required for Service Worker installation.
@@ -9,7 +9,7 @@ const CORE_ASSETS = [
   "./about.html", "./services.html", "./knowledge.html", "./documents.html", "./mistakes.html",
   "./videos.html", "./photos.html", "./posts.html", "./important-topics.html", "./social.html",
   "./process.html", "./faq.html", "./question.html", "./feedback.html", "./order.html", "./contact.html",
-  "./land-solution-bd.html", "./disclaimer.html", "./calculator.html", "./calculator.css",
+  "./land-solution-bd.html", "./disclaimer.html", "./calculator.html", "./calculator.css", "./calculator-polygon-draw.css", "./calculator-polygon-draw.js",
   "./article-land-survey-preparation.html", "./article-dag-khatian-mouza.html", "./article-cs-sa-rs-bs-khatian.html", "./article-boundary-demarcation.html", "./article-land-partition-survey.html", "./article-land-unit-conversion.html", "./article-quadrilateral-area-measurement.html", "./article-diagonal-check.html", "./article-land-survey-common-mistakes.html", "./article-land-record-verification.html", "./article-mutation-khatian-update.html", "./article-field-survey-report.html",
   "./calculator-core.js", "./calculator-bootstrap.js", "./calculator-field-boundary-pdf-deepfix.js",
   "./calculator-pdf.js", "./calculator-partition.js", "./calculator-featured.js", "./calculator-registry.js",
@@ -34,7 +34,7 @@ const CACHE_FIRST = new Set([
   "./styles.css", "./app.js", "./content.js", "./calculator-pdf.js", "./calculator-core.js", "./calculator-partition.js",
   "./calculator-featured.js", "./calculator-field-boundary-pdf-deepfix.js", "./calculator-registry.js", "./calculator-land-suite.js",
   "./calculator-bootstrap.js", "./calculator-triangle-partition.js", "./calculator-wood-cft.js",
-  "./calculator-sawn-wood-cft.js", "./calculator-ux.js", "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf", "./icons/icon-192.png", "./icons/icon-512.png"
+  "./calculator-sawn-wood-cft.js", "./calculator-ux.js", "./calculator-polygon-draw.js", "./calculator-polygon-draw.css", "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf", "./icons/icon-192.png", "./icons/icon-512.png"
 ]);
 
 const isSameOrigin = url => url.origin === self.location.origin;
