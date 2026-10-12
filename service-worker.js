@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v88-polygon-precision-snap-v17";
+const CACHE_NAME = "sah-pwa-v90-auto-refresh-assets-v2";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 
 // Only the offline application shell is required for Service Worker installation.
