@@ -152,6 +152,6 @@
 <script src="content.js"></script><script src="app.js"></script>
 <script>
 (function(){const input=document.getElementById('khSearch'),btn=document.getElementById('khSearchBtn');const topics=[...document.querySelectorAll('.kh-topic')];const sections=[...document.querySelectorAll('#records,#survey,#mutation,#tax,#measurement,#verification,#mistakes,#checklist,#sources')];function go(){const q=(input.value||'').trim().toLowerCase();if(!q){topics.forEach(x=>x.style.display='');sections.forEach(x=>x.style.display='');return}let hit=false;topics.forEach(x=>{const ok=x.textContent.toLowerCase().includes(q);x.style.display=ok?'':'none';if(ok)hit=true});sections.forEach(x=>{const ok=x.textContent.toLowerCase().includes(q);x.style.display=ok?'':'none';if(ok)hit=true});if(hit){const first=sections.find(x=>x.style.display!=='none');if(first)first.scrollIntoView({behavior:'smooth',block:'start'})}}btn.addEventListener('click',go);input.addEventListener('keydown',e=>{if(e.key==='Enter')go()});})();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{}));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register("service-worker.js", { updateViaCache: "none" }).then(registration => registration.update()).catch(()=>{}));}
 </script>
 </body></html>
