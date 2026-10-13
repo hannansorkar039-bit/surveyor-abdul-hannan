@@ -756,10 +756,6 @@
     <h2 id="featured-calc-title">ভূমি ক্যালকুলেটর</h2>
     <p>প্রতিটি টুল সূত্রভিত্তিক ফলাফল দেখায় এবং ভুল ইনপুট হলে সতর্ক করে।</p>
   </div>
-  <button class="featured-card" type="button" data-feature-target="featured-hissa">
-    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="13" y="17" width="74" height="66" rx="6" fill="#0b8b91" stroke="#082336" stroke-width="3"/><path d="M23 67h54M23 52h54M23 37h54" stroke="#fff" stroke-width="4"/><circle cx="30" cy="26" r="4" fill="#d9a441"/><circle cx="50" cy="26" r="4" fill="#d9a441"/><circle cx="70" cy="26" r="4" fill="#d9a441"/></svg></span>
-    <span><h3>খতিয়ানের হিস্যা → জমির পরিমাণ</h3><p>আনা, গণ্ডা, কড়া, ক্রান্তি ও তিল লিখে মোট জমির মধ্যে আপনার প্রকৃত অংশ, শতাংশ, অযুতাংশ, বর্গফুট, কাঠা ও বিঘা দেখুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
-  </button>
   <button class="featured-card" type="button" data-feature-target="featured-symbolic">
     <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="14" y="16" width="72" height="68" rx="8" fill="#f7fbfc" stroke="#082336" stroke-width="3"/><text x="50" y="50" text-anchor="middle" font-size="32" font-weight="900" fill="#08747b">৷৵</text><path d="M26 68h48" stroke="#d9a441" stroke-width="6" stroke-linecap="round"/></svg></span>
     <span><h3>খতিয়ানের সাংকেতিক চিহ্ন → হিস্যা</h3><p>পুরোনো খতিয়ানের আনার সাংকেতিক চিহ্ন নির্বাচন করে গণ্ডা, কড়া, ক্রান্তি ও তিলসহ হিস্যা নির্ণয় করুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
@@ -776,22 +772,6 @@
     <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M21 29h58v42H21z" fill="#fff" stroke="#082336" stroke-width="3"/><path d="M31 50h38" stroke="#08747b" stroke-width="5"/><path d="M39 39l-10 11 10 11M61 39l10 11-10 11" fill="none" stroke="#ef7d22" stroke-width="3"/></svg></span>
     <span><h3>মোট জমি + নিজের জমি → আনা-গণ্ডা হিস্যা</h3><p>মোট জমির পরিমাণ এবং আপনার প্রাপ্ত জমির পরিমাণ দিলে হিস্যাটি আনা, গণ্ডা, কড়া, ক্রান্তি ও তিলে ভেঙে দেখাবে।</p></span><span class="featured-go" aria-hidden="true">↓</span>
   </button>
-</section>
-<section class="featured-panel" id="featured-hissa" aria-labelledby="featured-hissa-title">
-  <div class="featured-panel-head"><h3 class="land-calc-section-title" id="featured-hissa-title">📜 খতিয়ানের হিস্যা থেকে জমির পরিমাণ</h3><p>পূর্ণ হিস্যা = ১৬ আনা = ৭৬,৮০০ তিল। ১ আনা = ২০ গণ্ডা, ১ গণ্ডা = ৪ কড়া, ১ কড়া = ৩ ক্রান্তি, ১ ক্রান্তি = ২০ তিল।</p></div>
-  <div class="featured-panel-body">
-    <div class="calc-grid">
-      <div class="calc-field"><label for="fhTotalLand">মোট জমির পরিমাণ</label><input id="fhTotalLand" type="number" min="0" step="any" placeholder="যেমন ১০.০০"></div>
-      <div class="calc-field"><label for="fhLandUnit">মোট জমির একক</label><select id="fhLandUnit"><option value="decimal">শতাংশ / ডেসিমেল</option><option value="sqft">বর্গফুট</option><option value="sqm">বর্গমিটার</option><option value="acre">একর</option></select></div>
-      <div class="calc-field"><label for="fhAna">আনা (০–১৫)</label><input id="fhAna" type="number" min="0" max="15" step="1" value="0"></div>
-      <div class="calc-field"><label for="fhGonda">গণ্ডা (০–১৯)</label><input id="fhGonda" type="number" min="0" max="19" step="1" value="0"></div>
-      <div class="calc-field"><label for="fhKora">কড়া (০–৩)</label><input id="fhKora" type="number" min="0" max="3" step="1" value="0"></div>
-      <div class="calc-field"><label for="fhKranti">ক্রান্তি (০–২)</label><input id="fhKranti" type="number" min="0" max="2" step="1" value="0"></div>
-      <div class="calc-field"><label for="fhTil">তিল (০–১৯)</label><input id="fhTil" type="number" min="0" max="19" step="1" value="0"></div>
-    </div>
-    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fhCalc">হিস্যা হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fhReset">রিসেট</button></div>
-    <div class="calc-result" id="fhResult" aria-live="polite"></div>
-  </div>
 </section>
 <section class="featured-panel" id="featured-symbolic" aria-labelledby="featured-symbolic-title">
   <div class="featured-panel-head"><h3 class="land-calc-section-title" id="featured-symbolic-title">🔣 খতিয়ানের সাংকেতিক চিহ্ন থেকে হিস্যা</h3><p>পুরোনো খতিয়ানে ব্যবহৃত আনার সাংকেতিক চিহ্ন নির্বাচন করুন। গণ্ডা, কড়া, ক্রান্তি ও তিল সংখ্যা হিসেবে দিন।</p></div>
