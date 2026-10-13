@@ -186,10 +186,10 @@
     return {points:pts, area:polygonArea(pts), classification:classify(pts)};
   }
 
-  function calculateSet(v) {
+  function calculateSet(v, diagonalName=$('fbcDiagonal').value) {
     const shape=$('fbcShape').value;
     if (shape==='tri') return buildTriangle(v);
-    return buildQuad(v,$('fbcDiagonal').value,$('fbcShapeType').value);
+    return buildQuad(v,diagonalName,$('fbcShapeType').value);
   }
 
   let fbcView = {scale:1, panX:0, panY:0};
@@ -222,9 +222,18 @@
       if(getFbcReferenceMode()==='two' && selectedAnchor2 && selectedAnchor2!==selectedAnchor){
         const i2=pointIndex(selectedAnchor2);
         const p2=out[i2];
-        const ang=Math.atan2(p2[1],p2[0]);
-        const ca=Math.cos(-ang), sa=Math.sin(-ang);
-        out=out.map(q=>[q[0]*ca-q[1]*sa,q[0]*sa+q[1]*ca]);
+        const pair=`${selectedAnchor}${selectedAnchor2}`;
+        // Canonical orientation: AB top, BC right, CD bottom, DA left.
+        // The chosen first point remains the common anchor; only rotation changes.
+        const edgeAngles={AB:0,BA:Math.PI,BC:-Math.PI/2,CB:Math.PI/2,
+          CD:Math.PI,DC:0,DA:Math.PI/2,AD:-Math.PI/2,
+          AC:-Math.PI/4,CA:3*Math.PI/4,BD:-3*Math.PI/4,DB:Math.PI/4};
+        const target=edgeAngles[pair];
+        if(Number.isFinite(target)){
+          const ang=Math.atan2(p2[1],p2[0]);
+          const rot=target-ang, ca=Math.cos(rot), sa=Math.sin(rot);
+          out=out.map(q=>[q[0]*ca-q[1]*sa,q[0]*sa+q[1]*ca]);
+        }
       }
       return out;
     };
@@ -270,7 +279,7 @@
       ctx.closePath(); ctx.fill(); ctx.stroke();
 
       if(points.length===4){
-        const diag=$('fbcDiagonal').value==='AC';
+        const diag=(kind==='reference' ? ($('fbcRDiagonal')?.value || 'AC') : $('fbcDiagonal').value)==='AC';
         const ii=diag?[0,2]:[1,3];
         ctx.setLineDash([7*dpr,6*dpr]);
         ctx.lineWidth=1.5*dpr;
@@ -401,7 +410,7 @@
   function compareHtml(field, ref) {
     if (!field || !ref) return '';
     const keys=['AB','BC','CD','DA','diag'];
-    const names={AB:'AB',BC:'BC',CD:'CD',DA:'DA',diag:$('fbcDiagonal').value};
+    const names={AB:'AB',BC:'BC',CD:'CD',DA:'DA',diag:$('fbcRDiagonal')?.value || 'AC'};
     let rows='';
     keys.forEach(k=>{
       if(field[k]>0 && ref[k]>0){
@@ -462,7 +471,7 @@
       const ref=getSet('fbcR');
       const rm=validateSet(ref);
       if(!rm.length){
-        refCalc=calculateSet(ref);
+        refCalc=calculateSet(ref,$('fbcRDiagonal')?.value || 'AC');
         if(!refCalc.error){
           refHtml=`<div class="fbc-reference-result"><strong>Reference Area:</strong> ${bn(refCalc.area)} বর্গফুট<br>${renderUnits(refCalc.area)}</div>`;
         }
@@ -628,6 +637,8 @@
     window.__FBC_DEEPFIX_INIT__=true;
     $('fbcShape').addEventListener('change',render);
     $('fbcDiagonal').addEventListener('change',()=>{ resetFbcView(); render(); });
+    $('fbcRDiagonal')?.addEventListener('change',()=>{ const n=$('fbcRDiagName'); if(n)n.textContent=$('fbcRDiagonal').value; resetFbcView(); render(); });
+    if($('fbcRDiagName')) $('fbcRDiagName').textContent=$('fbcRDiagonal')?.value || 'AC';
     $('fbcShapeType').addEventListener('change',render);
     $('fbcReferencePoint').addEventListener('change',()=>{ resetFbcView(); render(); });
     $('fbcReferenceMode').addEventListener('change',()=>{ resetFbcView(); render(); });
