@@ -38,9 +38,14 @@
     return `${bn(ft)}′ ${bn(inch)}″`;
   }
   function sideValues() {
+    const diagonalType = $('qpDiagonalType')?.value === 'BD' ? 'BD' : 'AC';
+    const diagonal = diagonalType === 'BD'
+      ? readFI('qpBDft','qpBDin')
+      : readFI('qpACft','qpACin');
     return {
       AB: readFI('qpABft','qpABin'), BC: readFI('qpBCft','qpBCin'),
-      CD: readFI('qpCDft','qpCDin'), DA: readFI('qpDAft','qpDAin'), AC: readFI('qpACft','qpACin')
+      CD: readFI('qpCDft','qpCDin'), DA: readFI('qpDAft','qpDAin'),
+      AC: diagonal, diagonalType
     };
   }
   function triangle(a,b,c) {
@@ -91,36 +96,70 @@
     return {type:'concave',reflex:idx===1?'B':idx===2?'C':idx===3?'D':'A',crosses:cs};
   }
   function buildQuad(v, wantedType='auto') {
-    const {AB:a,BC:b,CD:c,DA:d,AC:e} = v;
-    const tABC = triangle(a,b,e), tACD = triangle(c,d,e);
-    if (!tABC || !tACD) return null;
-    const cx = (a*a + e*e - b*b) / (2*a);
-    const cy2 = e*e - cx*cx;
-    if (!(cy2 > EPS)) return null;
-    const cy = Math.sqrt(cy2);
-    const A=[0,0], B=[a,0], C=[cx,cy];
-    // D has two mathematically possible positions relative to diagonal AC.
-    const ux=cx/e, uy=cy/e, px=-uy, py=ux;
-    const proj=(d*d + e*e - c*c)/(2*e);
-    const h2=d*d-proj*proj;
-    if (!(h2 > EPS)) return null;
-    const h=Math.sqrt(h2);
-    const candidates=[1,-1].map(sign=>{
-      const D=[proj*ux+sign*h*px, proj*uy+sign*h*py];
-      const pts=[A,B,C,D];
-      if(!isSimpleQuad(pts)) return null;
-      const cls=classifyQuad(pts);
-      if(wantedType!=='auto' && cls.type!==wantedType) return null;
-      const area=polygonArea(pts);
-      if(!(area>EPS)) return null;
-      const lens=[[A,B],[B,C],[C,D],[D,A]].map(([p,q])=>Math.hypot(q[0]-p[0],q[1]-p[1]));
-      if(lens.some((x,i)=>Math.abs(x-[a,b,c,d][i])>1e-5)) return null;
-      return {A,B,C,D,pts,tABC,tACD,area,type:cls.type,reflex:cls.reflex};
-    }).filter(Boolean);
-    if(!candidates.length) return null;
-    // Auto mode prefers the first geometrically valid configuration; the user can
-    // explicitly choose উত্তল/অবতল when both configurations are mathematically possible.
-    return candidates[0];
+    const {AB:a,BC:b,CD:c,DA:d} = v;
+    const diagonalType = v.diagonalType === 'BD' ? 'BD' : 'AC';
+    const e = v.AC;
+    if (![a,b,c,d,e].every(x => Number.isFinite(x) && x > 0)) return null;
+
+    // Keep the cardinal convention consistent in the drawing:
+    // AB = north/top, BC = east/right, CD = south/bottom, DA = west/left.
+    // AC and BD require different triangle constructions; never treat BD as AC.
+    const candidates = [];
+    if (diagonalType === 'AC') {
+      const tABC = triangle(a,b,e), tACD = triangle(c,d,e);
+      if (!tABC || !tACD) return null;
+      const cx = (a*a + e*e - b*b) / (2*a);
+      const cy2 = e*e - cx*cx;
+      if (!(cy2 > EPS)) return null;
+      const cy = Math.sqrt(cy2);
+      const A=[0,0], B=[a,0], C=[cx,cy];
+      const ux=cx/e, uy=cy/e, px=-uy, py=ux;
+      const proj=(d*d + e*e - c*c)/(2*e);
+      const h2=d*d-proj*proj;
+      if (!(h2 > EPS)) return null;
+      const h=Math.sqrt(h2);
+      [1,-1].forEach(sign=>{
+        const D=[proj*ux+sign*h*px, proj*uy+sign*h*py];
+        const pts=[A,B,C,D];
+        if(!isSimpleQuad(pts)) return;
+        const cls=classifyQuad(pts);
+        if(wantedType!=='auto' && cls.type!==wantedType) return;
+        const area=polygonArea(pts);
+        const lens=[[A,B],[B,C],[C,D],[D,A]].map(([p,q])=>dist(p,q));
+        if(!(area>EPS) || lens.some((x,i)=>Math.abs(x-[a,b,c,d][i])>1e-5)) return;
+        candidates.push({A,B,C,D,pts,tABC,tACD,area,type:cls.type,reflex:cls.reflex});
+      });
+    } else {
+      // Triangles ABD and BCD share diagonal BD. Place AB along the top;
+      // choose C on the opposite side of BD from A to preserve A-B-C-D order.
+      const tABD=triangle(a,d,e), tBCD=triangle(b,c,e);
+      if(!tABD || !tBCD) return null;
+      const A=[0,0], B=[a,0];
+      const dx=(a*a + d*d - e*e)/(2*a);
+      const dy2=d*d-dx*dx;
+      if (!(dy2 > EPS)) return null;
+      const D=[dx,Math.sqrt(dy2)];
+      const vx=D[0]-B[0], vy=D[1]-B[1], bd=Math.hypot(vx,vy);
+      const ux=vx/bd, uy=vy/bd;
+      const along=(b*b + bd*bd - c*c)/(2*bd);
+      const h2=b*b-along*along;
+      if (!(h2 > EPS)) return null;
+      const h=Math.sqrt(h2), px=-uy, py=ux;
+      const sideA=cross(B,D,A);
+      [1,-1].forEach(sign=>{
+        const C=[B[0]+along*ux+sign*h*px,B[1]+along*uy+sign*h*py];
+        if (cross(B,D,C)*sideA >= -EPS) return;
+        const pts=[A,B,C,D];
+        if(!isSimpleQuad(pts)) return;
+        const cls=classifyQuad(pts);
+        if(wantedType!=='auto' && cls.type!==wantedType) return;
+        const area=polygonArea(pts);
+        const lens=[[A,B],[B,C],[C,D],[D,A]].map(([p,q])=>dist(p,q));
+        if(!(area>EPS) || lens.some((x,i)=>Math.abs(x-[a,b,c,d][i])>1e-5)) return;
+        candidates.push({A,B,C,D,pts,tABD,tBCD,area,type:cls.type,reflex:cls.reflex});
+      });
+    }
+    return candidates[0] || null;
   }
   function interpolate(p,q,t) { return [p[0]+(q[0]-p[0])*t, p[1]+(q[1]-p[1])*t]; }
   function dist(a,b){return Math.hypot(b[0]-a[0],b[1]-a[1]);}
@@ -442,17 +481,31 @@
     let minX=Math.min(...drawPts.map(p=>p[0])),maxX=Math.max(...drawPts.map(p=>p[0])),minY=Math.min(...drawPts.map(p=>p[1])),maxY=Math.max(...drawPts.map(p=>p[1]));
     const padX=Math.max((maxX-minX)*.09,55),padY=Math.max((maxY-minY)*.09,55);
     minX-=padX;maxX+=padX;minY-=padY;maxY+=padY;
-    const W=2600,H=1750,scale=Math.min((W-260)/(maxX-minX),(H-260)/(maxY-minY));
+    const W=2600,H=1750,scale=Math.min((W-260)/(maxX-minX),(H-260)/(maxY-minY))*0.70;
     const tx=x=>130+(x-minX)*scale, ty=y=>H-130-((-y)-minY)*scale;
     const poly=pts=>pts.map(p=>`${tx(p[0]).toFixed(1)},${ty(p[1]).toFixed(1)}`).join(' ');
     const clampAngle=a=>a>90?a-180:(a<-90?a+180:a);
-    const dimLine=(a,b,text,offset=48,sign=1,dotted=false,color='#526a73',font=40)=>{
-      const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1;
-      const nx=-dy/len,ny=dx/len,ox=nx*offset*sign,oy=ny*offset*sign;
-      const x1=a[0]+ox,y1=a[1]+oy,x2=b[0]+ox,y2=b[1]+oy,mx=(x1+x2)/2,my=(y1+y2)/2;
+    // Dimension annotations: no auxiliary dimension/extension lines. Show only
+    // the feet-inch value centered on the actual plot edge/segment.
+    const dimLine=(a,b,text,offset=0,sign=1,dotted=false,color='#526a73',font=40,insidePoint=null)=>{
+      const dx=b[0]-a[0],dy=b[1]-a[1];
+      const len=Math.hypot(dx,dy)||1;
+      const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;
+      // Place feet-inch text parallel to, but below/offset from, the edge.
+      // SVG coordinates increase downward; sign selects which side of the edge.
+      // Keep each side dimension inside its own polygon.
+      let side=Number(sign)||1;
+      if (insidePoint && Number.isFinite(insidePoint[0]) && Number.isFinite(insidePoint[1])) {
+        const cross=dx*(insidePoint[1]-my)-dy*(insidePoint[0]-mx);
+        side=cross>=0?1:-1;
+      }
+      const gap=Number(offset)||0;
+      const ox=(-dy/len)*gap*side;
+      const oy=(dx/len)*gap*side;
+      const x=mx+ox,y=my+oy;
       const ang=clampAngle(Math.atan2(dy,dx)*180/Math.PI);
-      const dash=dotted?' stroke-dasharray="12 10"':'';
-      return `<g class="qp-dim-line"><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="${dotted?3:2.8}"${dash}/><line x1="${(a[0]+ox).toFixed(1)}" y1="${(a[1]+oy).toFixed(1)}" x2="${a[0].toFixed(1)}" y2="${a[1].toFixed(1)}" stroke="${color}" stroke-width="1.6" opacity=".7"/><line x1="${(b[0]+ox).toFixed(1)}" y1="${(b[1]+oy).toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${color}" stroke-width="1.6" opacity=".7"/><text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${mx.toFixed(1)} ${my.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="${(font*0.5).toFixed(1)}" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4.5" stroke-linejoin="round">${esc(text)}</text></g>`;
+      const clean=String(text).split(':').pop().trim();
+      return `<text class="qp-dim-value" x="${x.toFixed(1)}" y="${y.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${x.toFixed(1)} ${y.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="${(font*0.5).toFixed(1)}" font-weight="900" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8" stroke-linejoin="round">${esc(clean)}</text>`;
     };
     const northArrow=`<g transform="translate(120 115)"><line x1="0" y1="62" x2="0" y2="0" stroke="#082336" stroke-width="6"/><path d="M0 0 L-14 22 L14 22 Z" fill="#082336"/><text x="0" y="92" text-anchor="middle" font-size="18" font-weight="900" fill="#082336">উত্তর</text></g>`;
     const colors=['#fff0bf','#e8f6e8','#eaf1ff','#f7eafa','#ffe9e0','#e9f7f7','#f3f0d9'];
@@ -464,32 +517,60 @@
       const t=rec.part.targetPoly;
       layers.push(`<polygon points="${poly(t)}" fill="${colors[idx%colors.length]}" opacity=".92" stroke="#b27a1f" stroke-width="4" stroke-linejoin="round"/>`);
       const cx=t.reduce((s,p)=>s+p[0],0)/t.length, cy=t.reduce((s,p)=>s+p[1],0)/t.length;
-      labels.push(`<text x="${tx(cx).toFixed(1)}" y="${ty(cy).toFixed(1)}" text-anchor="middle" font-size="18" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4.5">প্লট ${bn(idx+1)} — ${bn(rec.part.partArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
+      // Move the plot-number/area label away from its diagonal dimension.
       const tp=t.map(p=>[tx(p[0]),ty(p[1])]);
+      const tcx=tp.reduce((s,p)=>s+p[0],0)/tp.length, tcy=tp.reduce((s,p)=>s+p[1],0)/tp.length;
+      const ldx=tp[2][0]-tp[0][0], ldy=tp[2][1]-tp[0][1], llen=Math.hypot(ldx,ldy)||1;
+      const lside=(ldx*(tcy-tp[0][1])-ldy*(tcx-tp[0][0]))>=0?1:-1;
+      const labelX=tcx+(-ldy/llen)*lside*30, labelY=tcy+(ldx/llen)*lside*30;
+      labels.push(`<text x="${labelX.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="18" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4.5">প্লট ${bn(idx+1)} — ${bn(rec.part.partArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
       const sv=partSideValues(rec.part);
       const sideMeta=SIDE_META[rec.direction]||SIDE_META.north;
-      dims.push(dimLine(tp[0],tp[1],`প্লট ${bn(idx+1)} ${sideMeta.label}: ${ftIn(sv[0])}`,55,-1,false,'#7b6b4b',40));
-      dims.push(dimLine(tp[1],tp[2],`প্লট ${bn(idx+1)} পূর্ব: ${ftIn(sv[1])}`,48,-1,false,'#526a73',38));
-      dims.push(dimLine(tp[2],tp[3],`প্লট ${bn(idx+1)} ভাগরেখা: ${ftIn(sv[2])}`,50,1,true,'#c44f2b',39));
-      dims.push(dimLine(tp[3],tp[0],`প্লট ${bn(idx+1)} পশ্চিম: ${ftIn(sv[3])}`,48,1,false,'#526a73',38));
-      dims.push(dimLine(tp[0],tp[2],`প্লট ${bn(idx+1)} কর্ণ: ${ftIn(dist(t[0],t[2]))}`,42,-1,true,'#75629b',37));
-      dims.push(dimLine(tp[1],tp[3],`প্লট ${bn(idx+1)} কর্ণ: ${ftIn(dist(t[1],t[3]))}`,42,1,true,'#75629b',37));
+      dims.push(dimLine(tp[0],tp[1],`${ftIn(sv[0])}`,12,-1,false,'#7b6b4b',40,[tcx,tcy]));
+      dims.push(dimLine(tp[1],tp[2],`${ftIn(sv[1])}`,12,-1,false,'#526a73',38,[tcx,tcy]));
+      dims.push(dimLine(tp[2],tp[3],`${ftIn(sv[2])}`,12,1,true,'#c44f2b',39,[tcx,tcy]));
+      dims.push(dimLine(tp[3],tp[0],`${ftIn(sv[3])}`,12,1,false,'#526a73',38,[tcx,tcy]));
+      // Each split plot gets its OWN dotted diagonal dimension (A-C within that plot).
+      if (tp.length >= 4) {
+        const p1=tp[0], p2=tp[2], dval=dist(t[0],t[2]);
+        const dx=p2[0]-p1[0], dy=p2[1]-p1[1], len=Math.hypot(dx,dy)||1;
+        const mx=(p1[0]+p2[0])/2, my=(p1[1]+p2[1])/2;
+        const cx=tp.reduce((s,p)=>s+p[0],0)/tp.length, cy=tp.reduce((s,p)=>s+p[1],0)/tp.length;
+        const side=(dx*(cy-p1[1])-dy*(cx-p1[0]))>=0?1:-1;
+        const lx=mx+(dy/len)*side*12, ly=my-(dx/len)*side*12;
+        const ang=clampAngle(Math.atan2(dy,dx)*180/Math.PI);
+        dims.push(`<line x1="${p1[0].toFixed(1)}" y1="${p1[1].toFixed(1)}" x2="${p2[0].toFixed(1)}" y2="${p2[1].toFixed(1)}" stroke="#174ea6" stroke-width="4" stroke-dasharray="10 9" stroke-linecap="round"/>`);
+        dims.push(`<text class="qp-dim-value qp-diagonal-dim" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${lx.toFixed(1)} ${ly.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="20" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8" stroke-linejoin="round">${ftIn(dval)}</text>`);
+      }
       layers.push(`<line x1="${tp[2][0]}" y1="${tp[2][1]}" x2="${tp[3][0]}" y2="${tp[3][1]}" stroke="#c44f2b" stroke-width="7"/>`);
     });
 
     // Final remaining parcel gets its own separate dimension set, exactly once.
     const r=finalRemain, rp=r.map(p=>[tx(p[0]),ty(p[1])]);
     const finalArea=polygonArea(r);
-    dims.push(dimLine(rp[0],rp[1],`অবশিষ্ট জমি উত্তর: ${ftIn(dist(r[0],r[1]))}`,72,1,false,'#08747b',42));
-    dims.push(dimLine(rp[1],rp[2],`অবশিষ্ট জমি পূর্ব: ${ftIn(dist(r[1],r[2]))}`,64,1,false,'#08747b',40));
-    dims.push(dimLine(rp[2],rp[3],`অবশিষ্ট জমি দক্ষিণ: ${ftIn(dist(r[2],r[3]))}`,72,-1,false,'#08747b',42));
-    dims.push(dimLine(rp[3],rp[0],`অবশিষ্ট জমি পশ্চিম: ${ftIn(dist(r[3],r[0]))}`,64,-1,false,'#08747b',40));
-    dims.push(dimLine(rp[0],rp[2],`অবশিষ্ট জমি কর্ণ: ${ftIn(dist(r[0],r[2]))}`,54,1,true,'#75629b',38));
-    dims.push(dimLine(rp[1],rp[3],`অবশিষ্ট জমি কর্ণ: ${ftIn(dist(r[1],r[3]))}`,54,-1,true,'#75629b',38));
-    labels.push(`<text x="${tx(r.reduce((s,p)=>s+p[0],0)/r.length).toFixed(1)}" y="${ty(r.reduce((s,p)=>s+p[1],0)/r.length).toFixed(1)}" text-anchor="middle" font-size="19" font-weight="950" fill="#08747b" paint-order="stroke" stroke="#fff" stroke-width="5">চূড়ান্ত অবশিষ্ট জমি — ${bn(finalArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
+    const rcx=rp.reduce((s,p)=>s+p[0],0)/rp.length, rcy=rp.reduce((s,p)=>s+p[1],0)/rp.length;
+    dims.push(dimLine(rp[0],rp[1],`${ftIn(dist(r[0],r[1]))}`,12,1,false,'#08747b',42,[rcx,rcy]));
+    dims.push(dimLine(rp[1],rp[2],`${ftIn(dist(r[1],r[2]))}`,12,1,false,'#08747b',40,[rcx,rcy]));
+    dims.push(dimLine(rp[2],rp[3],`${ftIn(dist(r[2],r[3]))}`,12,-1,false,'#08747b',42,[rcx,rcy]));
+    dims.push(dimLine(rp[3],rp[0],`${ftIn(dist(r[3],r[0]))}`,12,-1,false,'#08747b',40,[rcx,rcy]));
+    // Final remaining parcel also gets its own diagonal and feet-inch dimension.
+    if (rp.length >= 4) {
+      const p1=rp[0], p2=rp[2], dval=dist(r[0],r[2]);
+      const dx=p2[0]-p1[0], dy=p2[1]-p1[1], len=Math.hypot(dx,dy)||1;
+      const mx=(p1[0]+p2[0])/2, my=(p1[1]+p2[1])/2;
+      const cx=rp.reduce((s,p)=>s+p[0],0)/rp.length, cy=rp.reduce((s,p)=>s+p[1],0)/rp.length;
+      const side=(dx*(cy-p1[1])-dy*(cx-p1[0]))>=0?1:-1;
+      const lx=mx+(dy/len)*side*12, ly=my-(dx/len)*side*12;
+      const ang=clampAngle(Math.atan2(dy,dx)*180/Math.PI);
+      dims.push(`<line x1="${p1[0].toFixed(1)}" y1="${p1[1].toFixed(1)}" x2="${p2[0].toFixed(1)}" y2="${p2[1].toFixed(1)}" stroke="#174ea6" stroke-width="4" stroke-dasharray="10 9" stroke-linecap="round"/>`);
+      dims.push(`<text class="qp-dim-value qp-diagonal-dim" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" transform="rotate(${ang.toFixed(2)} ${lx.toFixed(1)} ${ly.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="20" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="8" stroke-linejoin="round">${ftIn(dval)}</text>`);
+    }
+    const rdx=rp[2][0]-rp[0][0], rdy=rp[2][1]-rp[0][1], rlen=Math.hypot(rdx,rdy)||1;
+    const rside=(rdx*(rcy-rp[0][1])-rdy*(rcx-rp[0][0]))>=0?1:-1;
+    labels.push(`<text x="${(rcx+(-rdy/rlen)*rside*30).toFixed(1)}" y="${(rcy+(rdx/rlen)*rside*30).toFixed(1)}" text-anchor="middle" font-size="19" font-weight="950" fill="#08747b" paint-order="stroke" stroke="#fff" stroke-width="5">অবশিষ্ট — ${bn(finalArea/SQFT_PER_DECIMAL)} শতাংশ</text>`);
 
     const outerLabels=[['A',q.pts[0]],['B',q.pts[1]],['C',q.pts[2]],['D',q.pts[3]]].map(([n,p])=>`<circle cx="${tx(p[0]).toFixed(1)}" cy="${ty(p[1]).toFixed(1)}" r="9" fill="#08747b"/><text x="${(tx(p[0])+18).toFixed(1)}" y="${(ty(p[1])-18).toFixed(1)}" font-size="19" font-weight="950" fill="#082336" paint-order="stroke" stroke="#fff" stroke-width="4.5">${n}</text>`).join('');
-    return `<div class="qp-drawing qp-multi-drawing"><div class="qp-drawing-head">📐 সবগুলো প্লট / ভাগ — একই মূল জমির Drawing (${bn(valid.length)}টি ভাগ)</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • প্রত্যেক প্লটের Dimension আলাদা • চূড়ান্ত অবশিষ্ট জমির Dimension আলাদা • কর্ণ ডটেড</div><div class="qp-svg-wrap"><svg id="qpMultiSvg" class="qp-svg qp-svg-large" viewBox="0 0 ${W} ${H}" role="img" aria-label="একই Drawing-এ একাধিক জমি ভাগ">${layers.join('')}${dims.join('')}${labels.join('')}${outerLabels}${northArrow}</svg></div><div class="qp-drawing-legend"><span>🟨/🟩/🟦/🟪 আলাদা প্লট</span><span>🟥 লাল রেখা = ভাগরেখা</span><span>┄ কর্ণ = ডটেড</span></div></div>`;
+    return `<div class="qp-drawing qp-multi-drawing"><div class="qp-drawing-head">📐 সবগুলো প্লট / ভাগ — একই মূল জমির Drawing (${bn(valid.length)}টি ভাগ)</div><div class="qp-drawing-meta">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে • প্রত্যেক প্লটের Dimension আলাদা • অবশিষ্ট জমির Dimension আলাদা • কর্ণ ডটেড</div><div class="qp-svg-wrap"><svg id="qpMultiSvg" class="qp-svg qp-svg-large" viewBox="0 0 ${W} ${H}" role="img" aria-label="একই Drawing-এ একাধিক জমি ভাগ" style="touch-action:none;user-select:none"><g id="qpMultiView" transform="translate(-2600 -1750) scale(3)">${layers.join('')}${dims.join('')}${labels.join('')}${outerLabels}${northArrow}</g></svg></div><div class="qp-drawing-legend"><span>🟨/🟩/🟦/🟪 আলাদা প্লট</span><span>🟥 লাল রেখা = ভাগরেখা</span><span>┄ কর্ণ = ডটেড</span></div></div>`;
   }
 
   function renderMultiResult(message=''){
@@ -506,6 +587,24 @@
     html+=`</div>${makeNextSplitControls()}${makeMultiDrawing()}<div class="qp-save-status" id="qpSaveStatus">${localStorage.getItem(SAVE_KEY)?'💾 এই হিসাবের একটি সেভ কপি এই ডিভাইসে আছে।':'💾 সেভ করতে “সেভ করুন” চাপুন।'}</div>`;
     result.innerHTML=html;
     bindMultiButtons();
+    bindDrawingGestures();
+  }
+
+  function bindDrawingGestures(){
+    const svg=$('qpMultiSvg'), group=$('qpMultiView'); if(!svg||!group) return;
+    // Start enlarged 3x, centered on the drawing. Zoom remains user-adjustable.
+    let scale=3, tx=-2600, ty=-1750, start=null, pinch=null;
+    const apply=()=>{group.setAttribute('transform',`translate(${tx} ${ty}) scale(${scale})`);};
+    const pts=e=>Array.from(e.touches||[]).map(t=>({x:t.clientX,y:t.clientY}));
+    const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+    const pointInSvg=p=>{const r=svg.getBoundingClientRect();return {x:(p.x-r.left)*(2600/Math.max(1,r.width)),y:(p.y-r.top)*(1750/Math.max(1,r.height))};};
+    const startPinch=p=>{const mid={x:(p[0].x+p[1].x)/2,y:(p[0].y+p[1].y)/2};pinch={d:distance(p[0],p[1]),scale,mid:pointInSvg(mid),tx,ty};start=null;};
+    svg.addEventListener('touchstart',e=>{const p=pts(e);if(p.length===1){start={x:p[0].x,y:p[0].y,tx,ty};pinch=null;}else if(p.length>=2)startPinch(p);},{passive:false});
+    svg.addEventListener('touchmove',e=>{const p=pts(e);if(p.length===1&&start){const r=svg.getBoundingClientRect();tx=start.tx+(p[0].x-start.x)*(2600/Math.max(1,r.width));ty=start.ty+(p[0].y-start.y)*(1750/Math.max(1,r.height));apply();e.preventDefault();}else if(p.length>=2&&pinch){const next=Math.max(.35,Math.min(8,pinch.scale*distance(p[0],p[1])/Math.max(1,pinch.d)));const ratio=next/pinch.scale;tx=pinch.mid.x-(pinch.mid.x-pinch.tx)*ratio;ty=pinch.mid.y-(pinch.mid.y-pinch.ty)*ratio;scale=next;apply();e.preventDefault();}},{passive:false});
+    svg.addEventListener('touchend',e=>{const p=pts(e);if(p.length>=2)startPinch(p);else if(p.length===1){start={x:p[0].x,y:p[0].y,tx,ty};pinch=null;}else{start=null;pinch=null;}},{passive:false});
+    svg.addEventListener('touchcancel',()=>{start=null;pinch=null;},{passive:false});
+    svg.addEventListener('wheel',e=>{const focal=pointInSvg({x:e.clientX,y:e.clientY});const next=Math.max(.35,Math.min(8,scale*(e.deltaY<0?1.12:.89)));const ratio=next/scale;tx=focal.x-(focal.x-tx)*ratio;ty=focal.y-(focal.y-ty)*ratio;scale=next;apply();e.preventDefault();},{passive:false});
+    apply();
   }
 
   function bindMultiButtons(){
@@ -644,7 +743,7 @@
           ['দক্ষিণ',dist(r[2],r[3])],['পশ্চিম',dist(r[3],r[0])],
           ['কর্ণ ১',dist(r[0],r[2])],['কর্ণ ২',dist(r[1],r[3])]
         ];
-        partsHtml+=`<section class="part remaining"><h3>চূড়ান্ত অবশিষ্ট জমি — ${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</h3><div class="dims"><h4>অবশিষ্ট জমির আলাদা Dimension</h4>`;
+        partsHtml+=`<section class="part remaining"><h3>অবশিষ্ট — ${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</h3><div class="dims"><h4>অবশিষ্ট জমির আলাদা Dimension</h4>`;
         rs.forEach(([label,val])=>{partsHtml+=`<div class="row"><span>অবশিষ্ট জমি — ${esc(label)}</span><strong>${ftIn(val)}</strong></div>`;});
         partsHtml+=`</div></section>`;
       }
@@ -687,7 +786,7 @@
         </section>
         <section class="page">
           <div class="title">চতুর্ভূজ জমি ভাগ-বণ্টন — প্রত্যেক প্লটের আলাদা হিসাব</div>
-          <div class="summary">মোট জমি: <b>${bn(total)} বর্গফুট (${bn(total/SQFT_PER_DECIMAL)} শতাংশ)</b> • মোট ভাগ: <b>${bn(valid.length)}টি</b> • ভাগকৃত: <b>${bn(used/SQFT_PER_DECIMAL)} শতাংশ</b> • চূড়ান্ত অবশিষ্ট: <b>${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</b></div>
+          <div class="summary">মোট জমি: <b>${bn(total)} বর্গফুট (${bn(total/SQFT_PER_DECIMAL)} শতাংশ)</b> • মোট ভাগ: <b>${bn(valid.length)}টি</b> • ভাগকৃত: <b>${bn(used/SQFT_PER_DECIMAL)} শতাংশ</b> • অবশিষ্ট: <b>${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</b></div>
           <div class="parts">${partsHtml}</div>
         </section>
       </body></html>`);
@@ -707,7 +806,7 @@
 
   function calculate(){
     const v=sideValues();
-    if(Object.values(v).some(x=>x===null||!(x>0))) return warning('উত্তর, পূর্ব, দক্ষিণ, পশ্চিম ও কর্ণ—সবগুলোর ফুট এবং ইঞ্চির সঠিক মান দিন। ইঞ্চি ০ থেকে ১১.৯৯-এর মধ্যে হতে হবে।');
+    if(['AB','BC','CD','DA','AC'].some(k=>v[k]===null||!(v[k]>0))) return warning('উত্তর, পূর্ব, দক্ষিণ, পশ্চিম ও নির্বাচিত কর্ণ—সবগুলোর ফুট এবং ইঞ্চির সঠিক মান দিন। ইঞ্চি ০ থেকে ১১.৯৯-এর মধ্যে হতে হবে।');
     const wanted=$('qpShapeType')?.value||'auto', q=buildQuad(v,wanted);
     if(!q) return warning(wanted==='auto'?'দেওয়া চার বাহু ও AC কর্ণ দিয়ে বৈধ সরল অনিয়মিত চতুর্ভূজ তৈরি করা যাচ্ছে না।':'দেওয়া চার বাহু ও AC কর্ণ দিয়ে নির্বাচিত চতুর্ভূজ তৈরি করা যাচ্ছে না।');
     const target=targetSqft(); if(!(target>0)) return warning('যে পরিমাণ জমি ভাগ করবেন সেটি দিন।');
@@ -721,7 +820,7 @@
   }
 
   function clear(){
-    for(const k of ['AB','BC','CD','DA','AC']){const a=$(k==='AB'?'qpABft':`qp${k}ft`),b=$(k==='AB'?'qpABin':`qp${k}in`);if(a)a.value='';if(b)b.value='';}
+    for(const k of ['AB','BC','CD','DA','AC','BD']){const a=$(`qp${k}ft`),b=$(`qp${k}in`);if(a)a.value='';if(b)b.value='';}
     if($('qpTarget'))$('qpTarget').value=''; result.innerHTML=''; qpState.q=null;qpState.splits=[];splitSeq=0;
   }
   if(!$('qpCalc')||!result)return;
