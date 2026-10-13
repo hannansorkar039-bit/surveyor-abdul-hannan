@@ -40,21 +40,12 @@
       '<div class="result-item"><strong>'+ana+' আনা '+g+' গণ্ডা '+k+' কড়া '+kr+' ক্রান্তি '+t+' তিল</strong><span>নিকটতম তিল পর্যন্ত</span></div>'+ 
       '</div><p class="conversion-note">হিস্যা-রূপান্তর: ১৬ আনা = পূর্ণ সম্পত্তি; ১ আনা = ২০ গণ্ডা; ১ গণ্ডা = ৪ কড়া; ১ কড়া = ৩ ক্রান্তি; ১ ক্রান্তি = ২০ তিল। জমির পরিমাণের একক স্থানীয়/সরকারি রেকর্ডের সঙ্গে মিলিয়ে নিন।</p>';
   }
-  function calcFromFields(prefix,resultId){
-    const total=Number($(prefix+'TotalLand').value), unit=$(prefix+'LandUnit').value;
-    const [a,g,k,kr,t]=readParts([prefix+'Ana',prefix+'Gonda',prefix+'Kora',prefix+'Kranti',prefix+'Til']);
-    const r=$(resultId);
-    if(!(total>0)) return err(r,'মোট জমির পরিমাণ ০-এর বেশি দিন।');
-    const msg=validateParts(a,g,k,kr,t); if(msg) return err(r,msg);
-    renderLandResult(r,total,unit,partsToTil(a,g,k,kr,t));
-  }
+
   // Fill symbolic selects.
   anaSymbols.forEach((sym,i)=>{const o=document.createElement('option');o.value=i;o.textContent=i+' আনা — '+sym;$('fsAnaSymbol').appendChild(o)});
   for(let i=0;i<=19;i++){const o=document.createElement('option');o.value=i;o.textContent=i+' গণ্ডা';$('fsGonda').appendChild(o);$('fsTil').appendChild(Object.assign(document.createElement('option'),{value:i,textContent:i+' তিল'}));}
   for(let i=0;i<=3;i++){const o=document.createElement('option');o.value=i;o.textContent=i+' কড়া';$('fsKora').appendChild(o)}
   for(let i=0;i<=2;i++){const o=document.createElement('option');o.value=i;o.textContent=i+' ক্রান্তি';$('fsKranti').appendChild(o)}
-  $('fhCalc').onclick=()=>calcFromFields('fh','fhResult');
-  $('fhReset').onclick=()=>{['fhTotalLand','fhAna','fhGonda','fhKora','fhKranti','fhTil'].forEach(id=>$(id).value=id==='fhTotalLand'?'':'0');$('fhResult').innerHTML='';};
   $('fsCalc').onclick=()=>{
     const total=Number($('fsTotalLand').value), unit=$('fsLandUnit').value, a=Number($('fsAnaSymbol').value),g=Number($('fsGonda').value),k=Number($('fsKora').value),kr=Number($('fsKranti').value),t=Number($('fsTil').value),r=$('fsResult');
     if(!(total>0)) return err(r,'মোট জমির পরিমাণ ০-এর বেশি দিন।');
@@ -112,40 +103,4 @@
   }
   $('frCalc').onclick=reverseHissa;$('frReset').onclick=()=>{['frTotal','frOwn'].forEach(id=>$(id).value='');$('frResult').innerHTML='';};
   // Featured calculator cards act as an accordion.
-  // Each calculator panel is placed directly under its own title card.
-  const featureCards=[...document.querySelectorAll('[data-feature-target]')];
-  const featurePanels=featureCards.map(btn=>$(btn.dataset.featureTarget)).filter(Boolean);
-
-  featureCards.forEach((btn)=>{
-    const target=$(btn.dataset.featureTarget);
-    if(!target)return;
-
-    // Move the existing, unchanged calculator panel beside its own launcher.
-    const wrap=document.createElement('div');
-    wrap.className='featured-accordion-item';
-    btn.parentNode.insertBefore(wrap,btn);
-    wrap.appendChild(btn);
-    wrap.appendChild(target);
-
-    btn.setAttribute('aria-controls',target.id);
-    btn.setAttribute('aria-expanded','false');
-    target.hidden=true;
-    target.classList.remove('is-active');
-
-    btn.addEventListener('click',()=>{
-      const willOpen=target.hidden;
-      featureCards.forEach(other=>{
-        const otherTarget=$(other.dataset.featureTarget);
-        if(!otherTarget)return;
-        otherTarget.hidden=true;
-        otherTarget.classList.remove('is-active');
-        other.setAttribute('aria-expanded','false');
-      });
-      if(willOpen){
-        target.hidden=false;
-        target.classList.add('is-active');
-        btn.setAttribute('aria-expanded','true');
-      }
-    });
-  });
 })();
