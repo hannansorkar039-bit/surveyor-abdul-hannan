@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v91-calculator-css-offline-fix";
+const CACHE_NAME = "sah-pwa-v92-calculator-removal-fix";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 
 // Only the offline application shell is required for Service Worker installation.
