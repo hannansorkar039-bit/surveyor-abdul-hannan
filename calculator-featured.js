@@ -84,14 +84,6 @@
       '<div class="angle-grid"><div class="angle-box"><strong>'+fmt(A,6)+'°</strong><span>∠A</span></div><div class="angle-box"><strong>'+fmt(B,6)+'°</strong><span>∠B</span></div><div class="angle-box"><strong>'+fmt(C,6)+'°</strong><span>∠C</span></div><div class="angle-box"><strong>'+fmt(D,6)+'°</strong><span>∠D</span></div></div><p class="conversion-note">যাচাই: চার কোণের যোগফল ≈ ৩৬০°। এই হিসাব একটি সরল, উত্তল চতুর্ভুজ এবং সঠিক A–C কর্ণের মাপ ধরে করা হয়েছে।</p>';
   };
   $('fqReset').onclick=()=>{['fqABft','fqABin','fqBCft','fqBCin','fqCDft','fqCDin','fqDAft','fqDAin','fqACft','fqACin'].forEach(id=>$(id).value='');$('fqResult').innerHTML='';};
-  // Exact rectangular separation.
-  $('fsepCalc').onclick=()=>{
-    const L=Number($('fsepLength').value),W=Number($('fsepWidth').value),p=Number($('fsepPercent').value),u=$('fsepUnit').value,r=$('fsepResult');
-    if(!(L>0&&W>0))return err(r,'দৈর্ঘ্য ও প্রস্থ ০-এর বেশি দিন।');if(!(p>0&&p<100))return err(r,'পৃথক করার শতাংশ ০-এর বেশি এবং ১০০%-এর কম হতে হবে.');
-    const cut=L*p/100, area=L*W, part=area*p/100;const areaSqft=u==='ft'?part:part*10.763910416709722;const partDec=areaSqft/435.6;
-    r.innerHTML='<div class="result-main">বিভাজন রেখা = '+fmt(cut,6)+' '+(u==='ft'?'ফুট':'মিটার')+' (এক প্রান্ত থেকে)</div><div class="result-list"><div class="result-item result-item-primary"><strong>'+fmt(part,6)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>পৃথক অংশ</span></div><div class="result-item"><strong>'+fmt(100-p,6)+'%</strong><span>অবশিষ্ট অংশ</span></div><div class="result-item"><strong>'+fmt(area,6)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>মোট ক্ষেত্রফল</span></div><div class="result-item"><strong>'+fmt(partDec,6)+' শতাংশ</strong><span>পৃথক অংশের ডেসিমেল</span></div></div><p class="conversion-note">শর্ত: জমিটি আয়তক্ষেত্র/সমান প্রস্থের এবং বিভাজন রেখা দৈর্ঘ্যের উপর লম্ব ধরে নেওয়া হয়েছে। অনিয়মিত চতুর্ভুজে এই সূত্র ব্যবহার করবেন না।</p>';
-  };
-  $('fsepReset').onclick=()=>{['fsepLength','fsepWidth','fsepPercent'].forEach(id=>$(id).value='');$('fsepResult').innerHTML='';};
   // Reverse land -> hissa.
   function reverseHissa(){
     const total=Number($('frTotal').value),own=Number($('frOwn').value),u=$('frUnit').value,r=$('frResult');
