@@ -5,7 +5,7 @@
   const fmt = (n,d=4) => Number(n).toLocaleString('en-US',{maximumFractionDigits:d});
   const bn = n => Number(n).toLocaleString('bn-BD',{maximumFractionDigits:6});
   const esc = s => String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const T=76800, G=4800, K=240, KR=80, TL=1;
+  const T=76800, G=4800, K=240, KR=60, TL=1;
   const unitSqft={decimal:435.6,sqft:1,sqm:10.763910416709722,acre:43560};
   const unitLabel={decimal:'শতাংশ',sqft:'বর্গফুট',sqm:'বর্গমিটার',acre:'একর'};
   const anaSymbols=['০','⁄','৵','৶','৷','৷⁄','৷৵','৷৶','৷৷','৷৷⁄','৷৷৵','৷৷৶','৸','৸⁄','৸৵','৸৶','১'];
