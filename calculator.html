@@ -16,7 +16,7 @@
 <link rel="canonical" href="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/calculator.html"/>
 <link href="icons/icon-192.png" rel="icon" type="image/png"/>
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="calculator.css?v=20261009-featured-5-cards-desktop-v4">
+<link rel="stylesheet" href="calculator.css?v=20261015-triangle-print-onepage-v2">
 <link rel="stylesheet" href="calculator-polygon-draw.css?v=20261011-11">
 <!-- V7 SEO START -->
 <meta property="og:site_name" content="সার্ভেয়ার আবদুল হান্নান"/>
@@ -121,7 +121,7 @@
 <button type="button" class="calc-tab" data-tab="wood-cft" role="tab" aria-selected="false">গোল কাঠের CFT ক্যালকুলেটর</button>
 <button type="button" class="calc-tab" data-tab="sawn-wood-cft" role="tab" aria-selected="false">চেরাই কাঠের CFT ক্যালকুলেটর</button>
 <button type="button" class="calc-tab" data-tab="inheritance" role="tab" aria-selected="false">মুসলিম উত্তরাধিকার</button>
-<button type="button" class="calc-tab" data-tab="heron" role="tab" aria-selected="false">হেরনের সূত্র</button>
+<button type="button" class="calc-tab" data-tab="heron" role="tab" aria-selected="false">হেরনের সূত্র</button><button type="button" class="calc-tab" data-tab="triangle-heron-cosine" role="tab" aria-selected="false">ত্রিভুজাকার জমি (কোসাইন সূত্র)</button>
 <button type="button" class="calc-tab" data-tab="brahmagupta" role="tab" aria-selected="false">ব্রহ্মগুপ্তের সূত্র</button>
 <button type="button" class="calc-tab" data-tab="four-side-sqrt" role="tab" aria-selected="false">রুট ওভার বা বর্গমূল পদ্ধতিতে ক্ষেত্রফল</button>
 <button type="button" class="calc-tab" id="multi-field-drawing-tab" data-tab="multi-field-drawing" role="tab" aria-selected="false">বহু ক্ষেত্র Drawing ও Alignment</button>
@@ -393,6 +393,31 @@
 <p class="calc-help">তিন বাহুকে অবশ্যই একটি বৈধ ত্রিভুজ গঠন করতে হবে।</p>
 <div class="calc-actions"><button type="button" class="calc-btn calc-primary" id="heronCalc">হিসাব করুন</button><button type="button" class="calc-btn calc-secondary" data-clear="heron">পরিষ্কার</button></div>
 <div class="calc-result" id="heronResult" aria-live="polite"></div>
+</section>
+<section class="calc-panel" id="panel-triangle-heron-cosine" role="tabpanel">
+<h3>ত্রিভুজাকার জমির ক্ষেত্রফল — কোসাইন সূত্র</h3>
+<div class="calc-help">তিনটি বাহুর মাপ দিন, অথবা নির্বাচিত কোণের দুই পাশের বাহুর ফুট–ইঞ্চি ও সেই কোণের ডিগ্রি দিন। তৃতীয় বাহু, ড্রয়িং, তিন কোণ ও ক্ষেত্রফল স্বয়ংক্রিয়ভাবে নির্ণয় হবে।</div>
+<div class="thc-measure-angle-grid">
+<div class="thc-side-inputs" aria-label="বাহুর ফুট ও ইঞ্চির মাপ">
+<div class="thc-column-title">বাহুর দৈর্ঘ্য (ফুট–ইঞ্চি)</div>
+<div class="thc-side-row"><label for="thcAFt">বাহু a</label><div class="thc-fi-pair"><input id="thcAFt" type="number" min="0" step="1" inputmode="numeric" placeholder="ফুট" aria-label="বাহু a ফুট"><span>'</span><input id="thcAIn" type="number" min="0" max="11" step="1" inputmode="numeric" placeholder="ইঞ্চি" aria-label="বাহু a ইঞ্চি"><span>"</span></div></div>
+<div class="thc-side-row"><label for="thcBFt">বাহু b</label><div class="thc-fi-pair"><input id="thcBFt" type="number" min="0" step="1" inputmode="numeric" placeholder="ফুট" aria-label="বাহু b ফুট"><span>'</span><input id="thcBIn" type="number" min="0" max="11" step="1" inputmode="numeric" placeholder="ইঞ্চি" aria-label="বাহু b ইঞ্চি"><span>"</span></div></div>
+<div class="thc-side-row"><label for="thcCFt">বাহু c</label><div class="thc-fi-pair"><input id="thcCFt" type="number" min="0" step="1" inputmode="numeric" placeholder="ফুট" aria-label="বাহু c ফুট"><span>'</span><input id="thcCIn" type="number" min="0" max="11" step="1" inputmode="numeric" placeholder="ইঞ্চি" aria-label="বাহু c ইঞ্চি"><span>"</span></div></div>
+</div>
+<div class="thc-angle-inputs" aria-label="ত্রিভুজের কোণ">
+<div class="thc-column-title">কোণ (ডিগ্রি)</div>
+<div class="thc-angle-row"><label for="thcAngleA">কোণ A</label><output id="thcAngleA" class="thc-angle-output">—°</output></div>
+<div class="thc-angle-row"><label for="thcAngleB">কোণ B</label><output id="thcAngleB" class="thc-angle-output">—°</output></div>
+<div class="thc-angle-row"><label for="thcAngleC">কোণ C</label><output id="thcAngleC" class="thc-angle-output">—°</output></div>
+<div class="thc-included-angle"><label for="thcAngleSelect">যে কোণটি জানা আছে</label><select id="thcAngleSelect" aria-label="জানা কোণ নির্বাচন"><option value="A">কোণ A</option><option value="B">কোণ B</option><option value="C" selected>কোণ C</option></select><label for="thcAngleInput">নির্বাচিত কোণের ডিগ্রি</label><input id="thcAngleInput" type="number" min="0.0001" max="179.9999" step="any" inputmode="decimal" placeholder="যেমন 60"><small>কোণ A হলে বাহু b ও c, কোণ B হলে a ও c, কোণ C হলে a ও b দিন।</small></div>
+</div>
+</div>
+<h4>ত্রিভুজের ড্রয়িং</h4>
+<div class="thc-drawing-tools" aria-label="ড্রয়িং নিয়ন্ত্রণ"><button type="button" class="calc-btn calc-secondary" id="thcZoomIn" aria-label="ড্রয়িং বড় করুন">＋ জুম ইন</button><button type="button" class="calc-btn calc-secondary" id="thcZoomOut" aria-label="ড্রয়িং ছোট করুন">− জুম আউট</button><button type="button" class="calc-btn calc-secondary" id="thcZoomReset">ভিউ রিসেট</button><button type="button" class="calc-btn calc-primary" id="thcPrint">প্রিন্ট / PDF</button></div>
+<div class="calc-help">ড্রয়িং সরাতে এক আঙুল দিয়ে টেনে নিন। জুম বোতাম ব্যবহার করে আকার পরিবর্তন করুন।</div>
+<div id="thcDrawing" class="calc-drawing thc-drawing-canvas" aria-live="polite"><div class="calc-help">তিন বাহুর মাপ অথবা নির্বাচিত কোণের দুই পাশের বাহু ও কোণ দিলে এখানে ত্রিভুজের ড্রয়িং দেখা যাবে।</div></div>
+<div class="calc-actions"><button type="button" class="calc-btn calc-primary" id="thcCalculate">হিসাব করুন</button><button type="button" class="calc-btn calc-secondary" id="thcReset">রিসেট</button></div>
+<div class="calc-result" id="thcResult" aria-live="polite"></div>
 </section>
 <section class="calc-panel" id="panel-brahmagupta" role="tabpanel">
 <h3>ব্রহ্মগুপ্তের সূত্রে চতুর্ভুজের ক্ষেত্রফল</h3>
@@ -939,5 +964,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+<script src="calculator-triangle-heron-cosine.js?v=4" defer></script>
 </body>
 </html>
