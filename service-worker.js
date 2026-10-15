@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v95-qd-autodraw-fix2";
+const CACHE_NAME = "sah-pwa-v96-qd-autodraw-cachefix";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 
 // Only the offline application shell is required for Service Worker installation.
@@ -33,7 +33,7 @@ const EXTERNAL_CACHE_FIRST = new Set([
 const CACHE_FIRST = new Set([
   "./styles.css", "./app.js", "./content.js", "./calculator.css", "./calculator-pdf.js", "./calculator-core.js", "./calculator-partition.js",
   "./calculator-featured.js", "./calculator-field-boundary-pdf-deepfix.js", "./calculator-registry.js", "./calculator-land-suite.js",
-  "./calculator-bootstrap.js", "./calculator-triangle-partition.js", "./calculator-wood-cft.js",
+  "./calculator-bootstrap.js", "./calculator-quad-auto-draw.js", "./calculator-triangle-partition.js", "./calculator-wood-cft.js",
   "./calculator-sawn-wood-cft.js", "./calculator-triangle-heron-cosine.js", "./calculator-ux.js", "./calculator-polygon-draw.js", "./calculator-polygon-draw.css", "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf", "./icons/icon-192.png", "./icons/icon-512.png"
 ]);
 
