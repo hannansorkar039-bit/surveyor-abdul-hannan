@@ -54,36 +54,88 @@
     const msg=validateParts(a,g,k,kr,t);if(msg)return err(r,msg);renderLandResult(r,total,unit,partsToTil(a,g,k,kr,t));
   };
   $('fsReset').onclick=()=>{['fsTotalLand'].forEach(id=>$(id).value='');['fsAnaSymbol','fsGonda','fsKora','fsKranti','fsTil'].forEach(id=>$(id).value='0');$('fsResult').innerHTML='';};
-  // Irregular quadrilateral: area + all four interior angles.
+  // Irregular quadrilateral: AC or BD diagonal, area + all four interior angles + live drawing.
   const tri=(a,b,c)=>{const s=(a+b+c)/2,z=s*(s-a)*(s-b)*(s-c);return z>1e-12?Math.sqrt(z):null};
   const angle=(x,y,z)=>{const den=2*x*y;if(!(den>0))return null;let c=(x*x+y*y-z*z)/den;c=Math.max(-1,Math.min(1,c));return Math.acos(c)*180/Math.PI};
   const readFeetInches=(ftId,inId)=>{
-    const ft=Number($(ftId).value),inch=Number($(inId).value||0);
+    const ftText=$(ftId)?.value.trim()||'', inText=$(inId)?.value.trim()||'';
+    const ft=ftText===''?0:Number(ftText),inch=inText===''?0:Number(inText);
     if(!Number.isFinite(ft)||!Number.isFinite(inch)||ft<0||inch<0||inch>=12)return null;
     return ft+inch/12;
   };
-  $('fqCalc').onclick=()=>{
-    const aFt=readFeetInches('fqABft','fqABin'),bFt=readFeetInches('fqBCft','fqBCin'),cFt=readFeetInches('fqCDft','fqCDin'),dFt=readFeetInches('fqDAft','fqDAin'),diagFt=readFeetInches('fqACft','fqACin'),u=$('fqUnit').value,r=$('fqResult');
-    if([aFt,bFt,cFt,dFt,diagFt].some(v=>v===null||!(v>0)))return err(r,'চারটি বাহু ও কর্ণ AC—সবগুলোর সঠিক ফুট ও ইঞ্চির মান দিন। ইঞ্চি ১২-এর কম হতে হবে।');
-    const scale=u==='m'?0.3048:1;
-    const a=aFt*scale,b=bFt*scale,c=cFt*scale,d=dFt*scale,diag=diagFt*scale;
-    const t1=tri(a,b,diag),t2=tri(c,d,diag);
-    if(t1===null||t2===null)return err(r,'এই মাপগুলো দিয়ে দুটি বৈধ ত্রিভুজ তৈরি হচ্ছে না। কর্ণ AC অবশ্যই উভয় ত্রিভুজের triangle inequality পূরণ করবে।');
-    // Triangle ABC: A1 + B + C1 = 180°. Triangle ACD: A2 + C2 + D = 180°.
-    // The diagonal AC is shared, so the quadrilateral interior angles are:
-    // A=A1+A2, B=B, C=C1+C2, D=D. This removes the previous incorrect C-angle formula.
-    const A1=angle(a,diag,b),A2=angle(d,diag,c),A=A1+A2;
-    const B=angle(a,b,diag);
-    const C1=angle(b,diag,a),C2=angle(c,diag,d),C=C1+C2;
-    const D=angle(c,d,diag);
-    const sum=A+B+C+D;
-    if(![A,B,C,D].every(Number.isFinite)||Math.abs(sum-360)>1e-8)return err(r,'কোণ নির্ণয়ে জ্যামিতিক অসামঞ্জস্য পাওয়া গেছে। মাঠের মাপ/কর্ণ পুনরায় যাচাই করুন।');
-    const area=t1+t2, sqft=(u==='ft'?area:area*10.763910416709722), dec=sqft/435.6;
-    r.innerHTML='<div class="result-main">মোট ক্ষেত্রফল = '+fmt(area)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</div><div class="result-list">'+
-      '<div class="result-item result-item-primary"><strong>'+fmt(sqft,4)+' বর্গফুট</strong><span>মোট ক্ষেত্রফল</span></div><div class="result-item"><strong>'+fmt(dec,6)+' শতাংশ</strong><span>ডেসিমেল</span></div><div class="result-item"><strong>'+fmt(t1)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>△ABC</span></div><div class="result-item"><strong>'+fmt(t2)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>△ACD</span></div></div>'+ 
-      '<div class="angle-grid"><div class="angle-box"><strong>'+fmt(A,6)+'°</strong><span>∠A</span></div><div class="angle-box"><strong>'+fmt(B,6)+'°</strong><span>∠B</span></div><div class="angle-box"><strong>'+fmt(C,6)+'°</strong><span>∠C</span></div><div class="angle-box"><strong>'+fmt(D,6)+'°</strong><span>∠D</span></div></div><p class="conversion-note">যাচাই: চার কোণের যোগফল ≈ ৩৬০°। এই হিসাব একটি সরল, উত্তল চতুর্ভুজ এবং সঠিক A–C কর্ণের মাপ ধরে করা হয়েছে।</p>';
+  const fqInputs=['fqABft','fqABin','fqBCft','fqBCin','fqCDft','fqCDin','fqDAft','fqDAin','fqACft','fqACin','fqBDft','fqBDin'];
+  const fqPoint=(base,fromStart,fromEnd)=>{
+    if(!(base>0))return null;
+    const x=(fromStart*fromStart+base*base-fromEnd*fromEnd)/(2*base), y2=fromStart*fromStart-x*x;
+    if(y2 < -1e-7)return null;
+    return {x,y:Math.sqrt(Math.max(0,y2))};
   };
-  $('fqReset').onclick=()=>{['fqABft','fqABin','fqBCft','fqBCin','fqCDft','fqCDin','fqDAft','fqDAin','fqACft','fqACin'].forEach(id=>$(id).value='');$('fqResult').innerHTML='';};
+  const fqTriangleValid=(a,b,c)=>a+b>c+1e-8&&a+c>b+1e-8&&b+c>a+1e-8;
+  const fqDraw=()=>{
+    const host=$('fqDrawing'); if(!host)return;
+    const unit=$('fqUnit')?.value||'ft', which=$('fqDiagonalType')?.value==='BD'?'BD':'AC';
+    const vals={AB:readFeetInches('fqABft','fqABin'),BC:readFeetInches('fqBCft','fqBCin'),CD:readFeetInches('fqCDft','fqCDin'),DA:readFeetInches('fqDAft','fqDAin'),AC:readFeetInches('fqACft','fqACin'),BD:readFeetInches('fqBDft','fqBDin')};
+    const chosen=vals[which], all=[vals.AB,vals.BC,vals.CD,vals.DA,chosen];
+    if(all.some(v=>v===null)){host.innerHTML='<div class="warning">ফুটের মান ০ বা তার বেশি এবং ইঞ্চি ০ থেকে ১১.৯৯৯-এর মধ্যে দিন।</div>';return;}
+    if(all.some(v=>!(v>0))){host.innerHTML='<div class="calc-help">চার বাহু ও নির্বাচিত কর্ণের বৈধ ফুট–ইঞ্চি মাপ দিলে ড্রয়িং স্বয়ংক্রিয়ভাবে তৈরি হবে।</div>';return;}
+    const factor=unit==='m'?0.3048:1, ab=vals.AB*factor,bc=vals.BC*factor,cd=vals.CD*factor,da=vals.DA*factor,diag=chosen*factor;
+    let pts;
+    if(which==='AC'){
+      if(!fqTriangleValid(ab,bc,diag)||!fqTriangleValid(da,cd,diag)){host.innerHTML='<div class="warning">নির্বাচিত AC কর্ণ দিয়ে দুটি বৈধ ত্রিভুজ তৈরি হচ্ছে না। মাপ যাচাই করুন।</div>';return;}
+      const b=fqPoint(diag,ab,bc),d=fqPoint(diag,da,cd);if(!b||!d){host.innerHTML='<div class="warning">প্রদত্ত মাপ জ্যামিতিকভাবে সামঞ্জস্যপূর্ণ নয়।</div>';return;}
+      pts={A:{x:0,y:0},B:b,C:{x:diag,y:0},D:{x:d.x,y:-d.y}};
+    } else {
+      if(!fqTriangleValid(ab,da,diag)||!fqTriangleValid(bc,cd,diag)){host.innerHTML='<div class="warning">নির্বাচিত BD কর্ণ দিয়ে দুটি বৈধ ত্রিভুজ তৈরি হচ্ছে না। মাপ যাচাই করুন।</div>';return;}
+      const a=fqPoint(diag,ab,da),c=fqPoint(diag,bc,cd);if(!a||!c){host.innerHTML='<div class="warning">প্রদত্ত মাপ জ্যামিতিকভাবে সামঞ্জস্যপূর্ণ নয়।</div>';return;}
+      pts={B:{x:0,y:0},A:a,D:{x:diag,y:0},C:{x:c.x,y:-c.y}};
+    }
+    // Rotate the whole measured shape so AB (north) is horizontal; geometry and lengths remain unchanged.
+    const dx=pts.B.x-pts.A.x,dy=pts.B.y-pts.A.y,base=Math.hypot(dx,dy),ux=dx/base,uy=dy/base;
+    const rotated={};
+    Object.keys(pts).forEach(k=>{const vx=pts[k].x-pts.A.x,vy=pts[k].y-pts.A.y;rotated[k]={x:vx*ux+vy*uy,y:-vx*uy+vy*ux};});
+    const side=(rotated.C.y+rotated.D.y)/2;
+    Object.keys(rotated).forEach(k=>{if(side>0)rotated[k].y=-rotated[k].y;});
+    pts=rotated;
+    const arr=Object.values(pts), minX=Math.min(...arr.map(p=>p.x)),maxX=Math.max(...arr.map(p=>p.x)),minY=Math.min(...arr.map(p=>p.y)),maxY=Math.max(...arr.map(p=>p.y));
+    const W=720,H=440,padX=155,padY=105,scale=Math.min((W-2*padX)/Math.max(maxX-minX,1e-6),(H-2*padY)/Math.max(maxY-minY,1e-6)),cx=(minX+maxX)/2,cy=(minY+maxY)/2;
+    const map=p=>({x:W/2+(p.x-cx)*scale,y:H/2-(p.y-cy)*scale}),P={A:map(pts.A),B:map(pts.B),C:map(pts.C),D:map(pts.D)};
+    const poly=['A','B','C','D'].map(k=>`${P[k].x.toFixed(2)},${P[k].y.toFixed(2)}`).join(' '), mid=(a,b)=>({x:(P[a].x+P[b].x)/2,y:(P[a].y+P[b].y)/2});
+    const lab=(a,b,t,offset=15)=>{const m=mid(a,b),p=P[a],q=P[b];let deg=Math.atan2(q.y-p.y,q.x-p.x)*180/Math.PI;if(deg>90)deg-=180;if(deg< -90)deg+=180;return `<text x="${m.x}" y="${m.y-offset}" transform="rotate(${deg} ${m.x} ${m.y-offset})" class="qd-dim" text-anchor="middle">${t}</text>`;};
+    const f=n=>Number(n).toLocaleString('en-US',{maximumFractionDigits:2}),len=v=>unit==='ft'?`${f(Math.floor(v))}′ ${f((v-Math.floor(v))*12)}″`:`${f(v*0.3048)} মি`;
+    let ang;
+    if(which==='AC') ang={A:angle(ab,diag,bc)+angle(da,diag,cd),B:angle(ab,bc,diag),C:angle(bc,diag,ab)+angle(cd,diag,da),D:angle(cd,da,diag)};
+    else ang={A:angle(ab,da,diag),B:angle(ab,diag,da)+angle(bc,diag,cd),C:angle(bc,cd,diag),D:angle(da,diag,ab)+angle(cd,diag,bc)};
+    // Angle values are highlighted OUTSIDE the plot and connected to their matching vertices.
+    const centroid={x:(P.A.x+P.B.x+P.C.x+P.D.x)/4,y:(P.A.y+P.B.y+P.C.y+P.D.y)/4};
+    const angleLabels=['A','B','C','D'].map(k=>{
+      const p=P[k],dx=p.x-centroid.x,dy=p.y-centroid.y,n=Math.hypot(dx,dy)||1,ux=dx/n,uy=dy/n;
+      const lx=p.x+ux*55,ly=p.y+uy*55,anchor=ux>0.28?'start':ux< -0.28?'end':'middle';
+      const label=`∠${k} ${f(ang[k])}°`,width=Math.max(88,label.length*7.2+16);
+      const left=anchor==='start'?lx-5:anchor==='end'?lx-width+5:lx-width/2,tx=anchor==='start'?lx+4:anchor==='end'?lx-4:lx;
+      return `<g class="qd-angle-callout"><line x1="${p.x+ux*7}" y1="${p.y+uy*7}" x2="${lx}" y2="${ly}" class="qd-angle-leader"/><rect x="${left}" y="${ly-14}" width="${width}" height="28" rx="7" class="qd-angle-badge"/><text x="${tx}" y="${ly+4.5}" class="qd-angle-label" text-anchor="${anchor}">${label}</text></g>`;
+    }).join('');
+    host.innerHTML=`<div class="qd-drawing-head"><strong>প্লটের স্বয়ংক্রিয় ড্রয়িং</strong><span>উত্তর উপরে • কর্ণ ${which} • মাপ পরিবর্তনে আপডেট হবে</span></div><svg class="qd-plot-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="ইনপুট মাপ অনুযায়ী উত্তর উপরে রেখে আঁকা অনিয়মিত চতুর্ভুজের ড্রয়িং"><style>.qd-angle-badge{fill:#fff7cc;stroke:#b45309;stroke-width:1.8}.qd-angle-label{font-size:13px;font-weight:800;fill:#7c2d12;pointer-events:none}.qd-angle-leader{stroke:#b45309;stroke-width:1.6;stroke-dasharray:3 2}</style><polygon points="${poly}" fill="#dcefe6" fill-opacity=".75" stroke="#16794b" stroke-width="4" stroke-linejoin="round"/><line x1="${P[which[0]].x}" y1="${P[which[0]].y}" x2="${P[which[1]].x}" y2="${P[which[1]].y}" stroke="#c2410c" stroke-width="3" stroke-dasharray="9 7"/>${lab('A','B',`উত্তর ${len(vals.AB)}`)}${lab('B','C',`পূর্ব ${len(vals.BC)}`)}${lab('C','D',`দক্ষিণ ${len(vals.CD)}`)}${lab('D','A',`পশ্চিম ${len(vals.DA)}`)}<text x="${mid(which[0],which[1]).x+8}" y="${mid(which[0],which[1]).y-12}" class="qd-diag-label">${which} ${len(chosen)}</text>${angleLabels}${['A','B','C','D'].map(k=>`<circle cx="${P[k].x}" cy="${P[k].y}" r="5" fill="#14532d"/><text x="${P[k].x+9}" y="${P[k].y-9}" class="qd-point-label">${k}</text>`).join('')}</svg><p class="calc-help">বাহুর মাপের লেখা সংশ্লিষ্ট রেখার সমান্তরালে দেখানো হয়েছে। কোণগুলো নির্বাচিত কর্ণের ভিত্তিতে গণনা করা; এটি মাপভিত্তিক জ্যামিতিক স্কেচ, বাস্তব সীমানার সঙ্গে মিলিয়ে নিন।</p>`;
+  };
+  const fqCalc=()=>{
+    const aFt=readFeetInches('fqABft','fqABin'),bFt=readFeetInches('fqBCft','fqBCin'),cFt=readFeetInches('fqCDft','fqCDin'),dFt=readFeetInches('fqDAft','fqDAin'),which=$('fqDiagonalType').value,diagFt=readFeetInches(which==='BD'?'fqBDft':'fqACft',which==='BD'?'fqBDin':'fqACin'),u=$('fqUnit').value,r=$('fqResult');
+    if([aFt,bFt,cFt,dFt,diagFt].some(v=>v===null||!(v>0)))return err(r,`চারটি বাহু ও কর্ণ ${which}—সবগুলোর সঠিক ফুট ও ইঞ্চির মান দিন। ইঞ্চি ১২-এর কম হতে হবে।`);
+    const scale=u==='m'?0.3048:1,a=aFt*scale,b=bFt*scale,c=cFt*scale,d=dFt*scale,diag=diagFt*scale;
+    let t1,t2,A,B,C,D;
+    if(which==='AC'){
+      t1=tri(a,b,diag);t2=tri(c,d,diag);if(t1===null||t2===null)return err(r,'এই মাপগুলো দিয়ে কর্ণ AC-তে দুটি বৈধ ত্রিভুজ তৈরি হচ্ছে না। মাপ যাচাই করুন।');
+      A=angle(a,diag,b)+angle(d,diag,c);B=angle(a,b,diag);C=angle(b,diag,a)+angle(c,diag,d);D=angle(c,d,diag);
+    }else{
+      t1=tri(a,d,diag);t2=tri(b,c,diag);if(t1===null||t2===null)return err(r,'এই মাপগুলো দিয়ে কর্ণ BD-তে দুটি বৈধ ত্রিভুজ তৈরি হচ্ছে না। মাপ যাচাই করুন।');
+      A=angle(a,d,diag);B=angle(a,diag,d)+angle(b,diag,c);C=angle(b,c,diag);D=angle(d,diag,a)+angle(c,diag,b);
+    }
+    const sum=A+B+C+D;if(![A,B,C,D].every(Number.isFinite)||Math.abs(sum-360)>1e-7)return err(r,'কোণ নির্ণয়ে জ্যামিতিক অসামঞ্জস্য পাওয়া গেছে। মাঠের মাপ/কর্ণ পুনরায় যাচাই করুন।');
+    const area=t1+t2,sqft=u==='ft'?area:area*10.763910416709722,dec=sqft/435.6;
+    r.innerHTML='<div class="result-main">মোট ক্ষেত্রফল = '+fmt(area)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</div><div class="result-list"><div class="result-item result-item-primary"><strong>'+fmt(sqft,4)+' বর্গফুট</strong><span>মোট ক্ষেত্রফল</span></div><div class="result-item"><strong>'+fmt(dec,6)+' শতাংশ</strong><span>ডেসিমেল</span></div><div class="result-item"><strong>'+fmt(t1)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>'+(which==='AC'?'△ABC':'△ABD')+'</span></div><div class="result-item"><strong>'+fmt(t2)+' '+(u==='ft'?'বর্গফুট':'বর্গমিটার')+'</strong><span>'+(which==='AC'?'△ACD':'△BCD')+'</span></div></div><div class="angle-grid"><div class="angle-box"><strong>'+fmt(A,6)+'°</strong><span>∠A</span></div><div class="angle-box"><strong>'+fmt(B,6)+'°</strong><span>∠B</span></div><div class="angle-box"><strong>'+fmt(C,6)+'°</strong><span>∠C</span></div><div class="angle-box"><strong>'+fmt(D,6)+'°</strong><span>∠D</span></div></div><p class="conversion-note">যাচাই: চার কোণের যোগফল ≈ ৩৬০°। হিসাবটি সরল উত্তল চতুর্ভুজ ও নির্বাচিত ${which} কর্ণের সঠিক মাপ ধরে করা হয়েছে।</p>';
+  };
+  $('fqCalc').onclick=fqCalc;
+  fqInputs.concat(['fqDiagonalType','fqUnit']).forEach(id=>{const el=$(id);if(el){el.addEventListener('input',fqDraw);el.addEventListener('change',fqDraw);}});
+  $('fqReset').onclick=()=>{fqInputs.forEach(id=>{if($(id))$(id).value='';});$('fqResult').innerHTML='';fqDraw();};
+  fqDraw();
   // Reverse land -> hissa.
   function reverseHissa(){
     const total=Number($('frTotal').value),own=Number($('frOwn').value),u=$('frUnit').value,r=$('frResult');
