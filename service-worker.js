@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v93-triangle-offline-print-isolation";
+const CACHE_NAME = "sah-pwa-v95-qd-autodraw-fix2";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 
 // Only the offline application shell is required for Service Worker installation.
@@ -11,7 +11,7 @@ const CORE_ASSETS = [
   "./process.html", "./faq.html", "./question.html", "./feedback.html", "./order.html", "./contact.html",
   "./land-solution-bd.html", "./disclaimer.html", "./calculator.html", "./calculator.css", "./calculator-polygon-draw.css", "./calculator-polygon-draw.js",
   "./article-land-survey-preparation.html", "./article-dag-khatian-mouza.html", "./article-cs-sa-rs-bs-khatian.html", "./article-boundary-demarcation.html", "./article-land-partition-survey.html", "./article-land-unit-conversion.html", "./article-quadrilateral-area-measurement.html", "./article-diagonal-check.html", "./article-land-survey-common-mistakes.html", "./article-land-record-verification.html", "./article-mutation-khatian-update.html", "./article-field-survey-report.html",
-  "./calculator-core.js", "./calculator-bootstrap.js", "./calculator-field-boundary-pdf-deepfix.js",
+  "./calculator-core.js", "./calculator-bootstrap.js", "./calculator-quad-auto-draw.js", "./calculator-field-boundary-pdf-deepfix.js",
   "./calculator-pdf.js", "./calculator-partition.js", "./calculator-featured.js", "./calculator-registry.js",
   "./calculator-land-suite.js", "./calculator-triangle-partition.js", "./calculator-wood-cft.js",
   "./calculator-sawn-wood-cft.js", "./calculator-triangle-heron-cosine.js", "./calculator-ux.js", "./profile-abdul-hannan.webp",
@@ -75,7 +75,7 @@ self.addEventListener("install", event => {
     // calculator engines. Do not activate an offline shell without them.
     const REQUIRED_OFFLINE_ASSETS = [
       "./index.html", "./calculator.html", "./app.js", "./content.js",
-      "./calculator-bootstrap.js", "./calculator-core.js", "./calculator.css",
+      "./calculator-bootstrap.js", "./calculator-core.js", "./calculator-quad-auto-draw.js", "./calculator.css",
       "./calculator-polygon-draw.js", "./calculator-polygon-draw.css",
       "./calculator-partition.js", "./calculator-featured.js",
       "./calculator-field-boundary-pdf-deepfix.js", "./calculator-registry.js",
