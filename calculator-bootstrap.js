@@ -59,7 +59,7 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
   document.querySelectorAll('.calc-tab[data-tab="quad-partition"]').forEach(btn=>btn.addEventListener('click',loadPartition,{once:true}));
   const loadTrianglePartition=()=>loadScript('calculator-triangle-partition.js?v=tp-v1','triangle-partition').catch(()=>{});
   document.querySelectorAll('.calc-tab[data-tab="triangle-partition"]').forEach(btn=>btn.addEventListener('click',loadTrianglePartition,{once:true}));
-  whenVisible(document.querySelector('.featured-calcs'),()=>loadScript('calculator-featured.js','featured').catch(()=>{}));
+  whenVisible(document.querySelector('.featured-calcs'),()=>loadScript('calculator-featured.js?v=20261015-fq-bd-autodraw','featured').catch(()=>{}));
   whenVisible(document.querySelector('#professional-land-suite'),()=>loadScript('calculator-land-suite.js','land-suite').catch(()=>{}));
   // Load Leaflet before the registry engine from every entry point.
   // The multi-field Drawing section and the map live in the same calculator,
