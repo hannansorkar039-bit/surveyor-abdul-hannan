@@ -1062,3 +1062,18 @@ button,input,select,textarea,.btn,.filter-btn{
   body.thc-print-mode>#thcPrintSheet button{display:none!important}
   body.thc-print-mode> *:not(#thcPrintSheet){display:none!important;visibility:hidden!important}
 }
+
+/* Irregular quadrilateral drawing: readable interior angle values */
+.qd-angle-label{font-size:13px;font-weight:700;fill:#075985;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+
+/* Keep the irregular-quadrilateral drawing and its results on one A4 PDF page. */
+@page quadrilateral{size:A4 portrait;margin:8mm}
+@media print{
+  body.calc-ux-printing .calc-ux-print-sheet-quadrilateral{box-sizing:border-box;width:100%;max-width:none;margin:0;padding:0;line-height:1.25;font-size:10pt;break-inside:avoid;page-break-inside:avoid}
+  body.calc-ux-printing .calc-ux-print-sheet-quadrilateral h1{font-size:16pt;padding-bottom:4px;margin:0 0 4px}
+  body.calc-ux-printing .calc-ux-print-sheet-quadrilateral .calc-ux-print-meta{font-size:8pt;margin-bottom:5px}
+  body.calc-ux-printing .calc-ux-print-sheet-quadrilateral .calc-ux-print-drawing{margin:0 0 5px;break-inside:avoid;page-break-inside:avoid}
+  body.calc-ux-printing .calc-ux-print-sheet-quadrilateral .calc-ux-print-drawing h2{font-size:11pt;margin:3px 0;text-align:center}
+  body.calc-ux-printing .calc-ux-print-sheet-quadrilateral .calc-ux-print-drawing svg{display:block;width:auto!important;max-width:100%;height:auto!important;max-height:105mm!important;margin:0 auto;break-inside:avoid;page-break-inside:avoid}
+  body.calc-ux-printing .calc-ux-print-sheet-quadrilateral .calc-ux-print-result{box-sizing:border-box;white-space:pre-wrap;font-size:9pt;line-height:1.25;padding:7px;border-radius:6px;break-inside:avoid;page-break-inside:avoid}
+}
