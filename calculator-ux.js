@@ -200,7 +200,33 @@
     oldSheet?.remove();
     const sheet = document.createElement('section');
     sheet.className = 'calc-ux-print-sheet';
+    if (result.id === 'fqResult') {
+      sheet.classList.add('calc-ux-print-sheet-quadrilateral');
+      sheet.style.page = 'quadrilateral';
+    }
     sheet.innerHTML = `<h1>${escapeHtml(title)}</h1><div class="calc-ux-print-meta">সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর</div><div class="calc-ux-print-result"></div>`;
+    // The irregular quadrilateral report must include its live SVG drawing.
+    // Keep this change scoped to fqResult; all other calculator print reports
+    // continue using their existing text-only output.
+    if (result.id === 'fqResult') {
+      const drawing = document.getElementById('fqDrawing');
+      const svg = drawing?.querySelector('svg.qd-plot-svg');
+      if (svg) {
+        const drawingSection = document.createElement('div');
+        drawingSection.className = 'calc-ux-print-drawing';
+        const drawingTitle = document.createElement('h2');
+        drawingTitle.textContent = 'প্লটের ড্রয়িং ও কোণের অবস্থান';
+        const svgCopy = svg.cloneNode(true);
+        svgCopy.removeAttribute('height');
+        svgCopy.setAttribute('width', '100%');
+        svgCopy.style.display = 'block';
+        svgCopy.style.width = '100%';
+        svgCopy.style.height = 'auto';
+        svgCopy.style.maxHeight = 'none';
+        drawingSection.append(drawingTitle, svgCopy);
+        sheet.appendChild(drawingSection);
+      }
+    }
     sheet.querySelector('.calc-ux-print-result').textContent = text;
     document.body.appendChild(sheet);
 
