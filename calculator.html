@@ -18,6 +18,9 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="calculator.css?v=20261015-triangle-print-onepage-v2">
 <link rel="stylesheet" href="calculator-polygon-draw.css?v=20261011-11">
+<style>
+.qd-drawing{margin-top:16px;padding:14px;border:1px solid #cbd5e1;border-radius:14px;background:#f8fafc;overflow:hidden}.qd-drawing-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;color:#173b2b}.qd-drawing-head span{font-size:.88rem;color:#475569}.qd-plot-svg{display:block;width:100%;height:auto;max-height:520px;background:#fff;border:1px solid #e2e8f0;border-radius:10px}.qd-plot-svg .qd-dim{font-size:13px;font-weight:700;fill:#173b2b;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}.qd-plot-svg .qd-diag-label{font-size:13px;font-weight:800;fill:#9a3412;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}.qd-plot-svg .qd-point-label{font-size:17px;font-weight:800;fill:#14532d;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}@media(max-width:520px){.qd-drawing{padding:8px}.qd-plot-svg .qd-dim,.qd-plot-svg .qd-diag-label{font-size:11px}}
+</style>
 <!-- V7 SEO START -->
 <meta property="og:site_name" content="সার্ভেয়ার আবদুল হান্নান"/>
 <meta property="og:type" content="website"/>
@@ -121,7 +124,7 @@
 <button type="button" class="calc-tab" data-tab="wood-cft" role="tab" aria-selected="false">গোল কাঠের CFT ক্যালকুলেটর</button>
 <button type="button" class="calc-tab" data-tab="sawn-wood-cft" role="tab" aria-selected="false">চেরাই কাঠের CFT ক্যালকুলেটর</button>
 <button type="button" class="calc-tab" data-tab="inheritance" role="tab" aria-selected="false">মুসলিম উত্তরাধিকার</button>
-<button type="button" class="calc-tab" data-tab="heron" role="tab" aria-selected="false">হেরনের সূত্র</button><button type="button" class="calc-tab" data-tab="triangle-heron-cosine" role="tab" aria-selected="false">ত্রিভুজাকার জমি (কোসাইন সূত্র)</button>
+<button type="button" class="calc-tab" data-tab="heron" role="tab" aria-selected="false">হেরনের সূত্র</button><button type="button" class="calc-tab" data-tab="triangle-heron-cosine" role="tab" aria-selected="false">ত্রিভুজাকার জমি (কোসাইন সূত্র)</button> <button type="button" class="calc-tab" data-tab="irregular-area-angles" role="tab" aria-selected="false">অনিয়মিত জমি → ক্ষেত্রফল ও ৪ কোণ</button>
 <button type="button" class="calc-tab" data-tab="brahmagupta" role="tab" aria-selected="false">ব্রহ্মগুপ্তের সূত্র</button>
 <button type="button" class="calc-tab" data-tab="four-side-sqrt" role="tab" aria-selected="false">রুট ওভার বা বর্গমূল পদ্ধতিতে ক্ষেত্রফল</button>
 <button type="button" class="calc-tab" id="multi-field-drawing-tab" data-tab="multi-field-drawing" role="tab" aria-selected="false">বহু ক্ষেত্র Drawing ও Alignment</button>
@@ -153,6 +156,7 @@
 </div>
 <div class="calc-actions"><button type="button" class="calc-btn calc-primary" id="qdCalc">সঠিকভাবে হিসাব করুন</button><button type="button" class="calc-btn calc-secondary" data-clear="quad-diagonal">পরিষ্কার</button></div>
 <div class="calc-result" id="qdResult" aria-live="polite"></div>
+<div class="calc-drawing qd-drawing" id="qdDrawing" aria-live="polite"><div class="calc-help">চার বাহু ও নির্বাচিত কর্ণের ফুট–ইঞ্চি মাপ দিলে এখানে প্লটের ড্রয়িং স্বয়ংক্রিয়ভাবে দেখা যাবে।</div></div>
 </section>
 <section class="calc-panel" id="panel-quad-angle" role="tabpanel">
 <h3>📏 কর্ণ ছাড়া অনিয়মিত চতুর্ভুজের ক্ষেত্রফল</h3>
@@ -419,6 +423,26 @@
 <div class="calc-actions"><button type="button" class="calc-btn calc-primary" id="thcCalculate">হিসাব করুন</button><button type="button" class="calc-btn calc-secondary" id="thcReset">রিসেট</button></div>
 <div class="calc-result" id="thcResult" aria-live="polite"></div>
 </section>
+<section class="calc-panel" id="panel-irregular-area-angles" role="tabpanel" aria-labelledby="featured-quad-title">
+  <div class="featured-panel-head"><h3 class="land-calc-section-title" id="featured-quad-title">📐 অনিয়মিত জমির ক্ষেত্রফল ও কোণের মান</h3><p>AB = উত্তর, BC = পূর্ব, CD = দক্ষিণ, DA = পশ্চিম। কর্ণ AC অথবা BD নির্বাচন করে মাপ দিলে সেই কর্ণ অনুযায়ী ক্ষেত্রফল ও চার কোণ নির্ণয় হবে।</p></div>
+  <div class="featured-panel-body">
+    <div class="calc-grid">
+      <div class="calc-field"><label><span class="direction-badge north">উত্তর</span> বাহু AB (a)</label><div class="feet-inch"><input id="fqABft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqABin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু AB: ইঞ্চি"></div></div>
+      <div class="calc-field"><label><span class="direction-badge east">পূর্ব</span> বাহু BC (b)</label><div class="feet-inch"><input id="fqBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqBCin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু BC: ইঞ্চি"></div></div>
+      <div class="calc-field"><label><span class="direction-badge south">দক্ষিণ</span> বাহু CD (d)</label><div class="feet-inch"><input id="fqCDft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqCDin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু CD: ইঞ্চি"></div></div>
+      <div class="calc-field"><label><span class="direction-badge west">পশ্চিম</span> বাহু DA (c)</label><div class="feet-inch"><input id="fqDAft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqDAin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু DA: ইঞ্চি"></div></div>
+      <div class="calc-field"><label for="fqDiagonalType"><span class="diagonal-badge">কর্ণ নির্বাচন</span></label><select id="fqDiagonalType"><option value="AC">কর্ণ AC (A–C)</option><option value="BD">কর্ণ BD (B–D)</option></select></div>
+      <div class="calc-field"><label><span class="diagonal-badge">কর্ণ AC</span> (A–C)</label><div class="feet-inch"><input id="fqACft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqACin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="কর্ণ AC: ইঞ্চি"></div></div>
+      <div class="calc-field"><label><span class="diagonal-badge">কর্ণ BD</span> (B–D)</label><div class="feet-inch"><input id="fqBDft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqBDin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="কর্ণ BD: ইঞ্চি"></div></div>
+      <div class="calc-field"><label for="fqUnit">একক</label><select id="fqUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
+    </div>
+    <h4>মাপ অনুযায়ী স্বয়ংক্রিয় ড্রয়িং</h4><div id="fqDrawing" class="calc-drawing" aria-live="polite"><div class="calc-help">উত্তর, পূর্ব, দক্ষিণ, পশ্চিম এবং নির্বাচিত কর্ণের ফুট–ইঞ্চি মাপ দিন; ড্রয়িং এখানে স্বয়ংক্রিয়ভাবে তৈরি হবে।</div></div>
+    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fqCalc">ক্ষেত্রফল ও কোণ হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fqReset">রিসেট</button></div>
+    <div class="calc-result" id="fqResult" aria-live="polite"></div>
+  </div>
+</section>
+
+
 <section class="calc-panel" id="panel-brahmagupta" role="tabpanel">
 <h3>ব্রহ্মগুপ্তের সূত্রে চতুর্ভুজের ক্ষেত্রফল</h3>
 <div class="formula"><code>s = (a+b+c+d) ÷ 2 &nbsp;&nbsp; এবং &nbsp;&nbsp; ক্ষেত্রফল = √[(s−a)(s−b)(s−c)(s−d)]</code></div>
@@ -779,17 +803,13 @@
 <section class="featured-calcs" aria-labelledby="featured-calc-title">
   <div class="featured-head">
     <div class="calc-title-kicker">🧮 PROFESSIONAL LAND CALCULATOR</div>
-    <h2 id="featured-calc-title">ভূমি ক্যালকুলেটর</h2>
+    <h2 id="featured-calc-title">খতিয়ান ক্যালকুলেটর</h2>
     <p>প্রতিটি টুল সূত্রভিত্তিক ফলাফল দেখায় এবং ভুল ইনপুট হলে সতর্ক করে।</p>
   </div>
 
   <button class="featured-card" type="button" data-feature-target="featured-symbolic">
     <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="14" y="16" width="72" height="68" rx="8" fill="#f7fbfc" stroke="#082336" stroke-width="3"/><text x="50" y="50" text-anchor="middle" font-size="32" font-weight="900" fill="#08747b">৷৵</text><path d="M26 68h48" stroke="#d9a441" stroke-width="6" stroke-linecap="round"/></svg></span>
     <span><h3>খতিয়ানের সাংকেতিক চিহ্ন → হিস্যা</h3><p>পুরোনো খতিয়ানের আনার সাংকেতিক চিহ্ন নির্বাচন করে গণ্ডা, কড়া, ক্রান্তি ও তিলসহ হিস্যা নির্ণয় করুন।</p></span><span class="featured-go" aria-hidden="true">↓</span>
-  </button>
-  <button class="featured-card" type="button" data-feature-target="featured-quad-angle">
-    <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M16 25L73 18L86 75L25 84Z" fill="#e8f7f7" stroke="#082336" stroke-width="3"/><path d="M16 25L86 75" stroke="#ef7d22" stroke-width="3"/><path d="M32 29A16 16 0 0 1 25 42" fill="none" stroke="#08747b" stroke-width="4"/></svg></span>
-    <span><h3>অনিয়মিত জমি → ক্ষেত্রফল ও ৪ কোণ</h3><p>চার বাহু ও একটি কর্ণ দিলে দুটি ত্রিভুজে ভাগ করে ক্ষেত্রফল এবং A, B, C, D—চারটি কোণের মান দেখাবে।</p></span><span class="featured-go" aria-hidden="true">↓</span>
   </button>
   <button class="featured-card" type="button" data-feature-target="featured-reverse">
     <span class="featured-icon" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M21 29h58v42H21z" fill="#fff" stroke="#082336" stroke-width="3"/><path d="M31 50h38" stroke="#08747b" stroke-width="5"/><path d="M39 39l-10 11 10 11M61 39l10 11-10 11" fill="none" stroke="#ef7d22" stroke-width="3"/></svg></span>
@@ -813,22 +833,6 @@
     <div class="calc-result" id="fsResult" aria-live="polite"></div>
   </div>
 </section>
-<section class="featured-panel" id="featured-quad-angle" aria-labelledby="featured-quad-title">
-  <div class="featured-panel-head"><h3 class="land-calc-section-title" id="featured-quad-title">📐 অনিয়মিত জমির ক্ষেত্রফল ও কোণের মান</h3><p>AB = উত্তর, BC = পূর্ব, CD = দক্ষিণ, DA = পশ্চিম এবং কর্ণ AC-এর মাপ দিলে দুটি বৈধ ত্রিভুজে ভাগ করে ক্ষেত্রফল ও চার কোণ নির্ণয় করা হবে।</p></div>
-  <div class="featured-panel-body">
-    <div class="calc-grid">
-      <div class="calc-field"><label><span class="direction-badge north">উত্তর</span> বাহু AB (a)</label><div class="feet-inch"><input id="fqABft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqABin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু AB: ইঞ্চি"></div></div>
-      <div class="calc-field"><label><span class="direction-badge east">পূর্ব</span> বাহু BC (b)</label><div class="feet-inch"><input id="fqBCft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqBCin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু BC: ইঞ্চি"></div></div>
-      <div class="calc-field"><label><span class="direction-badge south">দক্ষিণ</span> বাহু CD (d)</label><div class="feet-inch"><input id="fqCDft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqCDin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু CD: ইঞ্চি"></div></div>
-      <div class="calc-field"><label><span class="direction-badge west">পশ্চিম</span> বাহু DA (c)</label><div class="feet-inch"><input id="fqDAft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqDAin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="বাহু DA: ইঞ্চি"></div></div>
-      <div class="calc-field"><label><span class="diagonal-badge">কর্ণ</span> AC (A–C)</label><div class="feet-inch"><input id="fqACft" type="number" min="0" step="any" placeholder="ফুট"><input id="fqACin" type="number" min="0" max="11.999" step="0.01" placeholder="ইঞ্চি" aria-label="কর্ণ AC: ইঞ্চি"></div></div>
-      <div class="calc-field"><label for="fqUnit">একক</label><select id="fqUnit"><option value="ft">ফুট</option><option value="m">মিটার</option></select></div>
-    </div>
-    <div class="calc-actions"><button class="calc-btn calc-primary" type="button" id="fqCalc">ক্ষেত্রফল ও কোণ হিসাব করুন</button><button class="calc-btn calc-secondary" type="button" id="fqReset">রিসেট</button></div>
-    <div class="calc-result" id="fqResult" aria-live="polite"></div>
-  </div>
-</section>
-
 <section class="featured-panel" id="featured-reverse" aria-labelledby="featured-reverse-title">
   <div class="featured-panel-head"><h3 class="land-calc-section-title" id="featured-reverse-title">🔄 মোট জমি থেকে নিজের জমির হিস্যা বের করুন</h3><p>মোট জমি ও আপনার অংশ একই এককে লিখলে হিস্যাটি নিকটতম তিল পর্যন্ত আনা–গণ্ডা–কড়া–ক্রান্তি–তিলে ভেঙে দেখানো হবে।</p></div>
   <div class="featured-panel-body">
@@ -921,6 +925,7 @@
 <script src="calculator-wood-cft.js?v=20261003-wood1" defer></script>
 <script src="calculator-sawn-wood-cft.js?v=20261003-sawn1" defer></script>
 <script src="calculator-bootstrap.js" defer></script>
+<script src="calculator-quad-auto-draw.js?v=20261015-qd-autodraw-fix2" defer></script>
 <script src="calculator-field-boundary-pdf-deepfix.js?v=20261005-fbc-deepfix-v9" defer></script>
 <script src="calculator-ux.js?v=20261006-ux1" defer></script>
 <script src="calculator-polygon-draw.js?v=v17" defer></script>
