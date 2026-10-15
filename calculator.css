@@ -1013,3 +1013,52 @@ button,input,select,textarea,.btn,.filter-btn{
     font-size: 20px !important; line-height: 1.7 !important;
   }
 }
+
+/* Triangle cosine calculator: side inputs left, derived angles right. */
+.thc-measure-angle-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:16px;margin:16px 0}
+.thc-side-inputs,.thc-angle-inputs{min-width:0;border:1px solid var(--line);border-radius:13px;padding:12px;background:#f8fbfc}
+.thc-column-title{font-weight:900;color:var(--navy);padding-bottom:9px;margin-bottom:8px;border-bottom:1px solid #dce7ea}
+.thc-side-row,.thc-angle-row{display:grid;grid-template-columns:70px minmax(0,1fr);gap:8px;align-items:center;margin:9px 0}
+.thc-side-row>label,.thc-angle-row>label{font-weight:850;color:var(--navy)}
+.thc-fi-pair{display:grid;grid-template-columns:minmax(0,1fr) 10px minmax(0,1fr) 10px;gap:3px;align-items:center}
+.thc-fi-pair input{width:100%;min-width:0;min-height:42px;padding:7px 5px;border:1px solid #cbd8de;border-radius:8px;background:#fff;color:var(--ink);font:inherit;text-align:center}
+.thc-fi-pair span{text-align:center;font-weight:900;color:var(--navy)}
+.thc-angle-output{display:flex;align-items:center;justify-content:center;min-height:42px;border:1px solid #cbd8de;border-radius:8px;background:#fff;color:var(--teal);font-size:18px;font-weight:900;font-variant-numeric:tabular-nums}
+.thc-dimension{font-size:16px;font-weight:800;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round;fill:#082336}
+.thc-angle{font-size:14px;font-weight:900;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round;fill:#08747b}
+@media(max-width:560px){.thc-measure-angle-grid{grid-template-columns:minmax(0,1.3fr) minmax(92px,.7fr);gap:8px}.thc-side-row,.thc-angle-row{grid-template-columns:44px minmax(0,1fr);gap:4px}.thc-side-row>label,.thc-angle-row>label{font-size:12px}.thc-fi-pair{grid-template-columns:minmax(0,1fr) 7px minmax(0,1fr) 7px;gap:1px}.thc-fi-pair input{padding:5px 1px;font-size:12px;min-height:40px}.thc-fi-pair span{font-size:11px}.thc-side-inputs,.thc-angle-inputs{padding:7px}.thc-angle-output{font-size:14px;min-height:40px}.thc-column-title{font-size:12px}.thc-dimension{font-size:14px}}
+.thc-included-angle{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);display:grid;gap:6px}.thc-included-angle label{font-weight:850;color:var(--navy)}.thc-included-angle input,.thc-included-angle select{width:100%;min-height:42px;border:1px solid #cbd8de;border-radius:8px;background:#fff;padding:8px 10px;font:inherit}.thc-included-angle small{color:var(--muted,#536875);font-size:12px}
+
+/* Triangle calculator: drawing navigation */
+.thc-drawing-tools{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.thc-drawing-canvas{overflow:hidden;position:relative;touch-action:pan-y}
+.thc-triangle-svg{user-select:none;-webkit-user-select:none}
+
+/* Triangle drawing labels: enlarged for on-screen readability. */
+.thc-dimension{font-size:32px!important;stroke-width:6px!important}
+.thc-angle{font-size:28px!important;stroke-width:6px!important}
+@media(max-width:560px){.thc-dimension{font-size:28px!important}.thc-angle{font-size:25px!important}}
+
+/* Isolated triangle-only print page. Named @page prevents changing other pages' print settings. */
+.thc-print-sheet{display:none}
+@page thc-triangle-print{size:A4 portrait;margin:7mm}
+@media print{
+  body.thc-print-mode>#thcPrintSheet{page:thc-triangle-print;display:block!important;visibility:visible!important;position:static!important;width:100%!important;max-width:none!important;height:auto!important;max-height:275mm!important;overflow:hidden!important;margin:0!important;padding:0!important;background:#fff!important;color:#082336!important;font-family:Arial,"Noto Sans Bengali",sans-serif!important;font-size:8pt!important;line-height:1.25!important;box-sizing:border-box!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  body.thc-print-mode>#thcPrintSheet *{visibility:visible!important;box-shadow:none!important;animation:none!important;transition:none!important;box-sizing:border-box!important}
+  body.thc-print-mode>#thcPrintSheet h1{font-size:15pt!important;margin:0 0 2mm!important;padding:0 0 2mm!important;border-bottom:1px solid #0b8b91!important}
+  body.thc-print-mode>#thcPrintSheet h2{font-size:10pt!important;margin:2mm 0 1mm!important}
+  body.thc-print-mode>#thcPrintSheet .thc-measure-angle-grid{display:grid!important;grid-template-columns:1.1fr .9fr!important;gap:3mm!important;margin:2mm 0!important}
+  body.thc-print-mode>#thcPrintSheet .thc-side-inputs,body.thc-print-mode>#thcPrintSheet .thc-angle-inputs{padding:2mm!important;min-width:0!important}
+  body.thc-print-mode>#thcPrintSheet .thc-side-row,body.thc-print-mode>#thcPrintSheet .thc-angle-row{margin:1mm 0!important;gap:1mm!important}
+  body.thc-print-mode>#thcPrintSheet input,body.thc-print-mode>#thcPrintSheet select{min-height:5mm!important;height:5mm!important;padding:.5mm 1mm!important;font-size:7pt!important}
+  body.thc-print-mode>#thcPrintSheet .thc-drawing-canvas{height:90mm!important;max-height:90mm!important;overflow:visible!important;margin:0!important;padding:0!important;border:0!important;background:#fff!important}
+  body.thc-print-mode>#thcPrintSheet svg{width:100%!important;height:88mm!important;max-height:88mm!important;overflow:visible!important}
+  body.thc-print-mode>#thcPrintSheet .calc-result{margin:1mm 0 0!important;padding:1mm!important}
+  body.thc-print-mode>#thcPrintSheet .result-main{font-size:12pt!important;padding:2mm!important;margin:0 0 1mm!important}
+  body.thc-print-mode>#thcPrintSheet .result-list{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:2mm!important}
+  body.thc-print-mode>#thcPrintSheet .result-item{padding:2mm!important;font-size:7pt!important;min-width:0!important}
+  body.thc-print-mode>#thcPrintSheet .result-item strong{font-size:8pt!important}
+  body.thc-print-mode>#thcPrintSheet .calc-help{font-size:7pt!important;line-height:1.2!important;margin:1mm 0!important}
+  body.thc-print-mode>#thcPrintSheet button{display:none!important}
+  body.thc-print-mode> *:not(#thcPrintSheet){display:none!important;visibility:hidden!important}
+}
