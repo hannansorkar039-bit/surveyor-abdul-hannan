@@ -110,13 +110,74 @@
     qdDiagonalType.addEventListener('change',syncQdDiagonal);
     syncQdDiagonal();
   }
-  $('qdCalc').onclick=()=>{
-    const u=$('qdUnit').value, [ab,bc,cd,da]=readQuad('qd',u), diagonalType=$('qdDiagonalType')?.value||'AC', diag=readLength(diagonalType==='BD'?'qdBD':'qdAC',u), r=$('qdResult');
-    if(![ab,bc,cd,da,diag].every(v=>v>0)) return err(r,`চারটি বাহু ও কর্ণ ${diagonalType}—সবগুলোই শূন্যের চেয়ে বেশি দিন।`);
-    const q=quadDiagonalArea(ab,bc,cd,da,diag,diagonalType);
-    if(!q) return err(r,`এই মাপগুলো দিয়ে দুটি বৈধ ত্রিভুজ গঠন হচ্ছে না। কর্ণ ${diagonalType}-টি সংশ্লিষ্ট দুই ত্রিভুজের triangle inequality পূরণ করতে হবে।`);
-    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',diagonalType==='AC'?`<p>△ABC = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △ACD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ AC = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`:`<p>△ABD = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △BCD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ BD = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`);
+  const qdResult=$('qdResult'), qdDrawing=$('qdDrawing');
+  const qdFmtLen=(v,u)=>u==='ft'?ftIn(v):`${fmt(v)} মিটার`;
+  const qdPointFromTwoSides=(base,side1,side2)=>{
+    if(!(base>0)) return null;
+    const x=(side1*side1+base*base-side2*side2)/(2*base);
+    const y2=side1*side1-x*x;
+    if(y2 < -1e-7) return null;
+    return {x,y:Math.sqrt(Math.max(0,y2))};
   };
+  function qdGeometry(ab,bc,cd,da,diag,which){
+    if(!(diag>0)) return null;
+    if(which==='BD'){
+      const a=qdPointFromTwoSides(diag,ab,da);
+      const c=qdPointFromTwoSides(diag,bc,cd);
+      if(!a||!c) return null;
+      return {A:a,B:{x:0,y:0},C:{x:c.x,y:-c.y},D:{x:diag,y:0},diagStart:'B',diagEnd:'D'};
+    }
+    const b=qdPointFromTwoSides(diag,ab,bc);
+    const d=qdPointFromTwoSides(diag,da,cd);
+    if(!b||!d) return null;
+    return {A:{x:0,y:0},B:{x:b.x,y:b.y},C:{x:diag,y:0},D:{x:d.x,y:-d.y},diagStart:'A',diagEnd:'C'};
+  }
+  function qdDraw(ab,bc,cd,da,diag,which,u){
+    if(!qdDrawing) return;
+    const g=qdGeometry(ab,bc,cd,da,diag,which);
+    if(!g){
+      qdDrawing.innerHTML='<div class="calc-help">ড্রয়িং তৈরির জন্য দেওয়া চার বাহু ও নির্বাচিত কর্ণ দিয়ে বৈধ চতুর্ভুজ গঠন করতে হবে। মাপগুলো যাচাই করুন।</div>';
+      return;
+    }
+    const pts=[g.A,g.B,g.C,g.D];
+    const xs=pts.map(p=>p.x), ys=pts.map(p=>p.y);
+    const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+    const spanX=Math.max(maxX-minX,1e-6), spanY=Math.max(maxY-minY,1e-6);
+    const W=720,H=420,pad=72, scale=Math.min((W-pad*2)/spanX,(H-pad*2)/spanY);
+    const cx=(minX+maxX)/2, cy=(minY+maxY)/2;
+    const map=p=>({x:W/2+(p.x-cx)*scale,y:H/2-(p.y-cy)*scale});
+    const P={A:map(g.A),B:map(g.B),C:map(g.C),D:map(g.D)};
+    const polygon=['A','B','C','D'].map(k=>`${P[k].x.toFixed(2)},${P[k].y.toFixed(2)}`).join(' ');
+    const mid=(a,b)=>({x:(P[a].x+P[b].x)/2,y:(P[a].y+P[b].y)/2});
+    const label=(a,b,text,dx=0,dy=0)=>{const m=mid(a,b);return `<text x="${m.x+dx}" y="${m.y+dy}" class="qd-dim" text-anchor="middle">${esc(text)}</text>`;};
+    const diagA=P[g.diagStart],diagB=P[g.diagEnd];
+    qdDrawing.innerHTML=`<div class="qd-drawing-head"><strong>প্লটের স্বয়ংক্রিয় ড্রয়িং</strong><span>কর্ণ ${which} • মাপ অনুযায়ী স্কেচ</span></div>
+      <svg class="qd-plot-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="চার বাহু ও নির্বাচিত কর্ণের মাপ থেকে তৈরি চতুর্ভুজ প্লট">
+      <polygon points="${polygon}" fill="#dcefe6" fill-opacity="0.75" stroke="#16794b" stroke-width="4" stroke-linejoin="round"/>
+      <line x1="${diagA.x}" y1="${diagA.y}" x2="${diagB.x}" y2="${diagB.y}" stroke="#c2410c" stroke-width="3" stroke-dasharray="9 7"/>
+      ${label('A','B',`AB ${qdFmtLen(ab,u)}`,-4,-12)}${label('B','C',`BC ${qdFmtLen(bc,u)}`,30,0)}${label('C','D',`CD ${qdFmtLen(cd,u)}`,0,22)}${label('D','A',`DA ${qdFmtLen(da,u)}`,-30,0)}
+      <text x="${(diagA.x+diagB.x)/2+8}" y="${(diagA.y+diagB.y)/2-10}" class="qd-diag-label">${which} ${qdFmtLen(diag,u)}</text>
+      ${['A','B','C','D'].map(k=>`<circle cx="${P[k].x}" cy="${P[k].y}" r="5.5" fill="#14532d"/><text x="${P[k].x+10}" y="${P[k].y-10}" class="qd-point-label">${k}</text>`).join('')}
+      </svg><p class="calc-help">ড্রয়িংটি ইনপুট মাপের ভিত্তিতে স্কেল করে দেখানো হয়েছে; মাঠের বাস্তব সীমানা ও দিকের সঙ্গে মিলিয়ে নিন।</p>`;
+  }
+  function qdCalculate(showIncomplete=false){
+    const u=$('qdUnit').value, [ab,bc,cd,da]=readQuad('qd',u), diagonalType=$('qdDiagonalType')?.value||'AC', diag=readLength(diagonalType==='BD'?'qdBD':'qdAC',u), r=qdResult;
+    const complete=[ab,bc,cd,da,diag].every(v=>Number.isFinite(v)&&v>0);
+    if(!complete){
+      if(showIncomplete) err(r,`চারটি বাহু ও কর্ণ ${diagonalType}—সবগুলোর সঠিক মাপ দিন।`);
+      else if(r) r.innerHTML='';
+      if(qdDrawing) qdDrawing.innerHTML='<div class="calc-help">চার বাহু ও নির্বাচিত কর্ণের ফুট–ইঞ্চি মাপ দিলে এখানে প্লটের ড্রয়িং স্বয়ংক্রিয়ভাবে দেখা যাবে।</div>';
+      return;
+    }
+    const q=quadDiagonalArea(ab,bc,cd,da,diag,diagonalType);
+    if(!q){ if(showIncomplete) err(r,`এই মাপগুলো দিয়ে দুটি বৈধ ত্রিভুজ গঠন হচ্ছে না। কর্ণ ${diagonalType}-টি সংশ্লিষ্ট দুই ত্রিভুজের triangle inequality পূরণ করতে হবে।`); else r.innerHTML='<div class="warning">দেওয়া মাপগুলো দিয়ে বৈধ চতুর্ভুজ গঠন হচ্ছে না। মাপ যাচাই করুন।</div>'; if(qdDrawing) qdDrawing.innerHTML='<div class="calc-help">বৈধ চতুর্ভুজ গঠন না হওয়ায় ড্রয়িং তৈরি করা যায়নি। বাহু ও কর্ণের মাপ যাচাই করুন।</div>'; return; }
+    qdDraw(ab,bc,cd,da,diag,diagonalType,u);
+    r.innerHTML=fmtAreaResult(q.area,u,'মোট চতুর্ভুজের ক্ষেত্রফল',diagonalType==='AC'?`<p>△ABC = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △ACD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ AC = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`:`<p>△ABD = ${fmt(q.t1)} ${u==='ft'?'sq ft':'sq m'} &nbsp;•&nbsp; △BCD = ${fmt(q.t2)} ${u==='ft'?'sq ft':'sq m'}</p><p>কর্ণ BD = ${u==='ft'?ftIn(diag):fmt(diag)+' মিটার'}</p>`);
+  }
+  $('qdCalc').onclick=()=>qdCalculate(true);
+  document.querySelector('[data-clear="quad-diagonal"]')?.addEventListener('click',()=>{if(qdDrawing) qdDrawing.innerHTML='<div class="calc-help">চার বাহু ও নির্বাচিত কর্ণের ফুট–ইঞ্চি মাপ দিলে এখানে প্লটের ড্রয়িং স্বয়ংক্রিয়ভাবে দেখা যাবে।</div>';});
+  ['qdAB','qdABIn','qdBC','qdBCIn','qdCD','qdCDIn','qdDA','qdDAIn','qdAC','qdACIn','qdBD','qdBDIn'].forEach(id=>{const el=$(id); if(el) el.addEventListener('input',()=>qdCalculate(false));});
+  ['qdDiagonalType','qdUnit'].forEach(id=>{const el=$(id); if(el) el.addEventListener('change',()=>{syncLengthInches('qdUnit'); qdCalculate(false);});});
   function sqrAreaForDisplay(area,u){return u==='ft'?area:area;}
   const qaAngleType=$('qaAngleType');
   if(qaAngleType){
