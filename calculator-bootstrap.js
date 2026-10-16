@@ -52,8 +52,18 @@ if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.s
     }
   },true);
   window.SAH_LOAD_PDF=async()=>{
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','jspdf','sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==','anonymous').catch(error=>{ console.error('jsPDF offline dependency failed:',error); });
-    await loadScript('calculator-pdf.js','pdf').catch(()=>{});
+    try {
+      // The Service Worker caches this exact URL during installation. Once the
+      // PWA is installed successfully, this dependency can load without network.
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','jspdf','sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==','anonymous');
+      await loadScript('calculator-pdf.js','pdf');
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        throw new Error('jsPDF loaded but its API is unavailable');
+      }
+    } catch(error) {
+      console.error('PDF engine failed to initialize:',error);
+      throw error;
+    }
   };
   const loadPartition=()=>loadScript('calculator-partition.js?v=multi-v2','partition').catch(()=>{});
   document.querySelectorAll('.calc-tab[data-tab="quad-partition"]').forEach(btn=>btn.addEventListener('click',loadPartition,{once:true}));
