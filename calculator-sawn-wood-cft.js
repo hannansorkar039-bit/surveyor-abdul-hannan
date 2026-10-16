@@ -117,7 +117,30 @@
   calcBtn.addEventListener('click',calculate);
   if(priceEl) priceEl.addEventListener('input',calculate);
   resetBtn.addEventListener('click',reset);
-  if(printBtn) printBtn.addEventListener('click',()=>window.print());
+  function printOnePage(){
+    calculate();
+    const source=document.getElementById('panel-sawn-wood-cft');
+    if(!source) return;
+    document.getElementById('woodCftPrintSheet')?.remove();
+    const sheet=source.cloneNode(true);
+    sheet.id='woodCftPrintSheet';
+    sheet.className='wood-cft-print-sheet sawn-wood-cft-panel sawn-wood-print-sheet';
+    sheet.querySelectorAll('button').forEach(el=>el.remove());
+    sheet.querySelectorAll('input,select,textarea').forEach(input=>{
+      const value=(input.value||'').trim();
+      const span=document.createElement('span');
+      span.className='wood-cft-print-value';
+      span.textContent=value || '—';
+      input.replaceWith(span);
+    });
+    sheet.style.setProperty('--wood-print-font','8pt');
+    document.body.appendChild(sheet);
+    document.body.classList.add('wood-cft-print-mode');
+    const cleanup=()=>{document.body.classList.remove('wood-cft-print-mode');sheet.remove();window.removeEventListener('afterprint',cleanup);};
+    window.addEventListener('afterprint',cleanup);
+    window.print();
+  }
+  if(printBtn) printBtn.addEventListener('click',printOnePage);
 
   rowsEl.appendChild(rowTemplate(1));
   calculate();
