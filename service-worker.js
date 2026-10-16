@@ -1,4 +1,4 @@
-const CACHE_NAME = "sah-pwa-v96-qd-autodraw-cachefix";
+const CACHE_NAME = "sah-pwa-v97-offline-article-pdf-guarantee";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 
 // Only the offline application shell is required for Service Worker installation.
@@ -73,8 +73,9 @@ self.addEventListener("install", event => {
 
     // These are the minimum files needed to open the app and initialize the
     // calculator engines. Do not activate an offline shell without them.
-    const REQUIRED_OFFLINE_ASSETS = [
+    const CORE_REQUIRED_OFFLINE_ASSETS = [
       "./index.html", "./calculator.html", "./app.js", "./content.js",
+      "./article-mutation-khatian-update.html",
       "./calculator-bootstrap.js", "./calculator-core.js", "./calculator-quad-auto-draw.js", "./calculator.css",
       "./calculator-polygon-draw.js", "./calculator-polygon-draw.css",
       "./calculator-partition.js", "./calculator-featured.js",
@@ -83,6 +84,17 @@ self.addEventListener("install", event => {
       "./calculator-wood-cft.js", "./calculator-sawn-wood-cft.js",
       "./calculator-triangle-heron-cosine.js", "./calculator-ux.js", "./calculator-pdf.js"
     ];
+    // Cache external runtime dependencies before validating the offline shell.
+    // jsPDF is required: a successful PWA install must include the PDF engine,
+    // otherwise PDF generation would silently depend on a future network visit.
+    await Promise.allSettled(
+      [...EXTERNAL_CACHE_FIRST].map(asset => cacheAsset(cache, asset))
+    );
+
+    const REQUIRED_OFFLINE_ASSETS = [
+      ...CORE_REQUIRED_OFFLINE_ASSETS,
+      "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+    ];
     const missingRequired = [];
     for (const asset of REQUIRED_OFFLINE_ASSETS) {
       const url = new URL(asset, self.registration.scope).href;
@@ -90,16 +102,11 @@ self.addEventListener("install", event => {
     }
     if (missingRequired.length) {
       throw new Error(
-        "SAH PWA required calculator files could not be cached: " +
+        "SAH PWA required offline assets could not be cached: " +
         missingRequired.join(", ") +
-        (failed.length ? " | Other unavailable files: " + failed.join(", ") : "")
+        (failed.length ? " | Other unavailable assets: " + failed.join(", ") : "")
       );
     }
-
-    // Optional images and external libraries must never block installation.
-    await Promise.allSettled(
-      [...EXTERNAL_CACHE_FIRST].map(asset => cacheAsset(cache, asset))
-    );
 
     if (failed.length) {
       console.warn("SAH PWA: some non-critical assets were not cached:", failed);
