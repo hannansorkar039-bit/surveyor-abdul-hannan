@@ -123,5 +123,38 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js", { updateViaCache: "none" }).then(registration => registration.update()).catch(() => {}));
 }
 </script>
+<script id="desktop-text-scale-1-3x" data-version="2">
+/* Scale ordinary content text to 1.30x in desktop mode only. */
+(function(){
+'use strict';
+var mq=window.matchMedia('(min-width: 600px)');
+var skip='h1,h2,h3,h4,h5,h6,button,input,select,textarea,option,nav,header,footer,script,style,noscript,svg,canvas,iframe,[role="button"],[role="navigation"],.title,.subtitle,.section-title,.section-heading,.section-kicker,.section-overline,.eyebrow,.calculator-title,.calculator-subtitle,.nav-link,.menu-button,.backtop,.icon,.badge,.tag,.chip,.brand,.nav-inner,.site-title,.page-title,.sub-title';
+var saved=new WeakMap();
+function excluded(el){return !el || el.nodeType!==1 || el.matches(skip) || !!el.closest(skip) || !!el.closest('[hidden],[aria-hidden="true"]');}
+function apply(){
+ document.querySelectorAll('body *').forEach(function(el){
+   if(excluded(el)) return;
+   var hasDirectText=false;
+   for(var n=el.firstChild;n;n=n.nextSibling){if(n.nodeType===3 && n.nodeValue.trim()){hasDirectText=true;break;}}
+   if(!hasDirectText) return;
+   if(!saved.has(el)){
+     var inline=el.style.getPropertyValue('font-size');
+     var priority=el.style.getPropertyPriority('font-size');
+     var computed=parseFloat(getComputedStyle(el).fontSize);
+     if(!Number.isFinite(computed)||computed<=0)return;
+     saved.set(el,{inline:inline,priority:priority,base:computed});
+   }
+   var item=saved.get(el);
+   if(mq.matches) el.style.setProperty('font-size',(item.base*1.3)+'px','important');
+   else if(item.inline) el.style.setProperty('font-size',item.inline,item.priority);
+   else el.style.removeProperty('font-size');
+ });
+}
+function run(){apply();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
+if(mq.addEventListener)mq.addEventListener('change',run);else if(mq.addListener)mq.addListener(run);
+new MutationObserver(function(){if(mq.matches)apply();}).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
 </body>
 </html>
