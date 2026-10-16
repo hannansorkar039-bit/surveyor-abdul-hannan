@@ -1077,3 +1077,58 @@ button,input,select,textarea,.btn,.filter-btn{
   body.calc-ux-printing .calc-ux-print-sheet-quadrilateral .calc-ux-print-drawing svg{display:block;width:auto!important;max-width:100%;height:auto!important;max-height:105mm!important;margin:0 auto;break-inside:avoid;page-break-inside:avoid}
   body.calc-ux-printing .calc-ux-print-sheet-quadrilateral .calc-ux-print-result{box-sizing:border-box;white-space:pre-wrap;font-size:9pt;line-height:1.25;padding:7px;border-radius:6px;break-inside:avoid;page-break-inside:avoid}
 }
+
+
+/* Isolated paginated print layout for the two wood CFT calculators only. */
+.wood-cft-print-sheet{display:none}
+@page wood-cft-one-page{size:A4 portrait;margin:4mm}
+@media print{
+  body.wood-cft-print-mode{margin:0!important;padding:0!important;background:#fff!important}
+  body.wood-cft-print-mode> *:not(#woodCftPrintSheet){display:none!important;visibility:hidden!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet{
+    display:block!important;visibility:visible!important;position:static!important;page:wood-cft-one-page;
+    box-sizing:border-box!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important;
+    height:auto!important;max-height:none!important;overflow:visible!important;background:#fff!important;color:#111!important;
+    box-shadow:none!important;border:0!important;border-radius:0!important;font-family:Arial,"Noto Sans Bengali",sans-serif!important;
+    font-size:var(--wood-print-font,8pt)!important;line-height:1.15!important;break-inside:auto!important;page-break-inside:auto!important;
+  }
+  body.wood-cft-print-mode>#woodCftPrintSheet *{visibility:visible!important;box-sizing:border-box!important;box-shadow:none!important;text-shadow:none!important;animation:none!important;transition:none!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet h2{font-size:1.35em!important;margin:0 0 2mm!important;padding:0 0 1mm!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet p,
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-note,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-note,
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-disclaimer,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-disclaimer{font-size:.85em!important;line-height:1.15!important;margin:1mm 0!important;padding:1mm!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-toolbar,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-toolbar,
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-actions,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-actions{display:none!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-table-wrap,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-table-wrap{overflow:visible!important;margin:1mm 0!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet table{width:100%!important;border-collapse:collapse!important;table-layout:auto!important;font-size:.9em!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet th,
+  body.wood-cft-print-mode>#woodCftPrintSheet td{padding:1mm!important;border:0.3pt solid #777!important;white-space:normal!important;overflow-wrap:anywhere!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet thead{display:table-header-group!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet tfoot{display:table-footer-group!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet tr{break-inside:avoid!important;page-break-inside:avoid!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet h2,
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-total-box,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-total-box,
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-result,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-result{break-inside:avoid!important;page-break-inside:avoid!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-price-grid,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-price-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:1mm!important;margin:1mm 0!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-field,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-field,
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-total-box,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-total-box{padding:1mm!important;margin:0!important;min-width:0!important;border-radius:1mm!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-total-box strong,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-total-box strong{font-size:1.15em!important;margin-top:0!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-result,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-result{font-size:.9em!important;line-height:1.15!important;margin:1mm 0!important;padding:1.5mm!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-print-value{display:inline!important;font-size:inherit!important;white-space:nowrap!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-unit,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-length{display:flex!important;flex-wrap:wrap!important;gap:1mm!important;align-items:center!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-unit input,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-length input{display:none!important}
+}
