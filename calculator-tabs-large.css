@@ -1,0 +1,44 @@
+/* ক্যালকুলেটর ট্যাব তালিকা — প্রতি লাইনে ৩টি, সমান আকার, লেখা মাঝখানে (সবার শেষে লোড হয়) */
+html body.calculator-page .calc-tabs{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(0,auto);align-items:stretch;
+  gap:12px!important;
+  padding:16px!important;
+  overflow:visible!important;
+  flex-wrap:initial!important;
+}
+html body.calculator-page .calc-tabs .calc-tab,
+html body.calculator-page .calc-tab{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  width:100%!important;
+  min-width:0;
+  flex:none!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere;
+  font-size:22px!important;
+  line-height:1.4!important;
+  font-weight:800!important;
+  min-height:80px!important;
+  padding:10px 12px!important;
+  border-radius:18px!important;
+  gap:6px;
+}
+html body.calculator-page .calc-tab .ic{width:1.1em;height:1.1em;flex:0 0 auto}
+
+/* টাচ ডিভাইস (Desktop site চালু থাকলেও) */
+@media (pointer:coarse){
+  html body.calculator-page .calc-tabs{gap:14px!important;padding:18px!important}
+  html body.calculator-page .calc-tabs .calc-tab,
+  html body.calculator-page .calc-tab{font-size:27px!important;min-height:110px!important;padding:14px 10px!important;line-height:1.35!important}
+}
+
+/* সরু ফোন ভিউ */
+@media (max-width:700px){
+  html body.calculator-page .calc-tabs{gap:8px!important;padding:10px!important;scroll-snap-type:none!important}
+  html body.calculator-page .calc-tabs .calc-tab,
+  html body.calculator-page .calc-tab{font-size:16.5px!important;min-height:74px!important;padding:8px 4px!important;border-radius:14px!important}
+}
