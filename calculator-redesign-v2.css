@@ -1,0 +1,187 @@
+/* ==========================================================================
+   calculator-redesign-v2.css
+   ক্যালকুলেটর পেজের ডিজাইন ও ব্যবহার-বান্ধবতার দ্বিতীয় ধাপ।
+
+   নিয়ম (অপরিবর্তিত):
+   - কোনো HTML / JavaScript / ফর্মুলা / ক্যালকুলেশন / তথ্য / ID / class বদলানো হয়নি।
+   - সব নিয়ম body.calculator-page-এর ভেতরে এবং @media screen-এ সীমাবদ্ধ,
+     তাই অন্য পেজ এবং প্রিন্ট/PDF আউটপুট প্রভাবিত হয় না।
+   - এই ফাইল সবার শেষে লোড হয়; সরিয়ে দিলে v1 চেহারা ফিরে আসবে।
+
+   মূল সমস্যা ও সমাধান:
+   ১) হিরো ও তালিকা এত লম্বা ছিল যে মোবাইলে ক্যালকুলেটরে পৌঁছাতে ~২৭০০px স্ক্রল লাগত → কম্প্যাক্ট করা হয়েছে।
+   ২) ডেস্কটপে ফিল্ডের লেবেল ও দিক-ব্যাজ অতিরিক্ত বড় (লেবেল ~৩১px) হয়ে যাচ্ছিল → ভারসাম্যপূর্ণ আকারে আনা হয়েছে।
+      (দ্রষ্টব্য: calculator.html-এর ভেতরের একটি স্ক্রিপ্ট ৬০০px-এর বেশি পর্দায় সাধারণ লেখা ১.৩ গুণ বড় করে।
+       সেই স্ক্রিপ্ট অপরিবর্তিত রাখা হয়েছে; তাই নিচের ডেস্কটপ মানগুলো ১.৩ গুণের আগের ভিত্তি-মান হিসেবে ধরা হয়েছে।)
+   ৩) ফলাফল সাধারণ বক্সের মতো ছিল → জরিপ-শিটের মতো সূক্ষ্ম গ্রিডসহ মূল উত্তর বড় করা হয়েছে।
+   ========================================================================== */
+
+@media screen {
+
+:root{
+  --cr2-navy:#0a2538;
+  --cr2-teal:#0a7a82;
+  --cr2-teal-deep:#075f66;
+  --cr2-grid:rgba(10,122,130,.07);
+  --cr2-line:#cfe0e5;
+}
+
+/* ---------- ১) স্ক্রল-অফসেট: স্টিকি নেভিগেশনের নিচে বিষয়বস্তু যেন ঢাকা না পড়ে ---------- */
+html body.calculator-page .calculator-launcher,
+html body.calculator-page .calc-ux-bar,
+html body.calculator-page .calc-tabs,
+html body.calculator-page .calc-panel,
+html body.calculator-page .featured-panel,
+html body.calculator-page #professional-land-suite,
+html body.calculator-page #registry-calculator,
+html body.calculator-page #registryMap{
+  scroll-margin-top:96px;
+}
+
+/* ---------- ২) কম্প্যাক্ট হিরো: ক্যালকুলেটর যেন প্রথম স্ক্রিনেই চোখে পড়ে ---------- */
+html body.calculator-page .hero{
+  min-height:0;
+  padding:30px 0 28px;
+}
+html body.calculator-page .hero .eyebrow{margin:0 0 10px;font-size:12.5px!important}
+html body.calculator-page .hero h1{
+  font-size:clamp(26px,3.6vw,38px)!important;
+  line-height:1.3!important;
+  margin:0 0 6px;
+}
+html body.calculator-page .hero .hero-sub{font-size:16px!important;line-height:1.5!important;margin:0}
+html body.calculator-page .hero .tagline{
+  margin-top:12px;padding:7px 14px;font-size:15.5px!important;line-height:1.55!important;
+}
+html body.calculator-page .hero .hero-pills{margin:12px 0 0;gap:8px}
+html body.calculator-page .hero .hero-pills span{font-size:13.5px!important;padding:5px 12px}
+html body.calculator-page .hero .actions{margin-top:16px;gap:8px}
+html body.calculator-page .hero .actions .btn{
+  min-height:44px;padding:8px 16px;font-size:16px!important;line-height:1.4!important;border-radius:11px;
+}
+
+/* ---------- ৩) ক্যালকুলেটর বাছাই কার্ড: ছোট অথচ স্পষ্ট ---------- */
+html body.calculator-page .calculator-launcher-grid{gap:10px}
+html body.calculator-page .calculator-launch-card{
+  min-height:0;padding:13px 14px;
+}
+html body.calculator-page .calculator-launch-card>span{width:40px;height:40px;margin-bottom:8px;font-size:20px}
+html body.calculator-page .calculator-launch-card>strong{font-size:16.5px!important;line-height:1.4}
+html body.calculator-page .calculator-launch-card>small{font-size:14px!important;line-height:1.5;margin-top:3px}
+
+/* ---------- ৪) ট্যাব তালিকা: মাঝারি আকার, পরিষ্কার সক্রিয় অবস্থা ---------- */
+html body.calculator-page .calc-tabs{gap:8px;padding:12px}
+html body.calculator-page .calc-tab{
+  min-height:46px!important;
+  padding:8px 16px!important;
+  font-size:17.5px!important;
+  line-height:1.4!important;
+  font-weight:800;
+}
+html body.calculator-page .calc-tab.active{
+  box-shadow:0 6px 14px rgba(10,122,130,.26),inset 0 -3px 0 var(--cr-gold,#d9a441);
+}
+
+/* ---------- ৫) লেবেল ও ব্যাজের আকার সংশোধন (ডেস্কটপে ৩১px হয়ে যাচ্ছিল) ---------- */
+html body.calculator-page .calc-panel .calc-field>label,
+html body.calculator-page .calc-panel .calc-field label{
+  font-size:18px!important;
+  line-height:1.5!important;
+  font-weight:800;
+  color:var(--cr2-navy);
+  gap:8px;
+}
+html body.calculator-page .calc-panel .direction-badge,
+html body.calculator-page .calc-panel .diagonal-badge{
+  font-size:14px!important;
+  line-height:1.3!important;
+  padding:5px 12px;
+  min-width:0;
+  border-radius:999px;
+}
+html body.calculator-page .calc-panel .length-input-note,
+html body.calculator-page .calc-panel .calc-field>small{font-size:14px!important}
+
+/* ---------- ৬) পড়ার সুবিধা: লম্বা বর্ণনার লাইন-দৈর্ঘ্য সীমিত ---------- */
+html body.calculator-page .calc-panel .calc-help,
+html body.calculator-page .calc-intro .lead{
+  max-width:74ch;
+}
+html body.calculator-page .calc-panel>h3{margin-bottom:12px}
+
+/* ---------- ৭) ফলাফল: জরিপ-শিটের মতো সূক্ষ্ম গ্রিড, মূল উত্তর বড় ---------- */
+html body.calculator-page .calc-result{
+  position:relative;
+  background-color:#f3fafb;
+  background-image:
+    linear-gradient(var(--cr2-grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--cr2-grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  border-color:#b7dadd;
+  border-left:6px solid var(--cr2-teal);
+}
+html body.calculator-page .calc-result .result-main{
+  font-size:clamp(24px,3.2vw,34px)!important;
+  line-height:1.3!important;
+  color:var(--cr2-teal-deep);
+  margin:0 0 12px;
+}
+html body.calculator-page .calc-result .result-item{background:rgba(255,255,255,.94)}
+html body.calculator-page .calc-result .result-item-primary{
+  border-left:5px solid var(--cr2-teal);
+}
+
+/* ---------- ৮) ক্রিয়ার প্রতিক্রিয়া: ট্যাব বদলালে প্যানেল সংক্ষিপ্তভাবে ভেসে ওঠে ---------- */
+@keyframes cr2-panel-in{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+html body.calculator-page .calc-panel{animation:cr2-panel-in .22s ease-out both}
+
+/* ---------- ৯) ট্যাবলেট ---------- */
+/* ---------- ১০) মোবাইল: স্ক্রলের দৈর্ঘ্য ~২৭০০px থেকে কমিয়ে আনা ---------- */
+@media (max-width:620px){
+  html body.calculator-page .hero{padding:22px 0 20px}
+  html body.calculator-page .hero .hero-pills,
+  html body.calculator-page .hero .tagline{display:none}
+  html body.calculator-page .hero h1{font-size:27px!important}
+  html body.calculator-page .hero .hero-sub{font-size:15.5px!important}
+  html body.calculator-page .hero .actions{
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;
+  }
+  html body.calculator-page .hero .actions .btn{
+    width:100%;min-height:44px;padding:8px 8px;font-size:15.5px!important;
+  }
+  html body.calculator-page .hero .actions .btn:last-child{grid-column:1/-1}
+
+  /* বাছাই কার্ড: আইকন বাঁয়ে, নাম ডানে; বিবরণ লুকানো (ট্যাব খুললে প্যানেলে আছে) */
+  html body.calculator-page .calculator-launcher-grid{gap:8px}
+  html body.calculator-page .calculator-launch-card{
+    flex-direction:row;align-items:center;gap:10px;min-height:64px;padding:10px 12px;
+  }
+  html body.calculator-page .calculator-launch-card>span{width:38px;height:38px;flex:0 0 38px;margin:0;font-size:19px}
+  html body.calculator-page .calculator-launch-card>strong{font-size:15.5px!important;line-height:1.35}
+  html body.calculator-page .calculator-launch-card>small{display:none}
+
+  /* ট্যাব: দুই কলামের সুসংহত গ্রিড, সক্রিয় ট্যাব সবসময় দৃশ্যমান */
+  html body.calculator-page .calc-tabs{
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px;
+  }
+  html body.calculator-page .calc-tab{
+    flex:none;width:100%;min-height:56px!important;padding:8px 8px!important;
+    font-size:15.5px!important;line-height:1.35!important;border-radius:14px;
+  }
+  html body.calculator-page .calc-tab[hidden]{display:none!important}
+
+  html body.calculator-page .calc-panel .calc-field>label,
+  html body.calculator-page .calc-panel .calc-field label{font-size:17.5px!important}
+  html body.calculator-page .calc-panel .direction-badge,
+  html body.calculator-page .calc-panel .diagonal-badge{font-size:13.5px!important}
+  html body.calculator-page .calc-result .result-main{font-size:25px!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html body.calculator-page .calc-panel{animation:none}
+}
+
+}/* end @media screen */
