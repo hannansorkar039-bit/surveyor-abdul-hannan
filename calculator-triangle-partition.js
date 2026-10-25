@@ -539,7 +539,35 @@ window.__SAH_TRIANGLE_PARTITION_LOADED = true;
 
   function downloadDrawing(){
     const c=$('tpCanvas');if(!c)return;
-    const a=document.createElement('a');a.download='triangle-partition-drawing.png';a.href=c.toDataURL('image/png');a.click();
+    const txt=el=>{if(!el)return '';const k=el.cloneNode(true);k.querySelectorAll('.calc-result-tools,button').forEach(n=>n.remove());return (k.innerText||k.textContent||'').replace(/\n{3,}/g,'\n\n').trim()};
+    const parts=[txt($('tpResult')),txt($('tpPartSummary')),txt($('tpExtraDemarcation'))].filter(Boolean);
+    if(!parts.length){alert('প্রথমে তিন বাহুর মাপ দিয়ে হিসাব করুন, তারপর প্রিন্ট / PDF করুন।');return}
+    let img;try{img=c.toDataURL('image/png')}catch(e){alert('Drawing প্রস্তুত করা যায়নি।');return}
+    document.querySelector('.calc-ux-print-sheet')?.remove();
+    const sheet=document.createElement('section');sheet.className='calc-ux-print-sheet';
+    sheet.innerHTML='<h1>ত্রিভুজ ভাগ-বণ্টন</h1><div class="calc-ux-print-meta">সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর</div><div class="calc-ux-print-drawing" style="margin:0 0 8px;break-inside:avoid;page-break-inside:avoid"><h2 style="font-size:14px;margin:0 0 4px;text-align:center">ত্রিভুজের Drawing</h2><div style="border:1px solid #d6e3e6;border-radius:12px;padding:4px;background:#fff;text-align:center"><img alt="ত্রিভুজ ভাগ-বণ্টনের Drawing" style="display:block;margin:0 auto;max-width:100%"></div></div><div class="calc-ux-print-result"></div>';
+    const im=sheet.querySelector('img');im.src=img;
+    sheet.style.cssText+=';padding:0;line-height:1.5';
+    const h1=sheet.querySelector('h1');h1.style.cssText+=';font-size:20px;padding-bottom:6px;margin:0 0 4px';
+    sheet.querySelector('.calc-ux-print-meta').style.cssText+=';margin-bottom:8px';
+    const res=sheet.querySelector('.calc-ux-print-result');res.style.cssText+=';font-size:12px;line-height:1.5;padding:10px;break-inside:auto';
+    res.textContent=parts.join('\n\n');
+    document.body.appendChild(sheet);
+    const pageStyle=document.createElement('style');pageStyle.textContent='@page{size:A4 portrait;margin:10mm}';document.head.appendChild(pageStyle);
+    const prev=sheet.style.cssText;
+    sheet.style.cssText+=';display:block;position:absolute;left:-10000px;top:0;width:718px;max-width:718px;visibility:hidden';
+    im.style.height='100px';im.style.width='auto';
+    const base=sheet.scrollHeight-100;
+    const dh=Math.max(200,Math.min(560,Math.floor(1030-base)));
+    const ratio=c.width/c.height;
+    im.style.cssText='display:block;margin:0 auto;max-width:100%;height:'+dh+'px;width:auto;max-width:100%;object-fit:contain';
+    if(dh*ratio>710)im.style.cssText='display:block;margin:0 auto;width:100%;height:auto';
+    sheet.style.cssText=prev;
+    const cleanup=()=>{document.body.classList.remove('calc-ux-printing');sheet.remove();pageStyle.remove();window.removeEventListener('afterprint',cleanup)};
+    window.addEventListener('afterprint',cleanup,{once:true});
+    document.body.classList.add('calc-ux-printing');
+    const go=()=>setTimeout(()=>window.print(),80);
+    if(im.complete)go();else{im.onload=go;im.onerror=go}
   }
 
   function zoomBy(delta){
