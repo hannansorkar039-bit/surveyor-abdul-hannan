@@ -1,0 +1,291 @@
+/* ক্যালকুলেটরের ভেতরের লেখা — বড়, গাঢ় ও উজ্জ্বল (সবার শেষে লোড হয়) */
+html body.calculator-page{
+  --ci-base:20px;      /* সাধারণ লেখা */
+  --ci-label:21px;     /* লেবেল */
+  --ci-input:21px;     /* ইনপুট/সিলেক্ট */
+  --ci-title:26px;     /* প্যানেল শিরোনাম */
+  --ci-result:30px;    /* মূল ফলাফল */
+  --ci-ink:#061a2a;
+  --ci-teal:#056a72;
+}
+@media (pointer:coarse){
+  html body.calculator-page{--ci-base:25px;--ci-label:26px;--ci-input:26px;--ci-title:32px;--ci-result:36px}
+}
+@media (max-width:700px){
+  html body.calculator-page{--ci-base:17.5px;--ci-label:18px;--ci-input:18px;--ci-title:22px;--ci-result:26px}
+}
+
+/* শিরোনাম */
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) h3,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .featured-panel-head h3{
+  font-size:var(--ci-title)!important;line-height:1.35!important;font-weight:900!important;color:var(--ci-ink)!important;
+}
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) h4,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) h5{
+  font-size:calc(var(--ci-label) + 1px)!important;line-height:1.4!important;font-weight:900!important;color:var(--ci-ink)!important;
+}
+
+/* সূত্র বক্স */
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .formula,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .formula code{
+  font-size:var(--ci-label)!important;line-height:1.6!important;font-weight:900!important;color:#4a2208!important;
+}
+
+/* লেবেল */
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) label,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-field label,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-field>label,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .heir-field label,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .asset-box label,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .suite-field label{
+  font-size:var(--ci-label)!important;line-height:1.45!important;font-weight:900!important;color:var(--ci-ink)!important;
+}
+
+/* ইনপুট, সিলেক্ট */
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) input,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) select,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) textarea,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-field input,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-field select{
+  font-size:var(--ci-input)!important;font-weight:800!important;color:var(--ci-ink)!important;
+  min-height:calc(var(--ci-input) * 2.5)!important;border:2px solid #9cc3c8!important;
+}
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) input::placeholder,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) textarea::placeholder{
+  color:#3f6670!important;font-weight:700!important;opacity:1;
+}
+
+/* বর্ণনা, নোট, সতর্কতা */
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) p,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) li,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-help,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .small-note,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .legal-note,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .warning,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .shape-unit-note,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .conversion-note{
+  font-size:var(--ci-base)!important;line-height:1.75!important;font-weight:700!important;color:#0d2736!important;
+}
+
+/* বাটন */
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-btn,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) button.calc-btn{
+  font-size:var(--ci-label)!important;font-weight:900!important;min-height:calc(var(--ci-label) * 2.4)!important;
+}
+
+/* ফলাফল */
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .result-main,
+html body.calculator-page :is(.calc-result) .result-main{
+  font-size:var(--ci-result)!important;font-weight:900!important;color:var(--ci-teal)!important;line-height:1.3!important;
+}
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .result-item strong,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .result-kpi strong,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .multi-field-kpi strong{
+  font-size:calc(var(--ci-base) + 1px)!important;font-weight:900!important;color:var(--ci-ink)!important;
+}
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .result-item span,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .result-kpi span,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .multi-field-kpi span{
+  font-size:calc(var(--ci-base) - 2px)!important;font-weight:700!important;color:#1d3b49!important;
+}
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-result,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-result p,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-result li,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-result td,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-result th{
+  font-size:var(--ci-base)!important;font-weight:700!important;color:#0d2736!important;
+}
+
+/* উত্তরাধিকার টেবিল */
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .inheritance-table th,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .inheritance-table td{
+  font-size:var(--ci-base)!important;font-weight:800!important;color:var(--ci-ink)!important;
+}
+
+/* ---------- ভূমি রেজিস্ট্রি খরচ ক্যালকুলেটর ও খতিয়ান টুল ---------- */
+html body.calculator-page .registry-upgrade .registry-rate{
+  font-size:var(--ci-label)!important;line-height:1.45!important;font-weight:900!important;
+  color:#04545b!important;padding:10px 16px!important;border-radius:16px!important;
+}
+html body.calculator-page .registry-upgrade .registry-rate svg{width:1.1em;height:1.1em;flex:0 0 auto}
+html body.calculator-page .registry-upgrade .cost-name{font-size:var(--ci-base)!important;font-weight:900!important;color:var(--ci-ink)!important}
+html body.calculator-page .registry-upgrade .cost-meta{font-size:calc(var(--ci-base) - 3px)!important;font-weight:700!important;color:#1d3b49!important}
+html body.calculator-page .registry-upgrade .cost-amount{font-size:calc(var(--ci-base) + 1px)!important;font-weight:900!important;color:var(--ci-ink)!important}
+html body.calculator-page .registry-upgrade .registry-total,
+html body.calculator-page .registry-upgrade .registry-total *{font-size:var(--ci-base)!important;font-weight:800!important}
+html body.calculator-page .registry-upgrade .registry-total strong{font-size:var(--ci-result)!important;font-weight:900!important}
+html body.calculator-page .registry-upgrade .registry-note{
+  font-size:calc(var(--ci-base) - 2px)!important;line-height:1.75!important;font-weight:700!important;color:#0d2736!important;
+}
+html body.calculator-page .registry-upgrade .registry-actions button,
+html body.calculator-page .registry-upgrade .map-tools button{
+  font-size:var(--ci-label)!important;font-weight:900!important;min-height:calc(var(--ci-label) * 2.4)!important;
+}
+/* খতিয়ান কার্ডের লেখা ও আইনি/তথ্য নোট */
+html body.calculator-page .featured-card h3{font-size:calc(var(--ci-label) + 2px)!important;font-weight:900!important;color:var(--ci-ink)!important}
+html body.calculator-page .featured-card p{font-size:var(--ci-base)!important;font-weight:700!important;color:#0d2736!important;line-height:1.7!important}
+html body.calculator-page .legal-note,
+html body.calculator-page .legal-note p,
+html body.calculator-page .legal-note li,
+html body.calculator-page .warning{
+  font-size:var(--ci-base)!important;font-weight:700!important;color:#0d2736!important;line-height:1.75!important;
+}
+html body.calculator-page .legal-note strong{font-weight:900!important;color:var(--ci-ink)!important}
+html body.calculator-page .legal-note a{font-size:var(--ci-label)!important;font-weight:900!important}
+
+/* ---------- ভূমি রেজিস্ট্রি খরচ ক্যালকুলেটর: মূল শিরোনাম (হেডলাইন) ---------- */
+html body.calculator-page h2.section-title.registry-title{
+  display:flex!important;align-items:center;justify-content:flex-start;gap:12px;
+  font-size:clamp(28px,7.6vw,40px)!important;font-weight:900!important;line-height:1.3!important;
+  letter-spacing:0;padding:18px 20px!important;margin:0 0 14px!important;
+  color:var(--cr-navy,#082336)!important;
+}
+html body.calculator-page h2.section-title.registry-title .registry-title-icon{
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  width:1.15em;height:1.15em;font-size:inherit!important;color:var(--cr-orange,#e8751a);
+}
+html body.calculator-page h2.section-title.registry-title .registry-title-icon svg{width:100%;height:100%}
+@media(max-width:649px){
+  html body.calculator-page h2.section-title.registry-title{font-size:28px!important;padding:16px 16px!important;gap:10px}
+}
+
+/* ---------- v25: রেজিস্ট্রি হেডলাইন আরও বড় + খতিয়ান ফিচার কার্ড বড় ---------- */
+html body.calculator-page h2.section-title.registry-title{
+  width:100%;box-sizing:border-box;
+  font-size:clamp(34px,9vw,48px)!important;line-height:1.25!important;padding:20px 22px!important;gap:14px;
+}
+@media(max-width:649px){
+  html body.calculator-page h2.section-title.registry-title{font-size:34px!important;padding:18px 18px!important}
+}
+html body.calculator-page .featured-calcs .featured-card{padding:20px 18px!important;gap:16px!important;align-items:center}
+html body.calculator-page .featured-calcs .featured-card h3{
+  font-size:clamp(24px,6.4vw,30px)!important;line-height:1.4!important;font-weight:900!important;margin:0 0 6px!important;
+}
+html body.calculator-page .featured-calcs .featured-card p{
+  font-size:clamp(18px,4.8vw,21px)!important;line-height:1.7!important;font-weight:700!important;
+}
+html body.calculator-page .featured-calcs .featured-card .featured-icon{width:84px!important;height:84px!important;flex:0 0 84px!important}
+html body.calculator-page .featured-calcs .featured-card .featured-icon svg{width:100%;height:100%}
+html body.calculator-page .featured-calcs .featured-card .featured-go{width:48px!important;height:48px!important;flex:0 0 48px!important;font-size:26px!important}
+@media(min-width:761px){
+  html body.calculator-page .featured-calcs .featured-card h3{font-size:32px!important}
+  html body.calculator-page .featured-calcs .featured-card p{font-size:22px!important}
+}
+
+/* ---------- v26: সার্চ বার, দিকের ব্যাজ ও ফুট/ইঞ্চি লেখা — আরও বড়, গাঢ় ও উজ্জ্বল (সবার শেষে লোড হয়) ---------- */
+
+/* সার্চ বক্স, "সব ক্যালকুলেটর" / "সাম্প্রতিক" বাটন ও "বর্তমানে খোলা" লেখা */
+html body.calculator-page #calcSearch{
+  font-size:22px!important;font-weight:800!important;color:#061a2a!important;min-height:52px!important;
+}
+html body.calculator-page #calcSearch::placeholder{
+  font-size:22px!important;font-weight:700!important;color:#2d5560!important;opacity:1!important;
+}
+html body.calculator-page .calc-ux-search>span{font-size:26px!important;color:#04545b!important}
+html body.calculator-page #calcShowAll,
+html body.calculator-page #calcRecent{
+  font-size:21px!important;font-weight:900!important;line-height:1.3!important;min-height:54px!important;
+  white-space:normal!important;
+}
+html body.calculator-page #calcRecent{color:#061a2a!important;border-color:#5f9aa2!important}
+html body.calculator-page #calcSearchStatus{
+  font-size:19px!important;font-weight:800!important;line-height:1.5!important;color:#0d2736!important;
+}
+@media (max-width:700px){
+  html body.calculator-page #calcSearch,
+  html body.calculator-page #calcSearch::placeholder{font-size:20px!important}
+  html body.calculator-page #calcShowAll,
+  html body.calculator-page #calcRecent{font-size:19px!important;padding:0 8px!important}
+  html body.calculator-page #calcSearchStatus{font-size:17px!important}
+}
+
+/* দিকের ব্যাজ: উত্তর / দক্ষিণ / পূর্ব / পশ্চিম */
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel,.calc-wrap) .direction-badge{
+  font-size:calc(var(--ci-label) + 1px)!important;line-height:1.35!important;font-weight:900!important;
+  padding:4px 13px!important;border-width:2px!important;
+}
+html body.calculator-page .direction-badge.north{background:#d6eaff!important;color:#0b3f75!important;border-color:#7fb6ee!important}
+html body.calculator-page .direction-badge.east{background:#d3f3e3!important;color:#0d5236!important;border-color:#6fcb9c!important}
+html body.calculator-page .direction-badge.south{background:#ffe0d6!important;color:#84300f!important;border-color:#ee9b7f!important}
+html body.calculator-page .direction-badge.west{background:#e6dcff!important;color:#432a7e!important;border-color:#a98fe6!important}
+
+/* "ফুট + ইঞ্চি" / "ইঞ্চি" নোট ও ইনপুটের ফুট/ইঞ্চি প্লেসহোল্ডার */
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .length-input-note,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .calc-field>small,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .length-mode-note,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) .shape-dimension-head>span,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) :is(.wood-cft-table,.sawn-wood-cft-table) th small{
+  font-size:calc(var(--ci-base) - 1px)!important;line-height:1.5!important;font-weight:800!important;color:#0d2736!important;
+}
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) input[placeholder="ফুট"]::placeholder,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) input[placeholder="ইঞ্চি"]::placeholder,
+html body.calculator-page :is(.calc-panel,.registry-upgrade,.featured-panel) input.length-inch::placeholder{
+  color:#1d4a55!important;font-weight:800!important;opacity:1!important;
+}
+
+/* ---------- v27: গোল কাঠের CFT ক্যালকুলেটর — ফুট/ইঞ্চি, মোট CFT, মোট মূল্য লেখা বড়, গাঢ় ও উজ্জ্বল ---------- */
+html body.calculator-page #panel-wood-cft .wood-cft-unit span{
+  font-size:var(--ci-label)!important;font-weight:800!important;color:#0d2736!important;line-height:1.3!important;
+}
+html body.calculator-page #panel-wood-cft .wood-cft-total-box span{
+  font-size:var(--ci-label)!important;font-weight:900!important;color:#0d2736!important;line-height:1.4!important;
+}
+html body.calculator-page #panel-wood-cft .wood-cft-total-box strong{
+  font-size:var(--ci-result)!important;font-weight:900!important;color:#061a2a!important;line-height:1.3!important;
+}
+html body.calculator-page #panel-wood-cft .wood-cft-result,
+html body.calculator-page #panel-wood-cft .wood-cft-result span{
+  font-size:var(--ci-base)!important;font-weight:700!important;color:#0d2736!important;line-height:1.7!important;
+}
+html body.calculator-page #panel-wood-cft .wood-cft-result strong{
+  font-weight:900!important;color:#061a2a!important;
+}
+@media (max-width:649px){
+  html body.calculator-page #panel-wood-cft .wood-cft-table th{
+    font-size:var(--ci-label)!important;font-weight:900!important;color:#061a2a!important;line-height:1.35!important;
+  }
+}
+
+/* ---------- v28: "সূত্র" বক্স (গোল ও চেরাই কাঠ) এবং চেরাই কাঠের CFT ক্যালকুলেটর — লেখা বড়, গাঢ় ও উজ্জ্বল ---------- */
+html body.calculator-page :is(#panel-wood-cft,#panel-sawn-wood-cft) :is(.wood-cft-note,.sawn-wood-cft-note){
+  font-size:var(--ci-base)!important;font-weight:700!important;color:#0d2736!important;line-height:1.75!important;
+}
+html body.calculator-page :is(#panel-wood-cft,#panel-sawn-wood-cft) :is(.wood-cft-note,.sawn-wood-cft-note) :is(strong,b){
+  font-size:inherit!important;font-weight:900!important;color:#061a2a!important;
+}
+html body.calculator-page #panel-sawn-wood-cft .sawn-wood-cft-table td span{
+  font-size:var(--ci-label)!important;font-weight:800!important;color:#0d2736!important;line-height:1.3!important;
+}
+html body.calculator-page #panel-sawn-wood-cft .sawn-wood-cft-total-box span{
+  font-size:var(--ci-label)!important;font-weight:900!important;color:#0d2736!important;line-height:1.4!important;
+}
+html body.calculator-page #panel-sawn-wood-cft .sawn-wood-cft-total-box strong{
+  font-size:var(--ci-result)!important;font-weight:900!important;color:#061a2a!important;line-height:1.3!important;
+}
+html body.calculator-page #panel-sawn-wood-cft .sawn-wood-cft-result,
+html body.calculator-page #panel-sawn-wood-cft .sawn-wood-cft-result span{
+  font-size:var(--ci-base)!important;font-weight:700!important;color:#0d2736!important;line-height:1.7!important;
+}
+html body.calculator-page #panel-sawn-wood-cft .sawn-wood-cft-result strong{
+  font-weight:900!important;color:#061a2a!important;
+}
+@media (max-width:649px){
+  html body.calculator-page #panel-sawn-wood-cft .sawn-wood-cft-table th{
+    font-size:var(--ci-label)!important;font-weight:900!important;color:#061a2a!important;line-height:1.35!important;
+  }
+}
+
+/* ---------- v29: "কাঠের তালিকা" / "চেরাই কাঠের তালিকা" শিরোনাম ও "কাঠ যোগ করুন" বাটন — বড় ও গাঢ় ---------- */
+html body.calculator-page :is(#panel-wood-cft .wood-cft-toolbar,#panel-sawn-wood-cft .sawn-wood-cft-toolbar)>strong{
+  font-size:var(--ci-title)!important;font-weight:900!important;color:#061a2a!important;line-height:1.35!important;
+}
+html body.calculator-page :is(#panel-wood-cft .wood-cft-add,#panel-sawn-wood-cft .sawn-wood-cft-add){
+  font-size:calc(var(--ci-label) + 1px)!important;font-weight:900!important;line-height:1.3!important;
+  min-height:calc(var(--ci-label) * 2.4)!important;padding:10px 20px!important;
+}
+
+/* ---------- v30: টেবিলের সারির "মুছুন" বাটন — বড় ও গাঢ় (গোল ও চেরাই কাঠ) ---------- */
+html body.calculator-page :is(#panel-wood-cft .wood-cft-remove,#panel-sawn-wood-cft .sawn-wood-cft-remove){
+  font-size:calc(var(--ci-label) + 1px)!important;font-weight:900!important;color:#8a1f1f!important;line-height:1.3!important;
+  min-height:calc(var(--ci-label) * 2.4)!important;padding:8px 14px!important;white-space:nowrap;
+}
