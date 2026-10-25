@@ -1,0 +1,67 @@
+/* hero-header.css — শুধুমাত্র হেডার (নেভিগেশন) ও হিরো অংশের নতুন ডিজাইন। পেজের বাকি অংশ অপরিবর্তিত। */
+:root{--ph-ink:#0a2038;--ph-ink2:#123556;--ph-brass:#b3873a;--ph-brass-d:#85621f;--ph-mist:#edf2f6;--ph-line:#dbe3ea;
+--ph-serif:"Noto Serif Bengali","Lohit Bengali",Georgia,serif}
+
+/* ---------- Header (শুধু বন্ধ অবস্থার মোবাইল বার; খোলা মেনু প্যানেল আগের মতোই) ---------- */
+@media(max-width:1000px){
+ html body .nav-inner{display:flex;flex-wrap:nowrap;align-items:center;gap:8px 12px}
+ html body .brand{flex:1 1 0;min-width:0;margin:0}
+ html body .nav-toggle{margin-left:auto;flex:0 0 auto}
+ html body .nav{background:rgba(255,255,255,.94);color:var(--ph-ink);border-bottom:1px solid var(--ph-line);backdrop-filter:saturate(1.6) blur(14px)}
+ html body .brand{color:var(--ph-ink);font-family:var(--ph-serif);font-weight:700}
+ html body .brand img{width:34px;height:34px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ph-brass);border:0}
+ html body .brand span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px}
+ html body .nav-toggle{background:var(--ph-ink)!important;color:#fff!important;border:0!important;box-shadow:none!important}
+}
+
+/* ---------- Hero ---------- */
+html body .hero{padding:clamp(60px,9vw,118px) 0 clamp(56px,8vw,100px);color:#fff;
+background:radial-gradient(820px 460px at 88% -8%,rgba(11,107,110,.6),transparent 62%),radial-gradient(640px 360px at 4% 112%,rgba(179,135,58,.2),transparent 60%),linear-gradient(165deg,#0a2038,#0c2b47 58%,#07192b)}
+html body .hero:after{display:none}
+html body .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:clamp(28px,6vw,72px);align-items:center}
+html body .hero-grid>*{min-width:0}
+html body .hero-grid .avatar{order:2;width:min(250px,60vw);height:auto;aspect-ratio:1;object-fit:cover;border-radius:24px;margin:0 auto;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 0 0 10px rgba(179,135,58,.28),0 34px 60px -20px rgba(0,0,0,.6)}
+html body .hero .eyebrow{display:inline-flex;align-items:center;width:fit-content;text-transform:none;letter-spacing:.2px;font-size:13px;font-weight:700;color:#f0d9a6;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 14px;margin:0 0 18px}
+html body .hero h1{font-family:var(--ph-serif);font-size:clamp(30px,5.4vw,52px);color:#fff;font-weight:700;line-height:1.3;letter-spacing:0;text-shadow:none;margin:0 0 16px}
+html body .hero p{max-width:none}
+html body .hero-sub{color:#cbdbe8;font-size:clamp(16px,2vw,19px)}
+html body .hero .tagline{border-left:3px solid var(--ph-brass);background:rgba(255,255,255,.06);border-radius:0 10px 10px 0;color:#eaf1f6}
+html body .hero .hero-pills>*{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#eaf1f6;border-radius:999px}
+@media(max-width:760px){html body .hero-grid{grid-template-columns:1fr}html body .hero-grid .avatar{order:-1;width:150px;margin:0}}
+
+/* হিরোর বাটন */
+html body .hero .btn{border-radius:10px;font-weight:700;min-height:48px;padding:11px 22px;letter-spacing:0;white-space:normal;text-align:center;transition:transform .18s,box-shadow .18s,background .18s,color .18s}
+html body .hero .btn:hover{transform:translateY(-1px)}
+html body .hero .btn:not(.btn-whatsapp):not(.btn-light):not(.btn-outline){background:linear-gradient(180deg,#c9993f,#b3873a);border-color:var(--ph-brass-d);color:#18110a!important;box-shadow:0 10px 22px -10px rgba(179,135,58,.8)}
+html body .hero .btn:not(.btn-whatsapp):not(.btn-light):not(.btn-outline):hover{background:#c4973f}
+html body .hero .btn-whatsapp{box-shadow:0 10px 22px -10px rgba(22,132,91,.7)}
+html body .hero .btn-light{background:#fff;color:var(--ph-ink)}
+html body .hero .btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,.5);color:#fff}
+@media(max-width:700px){html body .hero .btn{width:100%}}
+
+/* হিরো কনটেন্টের একবারের প্রবেশ অ্যানিমেশন */
+@keyframes ph-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+html body .hero .eyebrow,html body .hero h1,html body .hero-sub,html body .hero .actions,html body .hero .hero-pills{animation:ph-rise .8s cubic-bezier(.2,.7,.2,1) both}
+html body .hero h1{animation-delay:.08s}html body .hero-sub{animation-delay:.18s}html body .hero .actions,html body .hero .hero-pills{animation-delay:.3s}
+html body .hero-grid .avatar{animation:ph-rise 1s cubic-bezier(.2,.7,.2,1) .15s both}
+@media(prefers-reduced-motion:reduce){html body .hero *{animation:none!important}}
+
+/* সব পেজে মোবাইলে "ভূমি ক্যালকুলেটর" লিঙ্ক থ্রি-লাইন মেনুর ঠিক বামে থাকবে */
+@media(max-width:900px){
+ html body .nav-inner .mobile-calculator-link{display:inline-flex!important;position:static!important;left:auto!important;bottom:auto!important;order:0;flex:0 0 auto;align-items:center;justify-content:center;margin:0 0 0 auto!important;max-width:none!important;padding:9px 12px!important;font-size:15px!important;line-height:1.2!important;font-weight:800!important;border-radius:12px!important;white-space:nowrap;color:#fff!important;background:linear-gradient(135deg,#1459c7,#16845b);box-shadow:0 6px 16px rgba(20,89,199,.22)}
+ html body .nav-inner .nav-toggle{margin-left:0!important}
+}
+@media(max-width:520px){
+ html body .nav-inner{gap:6px 8px;padding-bottom:10px!important}
+ html body .nav-inner .brand:before{display:none}
+ html body .nav-inner .brand span{font-size:14px}
+ html body .nav-inner .mobile-calculator-link{padding:8px 10px!important;font-size:14px!important;border-radius:11px!important}
+}
+@media(max-width:420px){
+ html body .nav-inner .brand span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;font-size:13.5px;line-height:1.2}
+}
+@media(max-width:380px){
+ html body .nav-inner{min-height:0!important;align-items:center!important;padding:10px 0!important}
+ html body .nav-inner .site-brand{max-width:none!important}
+ html body .nav-inner .navlinks{top:100%!important}
+}
