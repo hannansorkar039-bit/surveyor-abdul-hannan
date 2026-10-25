@@ -124,6 +124,8 @@
       span.textContent=value || '—';
       input.replaceWith(span);
     });
+    const printMeta=document.createElement('div');printMeta.className='calc-ux-print-meta';printMeta.textContent='সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর';
+    const printHead=sheet.querySelector('h2');if(printHead) printHead.insertAdjacentElement('afterend',printMeta);
     sheet.style.setProperty('--wood-print-font','8pt');
     document.body.appendChild(sheet);
     document.body.classList.add('wood-cft-print-mode');
