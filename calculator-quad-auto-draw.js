@@ -74,14 +74,16 @@
       if (!b || !d) { host.innerHTML = '<div class="warning">ড্রয়িংয়ের জন্য মাপগুলো জ্যামিতিকভাবে সামঞ্জস্যপূর্ণ নয়।</div>'; return; }
       g = { A:{x:0,y:0}, B:{x:b.x,y:b.y}, C:{x:diag,y:0}, D:{x:d.x,y:-d.y}, start:'A', end:'C' };
     }
-    // Rotate the whole plot without changing any lengths/angles so AB is always
-    // the upper edge; this is a display orientation, not a change to the survey data.
-    const center={x:(g.A.x+g.B.x+g.C.x+g.D.x)/4,y:(g.A.y+g.B.y+g.C.y+g.D.y)/4};
-    const edgeAngle=Math.atan2(g.B.y-g.A.y,g.B.x-g.A.x);
-    const rotate=(p,ang)=>{const x=p.x-center.x,y=p.y-center.y,c=Math.cos(ang),s=Math.sin(ang);return {x:x*c-y*s,y:x*s+y*c};};
-    let rot=Object.fromEntries(['A','B','C','D'].map(k=>[k,rotate(g[k],-edgeAngle)]));
-    // Pick the 180-degree equivalent that places the AB midpoint above the plot center.
-    if ((rot.A.y+rot.B.y)/2 < 0) rot=Object.fromEntries(['A','B','C','D'].map(k=>[k,{x:-rot[k].x,y:-rot[k].y}]));
+    // Display orientation only (no length/angle/area is changed):
+    // AB on top, BC on right, CD at bottom, DA on left, plot kept upright.
+    const keys=['A','B','C','D'];
+    let rot={A:g.A,B:g.B,C:g.C,D:g.D};
+    const area2=keys.reduce((sum,n,idx)=>{const a=rot[n],c=rot[keys[(idx+1)%4]];return sum+(a.x*c.y-c.x*a.y);},0);
+    if(area2>1e-9) rot=Object.fromEntries(keys.map(n=>[n,{x:-rot[n].x,y:rot[n].y}]));
+    let ux=(rot.B.x-rot.A.x)+(rot.C.x-rot.D.x), uy=(rot.B.y-rot.A.y)+(rot.C.y-rot.D.y), um=Math.hypot(ux,uy);
+    if(um<1e-9){ux=rot.B.x-rot.A.x;uy=rot.B.y-rot.A.y;um=Math.hypot(ux,uy)||1;}
+    ux/=um; uy/=um;
+    rot=Object.fromEntries(keys.map(n=>[n,{x:rot[n].x*ux+rot[n].y*uy,y:-rot[n].x*uy+rot[n].y*ux}]));
     const pts = ['A','B','C','D'].map(k=>rot[k]), xs=pts.map(p=>p.x), ys=pts.map(p=>p.y);
     const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
     const spanX=Math.max(maxX-minX,1e-6), spanY=Math.max(maxY-minY,1e-6);
