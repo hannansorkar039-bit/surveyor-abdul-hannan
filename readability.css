@@ -1,0 +1,32 @@
+/* readability.css — শুধু পড়ার স্বচ্ছতা: কম কনট্রাস্টের লেখা/বাটন গাঢ় করা ও খুব ছোট লেখা ১৩px করা।
+   ডিজাইন, লেআউট ও কনটেন্ট অপরিবর্তিত। */
+
+/* ১) ম্লান ধূসর লেখা → গাঢ় (সাদা/হালকা জমিনে ৭:১-এর বেশি) */
+:root{--kh-muted:#3f535d}
+html body .kh-updated,
+html body .kh-card .mini-source,
+html body .knowledge-front-grid span,
+html body .featured-card p,
+html body .calc-search-status{color:#3f535d}
+
+/* ২) সাদা লেখার বাটন: জমিন সামান্য গাঢ় করা (সাদা লেখায় ৪.৫:১-এর বেশি) */
+html body .btn-whatsapp{background:linear-gradient(135deg,#17855a,#0f6b47)}
+html body .btn-whatsapp:hover{background:#0f6b47}
+html body .calc-primary{background:linear-gradient(135deg,#c24f0a,#b34a06)}
+html body .registry-upgrade .registry-primary{background:#b8480a}
+html body .v6-mobile-bar .primary{background:linear-gradient(135deg,#c24f0a,#b34a06)}
+html body .ls-link{background:linear-gradient(135deg,#006f78,#007d82)}
+
+/* ৩) জমিনের সঙ্গে মিশে যাওয়া সাদা লেখার ট্যাগ */
+html body .kf-chip{background:rgba(4,30,44,.38)}
+
+/* ৪) অর্ডার পেজের সারাংশ কার্ড: নকশায় গাঢ় নীল জমিন + সাদা লেখা ছিল, কিন্তু পরের জেনেরিক কার্ড-রুল জমিন সাদা করে দিয়েছিল */
+html body .order-card.order-summary{background:linear-gradient(145deg,#082336,#0d3d52);border-top-color:#0d3d52}
+
+/* ৫) ১৩px-এর ছোট লেখা → ১৩px */
+html body .calculator-launcher-kicker,
+html body .calc-title-kicker,
+html body .profile-link-banner-kicker,
+html body .video-platform,
+html body .calc-search-status,
+html body .length-mode-note{font-size:13px}
