@@ -230,6 +230,10 @@
       const title = document.createElement('h1');
       title.textContent = 'ত্রিভুজাকার জমির ক্ষেত্রফল — কোসাইন সূত্র';
       sheet.appendChild(title);
+      const printMeta = document.createElement('div');
+      printMeta.className = 'calc-ux-print-meta';
+      printMeta.textContent = 'সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর';
+      sheet.appendChild(printMeta);
       const grid = panel.querySelector('.thc-measure-angle-grid');
       if (grid) {
         const gridCopy = grid.cloneNode(true);
