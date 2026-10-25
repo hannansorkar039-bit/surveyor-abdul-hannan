@@ -200,22 +200,24 @@
     oldSheet?.remove();
     const sheet = document.createElement('section');
     sheet.className = 'calc-ux-print-sheet';
-    if (result.id === 'fqResult') {
-      sheet.classList.add('calc-ux-print-sheet-quadrilateral');
+    const drawingId = result.id === 'fqResult' ? 'fqDrawing' : (result.id === 'qdResult' ? 'qdDrawing' : '');
+    if (drawingId) {
+      sheet.classList.add('calc-ux-print-sheet-fq');
       sheet.style.page = 'quadrilateral';
     }
     sheet.innerHTML = `<h1>${escapeHtml(title)}</h1><div class="calc-ux-print-meta">সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর</div><div class="calc-ux-print-result"></div>`;
     // The irregular quadrilateral report must include its live SVG drawing.
     // Keep this change scoped to fqResult; all other calculator print reports
     // continue using their existing text-only output.
-    if (result.id === 'fqResult') {
-      const drawing = document.getElementById('fqDrawing');
+    if (drawingId) {
+      const drawing = document.getElementById(drawingId);
       const svg = drawing?.querySelector('svg.qd-plot-svg');
       if (svg) {
         const drawingSection = document.createElement('div');
         drawingSection.className = 'calc-ux-print-drawing';
-        const drawingTitle = document.createElement('h2');
-        drawingTitle.textContent = 'প্লটের ড্রয়িং ও কোণের অবস্থান';
+        const drawingTitle = document.createElement('div');
+        drawingTitle.className = 'calc-ux-print-drawing-title';
+        drawingTitle.textContent = drawingId === 'qdDrawing' ? 'প্লটের ড্রয়িং' : 'প্লটের ড্রয়িং ও কোণের অবস্থান';
         const svgCopy = svg.cloneNode(true);
         svgCopy.removeAttribute('height');
         svgCopy.setAttribute('width', '100%');
@@ -223,11 +225,53 @@
         svgCopy.style.width = '100%';
         svgCopy.style.height = 'auto';
         svgCopy.style.maxHeight = 'none';
-        drawingSection.append(drawingTitle, svgCopy);
+        // An <img> copy paginates reliably in Chrome's print engine (inline SVG was pushed to a second page).
+        let drawingNode = svgCopy;
+        try {
+          const vb = (svg.getAttribute('viewBox') || '0 0 720 440').split(/\s+/).map(Number);
+          const raw = svg.cloneNode(true);
+          raw.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+          raw.setAttribute('width', vb[2]);
+          raw.setAttribute('height', vb[3]);
+          const img = document.createElement('img');
+          img.alt = 'প্লটের ড্রয়িং';
+          img.className = 'calc-ux-print-drawing-img';
+          img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(raw));
+          drawingNode = img;
+        } catch (e) { drawingNode = svgCopy; }
+        drawingSection.append(drawingTitle, drawingNode);
         sheet.appendChild(drawingSection);
       }
     }
-    sheet.querySelector('.calc-ux-print-result').textContent = text;
+    let printText = text;
+    if (result.id === 'fqResult' || result.id === 'qdResult') {
+      // Same sheet style as the other calculators, but keep each value and its label on separate lines.
+      const lines = [];
+      const main = result.querySelector('.result-main');
+      if (main) lines.push(main.textContent.trim(), '');
+      if (result.id === 'qdResult') {
+        // Triangle areas and the diagonal length are <p> lines placed before the unit list.
+        result.querySelectorAll(':scope > p:not(.conversion-note)').forEach(el => {
+          const s = el.textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+          if (s) lines.push(s);
+        });
+        if (lines.length > 2) lines.push('');
+      }
+      result.querySelectorAll('.result-item').forEach(el => {
+        const v = el.querySelector('strong')?.textContent.trim(), l = el.querySelector('span')?.textContent.trim();
+        if (v) lines.push(l ? v + ' — ' + l : v);
+      });
+      const angles = [];
+      result.querySelectorAll('.angle-box').forEach(el => {
+        const v = el.querySelector('strong')?.textContent.trim(), l = el.querySelector('span')?.textContent.trim();
+        if (v) angles.push((l ? l + ' = ' : '') + v);
+      });
+      if (angles.length) lines.push('', 'চার কোণ: ' + angles.join(' • '));
+      const note = result.querySelector('.conversion-note');
+      if (note) lines.push('', note.textContent.trim().replace('${which}', 'AC/BD'.split('/').find(k => document.getElementById('fqDiagonalType')?.value === k) || ''));
+      if (lines.length) printText = lines.join('\n');
+    }
+    sheet.querySelector('.calc-ux-print-result').textContent = printText;
     document.body.appendChild(sheet);
 
     const cleanup = () => {
@@ -237,7 +281,9 @@
     };
     window.addEventListener('afterprint', cleanup, { once: true });
     document.body.classList.add('calc-ux-printing');
-    setTimeout(() => window.print(), 80);
+    const pendingImg = sheet.querySelector('.calc-ux-print-drawing-img');
+    const startPrint = () => setTimeout(() => window.print(), 80);
+    if (pendingImg && pendingImg.decode) pendingImg.decode().then(startPrint, startPrint); else startPrint();
   }
 
   async function copyText(text) {
@@ -271,7 +317,9 @@
   }
 
   function enhanceResult(result) {
-    if (!result || result.dataset.uxEnhanced === '1' || !resultText(result)) return;
+    // Results are re-rendered with innerHTML on every calculation, which removes the toolbar; re-add it whenever it is missing.
+    const fqToolsMissing = result && !result.querySelector(':scope > .calc-result-tools');
+    if (!result || (result.dataset.uxEnhanced === '1' && !fqToolsMissing) || !resultText(result)) return;
     result.dataset.uxEnhanced = '1';
     result.setAttribute('tabindex', '-1');
     result.setAttribute('role', result.getAttribute('role') || 'region');
