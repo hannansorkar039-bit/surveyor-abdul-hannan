@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="bn-BD">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ফিল্ড নোট স্কেচ | সার্ভেয়ার আবদুল হান্নান</title>
+<meta name="description" content="মাঠ জরিপের সময় দ্রুত স্কেচ আঁকা, মাপ লেখা ও নোট রাখার জন্য ফিল্ড নোট স্কেচ টুল।">
+<link rel="canonical" href="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/field-note-sketch.html">
+<meta name="robots" content="index, follow">
+<meta property="og:site_name" content="সার্ভেয়ার আবদুল হান্নান">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="bn_BD">
+<meta property="og:title" content="ফিল্ড নোট স্কেচ | সার্ভেয়ার আবদুল হান্নান">
+<meta property="og:description" content="মাঠ জরিপের সময় দ্রুত স্কেচ আঁকা, মাপ লেখা ও নোট রাখার জন্য ফিল্ড নোট স্কেচ টুল।">
+<meta property="og:url" content="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/field-note-sketch.html">
+<meta property="og:image" content="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/profile-abdul-hannan.webp">
+<meta property="og:image:alt" content="সার্ভেয়ার আবদুল হান্নান-এর প্রোফাইল ছবি">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ফিল্ড নোট স্কেচ | সার্ভেয়ার আবদুল হান্নান">
+<meta name="twitter:description" content="মাঠ জরিপের সময় দ্রুত স্কেচ আঁকা, মাপ লেখা ও নোট রাখার জন্য ফিল্ড নোট স্কেচ টুল।">
+<meta name="twitter:image" content="https://hannansorkar039-bit.github.io/surveyor-abdul-hannan/profile-abdul-hannan.webp">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a2638">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<style>
+:root{--bg:#f6f4ee;--card:#fff;--tx:#1f2a1f;--mu:#6b756b;--ac:#2f7d3a;--ac2:#e8f3ea;--bd:#d9dccf;--pen:#1f2a1f;--hl:#d9480f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a14;--card:#1d261d;--tx:#e8efe6;--mu:#9aa89a;--ac:#6cc27a;--ac2:#243324;--bd:#324032;--pen:#e8efe6;--hl:#ff922b}}
+:root[data-theme="dark"]{--bg:#141a14;--card:#1d261d;--tx:#e8efe6;--mu:#9aa89a;--ac:#6cc27a;--ac2:#243324;--bd:#324032;--pen:#e8efe6;--hl:#ff922b}
+*{box-sizing:border-box}
+:root{--t-text:21px;--t-note:20px;--t-cap:18px}
+@media (pointer:coarse){:root{--t-text:26px;--t-note:25px;--t-cap:23px}}
+@media (max-width:700px){:root{--t-text:18px;--t-note:17.5px;--t-cap:15.5px}}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif;font-size:var(--t-note);font-weight:700;line-height:1.5;-webkit-tap-highlight-color:transparent}
+main{max-width:1100px;margin:0 auto;padding:10px;display:flex;flex-direction:column;min-height:100%}
+h1{display:none}
+.tools{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tools button,.btn{padding:8px 11px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:9px;font:inherit;font-size:var(--t-text);font-weight:700;line-height:1.3}
+.tools button.on{background:var(--ac2);border-color:var(--ac);color:var(--ac);font-weight:700}
+canvas{flex:1 0 auto;height:max(440px,calc(100vh - 175px));min-height:300px;width:100%;border:1px solid var(--bd);border-radius:12px;background:var(--card);touch-action:none;display:block;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.note{font-size:var(--t-cap);font-weight:700;color:var(--mu);margin:8px 0 0;line-height:1.6}
+#sheet{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:7px 10px calc(7px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px rgba(0,0,0,.15);display:none;z-index:5}
+#sheet.show{display:block}
+#sheet .in{max-width:760px;margin:0 auto}
+.row{display:flex;gap:6px;align-items:end}.row>*{flex:1;min-width:0}
+label{display:block;font-size:18px;font-weight:700;color:var(--tx);margin:0 0 3px;line-height:1.3}
+input{width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;font-size:22px;font-weight:700}
+input::placeholder{font-size:20px;font-weight:700;opacity:.7}
+#sheet .btn{padding:9px 10px;font-size:20px;border-radius:8px}
+.btn.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:700}
+.btn.d{color:var(--hl)}
+.tools a.btn{text-decoration:none}
+.hide{display:none}
+</style>
+</head>
+<body>
+<style>.skip{position:absolute;left:-9999px;top:10px;background:#fff;color:#000;padding:10px 15px;z-index:1000;border-radius:6px}.skip:focus{left:10px}</style>
+<a class="skip" href="#main">মূল কনটেন্টে যান</a>
+<main id="main">
+<h1>📐 ফিল্ড নোট স্কেচ</h1>
+<div class="tools">
+<a class="btn" id="homeLink" href="index.html" aria-label="সাইটের হোম পেজে ফিরুন">🏠 হোম</a>
+<button id="dr" class="on">✏️ সোজা</button><button id="cu">〰️ বাঁকা</button><button id="tx">🔤 লেখা</button>
+<button id="pn_">✋ সরান</button><button id="se">👆 নির্বাচন</button>
+<button id="zi">＋</button><button id="zo">－</button><button id="zf">⊡</button>
+<button id="und">↩️</button><button id="clr">🗑️</button>
+</div>
+<canvas id="cv"></canvas>
+</main>
+
+<div id="sheet"><div class="in">
+<div id="sLine" style="margin-bottom:5px">
+<div class="row" style="margin-bottom:5px">
+<div><label>ফুট</label><input id="ft" inputmode="decimal"></div>
+<div><label>ইঞ্চি</label><input id="inc" inputmode="decimal"></div>
+<button class="btn" id="straight">সোজা</button>
+</div></div>
+<div style="margin-bottom:5px"><label id="pnl">প্লটের নাম</label><input id="pn" placeholder="প্লট"></div>
+<div class="row">
+<button class="btn p" id="ok">সংরক্ষণ</button>
+<button class="btn" id="later">বন্ধ</button>
+<button class="btn d" id="del">মুছুন</button>
+</div></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+try{if(window.self!==window.top)$('homeLink').classList.add('hide')}catch(e){$('homeLink').classList.add('hide')}
+const toBn=s=>String(s).replace(/[0-9]/g,d=>'০১২৩৪৫৬৭৮৯'[d]);
+const num=s=>{s=String(s||'').trim().replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d)).replace('।','.');const v=parseFloat(s);return isNaN(v)?0:v};
+const cv=$('cv'),cx=cv.getContext('2d');let dpr=window.devicePixelRatio||1;
+let lines=[],plots={},names={},nameP={},texts=[],V={x:0,y:0,k:1},mode='draw',cur=null,sel=-1,selPlot=null,selText=-1,sheetMode='line';
+let hist=[],lbl=[],C={},dangling=[];
+const pointers=new Map();let g=null,panS=null,multi=false,drag=null,hold=null,raf=0;
+const clampK=k=>Math.max(.15,Math.min(10,k));
+const T2=Math.PI*2;
+
+function colors(){const cs=getComputedStyle(document.documentElement),q=n=>cs.getPropertyValue(n).trim();
+ C={pen:q('--pen')||'#222',hl:q('--hl')||'#d9480f',card:q('--card')||'#fff',ac:q('--ac')||'#2f7d3a'}}
+function req(){if(!raf)raf=requestAnimationFrame(draw)}
+function fit(){const r=cv.getBoundingClientRect();if(!r.width)return;dpr=window.devicePixelRatio||1;cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);req()}
+const W=p=>[(p[0]-V.x)/V.k,(p[1]-V.y)/V.k];
+function pos(e){const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
+const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+
+/* ---------- জ্যামিতি: সোজা লাইন ও বৃত্তচাপ (s = জ্যা থেকে চাপের মাঝের দূরত্ব) ---------- */
+function arcInfo(l){const s=l.s||0,dx=l.x2-l.x1,dy=l.y2-l.y1,len=Math.hypot(dx,dy);
+ if(!len||Math.abs(s)<.5)return null;
+ const nx=-dy/len,ny=dx/len,mx=(l.x1+l.x2)/2,my=(l.y1+l.y2)/2,c=len/2,as=Math.abs(s),sg=s>0?1:-1;
+ const R=(c*c+s*s)/(2*as),Mx=mx+nx*s,My=my+ny*s,Cx=Mx-nx*sg*R,Cy=My-ny*sg*R;
+ const a0=Math.atan2(l.y1-Cy,l.x1-Cx),a1=Math.atan2(l.y2-Cy,l.x2-Cx),am=Math.atan2(My-Cy,Mx-Cx),md=v=>((v%T2)+T2)%T2;
+ let dir=1,sw=md(a1-a0);if(md(am-a0)>sw){dir=-1;sw=md(a0-a1)}
+ return{Cx,Cy,R,a0,dir,sw,Mx,My,nx,ny,mx,my,sg}}
+function samples(l,n=32){const a=arcInfo(l),o=[];
+ for(let i=0;i<=n;i++){const t=i/n;if(a){const an=a.a0+a.dir*a.sw*t;o.push([a.Cx+a.R*Math.cos(an),a.Cy+a.R*Math.sin(an)])}
+  else o.push([l.x1+(l.x2-l.x1)*t,l.y1+(l.y2-l.y1)*t])}
+ if(o.length){o[0]=[l.x1,l.y1];o[n]=[l.x2,l.y2]}return o}
+function lineMid(l){const a=arcInfo(l);return a?[a.Mx,a.My]:[(l.x1+l.x2)/2,(l.y1+l.y2)/2]}
+function segDist(p,x1,y1,x2,y2){const dx=x2-x1,dy=y2-y1,t=Math.max(0,Math.min(1,((p[0]-x1)*dx+(p[1]-y1)*dy)/(dx*dx+dy*dy||1)));return Math.hypot(p[0]-(x1+t*dx),p[1]-(y1+t*dy))}
+function lineDist(p,l){if(!arcInfo(l))return segDist(p,l.x1,l.y1,l.x2,l.y2);
+ const q=samples(l,28);let m=1e9;for(let i=1;i<q.length;i++)m=Math.min(m,segDist(p,q[i-1][0],q[i-1][1],q[i][0],q[i][1]));return m}
+
+const vkey=(x,y)=>Math.round(x*100)+','+Math.round(y*100);
+function cycArea(poly){let a=0;for(let i=0,j=poly.length-1;i<poly.length;j=i++)a+=(poly[j][0]+poly[i][0])*(poly[j][1]-poly[i][1]);return Math.abs(a/2)}
+function allCycles(c,ek,segs){
+ if(c.length>40||c.length<2)return [];
+ const adj={};for(const i of c){const[a,b]=ek[i];if(a===b)continue;(adj[a]=adj[a]||[]).push([i,b]);(adj[b]=adj[b]||[]).push([i,a])}
+ let best=[],cnt=0;const seen=new Set();
+ const build=cyc=>{let poly=[],v=[];for(const [e,from] of cyc){const l=segs[e],fw=ek[e][0]===from;let sm=samples(l);if(!fw)sm=sm.reverse();
+   v.push(fw?[l.x1,l.y1]:[l.x2,l.y2]);for(let i=0;i<sm.length-1;i++)poly.push(sm[i])}
+  /* একই লাইনের দুই টুকরোর জোড়ার বিন্দু কোণা নয় — বাদ */
+  const n=cyc.length;v=v.filter((_,k)=>segs[cyc[k][0]].li!==segs[cyc[(k+n-1)%n][0]].li);return{poly,v}};
+ for(const s0 of Object.keys(adj)){const used=new Set(),vis=new Set([s0]),stack=[];
+  (function dfs(v){
+   for(const [e,o] of adj[v]){if(cnt>3000)return;if(used.has(e))continue;
+    if(o===s0&&stack.length>=1){const cyc=[...stack,[e,v]];const k=cyc.map(x=>x[0]).sort((p,q)=>p-q).join(',');
+     if(!seen.has(k)){seen.add(k);cnt++;const r=build(cyc);if(cycArea(r.poly)>1)best.push({cyc,poly:r.poly,v:r.v})}continue}
+    if(vis.has(o))continue;
+    used.add(e);vis.add(o);stack.push([e,v]);dfs(o);stack.pop();vis.delete(o);used.delete(e)}
+  })(s0)}
+ return best}
+/* লাইন পুরোপুরি প্লটের ভেতরে কি না (তিনটি বিন্দু পরীক্ষা) */
+function within(l,poly){const q=samples(l,4);return inside(q[1],poly)&&inside(q[2],poly)&&inside(q[3],poly)}
+/* লাইনের উপর (প্রান্ত ছাড়া) অন্য লাইনের প্রান্ত বসলে সেই লাইনকে ওই বিন্দুতে ভেঙে টুকরো করা (T-জোড়া) */
+function nearOn(l,q){const a=arcInfo(l);
+ if(!a){const dx=l.x2-l.x1,dy=l.y2-l.y1,t=Math.max(0,Math.min(1,((q[0]-l.x1)*dx+(q[1]-l.y1)*dy)/(dx*dx+dy*dy||1)));
+  const pt=[l.x1+t*dx,l.y1+t*dy];return{t,pt,d:Math.hypot(q[0]-pt[0],q[1]-pt[1])}}
+ const ang=Math.atan2(q[1]-a.Cy,q[0]-a.Cx),rel=(((ang-a.a0)*a.dir)%T2+T2)%T2;
+ if(rel<=a.sw){const pt=[a.Cx+a.R*Math.cos(ang),a.Cy+a.R*Math.sin(ang)];return{t:rel/a.sw,pt,d:Math.abs(Math.hypot(q[0]-a.Cx,q[1]-a.Cy)-a.R)}}
+ const d1=Math.hypot(q[0]-l.x1,q[1]-l.y1),d2=Math.hypot(q[0]-l.x2,q[1]-l.y2);
+ return d1<=d2?{t:0,pt:[l.x1,l.y1],d:d1}:{t:1,pt:[l.x2,l.y2],d:d2}}
+function splitSegs(tol){const out=[];
+ lines.forEach((l,li)=>{if(l.inner)return;const a=arcInfo(l),cuts=[];
+  for(let j=0;j<lines.length;j++){if(j===li||lines[j].inner)continue;const m=lines[j];
+   for(const q of [[m.x1,m.y1],[m.x2,m.y2]]){const r=nearOn(l,q);
+    if(r.d<=tol&&r.t>0&&r.t<1&&dist(q,[l.x1,l.y1])>tol&&dist(q,[l.x2,l.y2])>tol&&!cuts.some(c=>vkey(c.p[0],c.p[1])===vkey(q[0],q[1])))cuts.push({t:r.t,p:q})}}
+  if(!cuts.length){out.push({x1:l.x1,y1:l.y1,x2:l.x2,y2:l.y2,s:l.s||0,li});return}
+  cuts.sort((p,q)=>p.t-q.t);let prev={t:0,p:[l.x1,l.y1]};
+  for(const c of cuts.concat([{t:1,p:[l.x2,l.y2]}])){
+   if(dist(prev.p,c.p)<1e-6)continue;
+   let s=0;if(a){const th=(c.t-prev.t)*a.sw;s=a.sg*a.R*(1-Math.cos(th/2))}
+   out.push({x1:prev.p[0],y1:prev.p[1],x2:c.p[0],y2:c.p[1],s,li});prev=c}});
+ return out}
+function newPid(used){let n;do{n=Date.now()+Math.floor(Math.random()*1e6)}while(used.has(n)||lines.some(l=>l.plot===n));used.add(n);return n}
+function rebuild(again){plots={};dangling=[];
+ /* কাছাকাছি প্রান্তগুলো এক বিন্দুতে মিলিয়ে দেওয়া, যাতে ফাঁক না থাকে */
+ const reps=[],tol=Math.min(10,12/V.k);
+ const rp=(x,y)=>{for(const r of reps)if(Math.hypot(r[0]-x,r[1]-y)<=tol)return r;const r=[x,y];reps.push(r);return r};
+ for(const l of lines){const a=rp(l.x1,l.y1);l.x1=a[0];l.y1=a[1];const b=rp(l.x2,l.y2);l.x2=b[0];l.y2=b[1];l.dash=false;l.closes=false}
+ const segs=splitSegs(tol);
+ const ek=segs.map(l=>[vkey(l.x1,l.y1),vkey(l.x2,l.y2)]);
+ const par=segs.map((_,i)=>i),f=i=>par[i]===i?i:(par[i]=f(par[i])),own={};
+ ek.forEach((e,i)=>{for(const v of e){if(own[v]===undefined)own[v]=i;else par[f(i)]=f(own[v])}});
+ const comps={};segs.forEach((_,i)=>{(comps[f(i)]=comps[f(i)]||[]).push(i)});
+ /* প্রতিটি বন্ধ ঘর (যার ভেতরে আর কোনো লাইন নেই) = আলাদা প্লট */
+ const faces=[],info=[],open=[];
+ for(const c of Object.values(comps)){const lis=[...new Set(c.map(i=>segs[i].li))],mids=c.map(i=>samples(segs[i],2)[1]),fs=[];
+  for(const cy of allCycles(c,ek,segs)){const on=new Set(cy.cyc.map(x=>x[0]));let ok=true;
+   for(let k=0;k<c.length;k++){if(!on.has(c[k])&&inside(mids[k],cy.poly)){ok=false;break}}
+   if(ok){const fc={poly:cy.poly,v:cy.v,lis:[...new Set(cy.cyc.map(x=>segs[x[0]].li))]};fs.push(fc);faces.push(fc)}}
+  if(fs.length)info.push({c,lis,fs});else open.push({lis,c})}
+ lines.forEach((l,i)=>{if(l.inner)open.push({lis:[i],c:[]})});
+ /* প্লটের আইডি: লাইনগুলোর আগের আইডি অনুযায়ী; একই আইডি দুই প্লটে গেলে পরেরটি নতুন আইডি পায় */
+ const cand=[];faces.forEach((fc,fi)=>{const cnt={};fc.lis.forEach(i=>{const id=lines[i].plot;cnt[id]=(cnt[id]||0)+1});for(const id in cnt)cand.push({fi,id:+id,n:cnt[id]})});
+ cand.sort((a,b)=>b.n-a.n||a.fi-b.fi);
+ const used=new Set(),order=[];
+ for(const x of cand){if(faces[x.fi].id!==undefined||used.has(x.id))continue;faces[x.fi].id=x.id;used.add(x.id);order.push(x.fi)}
+ faces.forEach((fc,fi)=>{if(fc.id===undefined){fc.id=newPid(used);order.push(fi)}});
+ const assigned=new Set();
+ for(const fi of order){const fc=faces[fi];
+  plots[fc.id]={v:fc.v,pts:fc.poly,closed:true,curved:fc.lis.some(i=>lines[i].s)};
+  for(const i of fc.lis)if(!assigned.has(i)){lines[i].plot=fc.id;assigned.add(i)}}
+ /* ঘরের অংশ নয় এমন লাইন: প্লটের ভেতরে থাকলে ড্যাশ */
+ for(const {lis,fs} of info)for(const i of lis){if(assigned.has(i))continue;
+  const h=fs.find(fc=>within(lines[i],fc.poly));
+  if(h){lines[i].dash=true;lines[i].plot=h.id}else lines[i].plot=fs[0].id;assigned.add(i)}
+ let redo=false;
+ for(const {lis,c} of open){let pid=lines[lis[0]].plot;if(used.has(pid))pid=newPid(used);else used.add(pid);
+  for(const i of lis)lines[i].plot=pid;let absorbed=false;
+  for(const id in plots){const p=plots[id];if(!p.closed)continue;
+   if(lis.every(i=>within(lines[i],p.pts))){for(const i of lis){lines[i].dash=true;lines[i].plot=+id}absorbed=true;break}}
+  if(!absorbed){plots[pid]={v:[],pts:[],closed:false,curved:false};
+   if(lis.length===1&&lines[lis[0]].inner){lines[lis[0]].inner=false;redo=true}
+   /* অন্তত ৩টি লাইনের খোলা চেইনে যে প্রান্ত কারও সাথে জোড়া লাগেনি তা চিহ্নিত করা */
+   if(lis.length>=3){const dg={};c.forEach(i=>{for(const v of ek[i])dg[v]=(dg[v]||0)+1});
+    c.forEach(i=>{const l=segs[i];if(dg[ek[i][0]]===1)dangling.push([l.x1,l.y1]);if(dg[ek[i][1]]===1)dangling.push([l.x2,l.y2])})}}}
+ if(redo&&!again)rebuild(true)}
+function inside(pt,poly){let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+ const [xi,yi]=poly[i],[xj,yj]=poly[j];
+ if((yi>pt[1])!=(yj>pt[1])&&pt[0]<(xj-xi)*(pt[1]-yi)/(yj-yi)+xi)c=!c}return c}
+function vertexAtEx(p,rad,items){let b=null,bd=rad;lines.forEach((l,i)=>{for(const wh of [1,2]){
+ if(items.some(it=>it[0]===i&&it[1]===wh))continue;const q=wh===1?[l.x1,l.y1]:[l.x2,l.y2];
+ const d=Math.hypot(p[0]-q[0],p[1]-q[1]);if(d<bd){bd=d;b=[q[0],q[1]]}}});return b}
+function vertexAt(p,rad){let b=null,bd=rad;for(const l of lines)for(const q of [[l.x1,l.y1],[l.x2,l.y2]]){
+ const d=Math.hypot(p[0]-q[0],p[1]-q[1]);if(d<bd){bd=d;b=[q[0],q[1]]}}return b}
+/* লাইনের মাঝখানের বিন্দুতে snap (excl = যে লাইনগুলো টানা হচ্ছে সেগুলো বাদ) */
+function midAt(p,rad,excl){let b=null,bd=rad;lines.forEach((l,i)=>{if(excl&&excl.includes(i))return;const m=lineMid(l),d=Math.hypot(p[0]-m[0],p[1]-m[1]);if(d<bd){bd=d;b=[m[0],m[1]]}});return b}
+/* লাইনের যেকোনো জায়গায় (প্রান্ত ছাড়া) snap — সবচেয়ে কাছের বিন্দু */
+function onLineAt(p,rad,excl){let b=null,bd=rad;lines.forEach((l,i)=>{if(excl&&excl.includes(i))return;const r=nearOn(l,p);if(r.t>0&&r.t<1&&r.d<bd){bd=r.d;b=r.pt}});return b}
+function snapPt(p,rad,items){const ex=items&&items.map(it=>it[0]),v=items?vertexAtEx(p,rad,items):vertexAt(p,rad),m=midAt(p,rad,ex);
+ if(v&&m)return Math.hypot(p[0]-v[0],p[1]-v[1])<=Math.hypot(p[0]-m[0],p[1]-m[1])?v:m;
+ return v||m||onLineAt(p,rad,ex)}
+const snap=p=>snapPt(p,22/V.k)||[p[0],p[1]];
+const same=(a,b)=>Math.abs(a[0]-b[0])<1e-6&&Math.abs(a[1]-b[1])<1e-6;
+function dispName(id){if(names[id])return names[id];let k=0;for(const i in plots){if(!plots[i].closed)continue;k++;if(i==id)return 'প্লট '+toBn(k)}return 'প্লট'}
+function plotNamePos(id){if(nameP[id])return nameP[id];const p=plots[id];if(!p||!p.v.length)return[0,0];
+ return p.v.reduce((s,q)=>[s[0]+q[0],s[1]+q[1]],[0,0]).map(v=>v/p.v.length)}
+
+/* ---------- ইতিহাস / সংরক্ষণ ---------- */
+function pushH(){hist.push(JSON.stringify({lines,names,nameP,texts}));if(hist.length>60)hist.shift()}
+function save(){try{localStorage.setItem('fieldsketch2',JSON.stringify({lines,names,nameP,texts,V}))}catch(e){}}
+
+/* ---------- লাইন/বৃত্ত তৈরি ---------- */
+/* আগে থেকে থাকা বন্ধ প্লটের ভেতরে, দুই প্রান্তই তার সীমানায় বসা লাইন = ভেতরের (ড্যাশ) লাইন */
+function onPoly(pt,poly){for(let i=0,j=poly.length-1;i<poly.length;j=i++)if(segDist(pt,poly[j][0],poly[j][1],poly[i][0],poly[i][1])<=3)return true;return false}
+function isChord(a,b,s){const l={x1:a[0],y1:a[1],x2:b[0],y2:b[1],s};
+ for(const id in plots){const p=plots[id];if(p.closed&&within(l,p.pts)&&onPoly(a,p.pts)&&onPoly(b,p.pts))return true}return false}
+function commit(a,b,s){
+ a=snap(a);b=snap(b);if(dist(a,b)*V.k<14)return;pushH();
+ lines.push({x1:a[0],y1:a[1],x2:b[0],y2:b[1],dash:false,plot:Date.now()+Math.floor(Math.random()*1000),closes:false,ft:'',inc:'',s:s||0,inner:isChord(a,b,s||0)});
+ rebuild();save();sel=lines.length-1;selPlot=null;openSheet('line');req()}
+function curveFit(pts){if(pts.length<2)return null;const a=snap(pts[0]),b=snap(pts[pts.length-1]);
+ const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy);if(len*V.k<14)return null;
+ const cum=[0];for(let i=1;i<pts.length;i++)cum.push(cum[i-1]+dist(pts[i],pts[i-1]));
+ const T=cum[cum.length-1],h=T/2;let sx=0,sy=0,n=0;
+ for(let i=0;i<pts.length;i++)if(Math.abs(cum[i]-h)<=T*.08){sx+=pts[i][0];sy+=pts[i][1];n++}
+ if(!n)return{a,b,s:0};
+ const nx=-dy/len,ny=dx/len;let s=(sx/n-(a[0]+b[0])/2)*nx+(sy/n-(a[1]+b[1])/2)*ny;
+ if(Math.abs(s)*V.k<6)s=0;return{a,b,s}}
+function fmt(l){if(l.ft===''&&l.inc==='')return '';const f=num(l.ft),i=num(l.inc);
+ return toBn((f?f+'′':'')+(f&&i?' ':'')+(i?i+'″':''))}
+
+/* ---------- আঁকা ---------- */
+function path(l){cx.beginPath();cx.moveTo(l.x1,l.y1);const a=arcInfo(l);
+ if(a)cx.arc(a.Cx,a.Cy,a.R,a.a0,a.a0+a.dir*a.sw,a.dir<0);else cx.lineTo(l.x2,l.y2)}
+const LBL_PX=26,PILL_H=36;
+function pill(t,x,y,ang,k,fill,textCol,hh){const w=cx.measureText(t).width+10/k,h=(hh||PILL_H)/k;
+ cx.save();cx.translate(x,y);cx.rotate(ang);cx.globalAlpha=.85;cx.fillStyle=C.card;cx.fillRect(-w/2,-h/2,w,h);cx.globalAlpha=1;cx.fillStyle=textCol;cx.fillText(t,0,0);cx.restore();return w}
+function draw(){raf=0;if(!C.pen)colors();const r=cv.getBoundingClientRect(),k=V.k;
+ cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,r.width,r.height);
+ cx.setTransform(dpr*k,0,0,dpr*k,dpr*V.x,dpr*V.y);
+ cx.lineCap='round';cx.lineJoin='round';
+ lines.forEach((l,i)=>{cx.strokeStyle=i===sel?C.hl:C.pen;cx.lineWidth=(i===sel?3.5:2.5)/k;
+  cx.setLineDash(l.dash?[9/k,7/k]:[]);path(l);cx.stroke();cx.setLineDash([])});
+ if(cur){cx.strokeStyle=C.pen;cx.lineWidth=2.5/k;cx.setLineDash([]);
+  if(cur.m==='line'){path({x1:cur.a[0],y1:cur.a[1],x2:cur.b[0],y2:cur.b[1],s:0});cx.stroke();
+   for(const q of [cur.a,cur.b])if(snapPt(q,.01)){cx.strokeStyle=C.ac;cx.lineWidth=2/k;cx.beginPath();cx.arc(q[0],q[1],9/k,0,T2);cx.stroke()}}
+  else if(cur.m==='curve'){const f=curveFit(cur.pts);if(f){path({x1:f.a[0],y1:f.a[1],x2:f.b[0],y2:f.b[1],s:f.s});cx.stroke()}}}
+ const vr=(mode==='sel'||drag&&drag.t==='vtx')?5.5:3.2;
+ cx.fillStyle=C.pen;for(const l of lines)for(const q of [[l.x1,l.y1],[l.x2,l.y2]]){cx.beginPath();cx.arc(q[0],q[1],vr/k,0,T2);cx.fill()}
+ if(dangling.length){cx.strokeStyle=C.hl;cx.lineWidth=2/k;for(const q of dangling){cx.beginPath();cx.arc(q[0],q[1],10/k,0,T2);cx.stroke()}}
+ if(drag&&drag.t==='vtx'&&drag.cur){cx.strokeStyle=drag.snapped?C.ac:C.hl;cx.lineWidth=3/k;cx.beginPath();cx.arc(drag.cur[0],drag.cur[1],13/k,0,T2);cx.stroke()}
+ cx.font=`bold ${LBL_PX/k}px "Noto Sans Bengali","Hind Siliguri",sans-serif`;cx.textAlign='center';cx.textBaseline='middle';
+ const off=26/k;
+ lines.forEach((l,i)=>{const t=fmt(l);if(!t)return;
+  const a=arcInfo(l),[mx,my]=lineMid(l);let dx=l.x2-l.x1,dy=l.y2-l.y1;
+  if(a){const am=Math.atan2(a.My-a.Cy,a.Mx-a.Cx);dx=-Math.sin(am)*a.dir;dy=Math.cos(am)*a.dir}
+  const n=Math.hypot(dx,dy)||1;let nx=-dy/n,ny=dx/n,ox=nx,oy=ny;
+  const pl=plots[l.plot],poly=pl&&pl.closed?pl.pts:null;
+  if(poly&&poly.length>=3){
+   /* প্লট বন্ধ হলে ফুট-ইঞ্চি সবসময় প্লটের ভেতরের দিকে, লাইনের সমান্তরালে */
+   const i1=inside([mx+nx*off*1.6,my+ny*off*1.6],poly),i2=inside([mx-nx*off*1.6,my-ny*off*1.6],poly);
+   if(i1&&!i2){}else if(i2&&!i1){ox=-nx;oy=-ny}else if(ny>0){ox=-nx;oy=-ny}
+  }else if(a){ox=nx*a.sg;oy=ny*a.sg}else if(ny>0){ox=-nx;oy=-ny}
+  let ang=Math.atan2(dy,dx);if(ang>Math.PI/2||ang<-Math.PI/2)ang+=Math.PI;
+  pill(t,mx+ox*off,my+oy*off,ang,k,C.card,i===sel?C.hl:C.pen)});
+ if(sel>=0&&lines[sel]&&sheetMode==='line'){const m=lineMid(lines[sel]);
+  cx.fillStyle=C.hl;cx.strokeStyle='#fff';cx.lineWidth=2.5/k;cx.beginPath();cx.arc(m[0],m[1],9/k,0,T2);cx.fill();cx.stroke()}
+ lbl=[];cx.font=`bold ${LBL_PX/k}px "Noto Sans Bengali","Hind Siliguri",sans-serif`;
+ for(const id in plots){const p=plots[id];if(!p.closed)continue;const c=plotNamePos(id),t=dispName(id);
+  const w=pill(t,c[0],c[1],0,k,C.card,String(id)===String(selPlot)?C.hl:C.ac);lbl.push({kind:'plot',id,x:c[0],y:c[1],w,h:PILL_H/k})}
+ texts.forEach((q,i)=>{if(!q.t)return;const w=pill(q.t,q.x,q.y,0,k,C.card,i===selText?C.hl:C.pen);lbl.push({kind:'text',i,x:q.x,y:q.y,w,h:PILL_H/k})})}
+
+/* ---------- ছোঁয়া/টানা ---------- */
+function hitLabel(w){const pad=10/V.k;for(let i=lbl.length-1;i>=0;i--){const b=lbl[i];
+ if(Math.abs(w[0]-b.x)<=b.w/2+pad&&Math.abs(w[1]-b.y)<=b.h/2+pad)return b}return null}
+function pick(sp){const p=W(sp);let b=-1,bd=16/V.k;lines.forEach((l,i)=>{const d=lineDist(p,l);if(d<bd){bd=d;b=i}});
+ if(b>=0){sel=b;selPlot=null;openSheet('line');req();return}
+ const ids=Object.keys(plots).reverse();for(const id of ids){const pl=plots[id];if(pl.closed&&inside(p,pl.pts)){sel=-1;selPlot=id;openSheet('plot');req();return}}
+ sel=-1;selPlot=null;closeSheet();req()}
+function cancelHold(){if(hold){clearTimeout(hold.timer);hold=null}}
+function ensureH(){if(drag&&!drag.pushed){pushH();drag.pushed=true}}
+function startVertexDrag(vt){const items=[];
+ lines.forEach((l,i)=>{if(same([l.x1,l.y1],vt))items.push([i,1]);if(same([l.x2,l.y2],vt))items.push([i,2])});
+ drag={t:'vtx',items,cur:vt,pushed:false}}
+function blurInput(){const a=document.activeElement;if(a&&a.blur&&a.tagName==='INPUT')a.blur()}
+
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('pointerdown',e=>{const p=pos(e);cv.setPointerCapture(e.pointerId);pointers.set(e.pointerId,p);
+ if(pointers.size>=2){multi=true;cancelHold();cur=null;drag=null;panS=null;const [a,b]=[...pointers.values()];
+  g={d0:Math.hypot(a[0]-b[0],a[1]-b[1])||1,c0:[(a[0]+b[0])/2,(a[1]+b[1])/2],v0:{...V}};req();return}
+ multi=false;const w=W(p);blurInput();
+ if(sel>=0&&sheetMode==='line'&&lines[sel]){const m=lineMid(lines[sel]);
+  if(dist(w,m)*V.k<22){drag={t:'bend',i:sel,pushed:false};return}}
+ if(mode==='pan'){panS={p,v:{...V}};return}
+ const lb=hitLabel(w);
+ if(lb){drag={t:'label',lb,sp:p,moved:false,ox:w[0]-lb.x,oy:w[1]-lb.y,pushed:false};return}
+ if(mode==='text'){pushH();texts.push({x:w[0],y:w[1],t:''});selText=texts.length-1;sel=-1;selPlot=null;openSheet('text');req();return}
+ const vt=vertexAt(w,18/V.k);
+ if(mode==='sel'){if(vt){startVertexDrag(vt);req();return}pick(p);return}
+ closeSheet();sel=-1;selPlot=null;selText=-1;
+ if(mode==='curve')cur={m:'curve',pts:[w]};
+ else cur={m:'line',a:snap(w),b:snap(w)};
+ if(vt){const h={sp:p,vt};h.timer=setTimeout(()=>{if(hold!==h)return;hold=null;cur=null;startVertexDrag(vt);
+  if(navigator.vibrate)try{navigator.vibrate(15)}catch(_){}req()},380);hold=h}
+ req()});
+cv.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const p=pos(e);pointers.set(e.pointerId,p);
+ if(pointers.size>=2&&g){const [a,b]=[...pointers.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1])||1,c=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+  const nk=clampK(g.v0.k*d/g.d0),w0=[(g.c0[0]-g.v0.x)/g.v0.k,(g.c0[1]-g.v0.y)/g.v0.k];
+  V.k=nk;V.x=c[0]-w0[0]*nk;V.y=c[1]-w0[1]*nk;req();return}
+ if(multi)return;
+ if(hold&&dist(p,hold.sp)>8)cancelHold();
+ const w=W(p);
+ if(drag){
+  if(drag.t==='label'){if(!drag.moved&&dist(p,drag.sp)<6)return;drag.moved=true;ensureH();
+   const nx=w[0]-drag.ox,ny=w[1]-drag.oy,b=drag.lb;
+   if(b.kind==='plot')nameP[b.id]=[nx,ny];else if(texts[b.i]){texts[b.i].x=nx;texts[b.i].y=ny}
+   b.x=nx;b.y=ny}
+  else if(drag.t==='vtx'){ensureH();drag.moved=true;const sn=snapPt(w,22/V.k,drag.items),q=sn||w;drag.cur=q;drag.snapped=!!sn;
+   for(const [i,wh] of drag.items){if(wh===1){lines[i].x1=q[0];lines[i].y1=q[1]}else{lines[i].x2=q[0];lines[i].y2=q[1]}}rebuild()}
+  else if(drag.t==='bend'){const l=lines[drag.i];if(!l)return;ensureH();drag.moved=true;
+   const dx=l.x2-l.x1,dy=l.y2-l.y1,len=Math.hypot(dx,dy)||1;
+   let s=(w[0]-(l.x1+l.x2)/2)*(-dy/len)+(w[1]-(l.y1+l.y2)/2)*(dx/len);
+   if(Math.abs(s)*V.k<5)s=0;l.s=s;rebuild()}
+  req();return}
+ if(panS){V.x=panS.v.x+p[0]-panS.p[0];V.y=panS.v.y+p[1]-panS.p[1];req();return}
+ if(cur){
+  if(cur.m==='line')cur.b=snap(w);
+  else if(cur.m==='curve'){const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+   for(const ev of (evs.length?evs:[e])){const q=W(pos(ev)),l=cur.pts[cur.pts.length-1];if(dist(q,l)*V.k>1.5)cur.pts.push(q)}}
+  req()}});
+function up(e,ok){if(!pointers.has(e.pointerId))return;pointers.delete(e.pointerId);
+ if(pointers.size<2)g=null;
+ if(pointers.size===0){cancelHold();const c=cur,d=drag;cur=null;panS=null;drag=null;
+  if(!multi&&ok){
+   if(d){if(d.t==='label'&&!d.moved){const b=d.lb;sel=-1;
+     if(b.kind==='plot'){selPlot=String(b.id);selText=-1;openSheet('plot')}else{selText=b.i;selPlot=null;openSheet('text')}}}
+   else if(c){if(c.m==='line')commit(c.a,c.b);else{const f=curveFit(c.pts);if(f)commit(f.a,f.b,f.s)}}}
+  multi=false;save();req()}}
+cv.addEventListener('pointerup',e=>up(e,true));cv.addEventListener('pointercancel',e=>up(e,false));
+cv.addEventListener('wheel',e=>{e.preventDefault();zoomAt(pos(e),Math.exp(-e.deltaY*.0015))},{passive:false});
+
+/* ---------- জুম ---------- */
+function zoomAt(c,f){const nk=clampK(V.k*f);V.x=c[0]-(c[0]-V.x)*nk/V.k;V.y=c[1]-(c[1]-V.y)*nk/V.k;V.k=nk;save();req()}
+function center(){const r=cv.getBoundingClientRect();return[r.width/2,r.height/2]}
+$('zi').onclick=()=>zoomAt(center(),1.3);$('zo').onclick=()=>zoomAt(center(),1/1.3);
+$('zf').onclick=()=>{const r=cv.getBoundingClientRect();if(!lines.length&&!texts.length){V={x:0,y:0,k:1};req();return}
+ let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;const add=q=>{x0=Math.min(x0,q[0]);y0=Math.min(y0,q[1]);x1=Math.max(x1,q[0]);y1=Math.max(y1,q[1])};
+ for(const l of lines)for(const q of samples(l,12))add(q);for(const t of texts)add([t.x,t.y]);
+ const m=50,bw=Math.max(x1-x0,40),bh=Math.max(y1-y0,40),k=clampK(Math.min((r.width-2*m)/bw,(r.height-2*m)/bh,3));
+ V.k=k;V.x=r.width/2-(x0+x1)/2*k;V.y=r.height/2-(y0+y1)/2*k;save();req()};
+
+/* ---------- মোড ---------- */
+const MB={draw:'dr',curve:'cu',text:'tx',pan:'pn_',sel:'se'};
+function setMode(m){mode=m;for(const k in MB)$(MB[k]).classList.toggle('on',k===m)}
+for(const k in MB)$(MB[k]).onclick=()=>setMode(k);
+$('und').onclick=()=>{if(!hist.length)return;const s=JSON.parse(hist.pop());lines=s.lines||[];names=s.names||{};nameP=s.nameP||{};texts=s.texts||[];
+ rebuild();sel=-1;selPlot=null;selText=-1;closeSheet();save();req()};
+$('clr').onclick=()=>{if(confirm('পুরো স্কেচ মুছে ফেলবেন?')){pushH();lines=[];plots={};names={};nameP={};texts=[];sel=-1;selPlot=null;selText=-1;closeSheet();save();req()}};
+
+/* ---------- নিচের শীট ---------- */
+/* দৃশ্যমান অংশ (কিবোর্ড বাদে) — iframe-এর ভেতরে থাকলে মূল পেজের visualViewport থেকে */
+function visInfo(){try{const fe=window.frameElement,P=fe?parent:window,vv=P.visualViewport,r=fe?fe.getBoundingClientRect():{top:0};
+ const vT=vv?vv.offsetTop:0,vB=vv?vv.offsetTop+vv.height:P.innerHeight;
+ return{top:Math.max(0,vT-r.top+(fe?50:0)),bot:Math.min(innerHeight,vB-r.top)}}catch(e){return{top:0,bot:innerHeight}}}
+let sheetPt=null;
+function placeSheet(){const sh=$('sheet');if(!sh.classList.contains('show'))return;sh.style.bottom=Math.max(0,innerHeight-visInfo().bot)+'px'}
+function ensureVis(p){const sh=$('sheet'),r=cv.getBoundingClientRect();if(!p)return;sheetPt=p;placeSheet();const vi=visInfo();
+ const sy=p[1]*V.k+V.y+r.top,lim=vi.bot-sh.offsetHeight-40,tp=Math.max(r.top,vi.top);
+ if(sy>lim)V.y-=sy-lim;else if(sy<tp+30)V.y+=tp+30-sy}
+function onVV(){if($('sheet').classList.contains('show')){placeSheet();ensureVis(sheetPt);req()}}
+try{const P=window.frameElement?parent:window;if(P.visualViewport){P.visualViewport.addEventListener('resize',onVV);P.visualViewport.addEventListener('scroll',onVV)}P.addEventListener('scroll',onVV,{passive:true})}catch(e){}
+window.addEventListener('resize',onVV);
+function openSheet(m){sheetMode=m;const sh=$('sheet'),pn=$('pn');let fx=pn,pt=null;
+ $('sLine').classList.toggle('hide',m!=='line');
+ if(m==='line'){const l=lines[sel];if(!l)return;
+  $('ft').value=l.ft===''?'':toBn(l.ft);$('inc').value=l.inc===''?'':toBn(l.inc);
+  pn.value=names[l.plot]||'';pn.placeholder=dispName(l.plot);$('pnl').textContent='প্লটের নাম';$('del').textContent='লাইন মুছুন';fx=$('ft');pt=lineMid(l)}
+ else if(m==='plot'){pn.value=names[selPlot]||'';pn.placeholder=dispName(selPlot);$('pnl').textContent='প্লটের নাম';$('del').textContent='প্লট মুছুন';pt=plotNamePos(selPlot)}
+ else{const t=texts[selText];if(!t)return;pn.value=t.t;pn.placeholder='যেমন: রাস্তা, পুকুর';$('pnl').textContent='লেখা';$('del').textContent='লেখা মুছুন';pt=[t.x,t.y]}
+ sh.classList.add('show');placeSheet();ensureVis(pt);req();setTimeout(()=>{try{fx.focus({preventScroll:true})}catch(_){fx.focus()}},50)}
+function closeSheet(){$('sheet').classList.remove('show');$('sheet').style.bottom=''}
+function done(){if(sheetMode==='text'&&texts[selText]&&!texts[selText].t)texts.splice(selText,1);
+ closeSheet();sel=-1;selPlot=null;selText=-1;save();req()}
+$('ok').onclick=()=>{pushH();let pid=null;
+ if(sheetMode==='line'){const l=lines[sel];if(l){const f=$('ft').value.trim(),i=$('inc').value.trim();l.ft=f===''?'':String(num(f));l.inc=i===''?'':String(num(i));pid=l.plot}}
+ else if(sheetMode==='plot')pid=selPlot;
+ else{const t=texts[selText];if(t)t.t=$('pn').value.trim()}
+ if(pid!==null){const v=$('pn').value.trim();if(v)names[pid]=v;else delete names[pid]}
+ save();done()};
+$('later').onclick=done;
+$('del').onclick=()=>{pushH();
+ if(sheetMode==='line'){if(sel>=0)lines.splice(sel,1)}
+ else if(sheetMode==='plot'){if(selPlot!==null){lines=lines.filter(l=>String(l.plot)!==String(selPlot));delete names[selPlot];delete nameP[selPlot]}}
+ else{if(selText>=0)texts.splice(selText,1);selText=-1}
+ rebuild();save();done()};
+$('straight').onclick=()=>{const l=lines[sel];if(!l)return;pushH();l.s=0;rebuild();save();req()};
+['ft','inc','pn'].forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter')$('ok').click()}));
+
+/* ---------- শুরু ---------- */
+try{const s=JSON.parse(localStorage.getItem('fieldsketch2')||'null');if(s){lines=s.lines||[];names=s.names||{};nameP=s.nameP||{};texts=s.texts||[];if(s.V)V=s.V;rebuild()}}catch(e){lines=[]}
+colors();
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{colors();req()})}catch(e){}
+if(window.ResizeObserver)new ResizeObserver(fit).observe(cv);
+window.addEventListener('resize',fit);setTimeout(fit,30);
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js", { updateViaCache: "none" }).then(registration => registration.update()).catch(() => {}));
+}
+</script>
+</body>
+</html>
