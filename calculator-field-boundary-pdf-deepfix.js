@@ -182,6 +182,10 @@
         ? (valid.find(p=>classify(p)==='convex') || valid[0])
         : (valid.find(p=>classify(p)===wanted) || valid[0]);
       pts=selected;
+      // Match the AC orientation (clockwise A→B→C→D) so AB stays on top and CD at the bottom.
+      let sg=0;
+      for(let i=0;i<4;i++){const q=pts[(i+1)%4];sg+=pts[i][0]*q[1]-q[0]*pts[i][1];}
+      if(sg>0) pts=pts.map(q=>[q[0],-q[1]]);
     }
     return {points:pts, area:polygonArea(pts), classification:classify(pts)};
   }
@@ -560,29 +564,31 @@
     const makePage=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);x.fillStyle='#17313d';x.textBaseline='top';return [c,x];};
     const [c1,x1]=makePage();
     const font='"Lohit Bengali", Arial, sans-serif';
-    x1.font=`bold 34px ${font}`; x1.fillText(title,60,55);
-    x1.font=`22px ${font}`; x1.fillText('মাঠের পরিমাপ ও Reference/নকশার মাপের গাণিতিক তুলনা',60,105);
-    x1.font=`20px ${font}`; x1.fillText(`Reference Point: ${$('fbcReferencePoint').value}${$('fbcReferenceMode')?.value==='two' ? ' + '+$('fbcReferencePoint2').value+' (Common Baseline)' : ' (1 Point)'}`,60,150);
+    x1.fillStyle='#082336'; x1.font=`bold 34px ${font}`; x1.fillText(title,60,50);
+    x1.fillStyle='#0b8b91'; x1.fillRect(60,96,1120,3);
+    x1.fillStyle='#63777e'; x1.font=`18px ${font}`; x1.fillText('সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর',60,108);
+    x1.fillStyle='#082336'; x1.font=`22px ${font}`; x1.fillText('মাঠের পরিমাপ ও Reference/নকশার মাপের গাণিতিক তুলনা',60,138);
+    x1.font=`20px ${font}`; x1.fillText(`Reference Point: ${$('fbcReferencePoint').value}${$('fbcReferenceMode')?.value==='two' ? ' + '+$('fbcReferencePoint2').value+' (Common Baseline)' : ' (1 Point)'}`,60,174);
     x1.font=`bold 26px ${font}`; x1.fillText('Reference বনাম Field',60,215);
     const cols=[60,280,570,860,1160], y0=270, rh=62;
-    x1.fillStyle='#eef5f6';x1.fillRect(60,y0,1120,rh);x1.fillStyle='#17313d';x1.font=`bold 20px ${font}`;
+    x1.fillStyle='#f8fbfb';x1.fillRect(60,y0,1120,rh);x1.fillStyle='#082336';x1.font=`bold 20px ${font}`;
     ['মাপ','Reference','Field','পার্থক্য'].forEach((v,i)=>x1.fillText(v,cols[i]+10,y0+18));
     const keys=['AB','BC','CD','DA','diag']; const names={AB:'AB',BC:'BC',CD:'CD',DA:'DA',diag:$('fbcDiagonal').value||'কর্ণ'};
     x1.font=`20px ${font}`; let y=y0+rh;
-    keys.filter(k=>field[k]>0||ref[k]>0).forEach((k,ri)=>{if(ri%2===0){x1.fillStyle='#fbfcfd';x1.fillRect(60,y,1120,rh);}x1.fillStyle='#17313d'; const rv=ref[k]>0?ftIn(ref[k]):'—',fv=field[k]>0?ftIn(field[k]):'—',d=(field[k]>0&&ref[k]>0)?field[k]-ref[k]:null,dv=d===null?'—':(d>=0?'+':'−')+ftIn(Math.abs(d));[names[k],rv,fv,dv].forEach((v,i)=>x1.fillText(String(v),cols[i]+10,y+18));x1.strokeStyle='#d9e2e6';x1.strokeRect(60,y,1120,rh);y+=rh;});
+    keys.filter(k=>field[k]>0||ref[k]>0).forEach((k,ri)=>{if(ri%2===0){x1.fillStyle='#fbfcfd';x1.fillRect(60,y,1120,rh);}x1.fillStyle='#082336'; const rv=ref[k]>0?ftIn(ref[k]):'—',fv=field[k]>0?ftIn(field[k]):'—',d=(field[k]>0&&ref[k]>0)?field[k]-ref[k]:null,dv=d===null?'—':(d>=0?'+':'−')+ftIn(Math.abs(d));[names[k],rv,fv,dv].forEach((v,i)=>x1.fillText(String(v),cols[i]+10,y+18));x1.strokeStyle='#d6e3e6';x1.strokeRect(60,y,1120,rh);y+=rh;});
     x1.font=`22px ${font}`; y+=35; x1.fillText(`Field ক্ষেত্রফল: ${bn(fieldCalc.area)} বর্গফুট`,60,y); if(refCalc?.area){y+=38;x1.fillText(`Reference ক্ষেত্রফল: ${bn(refCalc.area)} বর্গফুট`,60,y);y+=38;x1.fillText(`ক্ষেত্রফলের পার্থক্য: ${bn(Math.abs(fieldCalc.area-refCalc.area))} বর্গফুট`,60,y);}
     pages.push(c1.toDataURL('image/jpeg',0.92));
-    const [c2,x2]=makePage();x2.font=`bold 34px ${font}`;x2.fillStyle='#17313d';x2.fillText('Boundary Drawing',60,55);
+    const [c2,x2]=makePage();x2.font=`bold 34px ${font}`;x2.fillStyle='#082336';x2.fillText('Boundary Drawing',60,50);x2.fillStyle='#0b8b91';x2.fillRect(60,96,1120,3);x2.fillStyle='#63777e';x2.font=`18px ${font}`;x2.fillText('সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর',60,104);
     if(drawingData){
       const sourceCanvas=$('fbcCanvas');
       if(sourceCanvas && sourceCanvas.width && sourceCanvas.height){
         const iw=sourceCanvas.width, ih=sourceCanvas.height;
-        const maxW=1120,maxH=1510,ratio=Math.min(maxW/iw,maxH/ih);
+        const maxW=1120,maxH=1500,ratio=Math.min(maxW/iw,maxH/ih);
         const w=iw*ratio,h=ih*ratio;
-        x2.drawImage(sourceCanvas,(W-w)/2,125,w,h);
+        x2.drawImage(sourceCanvas,(W-w)/2,135,w,h);
       }
     }
-    x2.font=`18px ${font}`;x2.fillStyle='#52656d';x2.fillText('নোট: এটি গাণিতিক/টপোগ্রাফিক সহায়ক যাচাই; আইনগত boundary determination-এর বিকল্প নয়।',60,1670);
+    x2.font=`18px ${font}`;x2.fillStyle='#63777e';x2.fillText('নোট: এটি গাণিতিক/টপোগ্রাফিক সহায়ক যাচাই; আইনগত boundary determination-এর বিকল্প নয়।',60,1670);
     pages.push(c2.toDataURL('image/jpeg',0.92));
     return {pages,width:W,height:H};
   }
