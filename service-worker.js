@@ -1,20 +1,20 @@
-const CACHE_NAME = "sah-pwa-v97-offline-article-pdf-guarantee";
+const CACHE_NAME = "sah-pwa-v129-fixes";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 
 // Only the offline application shell is required for Service Worker installation.
 // Images are handled separately so one unavailable image can never prevent the
 // Service Worker from installing/updating.
 const CORE_ASSETS = [
-  "./", "./index.html", "./404.html", "./styles.css", "./app.js", "./content.js", "./manifest.webmanifest",
+  "./", "./index.html", "./404.html", "./styles.css", "./hero-header.css?v=2", "./readability.css?v=1", "./mobile-fix.css?v=3", "./mobile-ux.css?v=1", "./mobile-ux.js?v=1", "./icons.js?v=1", "./app.js", "./content.js", "./manifest.webmanifest",
   "./about.html", "./services.html", "./knowledge.html", "./documents.html", "./mistakes.html",
   "./videos.html", "./photos.html", "./posts.html", "./important-topics.html", "./social.html",
   "./process.html", "./faq.html", "./question.html", "./feedback.html", "./order.html", "./contact.html",
-  "./land-solution-bd.html", "./disclaimer.html", "./calculator.html", "./calculator.css", "./calculator-polygon-draw.css", "./calculator-polygon-draw.js",
+  "./land-solution-bd.html", "./disclaimer.html", "./calculator.html", "./calculator.css?v=20261018-fqprint", "./calculator-redesign.css?v=1", "./calculator-redesign-v2.css?v=1", "./calculator-tabs-large.css?v=3", "./calculator-inner-large.css?v=8", "./calculator-type-unify.css?v=2", "./calculator-polygon-draw.css?v=20261011-11", "./calculator-polygon-draw.js?v=v20-print",
   "./article-land-survey-preparation.html", "./article-dag-khatian-mouza.html", "./article-cs-sa-rs-bs-khatian.html", "./article-boundary-demarcation.html", "./article-land-partition-survey.html", "./article-land-unit-conversion.html", "./article-quadrilateral-area-measurement.html", "./article-diagonal-check.html", "./article-land-survey-common-mistakes.html", "./article-land-record-verification.html", "./article-mutation-khatian-update.html", "./article-field-survey-report.html",
-  "./calculator-core.js", "./calculator-bootstrap.js", "./calculator-quad-auto-draw.js", "./calculator-field-boundary-pdf-deepfix.js",
-  "./calculator-pdf.js", "./calculator-partition.js", "./calculator-featured.js", "./calculator-registry.js",
-  "./calculator-land-suite.js", "./calculator-triangle-partition.js", "./calculator-wood-cft.js",
-  "./calculator-sawn-wood-cft.js", "./calculator-triangle-heron-cosine.js", "./calculator-ux.js", "./profile-abdul-hannan.webp",
+  "./calculator-core.js", "./calculator-bootstrap.js", "./calculator-quad-auto-draw.js?v=20261015-qd-autodraw-fix2", "./calculator-field-boundary-pdf-deepfix.js?v=20261005-fbc-deepfix-v10", "./calculator-angle-convert.js?v=20261018-ac1", "./field-note-sketch.html",
+  "./calculator-pdf.js", "./calculator-partition.js?v=multi-v2", "./calculator-featured.js?v=20261015-fq-bd-autodraw", "./calculator-registry.js?v=v14-smooth-point-edit",
+  "./calculator-land-suite.js", "./calculator-triangle-partition.js?v=20261018-print", "./calculator-wood-cft.js?v=20261018-print-unify",
+  "./calculator-sawn-wood-cft.js?v=20261018-print-unify", "./calculator-triangle-heron-cosine.js?v=5", "./calculator-ux.js?v=20261019-qd-print-all", "./profile-abdul-hannan.webp", "./profile-abdul-hannan-512.webp",
   "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf",
   "./icons/icon-192.png", "./icons/icon-512.png"
 ];
@@ -30,12 +30,17 @@ const EXTERNAL_CACHE_FIRST = new Set([
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
 ]);
 
+// Cache-first is used ONLY for assets that never change in place (fonts, icons).
+// CSS / JS are deliberately NOT listed here: they are served "fresh-first"
+// (see freshFirst below) so an update is never hidden behind a stale cache copy.
 const CACHE_FIRST = new Set([
-  "./styles.css", "./app.js", "./content.js", "./calculator.css", "./calculator-pdf.js", "./calculator-core.js", "./calculator-partition.js",
-  "./calculator-featured.js", "./calculator-field-boundary-pdf-deepfix.js", "./calculator-registry.js", "./calculator-land-suite.js",
-  "./calculator-bootstrap.js", "./calculator-quad-auto-draw.js", "./calculator-triangle-partition.js", "./calculator-wood-cft.js",
-  "./calculator-sawn-wood-cft.js", "./calculator-triangle-heron-cosine.js", "./calculator-ux.js", "./calculator-polygon-draw.js", "./calculator-polygon-draw.css", "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf", "./icons/icon-192.png", "./icons/icon-512.png"
+  "./fonts/Lohit-Bengali.ttf", "./fonts/NotoSerifBengali-Regular.ttf", "./fonts/NotoSerifBengali-Bold.ttf",
+  "./icons/icon-192.png", "./icons/icon-512.png"
 ]);
+
+// How long a page may wait for the network before falling back to the cached copy
+// of a CSS/JS file (the network response still refreshes the cache afterwards).
+const FRESH_FIRST_TIMEOUT_MS = 4000;
 
 const isSameOrigin = url => url.origin === self.location.origin;
 const relativeKey = url => {
@@ -76,13 +81,13 @@ self.addEventListener("install", event => {
     const CORE_REQUIRED_OFFLINE_ASSETS = [
       "./index.html", "./calculator.html", "./app.js", "./content.js",
       "./article-mutation-khatian-update.html",
-      "./calculator-bootstrap.js", "./calculator-core.js", "./calculator-quad-auto-draw.js", "./calculator.css",
-      "./calculator-polygon-draw.js", "./calculator-polygon-draw.css",
-      "./calculator-partition.js", "./calculator-featured.js",
-      "./calculator-field-boundary-pdf-deepfix.js", "./calculator-registry.js",
-      "./calculator-triangle-partition.js", "./calculator-land-suite.js",
-      "./calculator-wood-cft.js", "./calculator-sawn-wood-cft.js",
-      "./calculator-triangle-heron-cosine.js", "./calculator-ux.js", "./calculator-pdf.js"
+      "./calculator-bootstrap.js", "./calculator-core.js", "./calculator-quad-auto-draw.js?v=20261015-qd-autodraw-fix2", "./calculator.css?v=20261018-fqprint", "./calculator-redesign.css?v=1", "./calculator-redesign-v2.css?v=1", "./calculator-tabs-large.css?v=3", "./calculator-inner-large.css?v=8", "./calculator-type-unify.css?v=2",
+      "./calculator-polygon-draw.js?v=v20-print", "./calculator-polygon-draw.css?v=20261011-11",
+      "./calculator-partition.js?v=multi-v2", "./calculator-featured.js?v=20261015-fq-bd-autodraw",
+      "./calculator-field-boundary-pdf-deepfix.js?v=20261005-fbc-deepfix-v10", "./calculator-angle-convert.js?v=20261018-ac1", "./field-note-sketch.html", "./calculator-registry.js?v=v14-smooth-point-edit",
+      "./calculator-triangle-partition.js?v=20261018-print", "./calculator-land-suite.js",
+      "./calculator-wood-cft.js?v=20261018-print-unify", "./calculator-sawn-wood-cft.js?v=20261018-print-unify",
+      "./calculator-triangle-heron-cosine.js?v=5", "./calculator-ux.js?v=20261019-qd-print-all", "./calculator-pdf.js"
     ];
     // Cache external runtime dependencies before validating the offline shell.
     // jsPDF is required: a successful PWA install must include the PDF engine,
@@ -92,8 +97,7 @@ self.addEventListener("install", event => {
     );
 
     const REQUIRED_OFFLINE_ASSETS = [
-      ...CORE_REQUIRED_OFFLINE_ASSETS,
-      "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+      ...CORE_REQUIRED_OFFLINE_ASSETS
     ];
     const missingRequired = [];
     for (const asset of REQUIRED_OFFLINE_ASSETS) {
@@ -189,6 +193,39 @@ async function cacheFirst(request) {
   return response;
 }
 
+function isCodeRequest(request, url) {
+  return ["style", "script", "manifest"].includes(request.destination) ||
+    /\.(?:css|m?js|webmanifest)$/i.test(url.pathname);
+}
+
+// Network first (always revalidated, bypassing the HTTP cache) with a cache
+// fallback. The cache entry is keyed by the full URL, so a changed ?v= value is
+// honoured. If the network is offline, errors, returns a non-OK status, or is
+// slower than the timeout, the cached copy is used instead.
+async function freshFirst(event, request, timeoutMs = FRESH_FIRST_TIMEOUT_MS) {
+  const cached = await findCachedRequest(request);
+  const network = (async () => {
+    const response = await fetch(request, { cache: "no-cache" });
+    if (response && response.ok) {
+      const cache = await caches.open(CACHE_NAME);
+      await cache.put(request, response.clone());
+    }
+    return response;
+  })();
+
+  // Nothing cached yet: nothing to fall back to, so just wait for the network.
+  if (!cached) return network;
+
+  // Keep the worker alive so a slow response can still refresh the cache.
+  try { event.waitUntil(network.catch(() => {})); } catch (_) {}
+  const preferred = network.then(
+    response => (response && response.ok ? response : cached),
+    () => cached
+  );
+  const timeout = new Promise(resolve => setTimeout(() => resolve(cached), timeoutMs));
+  return Promise.race([preferred, timeout]);
+}
+
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request);
@@ -224,6 +261,13 @@ self.addEventListener("fetch", event => {
   }
 
   if (isSameOrigin(url)) {
+    // CSS / JS / manifest: always try the network first so edits to files such as
+    // app.js, content.js and styles.css reach returning visitors immediately.
+    if (isCodeRequest(request, url)) {
+      event.respondWith(freshFirst(event, request));
+      return;
+    }
+
     // Images are deliberately NOT cache-first. Chrome/PWA must be allowed to
     // revalidate the current image, while a known-good cached image remains an
     // offline fallback. Failed/404 responses are never written to the cache.
