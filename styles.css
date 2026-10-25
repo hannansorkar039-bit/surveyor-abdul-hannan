@@ -1278,3 +1278,8 @@ button,input,select,textarea,.btn,.filter-btn{
     font-size: 22px !important;
   }
 }
+
+/* ===== SVG icon set (replaces emoji) ===== */
+.ic{width:1.15em;height:1.15em;flex:none;display:inline-block;vertical-align:-.2em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.home-quick-icon .ic,.showcase-icon .ic,.trust-icon .ic,.title-icon .ic{width:1.1em;height:1.1em;vertical-align:middle}
+.ic:not(:only-child){margin-inline-end:.35em}.ic+span,.ic+strong{margin-left:0}
