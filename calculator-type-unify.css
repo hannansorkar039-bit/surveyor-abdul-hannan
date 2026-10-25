@@ -1,0 +1,159 @@
+/* =====================================================================
+   ক্যালকুলেটর — একই মানের (প্রফেশনাল) লেখা
+   সব ক্যালকুলেটরের লেখা এখন মাত্র ৫টি ধাপে চলে:
+     ফলাফল  > শিরোনাম > লেখা (লেবেল/ব্যাজ/বাটন/মান) > নোট > ক্যাপশন
+   এই ফাইল সবার শেষে লোড হয়; আগের সব আলাদা আলাদা সাইজ এখানে এক করা হয়েছে।
+   ===================================================================== */
+html body.calculator-page{
+  --tu-result:var(--ci-result,30px);
+  --tu-title:var(--ci-title,26px);
+  --tu-text:var(--ci-label,21px);        /* লেবেল, ব্যাজ, বাটন, ইনপুট, মান */
+  --tu-note:var(--ci-base,20px);         /* বর্ণনা, নোট */
+  --tu-cap:calc(var(--ci-base,20px) - 2px); /* ছোট ক্যাপশন, মেটা, লেজেন্ড */
+  --tu-ink:#061a2a;
+  --tu-ink-2:#0d2736;
+  --tu-line-text:1.5;
+  --tu-line-note:1.7;
+}
+
+/* scope: প্রতিটি ক্যালকুলেটর প্যানেল (#tuA/#tuB শুধু specificity বাড়ানোর জন্য) */
+
+/* ---------- ১) শিরোনাম ---------- */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade) :is(#tuB,
+  h3,.featured-panel-head h3,.suite-card h3,
+  .poly-split-window h3,
+  
+  .wood-cft-toolbar>strong,.sawn-wood-cft-toolbar>strong,.tp-card-head h3,.tp-hero h3,.fbc-head h3){
+  font-size:var(--tu-title)!important;line-height:1.35!important;font-weight:700!important;color:var(--tu-ink)!important;
+}
+
+/* উপ-শিরোনাম (কার্ডের ভেতরের h4/h5) */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade) :is(#tuB,
+  h4,h5,.inherit-card-head h4,.fbc-card h4,.qp-cut-editor-title,.qp-multi-title,.qp-split-card-head strong,.qp-dimensions-title,.qp-derived-title,.qp-drawing-head,.fbc-head h4,.qp-dimension-card h4,.heir-group h5,.tp-region-boundary h5,.poly-inner-measure h4,
+  .tp-edit-group strong,.tp-column-title,.thc-column-title){
+  font-size:var(--tu-text)!important;line-height:1.4!important;font-weight:700!important;color:var(--tu-ink)!important;
+}
+/* ---------- ২) লেখা: লেবেল, ব্যাজ, বাটন, মান ---------- */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,
+  label,.calc-field label,.qp-edit-card label,.qp-cut-field label,.heir-field label,.asset-box label,
+  .suite-field label,.thc-side-row>label,.thc-angle-row>label,.poly-dim label,.poly-inline-editor label,
+  .poly-inner-grid label,.wood-cft-field label,.sawn-wood-cft-field label,
+  .wood-cft-table th,.sawn-wood-cft-table th,.wood-cft-unit span,.sawn-wood-cft-length span,
+  .wood-cft-total-box span,.sawn-wood-cft-total-box span,.sawn-wood-cft-table td span,
+  .thc-fi-pair span,
+  .result-item strong,.result-kpi strong,.multi-field-kpi strong,.tp-result-grid b,.tp-result-main strong,
+  .poly-result-grid strong,.angle-box strong,.unit-pill b,.fbc-unit-grid strong,.fbc-meta-grid strong,
+  .tp-dim-edit-item strong,.tp-demarcation-card strong,.tp-part-summary-row strong,
+  .qp-dimension-row strong,.qp-dimension-row span,.thc-dimension,.thc-angle,.thc-angle-output,
+  .cost-name,.cost-amount,.history-item b,
+  .qp-live-area,.qp-cut-live,.qp-ok,.qp-warning,.poly-mode-status,.poly-warning,.multi-field-status,
+  .multi-field-item-main strong,.multi-field-compass,.multi-field-total,.shape-snap-bar,.qp-save-status,
+  .tp-status,.formula,.formula code,.method-box,.method-box li,
+  .inheritance-table th,.inheritance-table td,.shape-dimension-head){
+  font-size:var(--tu-text)!important;line-height:var(--tu-line-text)!important;font-weight:700!important;
+}
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,
+  label,.calc-field label,.qp-edit-card label,.qp-cut-field label,.heir-field label,.asset-box label,
+  .suite-field label,.poly-dim label,.wood-cft-field label,.sawn-wood-cft-field label){
+  color:var(--tu-ink)!important;
+}
+
+/* বাটন */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,
+  .calc-btn,button.calc-btn,.multi-field-actions .calc-btn,.multi-field-item-actions button,
+  .map-tools button,.registry-actions button,.quick-tools button,.land-suite-btn,.calc-ux-btn,
+  .wood-cft-add,.sawn-wood-cft-add,.wood-cft-remove,.sawn-wood-cft-remove,.tp-mode-tabs button,.mini-tip){
+  font-size:var(--tu-text)!important;line-height:1.3!important;font-weight:700!important;
+}
+
+/* ইনপুট, সিলেক্ট, প্লেসহোল্ডার — লেবেলের সমান মাপ */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,
+  input,select,textarea,option,.heir-counter input,.thc-fi-pair input,.fi-row input,.feet-inch input){
+  font-size:var(--tu-text)!important;font-weight:700!important;
+}
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,input,textarea)::placeholder{
+  font-size:var(--tu-text)!important;font-weight:700!important;opacity:1!important;
+}
+
+/* ---------- ৩) দিক ও কর্ণের ব্যাজ — সব একই মাপ, একই আকার ---------- */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,.direction-badge,.diagonal-badge){
+  display:inline-flex!important;align-items:center;justify-content:center;
+  font-size:var(--tu-text)!important;font-weight:700!important;line-height:1.35!important;letter-spacing:0!important;
+  min-width:0!important;padding:3px 14px!important;margin:0 8px 0 0!important;
+  border-radius:999px!important;border-width:2px!important;border-style:solid!important;
+  vertical-align:middle;white-space:nowrap;
+}
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,.diagonal-badge){
+  background:#ffeab8!important;color:#5e4204!important;border-color:#e0b350!important;
+}
+@media (max-width:700px){
+  html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,.direction-badge,.diagonal-badge){
+    padding:2px 12px!important;margin-right:6px!important;
+  }
+}
+
+/* ---------- ৪) নোট ও বর্ণনা ---------- */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calculator-launcher) :is(#tuB,
+  p,li,.calc-help,.small-note,.legal-note,.legal-note p,.legal-note li,.warning,.shape-unit-note,.conversion-note,
+  .length-input-note,.length-mode-note,.calc-field>small,.suite-help,.suite-note,.qp-note,.qp-multi-note,
+  .qp-cut-editor-note,.shape-sketch-note,.tp-note,.tp-inline-help,.wood-cft-note,.sawn-wood-cft-note,
+  .wood-cft-result,.sawn-wood-cft-result,.wood-cft-head p,.sawn-wood-cft-head p,.featured-panel-head p,
+  .fbc-note,.fbc-field-notes,.fbc-legal,.registry-note,.map-offline-note,.calc-recent-empty,.input-error-note,
+  .calculator-launch-card small,.history-item){
+  font-size:var(--tu-note)!important;line-height:var(--tu-line-note)!important;font-weight:700!important;color:var(--tu-ink-2)!important;
+}
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,strong,b){
+  font-weight:700!important;
+}
+
+/* ---------- ৫) ক্যাপশন: কিকার, মেটা, লেজেন্ড, ছোট সহায়ক লেখা ---------- */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,
+  .tp-kicker,.wood-cft-kicker,.sawn-wood-cft-kicker,.fbc-kicker,.calc-title-kicker,.calc-field small,
+  .tp-badge,.fbc-badge,.inherit-badge,.land-suite-badge,.registry-rate,.badge-rate,
+  .qp-drawing-meta,.qp-multi-drawing .qp-drawing-meta,.qp-drawing-legend,.qp-multi-drawing .qp-drawing-legend,
+  .fbc-legend,.fbc-workflow,.tp-legend span,.tp-drawing-head span,.tp-drawing-tools>span,.tp-card-head small,
+  .tp-readonly-dim,.tp-demarcation-card>div,.thc-included-angle small,.cost-meta,.wood-cft-disclaimer,
+  .sawn-wood-cft-disclaimer,.inherit-mark span,.inherit-steps span,.inherit-card-head span:first-child,
+  .qp-split-card-head span,#panel-angle-convert .ac-dms small,.calc-recent-chip,.calc-result-tool,
+  .result-item span,.result-kpi span,.multi-field-kpi span,.angle-box span,.unit-pill span,.fbc-unit-grid span,
+  .tp-result-main span,.poly-result-grid span,.tp-part-summary-row span,.multi-field-item-main span,
+  .multi-field-saved-head span,.shape-dimension-head>span){
+  font-size:var(--tu-cap)!important;line-height:1.55!important;font-weight:700!important;
+}
+/* ক্যাপশনের মধ্যে ছোট ব্যাজ (কিকার/ব্যাজ) পিল আকারে ঠিক রাখা */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,
+  .tp-badge,.fbc-badge,.inherit-badge,.land-suite-badge,.registry-rate,.calc-title-kicker){
+  padding:5px 12px!important;border-radius:999px!important;
+}
+
+/* ---------- ৬) ফলাফল (বড় সংখ্যা) ---------- */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,
+  .result-main,.wood-cft-total-box strong,.sawn-wood-cft-total-box strong,.registry-total strong,.total){
+  font-size:var(--tu-result)!important;line-height:1.3!important;font-weight:700!important;
+}
+
+/* ---------- ৭) ক্যালকুলেটর লঞ্চার কার্ড (উপরের তালিকা) ---------- */
+html body.calculator-page .calculator-launcher .calculator-launch-card strong{
+  font-size:var(--tu-text)!important;line-height:1.4!important;font-weight:700!important;color:var(--tu-ink)!important;
+}
+html body.calculator-page .calculator-launcher .calculator-launch-card small{
+  font-size:var(--tu-cap)!important;line-height:1.5!important;font-weight:700!important;
+}
+
+/* ---------- ৮) টেবিল ও ফর্ম লেখা এক লাইনে মেলানো ---------- */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade,.calc-wrap) :is(#tuB,td,th,dd,dt){
+  font-size:var(--tu-text)!important;line-height:1.5!important;
+}
+
+/* ---------- ৯) বাকি ছোটখাটো অংশ ---------- */
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade) :is(#tuB,
+  .heir-counter button,.tp-mode-tabs button,.tp-mode-tabs button span,.poly-tool-card button){
+  font-size:var(--tu-text)!important;font-weight:700!important;line-height:1.3!important;
+}
+html body.calculator-page :is(#tuA,.calc-panel,.featured-panel,.registry-upgrade) :is(#tuB,
+  .poly-results,.poly-results div){
+  font-size:var(--tu-note)!important;line-height:var(--tu-line-note)!important;font-weight:700!important;color:var(--tu-ink-2)!important;
+}
+
+/* ক্যালকুলেটর লঞ্চারের হেডারের উপশিরোনাম: গাঢ় ব্যাকগ্রাউন্ডে সাদা লেখা */
+html body.calculator-page :is(#tuA,.calculator-launcher) :is(#tuB,.calculator-launcher-head p){color:rgba(255,255,255,.95)!important}
