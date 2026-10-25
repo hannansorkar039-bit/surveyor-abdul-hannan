@@ -119,7 +119,7 @@
     if(y2 < -1e-7) return null;
     return {x,y:Math.sqrt(Math.max(0,y2))};
   };
-  function qdGeometry(ab,bc,cd,da,diag,which){
+  function qdGeometryRaw(ab,bc,cd,da,diag,which){
     if(!(diag>0)) return null;
     if(which==='BD'){
       const a=qdPointFromTwoSides(diag,ab,da);
@@ -132,6 +132,21 @@
     if(!b||!d) return null;
     return {A:{x:0,y:0},B:{x:b.x,y:b.y},C:{x:diag,y:0},D:{x:d.x,y:-d.y},diagStart:'A',diagEnd:'C'};
   }
+  /* Display orientation only (no length/angle/area is changed):
+     AB on top, BC on right, CD at bottom, DA on left, plot kept upright. */
+  function qdOrient(g){
+    if(!g) return g;
+    const keys=['A','B','C','D'];
+    let p={A:g.A,B:g.B,C:g.C,D:g.D};
+    const area2=keys.reduce((s,n,i)=>{const a=p[n],c=p[keys[(i+1)%4]];return s+(a.x*c.y-c.x*a.y);},0);
+    if(area2>1e-9) keys.forEach(n=>{p[n]={x:-p[n].x,y:p[n].y};});
+    let ux=(p.B.x-p.A.x)+(p.C.x-p.D.x), uy=(p.B.y-p.A.y)+(p.C.y-p.D.y), um=Math.hypot(ux,uy);
+    if(um<1e-9){ux=p.B.x-p.A.x;uy=p.B.y-p.A.y;um=Math.hypot(ux,uy)||1;}
+    ux/=um; uy/=um;
+    keys.forEach(n=>{const a=p[n];p[n]={x:a.x*ux+a.y*uy,y:-a.x*uy+a.y*ux};});
+    return {A:p.A,B:p.B,C:p.C,D:p.D,diagStart:g.diagStart,diagEnd:g.diagEnd};
+  }
+  function qdGeometry(ab,bc,cd,da,diag,which){return qdOrient(qdGeometryRaw(ab,bc,cd,da,diag,which));}
   function qdDraw(ab,bc,cd,da,diag,which,u){
     if(!qdDrawing) return;
     const g=qdGeometry(ab,bc,cd,da,diag,which);
@@ -143,7 +158,7 @@
     const xs=pts.map(p=>p.x), ys=pts.map(p=>p.y);
     const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
     const spanX=Math.max(maxX-minX,1e-6), spanY=Math.max(maxY-minY,1e-6);
-    const W=720,H=420,pad=72, scale=Math.min((W-pad*2)/spanX,(H-pad*2)/spanY);
+    const W=720,H=420,pad=72,padX=112, scale=Math.min((W-padX*2)/spanX,(H-pad*2)/spanY);
     const cx=(minX+maxX)/2, cy=(minY+maxY)/2;
     const map=p=>({x:W/2+(p.x-cx)*scale,y:H/2-(p.y-cy)*scale});
     const P={A:map(g.A),B:map(g.B),C:map(g.C),D:map(g.D)};
