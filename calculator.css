@@ -1045,7 +1045,8 @@ button,input,select,textarea,.btn,.filter-btn{
 @media print{
   body.thc-print-mode>#thcPrintSheet{page:thc-triangle-print;display:block!important;visibility:visible!important;position:static!important;width:100%!important;max-width:none!important;height:auto!important;max-height:275mm!important;overflow:hidden!important;margin:0!important;padding:0!important;background:#fff!important;color:#082336!important;font-family:Arial,"Noto Sans Bengali",sans-serif!important;font-size:8pt!important;line-height:1.25!important;box-sizing:border-box!important;break-inside:avoid!important;page-break-inside:avoid!important}
   body.thc-print-mode>#thcPrintSheet *{visibility:visible!important;box-shadow:none!important;animation:none!important;transition:none!important;box-sizing:border-box!important}
-  body.thc-print-mode>#thcPrintSheet h1{font-size:15pt!important;margin:0 0 2mm!important;padding:0 0 2mm!important;border-bottom:1px solid #0b8b91!important}
+  body.thc-print-mode>#thcPrintSheet h1{font-size:15pt!important;margin:0 0 1mm!important;padding:0 0 2mm!important;border-bottom:2px solid #0b8b91!important;color:#082336!important}
+  body.thc-print-mode>#thcPrintSheet .calc-ux-print-meta{color:#63777e!important;font-size:7pt!important;margin:0 0 2mm!important}
   body.thc-print-mode>#thcPrintSheet h2{font-size:10pt!important;margin:2mm 0 1mm!important}
   body.thc-print-mode>#thcPrintSheet .thc-measure-angle-grid{display:grid!important;grid-template-columns:1.1fr .9fr!important;gap:3mm!important;margin:2mm 0!important}
   body.thc-print-mode>#thcPrintSheet .thc-side-inputs,body.thc-print-mode>#thcPrintSheet .thc-angle-inputs{padding:2mm!important;min-width:0!important}
@@ -1053,7 +1054,7 @@ button,input,select,textarea,.btn,.filter-btn{
   body.thc-print-mode>#thcPrintSheet input,body.thc-print-mode>#thcPrintSheet select{min-height:5mm!important;height:5mm!important;padding:.5mm 1mm!important;font-size:7pt!important}
   body.thc-print-mode>#thcPrintSheet .thc-drawing-canvas{height:90mm!important;max-height:90mm!important;overflow:visible!important;margin:0!important;padding:0!important;border:0!important;background:#fff!important}
   body.thc-print-mode>#thcPrintSheet svg{width:100%!important;height:88mm!important;max-height:88mm!important;overflow:visible!important}
-  body.thc-print-mode>#thcPrintSheet .calc-result{margin:1mm 0 0!important;padding:1mm!important}
+  body.thc-print-mode>#thcPrintSheet .calc-result{margin:1mm 0 0!important;padding:1mm!important;border:1px solid #d6e3e6!important;border-radius:12px!important;background:#f8fbfb!important}
   body.thc-print-mode>#thcPrintSheet .result-main{font-size:12pt!important;padding:2mm!important;margin:0 0 1mm!important}
   body.thc-print-mode>#thcPrintSheet .result-list{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:2mm!important}
   body.thc-print-mode>#thcPrintSheet .result-item{padding:2mm!important;font-size:7pt!important;min-width:0!important}
@@ -1131,4 +1132,29 @@ button,input,select,textarea,.btn,.filter-btn{
   body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-length{display:flex!important;flex-wrap:wrap!important;gap:1mm!important;align-items:center!important}
   body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-unit input,
   body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-length input{display:none!important}
+}
+@media print{
+  body.wood-cft-print-mode>#woodCftPrintSheet{color:#082336!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet h2{color:#082336!important;border-bottom:2px solid #0b8b91!important;padding-bottom:2mm!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .calc-ux-print-meta{color:#63777e!important;font-size:.85em!important;margin:0 0 2mm!important}
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-result,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-result,
+  body.wood-cft-print-mode>#woodCftPrintSheet .wood-cft-total-box,
+  body.wood-cft-print-mode>#woodCftPrintSheet .sawn-wood-cft-total-box{border:1px solid #d6e3e6!important;border-radius:12px!important;background:#f8fbfb!important}
+}
+
+
+/* Irregular land (fqResult) print: same sheet design as the other calculators, drawing kept on one page. */
+@media print{
+  body.calc-ux-printing .calc-ux-print-sheet-fq .calc-ux-print-drawing{margin:0 0 14px;break-inside:avoid;page-break-inside:avoid}
+  body.calc-ux-printing .calc-ux-print-sheet-fq .calc-ux-print-drawing-title{font-size:17px;font-weight:800;line-height:1.3;margin:0 0 8px;text-align:center;color:#082336}
+  body.calc-ux-printing .calc-ux-print-sheet-fq .calc-ux-print-drawing svg{display:block;width:auto!important;max-width:100%;height:auto!important;max-height:62mm!important;margin:0 auto}
+  body.calc-ux-printing .calc-ux-print-sheet-fq{padding:0!important;max-width:none!important;line-height:1.45!important}
+  body.calc-ux-printing .calc-ux-print-sheet-fq .calc-ux-print-meta{margin-bottom:10px}
+  body.calc-ux-printing .calc-ux-print-sheet-fq .calc-ux-print-drawing{margin:10px 0 0}
+  body.calc-ux-printing .calc-ux-print-sheet-fq .calc-ux-print-result{padding:12px;font-size:14px;line-height:1.4;break-inside:avoid;page-break-inside:avoid}
+}
+@media print{
+  body.calc-ux-printing .calc-ux-print-sheet-fq .calc-ux-print-drawing-img{display:inline-block;vertical-align:top;width:118mm;height:72mm;max-width:100%;margin:0}
+  body.calc-ux-printing .calc-ux-print-sheet-fq .calc-ux-print-drawing{text-align:center}
 }
