@@ -1,7 +1,5 @@
 
 
-if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
-
 (()=>{
   const loaded=new Map();
   const loadScript=(src,key=src,integrity='',crossorigin='')=>{
