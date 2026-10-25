@@ -77,7 +77,7 @@
       if (!next.length) return;
       const html = next.map(p => `
         <figure class="gallery-item">
-          <img src="${esc(p.src)}" alt="${esc(p.alt || "ভূমি জরিপের ছবি")}" loading="lazy" decoding="async" width="1200" height="900" tabindex="0">
+          <img src="${esc(/^[^\/]+\.(?:webp|jpe?g|png)$/i.test(p.src) ? "thumbs/" + p.src : p.src)}" data-full="${esc(p.src)}" onerror="this.onerror=null;this.src=this.dataset.full" alt="${esc(p.alt || "ভূমি জরিপের ছবি")}" loading="lazy" decoding="async" width="1200" height="900" tabindex="0">
           <figcaption class="gallery-caption"><strong>${esc(p.title || "ভূমি জরিপের ছবি")}</strong><span>${esc(p.caption || "")}</span></figcaption>
         </figure>`).join("");
       photoGallery.insertAdjacentHTML("beforeend", html);
@@ -245,7 +245,7 @@ ${details ? "বিস্তারিত: " + details : ""}`;
     const whatsappNumber = "8801810811989";
     const orderId = `SAH-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${Math.floor(1000+Math.random()*9000)}`;
     const url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(text + "\nরেফারেন্স: " + orderId);
-    success.innerHTML = `✓ অনুরোধ প্রস্তুত হয়েছে। <strong>রেফারেন্স: ${orderId}</strong><br><span>এখন WhatsApp-এ বার্তাটি পাঠিয়ে দিন।</span>`;
+    success.innerHTML = `✓ অনুরোধের বার্তা তৈরি হয়েছে। <strong>রেফারেন্স: ${orderId}</strong><br><span>এখন WhatsApp-এ বার্তাটিতে <b>Send</b> চাপুন। Send চাপলে তবেই অনুরোধ আমাদের কাছে পৌঁছাবে।</span>`;
     success.setAttribute('role','status'); success.setAttribute('aria-live','polite');
     success.classList.add("show");
     window.open(url, "_blank", "noopener,noreferrer");
@@ -261,7 +261,7 @@ ${details ? "বিস্তারিত: " + details : ""}`;
   const navLinks = document.querySelector('.navlinks');
   if(nav && navLinks){
     const btn = document.createElement('button');
-    btn.className='nav-toggle'; btn.type='button'; btn.setAttribute('aria-label','মেনু খুলুন'); btn.setAttribute('aria-expanded','false'); btn.innerHTML='☰'; btn.style.cssText='width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;max-width:52px!important;max-height:52px!important;flex:0 0 52px!important;font-size:26px!important;line-height:1!important;border-radius:14px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;';
+    btn.className='nav-toggle'; btn.type='button'; btn.setAttribute('aria-label','মেনু খুলুন'); btn.setAttribute('aria-expanded','false'); btn.innerHTML='☰';
     nav.querySelector('.nav-inner')?.appendChild(btn);
     // Group the existing links on mobile without changing desktop navigation order/content.
     if(!navLinks.dataset.grouped){
@@ -269,8 +269,15 @@ ${details ? "বিস্তারিত: " + details : ""}`;
         ['প্রধান', ['index.html','about.html','services.html','calculator.html']],
         ['ভূমি তথ্য', ['knowledge.html','documents.html','mistakes.html','videos.html','photos.html','posts.html']],
         ['সহায়তা ও সেবা', ['question.html','feedback.html','order.html']],
-        ['যোগাযোগ ও সংযোগ', ['land-solution-bd.html','contact.html']]
+        ['যোগাযোগ ও সংযোগ', ['land-solution-bd.html','contact.html']],
+        ['আরও তথ্য', ['process.html','faq.html','important-topics.html','social.html','disclaimer.html']]
       ];
+      // মোবাইল মেনুতে সব পেজের নাম রাখতে: যে পেজগুলো মূল নেভিগেশনে নেই সেগুলো যোগ হবে (ডেস্কটপ নেভিগেশন অপরিবর্তিত)
+      const extraLabels={'process.html':'জরিপের ধাপ','faq.html':'সাধারণ প্রশ্ন (FAQ)','important-topics.html':'গুরুত্বপূর্ণ বিষয়','social.html':'সামাজিক যোগাযোগ','disclaimer.html':'দায়মুক্তি'};
+      Object.keys(extraLabels).forEach(href=>{
+        const exists=[...navLinks.querySelectorAll('a')].some(x=>(x.getAttribute('href')||'').split('#')[0].split('?')[0]===href);
+        if(!exists){const ex=document.createElement('a');ex.href=href;ex.className='nav-extra';ex.textContent=extraLabels[href];navLinks.appendChild(ex);}
+      });
       const links=[...navLinks.children].filter(el=>el.tagName==='A');
       groups.forEach(([title,hrefs])=>{
         const g=document.createElement('div'); g.className='nav-group';
@@ -280,8 +287,16 @@ ${details ? "বিস্তারিত: " + details : ""}`;
       });
       navLinks.dataset.grouped='1';
     }
-    const close=()=>{navLinks.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label','মেনু খুলুন');btn.innerHTML='☰';};
-    btn.addEventListener('click',()=>{const open=navLinks.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));btn.setAttribute('aria-label',open?'মেনু বন্ধ করুন':'মেনু খুলুন');btn.innerHTML=open?'✕':'☰';});
+    const backdrop=document.createElement('div');backdrop.className='nav-backdrop';backdrop.setAttribute('aria-hidden','true');document.body.appendChild(backdrop);
+    const setMenu=open=>{navLinks.classList.toggle('open',open);document.documentElement.classList.toggle('menu-open',open);btn.setAttribute('aria-expanded',String(open));btn.setAttribute('aria-label',open?'মেনু বন্ধ করুন':'মেনু খুলুন');btn.innerHTML=open?'✕':'☰';};
+    const close=()=>setMenu(false);
+    btn.addEventListener('click',()=>setMenu(!navLinks.classList.contains('open')));
+    // Menu toggle is fully wired: tell the CSS that the no-JS link list fallback is not needed.
+    document.documentElement.classList.add('nav-ready');
+    backdrop.addEventListener('click',close);
+    document.addEventListener('click',e=>{if(navLinks.classList.contains('open')&&!nav.contains(e.target))close();});
+    window.addEventListener('resize',()=>{if(window.innerWidth>900&&navLinks.classList.contains('open'))close();});
+    window.addEventListener('pageshow',close);
     navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&navLinks.classList.contains('open')){close();btn.focus();}});
     const current=(location.pathname.split('/').pop()||'index.html').toLowerCase();
@@ -305,7 +320,7 @@ ${details ? "বিস্তারিত: " + details : ""}`;
   }else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));
 
   const bar=document.createElement('div'); bar.className='v6-mobile-bar';
-  bar.innerHTML='<a href="tel:+8801810811989">📞<span>কল</span></a><a href="https://wa.me/8801810811989" target="_blank" rel="noopener">💬<span>WhatsApp</span></a><a class="primary" href="calculator.html">🧮<span>ক্যালকুলেটর</span></a><a href="contact.html">📍<span>যোগাযোগ</span></a>';
+  bar.innerHTML='<a href="tel:+8801810811989">📞<span>কল</span></a><a href="https://wa.me/8801810811989" target="_blank" rel="noopener">💬<span>WhatsApp</span></a><a href="contact.html">📍<span>যোগাযোগ</span></a>';
   document.body.appendChild(bar);
 
   const gallery=document.querySelector('.gallery');
@@ -318,7 +333,7 @@ ${details ? "বিস্তারিত: " + details : ""}`;
     const img=box.querySelector('img'), counter=box.querySelector('.lightbox-counter');
     let index=0; let previousFocus=null;
     const getSources=()=>[...gallery.querySelectorAll('img')];
-    const render=()=>{const sources=getSources(); const source=sources[index]; if(!source)return; img.src=source.currentSrc||source.src; img.alt=source.alt||''; counter.textContent=`${index+1} / ${sources.length}`;};
+    const render=()=>{const sources=getSources(); const source=sources[index]; if(!source)return; img.src=source.dataset.full||source.currentSrc||source.src; img.alt=source.alt||''; counter.textContent=`${index+1} / ${sources.length}`;};
     const openAt=i=>{const sources=getSources(); if(!sources.length)return; index=(i+sources.length)%sources.length; previousFocus=document.activeElement; render(); box.classList.add('open'); document.body.style.overflow='hidden'; box.querySelector('.lightbox-close').focus();};
     const close=()=>{box.classList.remove('open');document.body.style.overflow='';previousFocus?.focus();};
     const next=()=>openAt(index+1), prev=()=>openAt(index-1);
