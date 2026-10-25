@@ -759,33 +759,33 @@
       doc.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>চতুর্ভূজ জমি ভাগ-বণ্টন</title><style>
         @page{size:A4 portrait;margin:7mm}
         *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-        html,body{margin:0;padding:0;background:#fff;color:#111;font-family:Arial,'Noto Sans Bengali',sans-serif}
+        html,body{margin:0;padding:0;background:#fff;color:#082336;font-family:Arial,'Noto Sans Bengali',sans-serif}
         .page{width:196mm;height:283mm;overflow:hidden;background:#fff;break-after:page;page-break-after:always;position:relative}
         .page:last-child{break-after:auto;page-break-after:auto}
-        .title{font-size:18px;font-weight:800;text-align:center;margin:0 0 2mm;color:#082336}
-        .sub{font-size:9px;text-align:center;margin-bottom:2mm;color:#526a73}
-        .drawing{width:196mm;height:270mm;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
-        .drawing img{display:block;width:196mm;height:270mm;object-fit:contain}
-        .summary{font-size:10px;line-height:1.35;border:1px solid #999;padding:2mm;margin-bottom:2mm}
+        .title{font-size:18px;font-weight:700;text-align:left;margin:0 0 1mm;padding-bottom:2mm;border-bottom:2px solid #0b8b91;color:#082336}.meta{color:#63777e;font-size:9px;margin:0 0 2mm}
+        .sub{font-size:9px;text-align:left;margin-bottom:2mm;color:#63777e}
+        .drawing{width:196mm;height:258mm;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
+        .drawing img{display:block;width:196mm;height:258mm;object-fit:contain}
+        .summary{font-size:10px;line-height:1.35;border:1px solid #d6e3e6;border-radius:12px;background:#f8fbfb;padding:2mm;margin-bottom:2mm}
         .parts{display:grid;grid-template-columns:1fr 1fr;gap:2mm;align-items:start}
-        .part{border:1px solid #999;padding:1.7mm;margin:0;break-inside:avoid;page-break-inside:avoid}
+        .part{border:1px solid #d6e3e6;border-radius:12px;background:#f8fbfb;padding:1.7mm;margin:0;break-inside:avoid;page-break-inside:avoid}
         .part h3{font-size:9.5px;line-height:1.25;margin:0 0 1.2mm}
         .result{display:grid;grid-template-columns:1fr 1fr;gap:1mm;margin-bottom:1mm}
-        .result>div{border:1px solid #ddd;padding:1.2mm;display:flex;justify-content:space-between;gap:2mm;font-size:8px}
-        .dims{border:1px solid #ddd;padding:1mm;margin-top:1mm;break-inside:avoid;page-break-inside:avoid}
+        .result>div{border:1px solid #d6e3e6;padding:1.2mm;display:flex;justify-content:space-between;gap:2mm;font-size:8px}
+        .dims{border:1px solid #d6e3e6;padding:1mm;margin-top:1mm;break-inside:avoid;page-break-inside:avoid}
         .dims h4{font-size:8.5px;margin:0 0 .5mm}
-        .row{display:flex;justify-content:space-between;gap:2mm;padding:.65mm .5mm;border-top:1px solid #eee;font-size:7.5px;line-height:1.15}
+        .row{display:flex;justify-content:space-between;gap:2mm;padding:.65mm .5mm;border-top:1px solid #d6e3e6;font-size:7.5px;line-height:1.15}
         .row strong{white-space:nowrap;font-size:8px}
         .remaining{grid-column:1/-1}
         @media print{body{background:#fff}.page{height:283mm}}
       </style></head><body>
         <section class="page">
-          <div class="title">চতুর্ভূজ জমি ভাগ-বণ্টন — সম্পূর্ণ Drawing</div>
+          <div class="title">চতুর্ভূজ জমি ভাগ-বণ্টন — সম্পূর্ণ Drawing</div><div class="meta">সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর</div>
           <div class="sub">উত্তর উপরে • পূর্ব ডানে • দক্ষিণ নিচে • পশ্চিম বামে</div>
           <div class="drawing"><img id="printDrawing" src="${svgData}" alt="সম্পূর্ণ জমি ভাগের Drawing"></div>
         </section>
         <section class="page">
-          <div class="title">চতুর্ভূজ জমি ভাগ-বণ্টন — প্রত্যেক প্লটের আলাদা হিসাব</div>
+          <div class="title">চতুর্ভূজ জমি ভাগ-বণ্টন — প্রত্যেক প্লটের আলাদা হিসাব</div><div class="meta">সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর</div>
           <div class="summary">মোট জমি: <b>${bn(total)} বর্গফুট (${bn(total/SQFT_PER_DECIMAL)} শতাংশ)</b> • মোট ভাগ: <b>${bn(valid.length)}টি</b> • ভাগকৃত: <b>${bn(used/SQFT_PER_DECIMAL)} শতাংশ</b> • অবশিষ্ট: <b>${bn(remain/SQFT_PER_DECIMAL)} শতাংশ</b></div>
           <div class="parts">${partsHtml}</div>
         </section>
