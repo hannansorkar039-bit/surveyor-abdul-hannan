@@ -72,10 +72,10 @@
     const r = window.__registryLast;
     const client = $('regClient').value.trim() || '—';
     const khatian = $('regKhatian').value.trim() || '—';
-    const report = `<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>Land Registration Calculation Sheet</title>
-<style>@font-face{font-family:"Lohit Bengali";src:url("fonts/Lohit-Bengali.ttf") format("truetype");font-style:normal;font-weight:400;font-display:swap}body{font-family:"Lohit Bengali",Arial,sans-serif;padding:28px;color:#15242e}h1{color:#082336}table{width:100%;border-collapse:collapse;margin-top:18px}td,th{border:1px solid #dce5e9;padding:10px;text-align:left}th{background:#f2f6f7}.total{font-size:20px;font-weight:800}.note{margin-top:18px;font-size:12px;color:#5e6f79}</style></head>
-<body><h1>Land Registration Calculation Sheet</h1>
-<p><strong>ক্লায়েন্ট:</strong> ${escapeHtml(client)}<br><strong>খতিয়ান/দাগ:</strong> ${escapeHtml(khatian)}<br><strong>দলিল মূল্য:</strong> ${money(r.base)}</p>
+    const report = `<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>ভূমি রেজিস্ট্রেশন হিসাব রিপোর্ট</title>
+<style>@font-face{font-family:"Lohit Bengali";src:url("fonts/Lohit-Bengali.ttf") format("truetype");font-style:normal;font-weight:400;font-display:swap}body{font-family:Arial,"Noto Sans Bengali","Lohit Bengali",sans-serif;max-width:850px;margin:0 auto;padding:24px;color:#082336;line-height:1.7}h1{font-size:24px;border-bottom:2px solid #0b8b91;padding-bottom:10px;margin:0 0 8px;color:#082336}.meta{color:#63777e;font-size:12px;margin-bottom:18px}.box{white-space:normal;border:1px solid #d6e3e6;border-radius:12px;padding:18px;background:#f8fbfb}table{width:100%;border-collapse:collapse;margin-top:18px}td,th{border:1px solid #d6e3e6;padding:10px;text-align:left}th{background:#f8fbfb}.total{font-size:20px;font-weight:800}.note{margin-top:18px;font-size:12px;color:#63777e}</style></head>
+<body><h1>ভূমি রেজিস্ট্রেশন হিসাব রিপোর্ট</h1><div class="meta">সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর</div>
+<div class="box"><strong>ক্লায়েন্ট:</strong> ${escapeHtml(client)}<br><strong>খতিয়ান/দাগ:</strong> ${escapeHtml(khatian)}<br><strong>দলিল মূল্য:</strong> ${money(r.base)}</div>
 <table><tr><th>খরচের খাত</th><th>হার/ধরন</th><th>পরিমাণ</th></tr>
 <tr><td>রেজিস্ট্রেশন ফি</td><td>${$('regRegistrationRate').value}%</td><td>${money(r.registration)}</td></tr>
 <tr><td>স্ট্যাম্প ডিউটি</td><td>${$('regStampRate').value}%</td><td>${money(r.stamp)}</td></tr>
@@ -107,12 +107,18 @@
     if (window.jspdf && window.jspdf.jsPDF) {
       const doc = await window.SAH_PDF?.create({unit:'mm',format:'a4'});
       if(!doc){ printReport(); return; }
-      doc.setFont('LohitBengali','bold'); doc.setFontSize(16);
-      doc.text('ভূমি রেজিস্ট্রেশন হিসাব রিপোর্ট', 18, 18);
-      doc.setFont('LohitBengali','normal'); doc.setFontSize(10);
-      doc.text(`গ্রাহক: ${client}`, 18, 28);
-      doc.text(`খতিয়ান/দাগ: ${khatian}`, 18, 35);
-      doc.text(`দলিল মূল্য: BDT ${r.base.toLocaleString('en-US',{maximumFractionDigits:2})}`, 18, 42);
+      doc.setTextColor(8,35,54);
+      doc.setFont('LohitBengali','bold'); doc.setFontSize(18);
+      doc.text('ভূমি রেজিস্ট্রেশন হিসাব রিপোর্ট', 18, 20);
+      doc.setDrawColor(11,139,145); doc.setLineWidth(0.7); doc.line(18, 24, 192, 24);
+      doc.setFont('LohitBengali','normal'); doc.setFontSize(9); doc.setTextColor(99,119,126);
+      doc.text('সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর', 18, 30);
+      doc.setDrawColor(214,227,230); doc.setFillColor(248,251,251); doc.setLineWidth(0.3);
+      doc.roundedRect(18, 36, 174, 100, 3, 3, 'FD');
+      doc.setTextColor(8,35,54); doc.setFontSize(10);
+      doc.text(`গ্রাহক: ${client}`, 23, 44);
+      doc.text(`খতিয়ান/দাগ: ${khatian}`, 23, 51);
+      doc.text(`দলিল মূল্য: BDT ${r.base.toLocaleString('en-US',{maximumFractionDigits:2})}`, 23, 58);
       const lines = [
         [`রেজিস্ট্রেশন ফি (${$('regRegistrationRate').value}%, ন্যূনতম BDT ১০০)`, r.registration],
         [`স্ট্যাম্প ডিউটি (${$('regStampRate').value}%)`, r.stamp],
@@ -124,12 +130,12 @@
         ['E-ফি', r.eFee],
         ['কোর্ট ফি', r.courtFee],
       ];
-      let y=54;
+      let y=68;
       doc.setFontSize(10);
-      lines.forEach(([label,amount]) => { doc.text(label,18,y); doc.text('BDT '+Number(amount).toLocaleString('en-US',{maximumFractionDigits:2}),190,y,{align:'right'}); y+=8; });
-      doc.setFont('LohitBengali','bold'); doc.text('আনুমানিক মোট',18,y+4); doc.text('BDT '+r.total.toLocaleString('en-US',{maximumFractionDigits:2}),190,y+4,{align:'right'});
-      doc.setFont('LohitBengali','normal'); doc.setFontSize(8);
-      doc.text('নোট: মৌজা, দলিলের ধরন ও প্রযোজ্য সরকারি বিধি অনুযায়ী হার পরিবর্তিত হতে পারে।',18,y+16);
+      lines.forEach(([label,amount]) => { doc.text(label,23,y); doc.text('BDT '+Number(amount).toLocaleString('en-US',{maximumFractionDigits:2}),187,y,{align:'right'}); y+=6.5; });
+      doc.setFont('LohitBengali','bold'); doc.text('আনুমানিক মোট',23,y+3); doc.text('BDT '+r.total.toLocaleString('en-US',{maximumFractionDigits:2}),187,y+3,{align:'right'});
+      doc.setFont('LohitBengali','normal'); doc.setFontSize(8); doc.setTextColor(99,119,126);
+      doc.text('নোট: মৌজা, দলিলের ধরন ও প্রযোজ্য সরকারি বিধি অনুযায়ী হার পরিবর্তিত হতে পারে।',18,144);
       doc.save('land-registration-calculation-sheet.pdf');
     } else {
       printReport();
@@ -654,7 +660,7 @@
       const image=multi.toDataURL('image/png');
       const rows=items.map((f,i)=>`<tr><td>${escapeHtml(f.name||('ক্ষেত্র '+(i+1)))}</td><td>${Number(f.area||0).toFixed(2)}</td></tr>`).join('');
       const currentRow=current&&!selectedId?`<tr><td>${escapeHtml(current.name||'নতুন ক্ষেত্র')}</td><td>${Number(current.area||area(current.pts)||0).toFixed(2)}</td></tr>`:'';
-      const report=`<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>বহু ক্ষেত্রের Drawing & Alignment Report</title><style>@font-face{font-family:"Lohit Bengali";src:url("fonts/Lohit-Bengali.ttf") format("truetype");font-style:normal;font-weight:400;font-display:swap}body{font-family:"Lohit Bengali",Arial,sans-serif;margin:28px;color:#15242e}h1{font-size:22px;margin:0 0 8px}p{line-height:1.6}img{max-width:100%;border:1px solid #d8e3e7;border-radius:10px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{border:1px solid #d8e3e7;padding:8px;text-align:left}th{background:#f4f7f9}.note{margin-top:18px;font-size:12px;color:#5e6f79}@media print{body{margin:12mm}}</style></head><body><h1>বহু ক্ষেত্রের Drawing & Alignment Report</h1><p>ক্ষেত্র সংখ্যা: ${count}<br>মোট ক্ষেত্রফল: ${total.toFixed(2)} বর্গফুট</p><img src="${image}" alt="Drawing"><table><thead><tr><th>ক্ষেত্র</th><th>ক্ষেত্রফল (sq ft)</th></tr></thead><tbody>${rows}${currentRow}</tbody></table><p class="note">নোট: এটি নকশা ও হিসাবের রেকর্ড। মাঠপর্যায়ের প্রকৃত পরিমাপ ও প্রযোজ্য সরকারি/আইনগত তথ্য অবশ্যই যাচাই করতে হবে।</p></body></html>`;
+      const report=`<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>বহু ক্ষেত্রের Drawing & Alignment Report</title><style>@font-face{font-family:"Lohit Bengali";src:url("fonts/Lohit-Bengali.ttf") format("truetype");font-style:normal;font-weight:400;font-display:swap}body{font-family:Arial,"Noto Sans Bengali","Lohit Bengali",sans-serif;max-width:850px;margin:0 auto;padding:24px;color:#082336;line-height:1.7}h1{font-size:24px;border-bottom:2px solid #0b8b91;padding-bottom:10px;margin:0 0 8px;color:#082336}.meta{color:#63777e;font-size:12px;margin-bottom:18px}.box{border:1px solid #d6e3e6;border-radius:12px;padding:18px;background:#f8fbfb;margin-bottom:14px}p{margin:0}img{max-width:100%;border:1px solid #d6e3e6;border-radius:12px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{border:1px solid #d6e3e6;padding:8px;text-align:left}th{background:#f8fbfb}.note{margin-top:18px;font-size:12px;color:#63777e}@media print{body{padding:0}}</style></head><body><h1>বহু ক্ষেত্রের Drawing & Alignment Report</h1><div class="meta">সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর</div><div class="box">ক্ষেত্র সংখ্যা: ${count}<br>মোট ক্ষেত্রফল: ${total.toFixed(2)} বর্গফুট</div><img src="${image}" alt="Drawing"><table><thead><tr><th>ক্ষেত্র</th><th>ক্ষেত্রফল (sq ft)</th></tr></thead><tbody>${rows}${currentRow}</tbody></table><p class="note">নোট: এটি নকশা ও হিসাবের রেকর্ড। মাঠপর্যায়ের প্রকৃত পরিমাপ ও প্রযোজ্য সরকারি/আইনগত তথ্য অবশ্যই যাচাই করতে হবে।</p></body></html>`;
       const w=window.open('','_blank');
       if(!w){$('shapeStatus').textContent='পপ-আপ ব্লক হয়েছে। ব্রাউজারের পপ-আপ অনুমতি দিয়ে আবার চেষ্টা করুন।';return;}
       w.document.open();w.document.write(report);w.document.close();w.focus();
@@ -681,12 +687,14 @@
       const title='ভূমি নকশা ও Alignment রিপোর্ট';
       const now=new Date();
       const stamp=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-      doc.setFont('LohitBengali','bold');doc.setFontSize(15);doc.text(title,pageW/2,13,{align:'center'});
-      doc.setFont('LohitBengali','normal');doc.setFontSize(8);doc.text('Drawing & Alignment',pageW/2,18,{align:'center'});
+      doc.setTextColor(8,35,54);
+      doc.setFont('LohitBengali','bold');doc.setFontSize(16);doc.text(title,margin,13);
+      doc.setDrawColor(11,139,145);doc.setLineWidth(0.7);doc.line(margin,16,pageW-margin,16);
+      doc.setFont('LohitBengali','normal');doc.setFontSize(8);doc.setTextColor(99,119,126);doc.text('সার্ভেয়ার আবদুল হান্নান • ভূমি ক্যালকুলেটর',margin,21);doc.setTextColor(8,35,54);
       const data=multi.toDataURL('image/png');
       const imgW=pageW-margin*2;
       const imgH=Math.min(220,imgW*(multi.height/multi.width));
-      const imgY=23;
+      const imgY=26;
       doc.addImage(data,'PNG',margin,imgY,imgW,imgH,undefined,'FAST');
       let y=imgY+imgH+9;
       doc.setFont('LohitBengali','bold');doc.setFontSize(9);doc.text('Fields: '+String(list.length+(current&&!selectedId?1:0)),margin,y);y+=6;
