@@ -1,11 +1,11 @@
-const CACHE_NAME = "sah-pwa-v129-fixes";
+const CACHE_NAME = "sah-pwa-v132-banner-morph";
 const BASE_PATH = new URL("./", self.location.href).pathname;
 
 // Only the offline application shell is required for Service Worker installation.
 // Images are handled separately so one unavailable image can never prevent the
 // Service Worker from installing/updating.
 const CORE_ASSETS = [
-  "./", "./index.html", "./404.html", "./styles.css", "./hero-header.css?v=2", "./readability.css?v=1", "./mobile-fix.css?v=3", "./mobile-ux.css?v=1", "./mobile-ux.js?v=1", "./icons.js?v=1", "./app.js", "./content.js", "./manifest.webmanifest",
+  "./", "./index.html", "./404.html", "./styles.css", "./photo-fan.css?v=1", "./hero-header.css?v=2", "./readability.css?v=1", "./mobile-fix.css?v=3", "./mobile-ux.css?v=1", "./social-3d.css?v=1", "./mobile-ux.js?v=1", "./icons.js?v=1", "./banner-stars.js?v=1", "./banner-morph.css?v=1", "./app.js", "./content.js", "./manifest.webmanifest",
   "./about.html", "./services.html", "./knowledge.html", "./documents.html", "./mistakes.html",
   "./videos.html", "./photos.html", "./posts.html", "./important-topics.html", "./social.html",
   "./process.html", "./faq.html", "./question.html", "./feedback.html", "./order.html", "./contact.html",
