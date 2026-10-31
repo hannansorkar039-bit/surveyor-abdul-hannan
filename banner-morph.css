@@ -1,0 +1,68 @@
+/* banner-morph.css — সব পেজের ব্যানারের ব্যাকগ্রাউন্ডে "Morphing Gradient Background" ধাঁচের ধীর রঙ-চলাচল।
+   শুধু ব্যানারের ব্যাকগ্রাউন্ড বদলায়: লেখা, বোতাম, ছবি, লেআউট, মাপ ও তারার (banner-stars.js) ঝিকমিক অপরিবর্তিত।
+   বর্তমান নেভি-টিল থিম ও আগের উজ্জ্বল আভা (glow) স্থির লেয়ার হিসেবে ওপরে থাকে; নিচের গ্রেডিয়েন্ট লেয়ার নড়ে। */
+
+/* ---------- ১) মূল ব্যানার (.hero) : হোম, সার্ভিস, পরিচিতি, যোগাযোগ ইত্যাদি ---------- */
+html body .hero{
+  --bm-a:#061722;--bm-b:#0b3558;--bm-c:#0a6670;--bm-d:#0c4a62;
+  background-image:
+    radial-gradient(820px 460px at 88% -8%,rgba(11,107,110,.6),transparent 62%),
+    radial-gradient(640px 360px at 4% 112%,rgba(179,135,58,.2),transparent 60%),
+    linear-gradient(45deg,var(--bm-a),var(--bm-b),var(--bm-c),var(--bm-d))!important;
+  background-size:auto,auto,400% 400%!important;
+  background-position:0 0,0 0,0% 50%!important;
+  animation:bm-move-3 16s ease infinite!important;
+}
+
+/* ভেতরের পেজের ব্যানার (.hero.page-hero) : আগের মতো ডানদিকের ওপরে টিল আভা থাকবে */
+html body .hero.page-hero{
+  background-image:
+    radial-gradient(circle at 80% 15%,rgba(20,123,128,.55),transparent 46%),
+    linear-gradient(45deg,var(--bm-a),var(--bm-b),var(--bm-c),var(--bm-d))!important;
+  background-size:auto,400% 400%!important;
+  background-position:0 0,0% 50%!important;
+  animation:bm-move-2 16s ease infinite!important;
+}
+
+/* ---------- ২) Land Solution BD পেজের ব্যানার (.ls-hero) ---------- */
+html body .ls-hero{
+  --bm-a:#071e30;--bm-b:#0d4356;--bm-c:#08747b;--bm-d:#0a3a4d;
+  background-image:linear-gradient(45deg,var(--bm-a),var(--bm-b),var(--bm-c),var(--bm-d))!important;
+  background-size:400% 400%!important;
+  background-position:0% 50%!important;
+  animation:bm-move-1 16s ease infinite!important;
+}
+
+/* ---------- ৩) জ্ঞানভান্ডার পেজের ব্যানার (.knowledge-hero .kh-hero) ---------- */
+html body .knowledge-hero .kh-hero{
+  --bm-a:#062a3a;--bm-b:#0b5863;--bm-c:#0e8577;--bm-d:#0a4a5a;
+  background-image:linear-gradient(45deg,var(--bm-a),var(--bm-b),var(--bm-c),var(--bm-d))!important;
+  background-size:400% 400%!important;
+  background-position:0% 50%!important;
+  animation:bm-move-1 16s ease infinite!important;
+}
+
+/* ---------- অ্যানিমেশন (রিলের "gradient" কিফ্রেমের মতোই : বাঁ → ডান → বাঁ) ---------- */
+@keyframes bm-move-3{
+  0%{background-position:0 0,0 0,0% 50%}
+  50%{background-position:0 0,0 0,100% 50%}
+  100%{background-position:0 0,0 0,0% 50%}
+}
+@keyframes bm-move-2{
+  0%{background-position:0 0,0% 50%}
+  50%{background-position:0 0,100% 50%}
+  100%{background-position:0 0,0% 50%}
+}
+@keyframes bm-move-1{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* যাদের ডিভাইসে অ্যানিমেশন কমানো/বন্ধ করা আছে, তাদের জন্য ব্যাকগ্রাউন্ড স্থির থাকবে */
+@media (prefers-reduced-motion:reduce){
+  html body .hero,
+  html body .hero.page-hero,
+  html body .ls-hero,
+  html body .knowledge-hero .kh-hero{animation:none!important}
+}
