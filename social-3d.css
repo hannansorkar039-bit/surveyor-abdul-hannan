@@ -1,0 +1,156 @@
+/* অফিসিয়াল ডিজিটাল প্ল্যাটফর্ম — তেরছা (আইসোমেট্রিক) 3D কার্ড ডিজাইন
+   শুধু #socialGrid-এর ভেতরে প্রযোজ্য; সাইটের অন্য কোনো অংশে প্রভাব ফেলে না। */
+
+#socialGrid{
+  --slab:12px;                 /* কার্ডের পুরুত্ব */
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:44px 40px;
+  margin-top:34px;
+  padding:130px 40px 90px 70px;
+  border-radius:22px;
+  background:linear-gradient(160deg,#e9eef1 0%,#d9e1e6 100%);
+  overflow:hidden;
+}
+
+#socialGrid .social{
+  --c:#082336;                 /* হোভারে ব্র্যান্ড রং */
+  --c-dark:#04141f;            /* হোভারে পাশের পুরুত্বের রং */
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:14px;
+  min-height:68px;
+  width:min(100%,400px);
+  justify-self:center;
+  padding:0 20px;
+  border:0;
+  border-radius:0;
+  background:#fff;
+  color:#1b2a33;
+  text-align:left;
+  overflow:visible;
+  transform:rotate(-30deg) skewX(25deg);
+  transition:transform .3s ease,background .3s ease,color .3s ease,box-shadow .3s ease;
+  box-shadow:-18px 18px 22px rgba(8,35,54,.16);
+  z-index:1;
+}
+
+/* বাম পাশের পুরুত্ব */
+#socialGrid .social::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:calc(var(--slab) * -1);
+  width:var(--slab);
+  height:100%;
+  background:#c9d1d7;
+  transform-origin:right;
+  transform:skewY(-45deg);
+  transition:background .3s ease;
+  pointer-events:none;
+}
+
+/* নিচের পাশের পুরুত্ব */
+#socialGrid .social::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:calc(var(--slab) * -1);
+  width:100%;
+  height:var(--slab);
+  background:#aeb8bf;
+  transform-origin:top;
+  transform:skewX(-45deg);
+  transition:background .3s ease;
+  pointer-events:none;
+}
+
+#socialGrid .social-icon{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  border-radius:0;
+  background:none;
+  box-shadow:none;
+  animation:none;
+  color:inherit;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin:0;
+}
+#socialGrid .social-icon svg{
+  width:26px;
+  height:26px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+#socialGrid .social > span:last-child{
+  font-weight:800;
+  white-space:nowrap;
+  letter-spacing:.09em;
+  line-height:1.3;
+  color:inherit;
+}
+#socialGrid .social > span:last-child::before{
+  content:"-";
+  margin-right:.6em;
+  opacity:.7;
+}
+
+/* হোভার / ফোকাস / টাচ: কার্ড উঠে আসে ও ব্র্যান্ড রঙে ভরে যায় */
+#socialGrid .social:hover,
+#socialGrid .social:focus-visible,
+#socialGrid .social:active{
+  background:var(--c);
+  color:#fff;
+  transform:rotate(-30deg) skewX(25deg) translate(16px,-16px);
+  box-shadow:-30px 30px 30px rgba(8,35,54,.22);
+  border:0;
+  outline:none;
+}
+#socialGrid .social:hover::before,
+#socialGrid .social:focus-visible::before,
+#socialGrid .social:active::before{background:var(--c-dark)}
+#socialGrid .social:hover::after,
+#socialGrid .social:focus-visible::after,
+#socialGrid .social:active::after{background:var(--c-dark);filter:brightness(.86)}
+#socialGrid .social:hover .social-icon,
+#socialGrid .social:active .social-icon{animation:none}
+
+/* প্ল্যাটফর্ম অনুযায়ী রং */
+#socialGrid .social[href*="facebook.com/Abdul"]{--c:#3b5998;--c-dark:#2d4373}
+#socialGrid .social[href*="facebook.com/Surveyor"]{--c:#1877f2;--c-dark:#1259b5}
+#socialGrid .social[href*="instagram"]{--c:#d6336c;--c-dark:#a32653}
+#socialGrid .social[href*="linkedin"]{--c:#0a66c2;--c-dark:#07498a}
+#socialGrid .social[href*="tiktok"]{--c:#111;--c-dark:#000}
+#socialGrid .social[href*="youtube"]{--c:#e62117;--c-dark:#a8160e}
+#socialGrid .social[href*="blogspot"]{--c:#f57d00;--c-dark:#b95d00}
+#socialGrid .social[href*="maps"]{--c:#188038;--c-dark:#10602a}
+
+/* ট্যাবলেট ও মোবাইল */
+@media(max-width:850px){
+  #socialGrid{gap:40px 28px;padding:120px 24px 80px 56px}
+}
+@media(max-width:620px){
+  #socialGrid{
+    --slab:10px;
+    grid-template-columns:1fr;
+    gap:34px;
+    padding:96px 20px 70px 38px;
+  }
+  #socialGrid .social{min-height:62px;padding:0 14px;gap:10px;width:min(100%,300px)}
+  #socialGrid .social > span:last-child{letter-spacing:.06em}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #socialGrid .social,
+  #socialGrid .social::before,
+  #socialGrid .social::after{transition:none}
+}
