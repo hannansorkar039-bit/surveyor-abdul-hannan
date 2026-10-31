@@ -65,50 +65,76 @@
 
   const photoGallery = $("photoGallery");
   if (photoGallery) {
-    // Scalable gallery: keep all photo data available, but only render a small
-    // batch at a time. This prevents hundreds of gallery cards from being
-    // inserted into the DOM at once while preserving the existing lightbox.
+    // Fan-out card gallery: photos are grouped by work type. Each group is a
+    // stack of cards that fans out on hover (desktop) or tap (mobile).
+    // The container keeps the "gallery" class and every card keeps data-full,
+    // so the existing lightbox (prev/next/zoom) continues to work unchanged.
     const photos = Array.isArray(SITE.photos) ? SITE.photos : [];
-    const PAGE_SIZE = 24;
-    let rendered = 0;
-
-    const renderPhotos = () => {
-      const next = photos.slice(rendered, rendered + PAGE_SIZE);
-      if (!next.length) return;
-      const html = next.map(p => `
-        <figure class="gallery-item">
-          <img src="${esc(/^[^\/]+\.(?:webp|jpe?g|png)$/i.test(p.src) ? "thumbs/" + p.src : p.src)}" data-full="${esc(p.src)}" onerror="this.onerror=null;this.src=this.dataset.full" alt="${esc(p.alt || "ভূমি জরিপের ছবি")}" loading="lazy" decoding="async" width="1200" height="900" tabindex="0">
-          <figcaption class="gallery-caption"><strong>${esc(p.title || "ভূমি জরিপের ছবি")}</strong><span>${esc(p.caption || "")}</span></figcaption>
-        </figure>`).join("");
-      photoGallery.insertAdjacentHTML("beforeend", html);
-      rendered += next.length;
-      updateGalleryMoreButton();
+    const GROUPS = {
+      "নকশার ডিমার্কেশন": "নকশা ও ডিমার্কেশন",
+      "আর এস নকশাভিত্তিক ডিমার্কেশন": "নকশা ও ডিমার্কেশন",
+      "সিএস ও আর এস তুলনা মূলক নকশা": "নকশা ও ডিমার্কেশন",
+      "ত্রিভুজায়ন": "ত্রিভুজায়ন পদ্ধতিতে সীমানা নির্ধারণ",
+      "ভাগ-বণ্টন": "ভাগ-বণ্টনের ফিল্ড স্কেচ",
+      "বন্টন": "ভাগ-বণ্টনের ফিল্ড স্কেচ",
+      "সার্ভেয়ার আবদুল হান্নান": "পরিচিতি",
+      "ভিজিটিং কার্ড": "পরিচিতি"
     };
+    const bn = n => String(n).replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]);
 
-    const moreWrap = document.createElement("div");
-    moreWrap.className = "gallery-more-wrap";
-    moreWrap.hidden = true;
-    const moreBtn = document.createElement("button");
-    moreBtn.type = "button";
-    moreBtn.className = "btn btn-light gallery-more-btn";
-    moreBtn.textContent = "আরও ছবি দেখুন";
-    moreBtn.setAttribute("aria-controls", "photoGallery");
-    moreBtn.addEventListener("click", renderPhotos);
-    moreWrap.appendChild(moreBtn);
-    photoGallery.insertAdjacentElement("afterend", moreWrap);
-
-    function updateGalleryMoreButton() {
-      const remaining = photos.length - rendered;
-      moreWrap.hidden = remaining <= 0;
-      if (remaining > 0) {
-        moreBtn.textContent = `আরও ছবি দেখুন (${Math.min(PAGE_SIZE, remaining)})`;
-      }
-    }
-
-    if (photos.length) {
-      renderPhotos();
-    } else {
+    if (!photos.length) {
       photoGallery.innerHTML = '<p class="gallery-empty">বর্তমানে কোনো ছবি যুক্ত করা হয়নি।</p>';
+    } else {
+      const groups = new Map();
+      photos.forEach(p => {
+        const g = p.group || GROUPS[p.title] || p.title || "ভূমি জরিপের ছবি";
+        if (!groups.has(g)) groups.set(g, []);
+        groups.get(g).push(p);
+      });
+
+      photoGallery.classList.add("fan-gallery");
+      photoGallery.insertAdjacentHTML("beforebegin",
+        '<p class="fan-hint"><span class="fan-hint-hover">কার্ডের উপর মাউস নিলে ছবিগুলো ছড়িয়ে যাবে</span><span class="fan-hint-tap">কার্ডে একবার ট্যাপ করলে ছবিগুলো ছড়িয়ে যাবে, আবার ট্যাপ করলে বড় হবে</span></p>');
+
+      photoGallery.innerHTML = [...groups].map(([name, list]) => `
+        <section class="fan-group" aria-label="${esc(name)}">
+          <div class="fan-head"><h3>${esc(name)}</h3><span class="fan-count">${bn(list.length)}টি ছবি</span></div>
+          <div class="fan" style="--n:${list.length}">
+            ${list.map((p, i) => `
+            <figure class="fan-card" style="--i:${i}">
+              <img src="${esc(/^[^\/]+\.(?:webp|jpe?g|png)$/i.test(p.src) ? "thumbs/" + p.src : p.src)}" data-full="${esc(p.src)}" onerror="this.onerror=null;this.src=this.dataset.full" alt="${esc(p.alt || p.caption || "ভূমি জরিপের ছবি")}" title="${esc(p.caption || p.title || "")}" loading="lazy" decoding="async" width="360" height="510" tabindex="0">
+            </figure>`).join("")}
+          </div>
+        </section>`).join("");
+
+      // Spacing between fanned cards depends on the available width.
+      const layoutFans = () => {
+        photoGallery.querySelectorAll(".fan").forEach(f => {
+          const n = +f.style.getPropertyValue("--n") || 1;
+          const card = f.querySelector(".fan-card");
+          if (!card || n < 2) return;
+          const cw = card.offsetWidth;
+          const avail = f.clientWidth - cw - 16;
+          f.style.setProperty("--step", Math.max(14, Math.min(cw * 0.8, avail / (n - 1))) + "px");
+        });
+      };
+      layoutFans();
+      window.addEventListener("resize", layoutFans);
+      if (window.ResizeObserver) new ResizeObserver(layoutFans).observe(photoGallery);
+
+      // Touch devices: first tap fans the stack out, second tap opens the lightbox.
+      const touchMode = window.matchMedia("(hover: none)");
+      photoGallery.addEventListener("click", e => {
+        if (!touchMode.matches) return;
+        const fan = e.target.closest(".fan");
+        if (!fan || fan.classList.contains("is-open")) return;
+        e.stopPropagation();
+        photoGallery.querySelectorAll(".fan.is-open").forEach(f => f.classList.remove("is-open"));
+        fan.classList.add("is-open");
+      }, true);
+      document.addEventListener("click", e => {
+        if (!e.target.closest(".fan")) photoGallery.querySelectorAll(".fan.is-open").forEach(f => f.classList.remove("is-open"));
+      });
     }
   }
 
