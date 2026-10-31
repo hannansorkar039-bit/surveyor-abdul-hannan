@@ -1,0 +1,56 @@
+/* Gooey Effect Loader — standalone add-on. Does not modify any existing rule. */
+
+.goo-svg-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+
+/* ---------- shared row (circles + letters) ---------- */
+.goo-row{--goo-s:46px;--goo-g:10px;--goo-c:#d69a2d;--goo-t:#082336;position:relative;display:inline-block}
+.goo-blobs,.goo-letters{display:flex;gap:var(--goo-g);align-items:center;justify-content:center}
+.goo-blobs{filter:url(#goo-f)}
+.goo-letters{position:absolute;inset:0;pointer-events:none}
+.goo-blobs i{display:block;flex:0 0 var(--goo-s);width:var(--goo-s);height:var(--goo-s);border-radius:50%;background:var(--goo-c);transform:translateX(var(--d,0px));animation:goo-spread var(--goo-dur,1.8s) cubic-bezier(.65,0,.35,1) infinite}
+.goo-letters b{display:grid;place-items:center;flex:0 0 var(--goo-s);width:var(--goo-s);height:var(--goo-s);color:var(--goo-t);font:800 calc(var(--goo-s)*.42)/1 Arial,sans-serif;opacity:0;animation:goo-letter var(--goo-dur,1.8s) cubic-bezier(.65,0,.35,1) infinite}
+@keyframes goo-spread{0%,100%{transform:translateX(var(--d,0px))}38%,62%{transform:translateX(0)}}
+@keyframes goo-letter{0%,18%,82%,100%{opacity:0;transform:scale(.55)}40%,60%{opacity:1;transform:scale(1)}}
+
+/* small dots variant */
+.goo-row.goo-mini{--goo-s:13px;--goo-g:7px;--goo-c:#08747b;--goo-dur:1.1s}
+.goo-row.goo-mini .goo-blobs{filter:url(#goo-f-sm)}
+
+/* ---------- 1) Splash screen ---------- */
+.goo-splash{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px;text-align:center;color:#fff;
+  background:radial-gradient(circle at 78% 14%,rgba(214,154,45,.18),transparent 28%),radial-gradient(circle at 12% 90%,rgba(8,123,120,.28),transparent 30%),linear-gradient(135deg,#061622 0%,#0a3047 55%,#086f72 100%);
+  transition:opacity .5s ease,visibility .5s ease}
+.goo-splash.goo-out{opacity:0;visibility:hidden}
+.goo-splash .goo-row{--goo-s:44px;--goo-g:9px}
+.goo-splash-name{margin:0;font-size:20px;font-weight:800;color:#f4d99c;line-height:1.5}
+.goo-splash-sub{margin:-12px 0 0;font-size:15px;color:#cfe1e7;letter-spacing:.3px}
+
+/* ---------- 2) Calculator "calculating" card ---------- */
+.goo-calc-pop{white-space:nowrap;position:fixed;left:50%;top:50%;z-index:9998;display:flex;align-items:center;gap:14px;padding:15px 22px;border-radius:18px;background:#fff;border:1px solid #dbe5e9;box-shadow:0 22px 55px rgba(8,35,54,.22);color:#082336;font-weight:800;font-size:16px;pointer-events:none;opacity:0;transform:translate(-50%,-46%) scale(.94);transition:opacity .2s ease,transform .2s ease}
+.goo-calc-pop.goo-show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.goo-calc-pop .goo-row{--goo-s:13px;--goo-g:7px}
+
+/* ---------- 3) Video / photo placeholders ---------- */
+.goo-host{position:relative}
+.goo-media{position:absolute;left:0;top:0;right:0;bottom:0;z-index:2;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#eaf3f5,#f7f1e4);transition:opacity .35s ease;pointer-events:none}
+.goo-media.goo-media-img{bottom:auto;aspect-ratio:4/3}
+.goo-media.goo-out{opacity:0}
+.goo-media .goo-row{--goo-s:15px;--goo-g:8px}
+
+/* ---------- 4) Form submit button ---------- */
+.goo-btn-loading{position:relative;color:transparent!important;pointer-events:none}
+.goo-btn-loading>*:not(.goo-btn-dots){visibility:hidden}
+.goo-btn-dots{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center}
+.goo-btn-dots .goo-row{--goo-s:11px;--goo-g:6px;--goo-c:#fff}
+
+@media(max-width:480px){
+  .goo-splash .goo-row{--goo-s:36px;--goo-g:7px}
+  .goo-splash-name{font-size:18px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .goo-blobs i{animation:none!important;transform:none!important}
+  .goo-letters b{animation:none!important;opacity:1!important}
+  .goo-blobs{filter:none}
+  .goo-splash{display:none!important}
+}
